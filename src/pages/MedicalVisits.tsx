@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Search, 
@@ -14,63 +13,37 @@ import {
   ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
+import { medicalService, type VisitStatus } from '@/services/medicalService'
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
-import { isPast } from "date-fns/isPast";
 import { it } from "date-fns/locale/it";
-
-type VisitStatus = 'valid' | 'expiring' | 'expired' | 'missing'
-
-interface PlayerWithVisit {
-  id: string
-  first_name: string
-  last_name: string
-  team_sector: string
-  medical_expiry: string | null
-}
 
 export default function MedicalVisits() {
   const [searchTerm, setSearchTerm] = useState('')
   const [sectorFilter, setSectorFilter] = useState('all')
 
-  const { data: players, isLoading } = useQuery({
+  const { data: visits, isLoading } = useQuery({
     queryKey: ['medical-visits'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('players')
-        .select('id, first_name, last_name, team_sector, medical_expiry')
-        .eq('is_active', true)
-        .order('last_name', { ascending: true })
-      
-      if (error) throw error
-      return data as PlayerWithVisit[]
-    }
+    queryFn: () => medicalService.getMedicalVisits()
   })
 
-  const getStatus = (expiry: string | null): VisitStatus => {
-    if (!expiry) return 'missing'
-    const expiryDate = new Date(expiry)
-    const daysLeft = differenceInDays(expiryDate, new Date())
-    
-    if (isPast(expiryDate) && daysLeft < 0) return 'expired'
-    if (daysLeft <= 30) return 'expiring'
-    return 'valid'
-  }
+  const getStatus = medicalService.calculateStatus
 
-  const filteredPlayers = players?.filter(p => {
+  const filteredVisits = visits?.filter(p => {
     const matchesSearch = `${p.first_name} ${p.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesSector = sectorFilter === 'all' || p.team_sector === sectorFilter
     return matchesSearch && matchesSector
   })
 
   // Get unique sectors for filter
-  const sectors = ['all', ...Array.from(new Set(players?.map(p => p.team_sector).filter(Boolean) || []))]
+  const sectors = ['all', ...Array.from(new Set(visits?.map(p => p.team_sector).filter((s): s is string => !!s) || []))]
 
   const stats = {
-    valid: players?.filter(p => getStatus(p.medical_expiry) === 'valid').length || 0,
-    expiring: players?.filter(p => getStatus(p.medical_expiry) === 'expiring').length || 0,
-    expired: players?.filter(p => getStatus(p.medical_expiry) === 'expired').length || 0,
-    missing: players?.filter(p => getStatus(p.medical_expiry) === 'missing').length || 0,
+    valid: visits?.filter(p => getStatus(p.medical_expiry) === 'valid').length || 0,
+    expiring: visits?.filter(p => getStatus(p.medical_expiry) === 'expiring').length || 0,
+    expired: visits?.filter(p => getStatus(p.medical_expiry) === 'expired').length || 0,
+    missing: visits?.filter(p => getStatus(p.medical_expiry) === 'missing').length || 0,
   }
 
   return (
@@ -98,14 +71,13 @@ export default function MedicalVisits() {
 
       {/* Filters Bar */}
       <div className="glass-card p-4 flex flex-col md:flex-row gap-4 items-center">
-        <div className="relative flex-1 group w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-          <input 
-            type="text" 
-            placeholder="Cerca atleta..."
+        <div className="flex-1 relative group w-full">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+          <Input 
+            placeholder="Cerca atleta..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-11 pr-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
+            className="pl-12 h-14 text-lg pill glass-card border-none focus-visible:ring-2 focus-visible:ring-primary shadow-md placeholder:text-muted-placeholder/50"
           />
         </div>
         
@@ -143,40 +115,34 @@ export default function MedicalVisits() {
             </thead>
             <tbody className="divide-y divide-white/5">
               <AnimatePresence mode="popLayout">
-                {(() => {
-                  if (isLoading) {
-                    return Array.from({ length: 6 }).map((_, i) => (
-                      <tr key={`skel-med-row-${i}`} className="animate-pulse">
-                        <td colSpan={6} className="px-6 py-8">
-                          <div className="h-6 bg-white/5 pill w-full" />
-                        </td>
-                      </tr>
-                    ))
-                  }
-                  
-                  if (filteredPlayers?.length === 0) {
-                    return (
-                      <motion.tr
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        key="empty-visits"
-                      >
-                        <td colSpan={6} className="px-6 py-20 text-center">
-                          <div className="flex flex-col items-center gap-3 opacity-30">
-                            <Stethoscope className="w-12 h-12" />
-                            <p className="font-bold">Nessun atleta trovato con questi criteri</p>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    )
-                  }
-
-                  return filteredPlayers?.map((p, idx) => {
-                    const status = getStatus(p.medical_expiry)
+                {isLoading ? (
+                  new Array(6).fill(0).map((_, i) => (
+                    <tr key={`skel-med-row-${i}`} className="animate-pulse">
+                      <td colSpan={6} className="px-6 py-8">
+                        <div className="h-6 bg-white/5 pill w-full" />
+                      </td>
+                    </tr>
+                  ))
+                ) : filteredVisits?.length === 0 ? (
+                  <motion.tr
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    key="empty-visits"
+                  >
+                    <td colSpan={6} className="px-6 py-20 text-center text-muted-foreground/30">
+                      <div className="flex flex-col items-center gap-3">
+                        <Stethoscope className="w-12 h-12" />
+                        <p className="font-bold">Nessun atleta trovato con questi criteri</p>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ) : (
+                  filteredVisits?.map((visit, idx) => {
+                    const status = getStatus(visit.medical_expiry)
                     return (
                       <motion.tr 
-                        key={p.id}
+                        key={visit.id}
                         layout
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -194,38 +160,38 @@ export default function MedicalVisits() {
                             </div>
                             <div>
                               <p className="text-sm font-black text-foreground group-hover:text-primary transition-colors">
-                                {p.last_name} {p.first_name}
+                                {visit.last_name} {visit.first_name}
                               </p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-5">
                           <div className="pill bg-white/5 border border-white/10 px-3 py-1 inline-flex items-center text-xs font-black uppercase tracking-wider text-muted-foreground/80">
-                            {p.team_sector}
+                            {visit.team_sector ?? 'N/D'}
                           </div>
                         </td>
                         <td className="px-6 py-5 font-black text-sm tabular-nums">
-                          {p.medical_expiry ? (
+                          {visit.medical_expiry ? (
                             <div className="flex items-center gap-2">
                               <Calendar className="w-4 h-4 text-muted-foreground/60" />
-                              {format(new Date(p.medical_expiry), 'dd MMMM yyyy', { locale: it })}
+                              {format(new Date(visit.medical_expiry), 'dd MMMM yyyy', { locale: it })}
                             </div>
                           ) : (
                             <span className="text-muted-foreground/30 italic">Non pervenuta</span>
                           )}
                         </td>
                         <td className="px-6 py-5">
-                          <StatusIndicator status={status} expiry={p.medical_expiry} />
+                          <StatusIndicator status={status} expiry={visit.medical_expiry || null} />
                         </td>
                         <td className="px-6 py-5 text-right">
-                          <button className="p-2 pill hover:bg-white/10 text-muted-foreground hover:text-foreground transition-all">
+                          <button className="p-2 pill hover:bg-white/10 text-muted-foreground hover:text-primary transition-all">
                             <ChevronRight className="w-5 h-5" />
                           </button>
                         </td>
                       </motion.tr>
                     )
                   })
-                })()}
+                )}
               </AnimatePresence>
             </tbody>
           </table>

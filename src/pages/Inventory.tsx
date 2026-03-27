@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Search, 
@@ -15,33 +14,18 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-type InventoryCategory = 'kit' | 'equipment' | 'trophy' | 'other'
-
-interface InventoryItem {
-  id: string
-  name: string
-  category: InventoryCategory
-  quantity: number
-  notes: string | null
-  updated_at: string
-}
+import { inventoryService, type InventoryCategory } from '@/services/inventoryService'
+import { AddInventoryModal } from '@/components/modals/AddInventoryModal'
 
 export default function Inventory() {
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<InventoryCategory | 'all'>('all')
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const queryClient = useQueryClient()
 
   const { data: items, isLoading, refetch } = useQuery({
     queryKey: ['inventory'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('inventory_items')
-        .select('*')
-        .order('name', { ascending: true })
-      
-      if (error) throw error
-      return data as InventoryItem[]
-    }
+    queryFn: () => inventoryService.getItems()
   })
 
   const filteredItems = items?.filter(item => {
@@ -54,13 +38,12 @@ export default function Inventory() {
     const item = items?.find(i => i.id === id)
     if (!item) return
     
-    const newQuantity = Math.max(0, item.quantity + delta)
-    const { error } = await supabase
-      .from('inventory_items')
-      .update({ quantity: newQuantity, updated_at: new Date().toISOString() })
-      .eq('id', id)
-    
-    if (!error) refetch()
+    try {
+      await inventoryService.updateQuantity(id, item.quantity + delta)
+      refetch()
+    } catch (error) {
+      console.error('Failed to update quantity:', error)
+    }
   }
 
   const categoryIcons: Record<InventoryCategory, React.ReactNode> = {
@@ -93,11 +76,20 @@ export default function Inventory() {
           </p>
         </div>
 
-        <button className="pill bg-primary text-primary-foreground px-6 py-3 font-black text-sm uppercase tracking-wider shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center gap-2">
+        <button 
+          onClick={() => setIsAddModalOpen(true)}
+          className="bg-primary hover:bg-primary/90 text-white pill px-6 py-3 font-bold flex items-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95"
+        >
           <Plus className="w-5 h-5" />
           Nuovo Articolo
         </button>
       </div>
+
+      <AddInventoryModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)}
+        onSuccess={() => queryClient.invalidateQueries({ queryKey: ['inventory'] })}
+      />
 
       {/* Filters Bar */}
       <div className="glass-card p-4 flex flex-col md:flex-row gap-4 items-center">
@@ -135,12 +127,8 @@ export default function Inventory() {
         <AnimatePresence mode="popLayout">
           {(() => {
             if (isLoading) {
-              return Array.from({ length: 6 }).map((_, i) => (
-                <div key={`skel-inv-item-${i}`} className="glass-card p-6 animate-pulse">
-                  <div className="h-6 bg-white/5 pill w-2/3 mb-4" />
-                  <div className="h-4 bg-white/5 pill w-full mb-6" />
-                  <div className="h-10 bg-white/5 pill w-full" />
-                </div>
+              return new Array(8).fill(0).map((_, i) => (
+                <div key={`inventory-skeleton-${i}`} className="h-48 glass-card border-white/5 animate-pulse" />
               ))
             }
 

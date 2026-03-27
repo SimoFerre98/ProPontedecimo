@@ -2,20 +2,22 @@
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
 
-## [0.1.0-alpha.1] - 2026-03-27
+## [0.5.0] - 2026-03-27
 
 ### Aggiunto
-- **Modulo Visite Mediche**: Gestione completa dei certificati medici con calcolo automatico della validità e filtri per settore.
-- **Modulo Magazzino**: Interfaccia per il tracciamento delle scorte (kit, attrezzature, premi) con azioni rapide di aggiornamento quantità.
-- **Navigazione Dashboard**: Implementata navigazione client-side fluida utilizzando `react-router-dom` `Link`.
-- **Hamburger Menu**: Menu flottante interattivo per una migliore esperienza mobile e desktop.
-- **Design Glassmorfico**: Estetica premium con trasparenze, effetti di luce e componenti "pill".
+- **Modulo Staff Tasks**: Interfaccia glassmorphic per la gestione delle attività societarie.
+- **Service Layer Staff**: Integrazione con Supabase per CRUD task e gestione profili.
+- **Modale AddTask**: Form per la creazione di nuove task con assegnazione automatica `created_by`.
+- **Modale AddAthlete**: Integrazione per l'aggiunta di nuovi tesserati.
+- **Modale AddInventory**: Gestione inserimento articoli magazzino con validazione.
 
 ### Corretto
-- **Import date-fns**: Risolto errore di risoluzione in Vite 8 utilizzando percorsi di importazione diretti per ogni funzione.
-- **Icone Lucide**: Uniformata la libreria di icone e risolti i conflitti di visualizzazione nella Dashboard.
-- **SonarQube Lints**: Rifattorizzate ternarie annidate e migliorata la gestione delle chiavi nelle liste (evitando array index).
+- Risolti critici errori di sintassi in `Athletes.tsx` che impedivano la build.
+- Corretta gestione degli import `useState` e hook di React mancanti.
+- Sistemati i warning del linter "Do not use Array index in keys" in tutte le pagine principali.
+- Ottimizzata la gestione dei tipi TypeScript nel service layer.
+- Migliorata la consistenza grafica (stondature, trasparenze, effetti glass) su Atleti e Magazzino.
 
-### Migliorato
-- **Dashboard Stats**: Visualizzazione dinamica e stile armonizzato per tutte le StatCard.
-- **UX**: Aggiunte animazioni di transizione `framer-motion` tra le rotte e feedback visivi sugli elementi interattivi.
+### Modificato
+- Refactoring `AuthContext` per esporre correttamente l'ID utente per il tracciamento creazioni.
+- Aggiornato `AI/agent.md` con nuove policy su branching (no-delete) e versionamento.

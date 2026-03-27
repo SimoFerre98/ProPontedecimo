@@ -37,18 +37,30 @@ Quando `dev` è stabile e testato → PR da `dev` verso `main` → merge con `me
 - **Mergia sempre con squash** per le feature branch verso `dev`.
 - **Non committare mai** `.env`, secrets o file sensibili.
 
-### Versioning (Tagging)
-- Al raggiungimento di ogni milestone significativa o parte "funzionante", crea un **Git Tag**.
-- Formato tag suggerito: `vX.Y.Z-alpha|beta|stable` (es. `v0.1.0-alpha.1`).
-- Comando: `git tag -a v0.1.0-alpha.1 -m "Descrizione milestone"` e poi `git push origin --tags`.
+## Workflow di Sviluppo
 
-### CHANGELOG.md
-- Ogni release o tag deve essere accompagnata da un aggiornamento del file **`CHANGELOG.md`** nella radice del progetto.
-- Segui il formato [Keep a Changelog](https://keepachangelog.com/):
-  - **Aggiunto**: per nuove funzionalità.
-  - **Corretto**: per bug fix.
-  - **Migliorato**: per refactoring e performance.
-  - **Rimosso**: per feature deprecate.
+### Branching Strategy
+- Il branch principale è `main`.
+- Il branch di integrazione è `dev`.
+- Ogni nuova feature o fix deve essere sviluppata su un branch dedicato (es: `feature/staff-tasks`, `fix/athletes-syntax`).
+- **IMPORTANTE**: I branch non devono MAI essere cancellati dopo il merge. Devono rimanere come storico dello sviluppo.
+
+### Versionamento e Tagging
+- Usiamo il versionamento semantico (es: v1.0.0).
+- Ogni milestone significativa o release stabile deve essere taggata su Git.
+- I tag devono essere parlanti (es: `v0.5.0-staff-module-beta`).
+
+### Changelog
+- Ogni modifica significativa deve essere registrata nel file `CHANGELOG.md`.
+- Dividere per versioni e categorie (Aggiunto, Corretto, Modificato).
+
+### Passaggi Operativi
+1. Analisi dei requisiti e pianificazione.
+2. Sviluppo su branch dedicato.
+3. Test e risoluzione linting (non lasciare mai warning o errori).
+4. Merge su `dev` (o `main` se release).
+5. Tagging della versione se milestone raggiunta.
+6. Aggiornamento `CHANGELOG.md`.
 
 ## Utilizzo Database (Supabase)
 - Progetto: `propontedecimo` (ID: `nkfbctwduojwxuvwjhdm`, region: `eu-central-1`)
