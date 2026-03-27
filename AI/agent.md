@@ -29,11 +29,26 @@ main (produzione) ← dev (integrazione) ← feature/* (sviluppo)
 ### Release in produzione (futuro con CI/CD)
 Quando `dev` è stabile e testato → PR da `dev` verso `main` → merge con `merge commit` (non squash, per tracciabilità).
 
-## Gestione Git
-- Messaggi di commit: `feat: descrizione`, `fix: descrizione`, `chore: descrizione`
-- **Mergia sempre con squash** per le feature branch
-- **Non committare mai** `.env`, secrets o file sensibili
+## Gestione Git e Versionamento
+
+### Commits
+- Messaggi di commit: `feat: descrizione`, `fix: descrizione`, `chore: descrizione`, `docs: descrizione`.
 - Usa sempre **Conventional Commits**: https://www.conventionalcommits.org
+- **Mergia sempre con squash** per le feature branch verso `dev`.
+- **Non committare mai** `.env`, secrets o file sensibili.
+
+### Versioning (Tagging)
+- Al raggiungimento di ogni milestone significativa o parte "funzionante", crea un **Git Tag**.
+- Formato tag suggerito: `vX.Y.Z-alpha|beta|stable` (es. `v0.1.0-alpha.1`).
+- Comando: `git tag -a v0.1.0-alpha.1 -m "Descrizione milestone"` e poi `git push origin --tags`.
+
+### CHANGELOG.md
+- Ogni release o tag deve essere accompagnata da un aggiornamento del file **`CHANGELOG.md`** nella radice del progetto.
+- Segui il formato [Keep a Changelog](https://keepachangelog.com/):
+  - **Aggiunto**: per nuove funzionalità.
+  - **Corretto**: per bug fix.
+  - **Migliorato**: per refactoring e performance.
+  - **Rimosso**: per feature deprecate.
 
 ## Utilizzo Database (Supabase)
 - Progetto: `propontedecimo` (ID: `nkfbctwduojwxuvwjhdm`, region: `eu-central-1`)
