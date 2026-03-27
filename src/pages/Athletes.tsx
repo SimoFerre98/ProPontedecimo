@@ -16,28 +16,28 @@ import {
   Award
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { athleteService } from '@/services/athleteService'
+import { athleteService, type Player } from '@/services/athleteService'
+import AddAthleteModal from '@/components/modals/AddAthleteModal'
+import { Pagination } from '@/components/ui/Pagination'
 
 export default function Athletes() {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [search, setSearch] = useState('')
   const [sectorFilter, setSectorFilter] = useState('all')
+  const [page, setPage] = useState(0)
+  const pageSize = 12
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const { data: players, isLoading } = useQuery({
-    queryKey: ['players'],
-    queryFn: athleteService.getPlayers
+  const { data, isLoading } = useQuery({
+    queryKey: ['players', search, sectorFilter, page],
+    queryFn: () => athleteService.getPlayers(search, sectorFilter, page, pageSize),
   })
 
-  const filteredPlayers = players?.filter(player => {
-    const fullName = `${player.first_name} ${player.last_name}`.toLowerCase()
-    const matchesSearch = fullName.includes(searchTerm.toLowerCase())
-    const matchesSector = sectorFilter === 'all' || player.team_sector === sectorFilter
-    return matchesSearch && matchesSector
-  })
+  const players = data?.data || []
+  const totalCount = data?.count || 0
 
   // Get unique sectors for filter
-  const sectors = ['all', ...Array.from(new Set(players?.map(p => p.team_sector).filter((s): s is string => !!s) || []))]
+  const sectors = ['all', ...Array.from(new Set(players.map((p: Player) => p.team_sector).filter((s: string | null): s is string => !!s) || []))]
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -59,9 +59,12 @@ export default function Athletes() {
         <div className="flex items-center gap-3">
           <div className="hidden lg:flex flex-col items-end mr-4">
             <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Totale Atleti</span>
-            <span className="text-2xl font-black text-foreground">{players?.length || 0}</span>
+            <span className="text-2xl font-black text-foreground">{totalCount || 0}</span>
           </div>
-          <Button className="pill bg-primary hover:bg-primary/90 text-white gap-2 h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/30 active:scale-95 transition-all">
+          <Button 
+            onClick={() => setIsModalOpen(true)}
+            className="pill bg-primary hover:bg-primary/90 text-white gap-2 h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/30 active:scale-95 transition-all"
+          >
             <UserPlus className="w-5 h-5 transition-transform group-hover:rotate-12" /> 
             Nuovo Atleta
           </Button>
@@ -76,7 +79,7 @@ export default function Athletes() {
           { label: 'Top Scorer', val: 'N/A', icon: Award, color: 'text-amber-500', bg: 'bg-amber-500/10' }
         ].map((stat, i) => (
           <motion.div
-            key={`athlete-stat-${i}`}
+            key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
@@ -95,51 +98,56 @@ export default function Athletes() {
 
       {/* Filter Toolbar */}
       <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
-        <div className="relative flex-1 group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-          <Input 
-            placeholder="Cerca per nome, cognome o settore..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="h-16 pl-14 text-lg pill glass-card border-white/5 focus-visible:ring-primary shadow-2xl"
-          />
-        </div>
-        
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 no-scrollbar">
-          <div className="flex items-center gap-2 p-1.5 glass-card rounded-2xl border-white/5">
-            {sectors.map((sector) => (
+          <div className="relative flex-1">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Cerca calciatore..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(0) // Reset to first page on search
+              }}
+              className="w-full h-16 pl-16 pr-8 text-xl pill glass-card border-2 border-black/5 dark:border-white/10 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
+            {sectors.map(sector => (
               <button
-                key={`selector-${sector}`}
-                onClick={() => setSectorFilter(sector)}
+                key={sector}
+                onClick={() => {
+                  setSectorFilter(sector)
+                  setPage(0) // Reset to first page on filter
+                }}
                 className={cn(
-                  "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                  "px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all border",
                   sectorFilter === sector 
-                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
-                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                    ? "bg-primary text-white border-primary glow-primary" 
+                    : "bg-black/5 dark:bg-white/5 text-muted-foreground border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10"
                 )}
               >
-                {sector === 'all' ? 'Tutti i settori' : sector}
+                {sector === 'all' ? 'Tutti' : sector}
               </button>
             ))}
           </div>
-          <Button variant="outline" className="pill border-white/10 hover:border-primary h-14 aspect-square p-0">
+          <Button variant="outline" className="pill border-black/10 dark:border-white/10 hover:border-primary h-14 aspect-square p-0">
             <Filter className="w-5 h-5" />
           </Button>
         </div>
-      </div>
 
       {/* Main List Grid */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {new Array(6).fill(0).map((_, i) => (
-            <div key={`athlete-skeleton-${i}`} className="glass-card p-8 h-64 animate-pulse bg-white/5 rounded-[2rem]" />
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={`athlete-skel-${i}`} className="glass-card p-8 h-64 animate-pulse bg-muted/20 border-black/5 dark:border-white/10 rounded-[2rem]" />
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
-            {filteredPlayers?.map((player) => {
-              const status = player.is_active ? 'Attivo' : 'Inattivo'
+            {players?.map((player) => {
+              const statusLabel = player.is_active ? 'Attivo' : 'Inattivo'
               return (
                 <motion.div
                   layout
@@ -187,7 +195,7 @@ export default function Athletes() {
                         <Smartphone className="w-3 h-3" />
                         <span className="text-[9px] font-black uppercase tracking-tighter">Telefono</span>
                       </div>
-                      <p className="text-xs font-bold text-foreground truncate">{player.phone_player || player.parent1_phone || '-'}</p>
+                      <p className="text-xs font-bold text-foreground truncate">{player.phone_player || player.phone_parent || '-'}</p>
                     </div>
                   </div>
 
@@ -199,7 +207,7 @@ export default function Athletes() {
                         : "bg-slate-500/10 text-slate-400 border-slate-500/20"
                     )}>
                       <ShieldCheck className="w-3.5 h-3.5" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">{status}</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">{statusLabel}</span>
                     </div>
                     <button className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5 group/btn">
                       <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
@@ -212,6 +220,22 @@ export default function Athletes() {
           </AnimatePresence>
         </div>
       )}
+
+      <Pagination 
+        currentPage={page}
+        totalCount={totalCount}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        className="mt-8"
+      />
+
+      <AddAthleteModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => {
+          setIsModalOpen(false)
+        }}
+      />
     </div>
   )
 }

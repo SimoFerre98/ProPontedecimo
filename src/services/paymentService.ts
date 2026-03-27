@@ -19,22 +19,30 @@ export interface PaymentReference {
 }
 
 export const paymentService = {
-  async getPayments(status?: PaymentStatus | 'all') {
+  async getPayments(search?: string, status?: PaymentStatus | 'all', page = 0, pageSize = 15) {
+    const from = page * pageSize
+    const to = from + pageSize - 1
+
     let query = supabase
       .from('payments')
       .select(`
         *,
-        player:players(first_name, last_name, team_sector)
-      `)
+        player:players!inner(first_name, last_name, team_sector)
+      `, { count: 'exact' })
       .order('created_at', { ascending: false })
+      .range(from, to)
 
     if (status && status !== 'all') {
       query = query.eq('status', status)
     }
 
-    const { data, error } = await query
+    if (search) {
+      query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`, { foreignTable: 'players' })
+    }
+
+    const { data, error, count } = await query
     if (error) throw error
-    return data as unknown as PaymentReference[]
+    return { data: data as unknown as PaymentReference[], count: count || 0 }
   },
 
   async updateStatus(id: string, status: PaymentStatus) {

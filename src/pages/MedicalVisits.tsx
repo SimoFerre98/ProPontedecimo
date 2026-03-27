@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
@@ -13,38 +13,45 @@ import {
   ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Input } from '@/components/ui/input'
-import { medicalService, type VisitStatus } from '@/services/medicalService'
+import { medicalService, type MedicalVisitRecord, type VisitStatus } from '@/services/medicalService'
+import { Pagination } from '@/components/ui/Pagination'
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { it } from "date-fns/locale/it";
 
 export default function MedicalVisits() {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [search, setSearch] = useState('')
   const [sectorFilter, setSectorFilter] = useState('all')
+  const [page, setPage] = useState(0)
+  const pageSize = 15
 
-  const { data: visits, isLoading } = useQuery({
-    queryKey: ['medical-visits'],
-    queryFn: () => medicalService.getMedicalVisits()
+  const { data, isLoading } = useQuery({
+    queryKey: ['medical-visits', search, sectorFilter, page],
+    queryFn: () => medicalService.getMedicalVisits(search, sectorFilter, page, pageSize),
   })
+
+  const visits = data?.data || []
+  const totalCount = data?.count || 0
 
   const getStatus = medicalService.calculateStatus
 
-  const filteredVisits = visits?.filter(p => {
-    const matchesSearch = `${p.first_name} ${p.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesSector = sectorFilter === 'all' || p.team_sector === sectorFilter
-    return matchesSearch && matchesSector
-  })
-
   // Get unique sectors for filter
-  const sectors = ['all', ...Array.from(new Set(visits?.map(p => p.team_sector).filter((s): s is string => !!s) || []))]
+  const sectors = ['all', ...Array.from(new Set(visits.map((p: MedicalVisitRecord) => p.team_sector).filter((s: string | null): s is string => !!s) || []))]
 
-  const stats = {
-    valid: visits?.filter(p => getStatus(p.medical_expiry) === 'valid').length || 0,
-    expiring: visits?.filter(p => getStatus(p.medical_expiry) === 'expiring').length || 0,
-    expired: visits?.filter(p => getStatus(p.medical_expiry) === 'expired').length || 0,
-    missing: visits?.filter(p => getStatus(p.medical_expiry) === 'missing').length || 0,
-  }
+  const stats = useMemo(() => {
+    if (!visits) return { expired: 0, expiring: 0, valid: 0 }
+
+    return visits.reduce((acc, visit) => {
+      const status = medicalService.calculateStatus(visit.medical_expiry)
+      if (status === 'expired' || status === 'missing') acc.expired++
+      else if (status === 'expiring') acc.expiring++
+      else acc.valid++
+      return acc
+    }, { expired: 0, expiring: 0, valid: 0 })
+  }, [visits])
+
+  // filteredVisits is now handled server-side, so we just use 'visits'
+  const filteredVisits = visits
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
@@ -71,40 +78,47 @@ export default function MedicalVisits() {
 
       {/* Filters Bar */}
       <div className="glass-card p-4 flex flex-col md:flex-row gap-4 items-center">
-        <div className="flex-1 relative group w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-          <Input 
-            placeholder="Cerca atleta..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 h-14 text-lg pill glass-card border-none focus-visible:ring-2 focus-visible:ring-primary shadow-md placeholder:text-muted-placeholder/50"
-          />
-        </div>
-        
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
-          {sectors.map(sector => (
-            <button
-              key={`sector-filter-${sector}`}
-              onClick={() => setSectorFilter(sector)}
-              className={cn(
-                "px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all border",
-                sectorFilter === sector 
-                  ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105" 
-                  : "bg-white/5 text-muted-foreground border-white/10 hover:bg-white/10 hover:border-white/20"
-              )}
-            >
-              {sector === 'all' ? 'Tutti i settori' : sector}
-            </button>
-          ))}
-        </div>
+          <div className="relative flex-1 group">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-primary transition-all duration-300" />
+            <input
+              type="text"
+              placeholder="Cerca atleti..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(0)
+              }}
+              className="h-16 pl-16 w-full text-xl pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary shadow-2xl transition-all font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground focus:outline-none"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 p-1.5 glass-card rounded-2xl border-black/5 dark:border-white/10 overflow-x-auto no-scrollbar">
+            {sectors.map(sector => (
+              <button
+                key={sector}
+                onClick={() => {
+                  setSectorFilter(sector)
+                  setPage(0)
+                }}
+                className={cn(
+                  "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                  sectorFilter === sector 
+                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
+                    : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
+                )}
+              >
+                {sector === 'all' ? 'Tutti' : sector}
+              </button>
+            ))}
+          </div>
       </div>
 
       {/* Main Content */}
-      <div className="glass-card overflow-hidden border-white/5">
+      <div className="glass-card overflow-hidden border-black/5 dark:border-white/10">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.02]">
+              <tr className="border-b border-black/5 dark:border-white/10 bg-black/[0.01] dark:bg-white/[0.02]">
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center w-16">#</th>
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Atleta</th>
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Settore</th>
@@ -113,11 +127,11 @@ export default function MedicalVisits() {
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-right">Dettagli</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-black/5 dark:divide-white/5">
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
-                  new Array(6).fill(0).map((_, i) => (
-                    <tr key={`skel-med-row-${i}`} className="animate-pulse">
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <tr key={`med-skeleton-row-${i}`} className="animate-pulse">
                       <td colSpan={6} className="px-6 py-8">
                         <div className="h-6 bg-white/5 pill w-full" />
                       </td>
@@ -197,6 +211,14 @@ export default function MedicalVisits() {
           </table>
         </div>
       </div>
+
+      <Pagination 
+        currentPage={page}
+        totalCount={totalCount}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        className="mt-6"
+      />
     </div>
   )
 }
@@ -205,8 +227,8 @@ function StatBadge({ count, label, type }: Readonly<{ count: number, label: stri
   const colors = {
     valid: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
     expiring: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
-    expired: 'text-rose-400 bg-rose-400/10 border-rose-400/20',
-    missing: 'text-muted-foreground bg-white/5 border-white/10'
+    expired: 'text-rose-600 dark:text-rose-400 bg-rose-500/10 border-rose-500/20',
+    missing: 'text-muted-foreground bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10'
   }
 
   return (
@@ -234,7 +256,7 @@ function StatusIndicator({ status, expiry }: Readonly<{ status: VisitStatus, exp
     expired: {
       label: 'Scaduta',
       icon: <AlertCircle className="w-3.5 h-3.5" />,
-      class: 'bg-rose-400/10 text-rose-400 border-rose-400/20',
+      class: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20',
       glow: 'shadow-[0_0_15px_-3px_rgba(248,113,113,0.3)]'
     },
     missing: {

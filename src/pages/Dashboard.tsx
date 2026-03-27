@@ -58,7 +58,7 @@ function StatCard({ title, value, subtitle, icon, color, loading }: Readonly<Sta
           ) : (
             <p className="text-4xl font-black text-foreground tracking-tighter tabular-nums">{value}</p>
           )}
-          <p className="text-[11px] text-muted-foreground mt-2 font-medium bg-background/50 pill inline-block px-2 py-0.5 border border-white/10">{subtitle}</p>
+          <p className="text-[11px] text-muted-foreground mt-2 font-medium bg-background/50 pill inline-block px-2 py-0.5 border border-black/5 dark:border-white/10">{subtitle}</p>
         </div>
         <div className={cn(
           "w-12 h-12 pill flex items-center justify-center shrink-0 ml-4 border",
@@ -164,7 +164,7 @@ export default function Dashboard() {
         </div>
         
         <div className="flex gap-2">
-          <div className="glass-card pill px-4 py-2 flex items-center gap-2 text-xs font-bold border-white/20">
+          <div className="glass-card pill px-4 py-2 flex items-center gap-2 text-xs font-bold border-black/10 dark:border-white/20">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             Sistema Operativo
           </div>
@@ -240,7 +240,7 @@ export default function Dashboard() {
                       <span className="text-sm font-bold text-foreground/80 group-hover:text-primary transition-colors">{sector}</span>
                       <span className="text-xs font-black tabular-nums">{count} <span className="text-muted-foreground font-medium text-[10px]">atleti</span></span>
                     </div>
-                    <div className="h-3 bg-muted/20 pill overflow-hidden border border-white/5 shadow-inner p-[2px]">
+                    <div className="h-3 bg-muted/20 pill overflow-hidden border border-black/5 dark:border-white/10 shadow-inner p-[2px]">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
@@ -282,7 +282,7 @@ export default function Dashboard() {
                 <Link
                   key={href}
                   to={href}
-                  className="flex items-center gap-4 p-4 pill border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all group"
+                  className="flex items-center gap-4 p-4 pill border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all group"
                 >
                   <motion.div 
                     whileHover={{ x: 5 }}

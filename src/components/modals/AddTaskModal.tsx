@@ -1,33 +1,33 @@
 import { useState } from 'react'
-import { Modal } from '@/components/ui/modal'
-import { Input } from '@/components/ui/input'
+import { motion, AnimatePresence } from 'framer-motion'
+import { X, ClipboardList, User, Calendar, FileText, Save, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/contexts/AuthContext'
-import { staffService, type TaskStatus } from '@/services/staffService'
-import { useQuery } from '@tanstack/react-query'
-import { ClipboardList, User, Calendar, FileText, Loader2 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { staffService } from '@/services/staffService'
+import { supabase } from '@/lib/supabase'
+import { useQueryClient, useQuery } from '@tanstack/react-query'
 
 interface AddTaskModalProps {
   isOpen: boolean
   onClose: () => void
-  onSuccess: () => void
+  onSuccess?: () => void
 }
 
-export function AddTaskModal({ isOpen, onClose, onSuccess }: Readonly<AddTaskModalProps>) {
-  const { user } = useAuth()
+export default function AddTaskModal({ isOpen, onClose, onSuccess }: Readonly<AddTaskModalProps>) {
   const [loading, setLoading] = useState(false)
+  const queryClient = useQueryClient()
+  
+  const { data: profiles } = useQuery({
+    queryKey: ['staff-profiles'],
+    queryFn: () => staffService.getProfiles()
+  })
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     assigned_to: '',
-    due_date: '',
-    status: 'todo' as TaskStatus
-  })
-
-  const { data: profiles } = useQuery({
-    queryKey: ['staff-profiles'],
-    queryFn: () => staffService.getProfiles(),
-    enabled: isOpen
+    due_date: new Date().toISOString().split('T')[0],
+    priority: 'medium' as 'low' | 'medium' | 'high'
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,13 +36,19 @@ export function AddTaskModal({ isOpen, onClose, onSuccess }: Readonly<AddTaskMod
     try {
       await staffService.createTask({
         ...formData,
-        assigned_to: formData.assigned_to || null,
-        due_date: formData.due_date || null,
-        created_by: user?.id || null
+        status: 'todo',
+        created_by: (await supabase.auth.getUser()).data.user?.id || ''
       })
-      onSuccess()
+      queryClient.invalidateQueries({ queryKey: ['staff-tasks'] })
+      onSuccess?.()
       onClose()
-      setFormData({ title: '', description: '', assigned_to: '', due_date: '', status: 'todo' })
+      setFormData({
+        title: '',
+        description: '',
+        assigned_to: '',
+        due_date: new Date().toISOString().split('T')[0],
+        priority: 'medium'
+      })
     } catch (error) {
       console.error('Error creating task:', error)
     } finally {
@@ -51,81 +57,125 @@ export function AddTaskModal({ isOpen, onClose, onSuccess }: Readonly<AddTaskMod
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Nuova Attività Staff">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-1.5">
-          <label htmlFor="task_title" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Titolo Attività</label>
-          <div className="relative group">
-            <ClipboardList className="absolute left-3 top-1/2 -translate-y-1-2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <Input 
-              id="task_title"
-              required
-              value={formData.title}
-              onChange={e => setFormData({ ...formData, title: e.target.value })}
-              className="pl-9 glass-card border-white/5 focus:border-primary/50"
-              placeholder="es. Organizzazione Torneo..."
-            />
-          </div>
-        </div>
-
-        <div className="space-y-1.5">
-          <label htmlFor="task_assigned" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Assegnato A</label>
-          <div className="relative group">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors pointer-events-none" />
-            <select
-              id="task_assigned"
-              value={formData.assigned_to}
-              onChange={e => setFormData({ ...formData, assigned_to: e.target.value })}
-              className="w-full h-10 pl-9 pr-4 bg-white/5 border border-white/5 rounded-2xl focus:outline-none focus:border-primary/50 text-foreground text-sm font-medium appearance-none backdrop-blur-md"
-            >
-              <option value="" className="bg-slate-900">Seleziona Staff...</option>
-              {profiles?.map(p => (
-                <option key={p.id} value={p.id} className="bg-slate-900">
-                  {p.full_name} ({p.role})
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="space-y-1.5">
-          <label htmlFor="task_due_date" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Scadenza</label>
-          <div className="relative group">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <Input 
-              id="task_due_date"
-              type="date"
-              value={formData.due_date}
-              onChange={e => setFormData({ ...formData, due_date: e.target.value })}
-              className="pl-9 glass-card border-white/5 focus:border-primary/50"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-1.5">
-          <label htmlFor="task_desc" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Descrizione</label>
-          <div className="relative group">
-            <FileText className="absolute left-3 top-4 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <textarea
-              id="task_desc"
-              value={formData.description}
-              onChange={e => setFormData({ ...formData, description: e.target.value })}
-              className="w-full min-h-[100px] pl-9 pr-4 py-3 bg-white/5 border border-white/5 rounded-2xl focus:outline-none focus:border-primary/50 text-foreground text-sm font-medium placeholder:text-muted-foreground/30 backdrop-blur-md"
-              placeholder="Dettagli del compito..."
-            />
-          </div>
-        </div>
-
-        <div className="pt-2">
-          <Button 
-            type="submit" 
-            disabled={loading}
-            className="w-full h-12 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-50"
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-background/90 backdrop-blur-md"
+          />
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 30 }}
+            className="relative w-full max-w-xl glass-card p-8 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border-black/5 dark:border-white/10 rounded-[3rem] overflow-hidden"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Crea Task"}
-          </Button>
+            {/* Header */}
+            <div className="relative flex items-center justify-between mb-10">
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-16 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+                  <ClipboardList className="w-8 h-8" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-black text-foreground italic uppercase leading-none">Nuovo <span className="text-primary NOT-italic">Task</span></h2>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">Assegnazione compiti allo staff</p>
+                </div>
+              </div>
+              <button 
+                onClick={onClose}
+                className="p-3 pill hover:bg-black/5 dark:hover:bg-white/10 text-muted-foreground transition-all hover:rotate-90"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2 group">
+                <label htmlFor="task_title" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Titolo Attività</label>
+                <div className="relative">
+                  <FileText className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+                  <Input
+                    id="task_title"
+                    required
+                    placeholder="Es. Inventario magazzino"
+                    value={formData.title}
+                    onChange={e => setFormData({ ...formData, title: e.target.value })}
+                    className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-14"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="task_assigned" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Assegnato a</label>
+                  <div className="relative">
+                    <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40" />
+                    <select
+                      id="task_assigned"
+                      value={formData.assigned_to}
+                      onChange={e => setFormData({ ...formData, assigned_to: e.target.value })}
+                      className="w-full h-14 pl-14 pr-4 bg-transparent border border-black/5 dark:border-white/10 rounded-full focus:outline-none focus:border-primary/50 text-foreground text-sm font-bold appearance-none backdrop-blur-md"
+                    >
+                      <option value="" className="text-foreground bg-background">Seleziona Staff...</option>
+                      {profiles?.map((p: any) => (
+                        <option key={p.id} value={p.id} className="text-foreground bg-background">{p.full_name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="task_due" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Scadenza</label>
+                  <div className="relative">
+                    <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40" />
+                    <Input
+                      id="task_due"
+                      type="date"
+                      required
+                      value={formData.due_date}
+                      onChange={e => setFormData({ ...formData, due_date: e.target.value })}
+                      className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="task_desc" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Descrizione</label>
+                <textarea
+                  id="task_desc"
+                  value={formData.description}
+                  onChange={e => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full min-h-[120px] p-6 bg-transparent border border-black/5 dark:border-white/10 rounded-[2rem] focus:outline-none focus:border-primary/50 text-foreground text-sm font-bold placeholder:text-muted-foreground/30 backdrop-blur-md"
+                  placeholder="Dettagli del compito..."
+                />
+              </div>
+
+              <div className="pt-6 flex items-center gap-4">
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  onClick={onClose}
+                  className="flex-1 h-14 pill font-black uppercase tracking-widest text-[10px] hover:bg-black/5 dark:hover:bg-white/5"
+                >
+                  Annulla
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={loading}
+                  className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                  Crea Task
+                </Button>
+              </div>
+            </form>
+          </motion.div>
         </div>
-      </form>
-    </Modal>
+      )}
+    </AnimatePresence>
   )
 }

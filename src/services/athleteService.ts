@@ -15,11 +15,15 @@ export type Player = {
 }
 
 export const athleteService = {
-  async getPlayers(search?: string, sector?: string) {
+  async getPlayers(search?: string, sector?: string, page = 0, pageSize = 12) {
+    const from = page * pageSize
+    const to = from + pageSize - 1
+
     let query = supabase
       .from('players')
-      .select('*')
+      .select('*', { count: 'exact' })
       .order('last_name', { ascending: true })
+      .range(from, to)
 
     if (search) {
       query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`)
@@ -29,9 +33,9 @@ export const athleteService = {
       query = query.eq('team_sector', sector)
     }
 
-    const { data, error } = await query
+    const { data, error, count } = await query
     if (error) throw error
-    return data as Player[]
+    return { data: data as Player[], count: count || 0 }
   },
 
   async createPlayer(player: Omit<Player, 'id' | 'created_at'>) {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
@@ -16,18 +16,23 @@ import { cn } from '@/lib/utils'
 import { format } from "date-fns/format";
 import { it } from "date-fns/locale/it";
 import { paymentService, type PaymentStatus } from '@/services/paymentService'
-import { Input } from '@/components/ui/input'
+import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/button'
 
 export default function Payments() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<PaymentStatus | 'all'>('all')
+  const [page, setPage] = useState(0)
+  const pageSize = 15
   const queryClient = useQueryClient()
 
-  const { data: payments, isLoading } = useQuery({
-    queryKey: ['payments', statusFilter],
-    queryFn: () => paymentService.getPayments(statusFilter)
+  const { data, isLoading } = useQuery({
+    queryKey: ['payments', search, statusFilter, page],
+    queryFn: () => paymentService.getPayments(search, statusFilter, page, pageSize)
   })
+
+  const payments = data?.data || []
+  const totalCount = data?.count || 0
 
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: PaymentStatus }) => 
@@ -37,16 +42,15 @@ export default function Payments() {
     }
   })
 
-  const filteredPayments = payments?.filter(p => {
-    const fullName = `${p.player.first_name} ${p.player.last_name}`.toLowerCase()
-    return fullName.includes(search.toLowerCase())
-  })
+  const stats = useMemo(() => {
+    return {
+      total: totalCount,
+      paid: payments.filter((p: any) => p.status === 'paid').reduce((acc: number, p: any) => acc + (p.amount_eur ?? 0), 0),
+      pending: payments.filter((p: any) => p.status === 'pending').reduce((acc: number, p: any) => acc + (p.amount_eur ?? 0), 0),
+    }
+  }, [payments, totalCount])
 
-  const stats = {
-    total: payments?.reduce((acc, p) => acc + (p.amount_eur ?? 0), 0) ?? 0,
-    paid: payments?.filter(p => p.status === 'paid').reduce((acc, p) => acc + (p.amount_eur ?? 0), 0) ?? 0,
-    pending: payments?.filter(p => p.status === 'pending').reduce((acc, p) => acc + (p.amount_eur ?? 0), 0) ?? 0,
-  }
+  const filteredPayments = payments // Server side handled now
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -93,36 +97,45 @@ export default function Payments() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-          <Input 
-            placeholder="Cerca per nome atleta..." 
+      <div className="flex flex-col md:flex-row gap-4 items-center">
+        <div className="flex-1 relative group w-full">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-primary transition-all duration-300" />
+          <input 
+            placeholder="Cerca per nome atleta o causale..." 
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="h-14 pl-12 glass-card border-white/5 focus:border-primary/30 text-lg transition-all rounded-2xl"
+            onChange={(e) => {
+              setSearch(e.target.value)
+              setPage(0)
+            }}
+            className="h-16 pl-16 w-full text-xl pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary shadow-2xl focus:scale-[1.01] transition-all font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground focus:outline-none"
           />
         </div>
-        <div className="flex p-1.5 bg-white/5 backdrop-blur-md rounded-2xl border border-white/5 gap-1">
-          {(['all', 'paid', 'pending', 'overdue'] as const).map((f) => (
+        
+        <div className="flex items-center gap-2 p-1.5 glass-card rounded-2xl border-black/5 dark:border-white/10 overflow-x-auto no-scrollbar">
+          {['all', 'pending', 'paid', 'overdue'].map((status) => (
             <button
-              key={f}
-              onClick={() => setStatusFilter(f)}
+              key={status}
+              onClick={() => {
+                setStatusFilter(status as PaymentStatus | 'all')
+                setPage(0)
+              }}
               className={cn(
                 "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                statusFilter === f 
+                statusFilter === status 
                   ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
-                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                  : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
               )}
             >
-              {f === 'all' ? 'Tutti' : f}
+              {status === 'all' ? 'Tutti' : 
+               status === 'pending' ? 'In Attesa' : 
+               status === 'paid' ? 'Pagati' : 'Scaduti'}
             </button>
           ))}
         </div>
       </div>
 
       {/* Table */}
-      <div className="glass-card rounded-[2.5rem] overflow-hidden border-white/5">
+      <div className="glass-card rounded-[2.5rem] overflow-hidden border-black/5 dark:border-white/10">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -139,8 +152,8 @@ export default function Payments() {
             <tbody className="divide-y divide-white/5">
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
-                  new Array(5).fill(0).map((_, i) => (
-                    <tr key={`payment-skel-${i}`} className="animate-pulse">
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={`payment-skeleton-row-${i}`} className="animate-pulse">
                       <td colSpan={7} className="px-6 py-8">
                         <div className="h-6 bg-white/5 pill w-full" />
                       </td>
@@ -235,6 +248,14 @@ export default function Payments() {
           </table>
         </div>
       </div>
+
+      <Pagination 
+        currentPage={page}
+        totalCount={totalCount}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        className="mt-6"
+      />
     </div>
   )
 }

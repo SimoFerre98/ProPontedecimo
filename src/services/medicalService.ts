@@ -13,15 +13,28 @@ export interface MedicalVisitRecord {
 }
 
 export const medicalService = {
-  async getMedicalVisits() {
-    const { data, error } = await supabase
+  async getMedicalVisits(search?: string, sector?: string, page = 0, pageSize = 15) {
+    const from = page * pageSize
+    const to = from + pageSize - 1
+
+    let query = supabase
       .from('players')
-      .select('id, first_name, last_name, team_sector, medical_expiry')
+      .select('id, first_name, last_name, team_sector, medical_expiry', { count: 'exact' })
       .eq('is_active', true)
       .order('last_name', { ascending: true })
+      .range(from, to)
 
+    if (search) {
+      query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`)
+    }
+
+    if (sector && sector !== 'all') {
+      query = query.eq('team_sector', sector)
+    }
+
+    const { data, error, count } = await query
     if (error) throw error
-    return data as MedicalVisitRecord[]
+    return { data: data as MedicalVisitRecord[], count: count || 0 }
   },
 
   calculateStatus(expiryDate: string | null): VisitStatus {

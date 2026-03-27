@@ -17,7 +17,7 @@ import {
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { staffService, type TaskStatus } from '@/services/staffService'
-import { AddTaskModal } from '@/components/modals/AddTaskModal'
+import AddTaskModal from "@/components/modals/AddTaskModal"
 import { format } from "date-fns/format";
 import { it } from "date-fns/locale/it";
 
@@ -128,10 +128,10 @@ export default function StaffTasks() {
             placeholder="Cerca tra le attività..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-14 pl-12 glass-card border-white/5 focus:border-primary/30 text-lg transition-all rounded-2xl"
+            className="h-16 pl-14 glass-card border-black/5 dark:border-white/10 focus:border-primary/30 text-xl transition-all rounded-full text-foreground"
           />
         </div>
-        <div className="flex p-1.5 bg-white/5 backdrop-blur-md rounded-2xl border border-white/5 gap-1 overflow-x-auto whitespace-nowrap lg:whitespace-normal">
+        <div className="flex p-1.5 glass-card rounded-2xl border border-black/5 dark:border-white/10 gap-1 overflow-x-auto whitespace-nowrap lg:whitespace-normal">
           {(['all', 'todo', 'in_progress', 'done'] as const).map((status) => (
             <button
               key={status}
@@ -140,7 +140,7 @@ export default function StaffTasks() {
                 "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
                 statusFilter === status 
                   ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
-                  : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                  : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
               )}
             >
               {status === 'all' ? 'Tutte' : status.replace('_', ' ')}
