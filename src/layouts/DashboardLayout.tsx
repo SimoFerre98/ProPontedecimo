@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard,
   Users,
@@ -11,6 +13,9 @@ import {
   LogOut,
   ChevronRight,
   Shield,
+  Menu,
+  X,
+  User,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -34,104 +39,138 @@ const ROLE_LABELS: Record<string, string> = {
 export default function DashboardLayout() {
   const { profile, role, signOut } = useAuth()
   const navigate = useNavigate()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   async function handleSignOut() {
     await signOut()
     navigate('/login')
   }
 
-  return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      {/* ── Sidebar ── */}
-      <aside className="flex flex-col w-64 shrink-0 bg-[var(--sidebar)] text-[var(--sidebar-foreground)] border-r border-[var(--sidebar-border)]">
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-6 py-5 border-b border-[var(--sidebar-border)]">
-          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-white/10">
+  return (
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* ── Background Decors ── */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px]" />
+        <div className="absolute top-[60%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/3 blur-[100px]" />
+      </div>
+
+      {/* ── Header ── */}
+      <header className="sticky top-0 z-40 w-full h-16 border-b border-white/10 glass-morphism px-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-9 h-9 pill bg-primary shadow-lg glow-primary">
             <Shield className="w-5 h-5 text-white" />
           </div>
-          <div className="leading-tight">
-            <p className="text-sm font-bold text-white">Pro Pontedecimo</p>
-            <p className="text-[10px] text-white/50 uppercase tracking-wider">Manager</p>
+          <div className="hidden sm:block leading-tight">
+            <p className="text-sm font-bold tracking-tight">Pro Pontedecimo</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Manager</p>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-          {NAV_ITEMS.map(({ to, icon: Icon, label, exact }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={exact}
-              className={({ isActive }) =>
-                cn(
-                  'group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
-                  isActive
-                    ? 'bg-[var(--sidebar-accent)] text-white'
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
-                )
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <Icon className={cn('w-4 h-4 shrink-0 transition-colors', isActive ? 'text-white' : 'text-white/50 group-hover:text-white')} />
-                  <span className="flex-1">{label}</span>
-                  {isActive && <ChevronRight className="w-3.5 h-3.5 text-white/40" />}
-                </>
-              )}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* User footer */}
-        <div className="p-3 border-t border-[var(--sidebar-border)]">
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition-colors">
-            {/* Avatar */}
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-bordeaux text-white text-xs font-bold shrink-0"
-              style={{ background: 'var(--bordeaux-light, #a8003a)' }}
-            >
-              {profile?.full_name?.[0]?.toUpperCase() ?? profile?.email?.[0]?.toUpperCase() ?? '?'}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-white truncate">
-                {profile?.full_name ?? profile?.email ?? 'Utente'}
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium">
+            <span className="text-muted-foreground">Stagione</span>
+            <span className="text-primary">2024/2025</span>
+          </div>
+          
+          <div className="flex items-center gap-3 pl-4 border-l border-border">
+            <div className="text-right hidden xs:block">
+              <p className="text-xs font-semibold truncate max-w-[120px]">
+                {profile?.full_name ?? 'Utente'}
               </p>
-              <p className="text-[10px] text-white/40">
+              <p className="text-[10px] text-muted-foreground">
                 {role ? ROLE_LABELS[role] : '—'}
               </p>
             </div>
-            <button
-              onClick={handleSignOut}
-              title="Logout"
-              className="p-1 rounded text-white/30 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-            </button>
+            <div className="w-8 h-8 rounded-full pill bg-primary/10 border border-primary/20 flex items-center justify-center">
+              <User className="w-4 h-4 text-primary" />
+            </div>
           </div>
         </div>
-      </aside>
+      </header>
 
-      {/* ── Main ── */}
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+      {/* ── Content ── */}
+      <main className="p-6 pb-24 max-w-7xl mx-auto">
+        <Outlet />
+      </main>
 
-        {/* Header */}
-        <header className="flex items-center justify-between h-14 px-6 bg-white border-b border-border shrink-0">
-          <div className="flex items-center gap-2">
-            <h1 className="text-sm font-semibold text-foreground">
-              {/* Filled by each page via document.title or a context — placeholder */}
-            </h1>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="hidden sm:inline">Stagione</span>
-            <span className="font-semibold text-foreground">2024/2025</span>
-          </div>
-        </header>
-
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          <Outlet />
-        </main>
+      {/* ── Floating Nav Button ── */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={toggleMenu}
+          className={cn(
+            "flex items-center gap-2 px-6 py-3 pill shadow-2xl transition-colors duration-300",
+            isMenuOpen 
+              ? "bg-foreground text-background" 
+              : "bg-primary text-white shadow-[0_0_20px_oklch(0.33_0.13_15/_0.4)]"
+          )}
+        >
+          {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          <span className="text-sm font-bold uppercase tracking-wider">
+            {isMenuOpen ? 'Chiudi' : 'Menu'}
+          </span>
+        </motion.button>
       </div>
+
+      {/* ── Menu Overlay ── */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            {/* Backdrop blur */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={toggleMenu}
+              className="fixed inset-0 bg-background/40 backdrop-blur-md z-40 px-6"
+            />
+            
+            {/* Menu Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 100, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 100, scale: 0.9 }}
+              className="fixed bottom-24 left-1/2 -translate-x-1/2 w-[90%] max-w-sm glass-card p-6 z-50 rounded-[2.5rem] shadow-2xl border-white/20"
+            >
+              <div className="grid grid-cols-1 gap-2">
+                {NAV_ITEMS.map(({ to, icon: Icon, label, exact }) => (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    end={exact}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={({ isActive }) =>
+                      cn(
+                        'group flex items-center gap-4 px-4 py-3.5 pill text-sm font-semibold transition-all duration-300',
+                        isActive
+                          ? 'bg-primary text-white glow-primary'
+                          : 'text-foreground/70 hover:bg-primary/5 hover:text-primary'
+                      )
+                    }
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1">{label}</span>
+                    <ChevronRight className="w-4 h-4 opacity-20 group-hover:opacity-100 transition-opacity" />
+                  </NavLink>
+                ))}
+                
+                <div className="my-4 border-t border-white/10" />
+                
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center gap-4 px-4 py-3.5 pill text-sm font-semibold text-destructive hover:bg-destructive/5 transition-all w-full"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>Logout Account</span>
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
