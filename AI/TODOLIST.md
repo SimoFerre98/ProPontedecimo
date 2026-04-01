@@ -8,7 +8,10 @@
 
 ## Gestione Roster e Utenti
 - [ ] Inserimento dirigenti e allenatori
+- [ ] Possibilità di aggiungere un nuovo calciatore (inserimento completo dei dati sincronizzato con il database)
+- [ ] Visualizzazione modale (dettaglio) del singolo calciatore
 - [ ] Gestione dei ruoli da parte dell'admin
+- [ ] Sezione Impostazioni in alto a destra per gestire account e preferenze utente
 
 ## Nuove Funzionalità (Enhancements)
 - [ ] **Player Statistics Dashboard**: Sezione per tracciare le performance individuali (gol, assist, passaggi, etc.).
