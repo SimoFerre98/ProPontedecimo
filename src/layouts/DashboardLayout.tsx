@@ -87,10 +87,11 @@ export default function DashboardLayout() {
             <span className="text-primary">2024/2025</span>
           </div>
           
-          <button 
-            onClick={toggleProfileMenu}
-            className="flex items-center gap-3 pl-4 border-l border-border hover:opacity-80 transition-opacity text-left relative outline-none"
-          >
+          <div className="relative">
+            <button 
+              onClick={toggleProfileMenu}
+              className="flex items-center gap-3 pl-4 border-l border-border hover:opacity-80 transition-opacity text-left outline-none"
+            >
             <div className="text-right hidden xs:block">
               <p className="text-xs font-semibold truncate max-w-[120px]">
                 {profile?.full_name ?? 'Utente'}
@@ -102,6 +103,7 @@ export default function DashboardLayout() {
             <div className="w-8 h-8 rounded-full pill bg-primary/10 border border-primary/20 flex items-center justify-center pointer-events-none">
               <User className="w-4 h-4 text-primary" />
             </div>
+            </button>
 
             {/* Profile Dropdown Menu */}
             <AnimatePresence>
@@ -191,7 +193,7 @@ export default function DashboardLayout() {
                 </>
               )}
             </AnimatePresence>
-          </button>
+          </div>
         </div>
       </header>
 
