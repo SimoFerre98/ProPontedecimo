@@ -16,8 +16,15 @@ import {
   Menu,
   X,
   User,
+  Settings,
+  Sun,
+  Moon,
+  Monitor
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useTheme } from '@/hooks/useTheme'
+import ProfileModal from '@/components/modals/ProfileModal'
+import SettingsModal from '@/components/modals/SettingsModal'
 
 const NAV_ITEMS = [
   { to: '/',          icon: LayoutDashboard, label: 'Dashboard',      exact: true },
@@ -39,7 +46,12 @@ const ROLE_LABELS: Record<string, string> = {
 export default function DashboardLayout() {
   const { profile, role, signOut } = useAuth()
   const navigate = useNavigate()
+  const { theme, setTheme } = useTheme()
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
 
   async function handleSignOut() {
     await signOut()
@@ -47,6 +59,7 @@ export default function DashboardLayout() {
   }
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+  const toggleProfileMenu = () => setIsProfileMenuOpen(!isProfileMenuOpen)
 
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -74,7 +87,10 @@ export default function DashboardLayout() {
             <span className="text-primary">2024/2025</span>
           </div>
           
-          <div className="flex items-center gap-3 pl-4 border-l border-border">
+          <button 
+            onClick={toggleProfileMenu}
+            className="flex items-center gap-3 pl-4 border-l border-border hover:opacity-80 transition-opacity text-left relative outline-none"
+          >
             <div className="text-right hidden xs:block">
               <p className="text-xs font-semibold truncate max-w-[120px]">
                 {profile?.full_name ?? 'Utente'}
@@ -83,10 +99,99 @@ export default function DashboardLayout() {
                 {role ? ROLE_LABELS[role] : '—'}
               </p>
             </div>
-            <div className="w-8 h-8 rounded-full pill bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full pill bg-primary/10 border border-primary/20 flex items-center justify-center pointer-events-none">
               <User className="w-4 h-4 text-primary" />
             </div>
-          </div>
+
+            {/* Profile Dropdown Menu */}
+            <AnimatePresence>
+              {isProfileMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setIsProfileMenuOpen(false)
+                    }}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    className="absolute top-full right-0 mt-4 w-72 glass-card p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border-white/20 z-50 flex flex-col gap-1 cursor-default text-foreground"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="p-4 border-b border-black/5 dark:border-white/10 mb-2">
+                      <p className="text-base font-black truncate text-foreground">
+                        {profile?.full_name ?? 'Utente'}
+                      </p>
+                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                        {role ? ROLE_LABELS[role] : 'Nessun ruolo'}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setIsProfileMenuOpen(false)
+                        setIsProfileModalOpen(true)
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-primary/10 hover:text-primary transition-all text-left"
+                    >
+                      <User className="w-4 h-4" />
+                      Il mio Profilo
+                    </button>
+
+                    {(role === 'director' || role === 'president') && (
+                      <button
+                        onClick={() => {
+                          setIsProfileMenuOpen(false)
+                          setIsSettingsModalOpen(true)
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-primary/10 hover:text-primary transition-all text-left"
+                      >
+                        <Settings className="w-4 h-4" />
+                        Gestione Account
+                      </button>
+                    )}
+
+                    <div className="flex items-center justify-between px-4 py-3 mt-1 border-t border-black/5 dark:border-white/10">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Tema</span>
+                      <div className="flex bg-black/5 dark:bg-white/10 pill p-1 gap-1">
+                        <button
+                          onClick={() => setTheme('light')}
+                          className={cn("p-2 pill transition-colors", theme === 'light' ? "bg-white dark:bg-black shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+                        >
+                          <Sun className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setTheme('dark')}
+                          className={cn("p-2 pill transition-colors", theme === 'dark' ? "bg-white dark:bg-black shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+                        >
+                          <Moon className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setTheme('system')}
+                          className={cn("p-2 pill transition-colors", theme === 'system' ? "bg-white dark:bg-black shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+                        >
+                          <Monitor className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-black/5 dark:border-white/10 mt-1 pt-1">
+                      <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-3 px-4 py-3 pill text-sm font-black uppercase tracking-widest text-rose-500 hover:bg-rose-500/10 transition-all text-left w-full"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Logout
+                      </button>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </button>
         </div>
       </header>
 
@@ -156,21 +261,15 @@ export default function DashboardLayout() {
                     <ChevronRight className="w-4 h-4 opacity-20 group-hover:opacity-100 transition-opacity" />
                   </NavLink>
                 ))}
-                
-                <div className="my-4 border-t border-white/10" />
-                
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-4 px-4 py-3.5 pill text-sm font-semibold text-destructive hover:bg-destructive/5 transition-all w-full"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span>Logout Account</span>
-                </button>
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
+
+      {/* ── Modals ── */}
+      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
+      <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
     </div>
   )
 }
