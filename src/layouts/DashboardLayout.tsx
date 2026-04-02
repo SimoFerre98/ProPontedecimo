@@ -41,10 +41,11 @@ const ROLE_LABELS: Record<string, string> = {
   director:  'Direttore',
   coach:     'Allenatore',
   player:    'Atleta',
+  parent:    'Genitore',
 }
 
 const getVisibleNavItems = (userRole: string | null) => {
-  if (!userRole || userRole === 'player') return []
+  if (!userRole || userRole === 'player' || userRole === 'parent') return []
   if (userRole === 'coach') {
     return NAV_ITEMS.filter(item => ['/', '/atleti', '/presenze', '/task'].includes(item.to))
   }

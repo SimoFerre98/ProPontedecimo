@@ -2,15 +2,25 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '@/contexts/AuthContext'
 import ProtectedRoute from '@/components/ProtectedRoute'
+import RoleGuard from '@/components/RoleGuard'
+
+// Layouts e Pagine Staff
 import DashboardLayout from '@/layouts/DashboardLayout'
 import Dashboard from '@/pages/Dashboard'
-import LoginPage from '@/pages/LoginPage'
 import Athletes from '@/pages/Athletes'
 import Payments from '@/pages/Payments'
 import MedicalVisits from '@/pages/MedicalVisits'
 import Attendance from '@/pages/Attendance'
 import Inventory from '@/pages/Inventory'
 import StaffTasks from '@/pages/StaffTasks'
+
+// Layouts e Pagine Atleti/Genitori
+import PortalLayout from '@/layouts/PortalLayout'
+import PortalDashboard from '@/pages/PortalDashboard'
+
+// Auth Pages
+import LoginPage from '@/pages/LoginPage'
+import RegisterPage from '@/pages/RegisterPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,25 +37,50 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            {/* Route pubblica */}
+            {/* Rotte pubbliche */}
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-            {/* Route protette */}
+            {/* Rotte Protette - Divise per Ruolo */}
+            
+            {/* 1. Branch Staff (Admin/Coach) */}
             <Route
               path="/"
               element={
                 <ProtectedRoute>
-                  <DashboardLayout />
+                  <RoleGuard 
+                    allowedRoles={['president', 'director', 'coach']} 
+                    fallbackPath="/portal" 
+                  />
                 </ProtectedRoute>
               }
             >
-              <Route index element={<Dashboard />} />
-              <Route path="atleti"    element={<Athletes />} />
-              <Route path="pagamenti" element={<Payments />} />
-              <Route path="visite"    element={<MedicalVisits />} />
-              <Route path="presenze"  element={<Attendance />} />
-              <Route path="magazzino" element={<Inventory />} />
-              <Route path="task"      element={<StaffTasks />} />
+              <Route element={<DashboardLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="atleti"    element={<Athletes />} />
+                <Route path="pagamenti" element={<Payments />} />
+                <Route path="visite"    element={<MedicalVisits />} />
+                <Route path="presenze"  element={<Attendance />} />
+                <Route path="magazzino" element={<Inventory />} />
+                <Route path="task"      element={<StaffTasks />} />
+              </Route>
+            </Route>
+
+            {/* 2. Branch Atleti e Genitori */}
+            <Route
+              path="/portal"
+              element={
+                <ProtectedRoute>
+                  <RoleGuard 
+                    allowedRoles={['player', 'parent']} 
+                    fallbackPath="/" 
+                  />
+                </ProtectedRoute>
+              }
+            >
+              <Route element={<PortalLayout />}>
+                <Route index element={<PortalDashboard />} />
+              </Route>
             </Route>
 
             {/* Fallback */}

@@ -109,6 +109,17 @@ export default function LoginPage() {
               ) : 'Accedi'}
             </button>
           </form>
+
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            Non hai un account?{' '}
+            <button
+              type="button"
+              onClick={() => navigate('/register')}
+              className="font-medium text-[#800020] hover:underline focus:outline-none"
+            >
+              Registrati
+            </button>
+          </p>
         </div>
       </div>
     </div>

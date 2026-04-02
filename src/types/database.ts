@@ -424,7 +424,7 @@ export type Database = {
       payment_status: "pending" | "paid" | "overdue"
       task_status: "todo" | "in_progress" | "done"
       training_type: "training" | "match" | "event"
-      user_role: "president" | "director" | "coach" | "player"
+      user_role: "president" | "director" | "coach" | "player" | "parent"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -556,7 +556,7 @@ export const Constants = {
       payment_status: ["pending", "paid", "overdue"],
       task_status: ["todo", "in_progress", "done"],
       training_type: ["training", "match", "event"],
-      user_role: ["president", "director", "coach", "player"],
+      user_role: ["president", "director", "coach", "player", "parent"],
     },
   },
 } as const
