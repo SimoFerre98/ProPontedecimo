@@ -43,6 +43,14 @@ const ROLE_LABELS: Record<string, string> = {
   player:    'Atleta',
 }
 
+const getVisibleNavItems = (userRole: string | null) => {
+  if (!userRole || userRole === 'player') return []
+  if (userRole === 'coach') {
+    return NAV_ITEMS.filter(item => ['/', '/atleti', '/presenze', '/task'].includes(item.to))
+  }
+  return NAV_ITEMS
+}
+
 export default function DashboardLayout() {
   const { profile, role, signOut } = useAuth()
   const navigate = useNavigate()
@@ -65,8 +73,8 @@ export default function DashboardLayout() {
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* ── Background Decors ── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute top-[60%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/3 blur-[100px]" />
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[80px]" />
+        <div className="absolute top-[60%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/3 blur-[80px]" />
       </div>
 
       {/* ── Header ── */}
@@ -232,7 +240,7 @@ export default function DashboardLayout() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={toggleMenu}
-              className="fixed inset-0 bg-background/40 backdrop-blur-md z-40 px-6"
+              className="fixed inset-0 bg-background/40 backdrop-blur-sm z-40 px-6"
             />
             
             {/* Menu Content */}
@@ -243,26 +251,32 @@ export default function DashboardLayout() {
               className="fixed bottom-24 left-1/2 -translate-x-1/2 w-[90%] max-w-sm glass-card p-6 z-50 rounded-[2.5rem] shadow-2xl border-white/20"
             >
               <div className="grid grid-cols-1 gap-2">
-                {NAV_ITEMS.map(({ to, icon: Icon, label, exact }) => (
-                  <NavLink
-                    key={to}
-                    to={to}
-                    end={exact}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={({ isActive }) =>
-                      cn(
-                        'group flex items-center gap-4 px-4 py-3.5 pill text-sm font-semibold transition-all duration-300',
-                        isActive
-                          ? 'bg-primary text-white glow-primary'
-                          : 'text-foreground/70 hover:bg-primary/5 hover:text-primary'
-                      )
-                    }
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span className="flex-1">{label}</span>
-                    <ChevronRight className="w-4 h-4 opacity-20 group-hover:opacity-100 transition-opacity" />
-                  </NavLink>
-                ))}
+                {getVisibleNavItems(role).length > 0 ? (
+                  getVisibleNavItems(role).map(({ to, icon: Icon, label, exact }) => (
+                    <NavLink
+                      key={to}
+                      to={to}
+                      end={exact}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={({ isActive }) =>
+                        cn(
+                          'group flex items-center gap-4 px-4 py-3.5 pill text-sm font-semibold transition-all duration-300',
+                          isActive
+                            ? 'bg-primary text-white glow-primary'
+                            : 'text-foreground/70 hover:bg-primary/5 hover:text-primary'
+                        )
+                      }
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="flex-1">{label}</span>
+                      <ChevronRight className="w-4 h-4 opacity-20 group-hover:opacity-100 transition-opacity" />
+                    </NavLink>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground text-sm font-medium">
+                    Nessun menu disponibile per il tuo ruolo.
+                  </div>
+                )}
               </div>
             </motion.div>
           </>

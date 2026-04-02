@@ -10,8 +10,12 @@
 - [ ] Inserimento dirigenti e allenatori
 - [ ] Possibilità di aggiungere un nuovo calciatore (inserimento completo dei dati sincronizzato con il database)
 - [ ] Visualizzazione modale (dettaglio) del singolo calciatore
-- [ ] Gestione dei ruoli da parte dell'admin
-- [ ] Sezione Impostazioni in alto a destra per gestire account e preferenze utente
+- [x] Gestione dei ruoli da parte dell'admin
+- [x] Sezione Impostazioni in alto a destra per gestire account e preferenze utente
+
+## Viste Specifiche per Ruolo (RBAC)
+- [ ] Creazione dashboard "Allenatore" (gestione squadra, formazioni, appelli)
+- [ ] Creazione dashboard "Giocatore" (vista presenze, pagamenti, calendario personale)
 
 ## Nuove Funzionalità (Enhancements)
 - [ ] **Player Statistics Dashboard**: Sezione per tracciare le performance individuali (gol, assist, passaggi, etc.).
