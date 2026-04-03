@@ -18,12 +18,14 @@ import {
   Settings,
   Sun,
   Moon,
-  Monitor
+  Monitor,
+  Mail
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/hooks/useTheme'
 import ProfileModal from '@/components/modals/ProfileModal'
 import SettingsModal from '@/components/modals/SettingsModal'
+import SendEmailModal from '@/components/modals/SendEmailModal'
 
 const NAV_ITEMS = [
   { to: '/',          icon: LayoutDashboard, label: 'Dashboard',      exact: true },
@@ -60,6 +62,7 @@ export default function DashboardLayout() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
 
   async function handleSignOut() {
     await signOut()
@@ -163,6 +166,19 @@ export default function DashboardLayout() {
                       >
                         <Settings className="w-4 h-4" />
                         Gestione Account
+                      </button>
+                    )}
+
+                    {(role === 'director' || role === 'president' || role === 'coach') && (
+                      <button
+                        onClick={() => {
+                          setIsProfileMenuOpen(false)
+                          setIsEmailModalOpen(true)
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-primary/10 hover:text-primary transition-all text-left"
+                      >
+                        <Mail className="w-4 h-4" />
+                        Invia Email
                       </button>
                     )}
 
@@ -288,6 +304,7 @@ export default function DashboardLayout() {
       {/* ── Modals ── */}
       <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
       <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
+      <SendEmailModal isOpen={isEmailModalOpen} onClose={() => setIsEmailModalOpen(false)} />
     </div>
   )
 }
