@@ -19,7 +19,8 @@ const ROLE_LABELS: Record<UserRole, string> = {
   president: 'Presidente',
   director: 'Dirigente',
   coach: 'Allenatore',
-  player: 'Giocatore'
+  player: 'Giocatore',
+  parent: 'Genitore'
 }
 
 interface SettingsModalProps {

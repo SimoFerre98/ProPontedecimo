@@ -38,10 +38,28 @@ export const athleteService = {
     return { data: data as Player[], count: count || 0 }
   },
 
-  async createPlayer(player: Omit<Player, 'id' | 'created_at'>) {
+  async getUniqueSectors() {
     const { data, error } = await supabase
       .from('players')
-      .insert(player)
+      .select('team_sector')
+
+    if (error) throw error
+    const sectors = Array.from(new Set(data.map(p => p.team_sector).filter(Boolean))) as string[]
+    return sectors.sort()
+  },
+
+  async createPlayer(player: Omit<Player, 'id' | 'created_at'>) {
+    const playerToInsert = { ...player } as any
+    if (!playerToInsert.season_id) {
+      const { data: season } = await supabase.from('seasons').select('id').eq('is_active', true).single()
+      if (season) {
+        playerToInsert.season_id = season.id
+      }
+    }
+
+    const { data, error } = await supabase
+      .from('players')
+      .insert(playerToInsert)
       .select()
       .single()
 

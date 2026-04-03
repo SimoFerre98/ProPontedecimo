@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
@@ -15,7 +16,8 @@ import {
   Users,
   Award,
   LayoutGrid,
-  List
+  List,
+  Activity
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -24,6 +26,7 @@ import AddAthleteModal from '@/components/modals/AddAthleteModal'
 import { Pagination } from '@/components/ui/Pagination'
 
 export default function Athletes() {
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [sectorFilter, setSectorFilter] = useState('all')
   const [page, setPage] = useState(0)
@@ -40,8 +43,13 @@ export default function Athletes() {
   const players = data?.data || []
   const totalCount = data?.count || 0
 
-  // Get unique sectors for filter
-  const sectors = ['all', ...Array.from(new Set(players.map((p: Player) => p.team_sector).filter((s: string | null): s is string => !!s) || []))]
+  const { data: sectorsData } = useQuery({
+    queryKey: ['sectors'],
+    queryFn: () => athleteService.getUniqueSectors(),
+  })
+  
+  const availableSectors = sectorsData || []
+  const filterSectors = ['all', ...availableSectors]
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -82,21 +90,25 @@ export default function Athletes() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
           { label: 'Attivi', val: players?.filter(p => p.is_active).length || 0, icon: ShieldCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-          { label: 'Settori', val: sectors.length - 1, icon: Users, color: 'text-primary', bg: 'bg-primary/10' },
-          { label: 'Top Scorer', val: 'N/A', icon: Award, color: 'text-amber-500', bg: 'bg-amber-500/10' }
+          { label: 'Settori', val: availableSectors.length, icon: Users, color: 'text-primary', bg: 'bg-primary/10' },
+          { label: 'Visite Scadute', val: players?.filter(p => p.medical_expiry && new Date(p.medical_expiry) < new Date()).length || 0, icon: Activity, color: 'text-amber-500', bg: 'bg-amber-500/10', link: '/visite' }
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
+            onClick={() => stat.link && navigate(stat.link)}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="glass-card p-6 flex items-center justify-between border-white/5 group hover:border-primary/20 transition-all"
+            className={cn(
+              "glass-card p-6 flex items-center justify-between border-black/5 dark:border-white/5 group hover:border-primary/20 hover:bg-black/5 dark:hover:bg-white/5 transition-all",
+              stat.link && "cursor-pointer active:scale-95"
+            )}
           >
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-1">{stat.label}</p>
               <p className="text-3xl font-black text-foreground">{stat.val}</p>
             </div>
-            <div className={cn("w-14 h-14 pill flex items-center justify-center shadow-inner", stat.bg)}>
+            <div className={cn("w-14 h-14 pill flex items-center justify-center shadow-inner transition-transform group-hover:scale-110", stat.bg)}>
               <stat.icon className={cn("w-7 h-7", stat.color)} />
             </div>
           </motion.div>
@@ -120,7 +132,7 @@ export default function Athletes() {
           </div>
 
           <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
-            {sectors.map(sector => (
+            {filterSectors.map(sector => (
               <button
                 key={sector}
                 onClick={() => {
@@ -338,6 +350,7 @@ export default function Athletes() {
       <AddAthleteModal 
         isOpen={isModalOpen}
         player={selectedPlayer}
+        availableSectors={availableSectors}
         onClose={() => {
           setIsModalOpen(false)
           setSelectedPlayer(null)

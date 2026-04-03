@@ -11,11 +11,13 @@ interface AddAthleteModalProps {
   onClose: () => void
   onSuccess?: () => void
   player?: Player | null
+  availableSectors?: string[]
 }
 
-export default function AddAthleteModal({ isOpen, onClose, onSuccess, player }: Readonly<AddAthleteModalProps>) {
+export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, availableSectors = [] }: Readonly<AddAthleteModalProps>) {
   const [loading, setLoading] = useState(false)
   const queryClient = useQueryClient()
+  const [isCreatingNewSector, setIsCreatingNewSector] = useState(false)
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -27,6 +29,8 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player }: 
     medical_expiry: '',
     is_active: true
   })
+
+  const isFormValid = formData.first_name.trim() !== '' && formData.last_name.trim() !== '' && formData.team_sector.trim() !== ''
 
   // Popola o resetta i dati quando il modale si apre/chiude o il giocatore cambia
   useEffect(() => {
@@ -43,6 +47,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player }: 
           medical_expiry: player.medical_expiry || '',
           is_active: player.is_active ?? true
         })
+        setIsCreatingNewSector(false)
       } else {
         setFormData({
           first_name: '',
@@ -51,13 +56,14 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player }: 
           phone_player: '',
           parent1_phone: '',
           email: '',
-          team_sector: '',
+          team_sector: availableSectors[0] || '',
           medical_expiry: '',
           is_active: true
         })
+        setIsCreatingNewSector(availableSectors.length === 0)
       }
     }
-  }, [isOpen, player])
+  }, [isOpen, player, availableSectors])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -132,7 +138,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player }: 
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 pl-2">Informazioni Personali</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2 group">
-                    <label htmlFor="athlete-first-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Nome</label>
+                    <label htmlFor="athlete-first-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Nome <span className="text-red-500">*</span></label>
                     <Input
                       id="athlete-first-name"
                       required
@@ -143,7 +149,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player }: 
                     />
                   </div>
                   <div className="space-y-2 group">
-                    <label htmlFor="athlete-last-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Cognome</label>
+                    <label htmlFor="athlete-last-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Cognome <span className="text-red-500">*</span></label>
                     <Input
                       id="athlete-last-name"
                       required
@@ -170,17 +176,53 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player }: 
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <label htmlFor="athlete-sector" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Settore / Squadra</label>
+                  <div className="space-y-2 group">
+                    <label htmlFor="athlete-sector" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Settore / Leva <span className="text-red-500">*</span></label>
                     <div className="relative">
-                      <Users className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40" />
-                      <Input
-                        id="athlete-sector"
-                        placeholder="Es. Primi Calci 2017"
-                        value={formData.team_sector}
-                        onChange={e => setFormData({ ...formData, team_sector: e.target.value })}
-                        className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold"
-                      />
+                      <Users className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10" />
+                      {!isCreatingNewSector ? (
+                        <select
+                          id="athlete-sector"
+                          value={formData.team_sector}
+                          onChange={e => {
+                            if (e.target.value === '__new__') {
+                              setIsCreatingNewSector(true)
+                              setFormData({ ...formData, team_sector: '' })
+                            } else {
+                              setFormData({ ...formData, team_sector: e.target.value })
+                            }
+                          }}
+                          className="w-full h-14 rounded-full glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold bg-white/5 appearance-none cursor-pointer"
+                        >
+                          {availableSectors.map(s => (
+                            <option key={s} value={s} className="text-black">{s}</option>
+                          ))}
+                          <option value="__new__" className="text-black font-bold italic">+ Aggiungi nuova leva...</option>
+                        </select>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id="athlete-sector"
+                            placeholder="Es. Primi Calci 2017"
+                            autoFocus
+                            value={formData.team_sector}
+                            onChange={e => setFormData({ ...formData, team_sector: e.target.value })}
+                            className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold"
+                          />
+                          {availableSectors.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsCreatingNewSector(false)
+                                setFormData({ ...formData, team_sector: availableSectors[0] })
+                              }}
+                              className="h-14 px-4 pill bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[10px] uppercase font-bold tracking-widest text-muted-foreground whitespace-nowrap transition-all"
+                            >
+                              Annulla
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -251,23 +293,30 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player }: 
                 </div>
               </div>
 
-              <div className="pt-6 flex items-center gap-4">
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  onClick={onClose}
-                  className="flex-1 h-14 pill font-black uppercase tracking-widest text-[10px] hover:bg-black/5 dark:hover:bg-white/5"
-                >
-                  Annulla
-                </Button>
-                <Button 
-                  type="submit" 
-                  disabled={loading}
-                  className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all"
-                >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-                  {player ? 'Salva Modifiche' : 'Finalizza Registrazione'}
-                </Button>
+              <div className="pt-6 relative">
+                {!isFormValid && (
+                  <p className="absolute -top-1 left-0 right-0 text-center text-[10px] font-black uppercase tracking-widest text-red-500 glow-red">
+                    * Compila i campi obbligatori per proseguire
+                  </p>
+                )}
+                <div className="flex items-center gap-4">
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    onClick={onClose}
+                    className="flex-1 h-14 pill font-black uppercase tracking-widest text-[10px] hover:bg-black/5 dark:hover:bg-white/5"
+                  >
+                    Annulla
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={loading || !isFormValid}
+                    className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100"
+                  >
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                    {player ? 'Salva Modifiche' : 'Finalizza Registrazione'}
+                  </Button>
+                </div>
               </div>
             </form>
           </motion.div>
