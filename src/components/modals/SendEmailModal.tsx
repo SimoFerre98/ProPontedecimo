@@ -169,18 +169,24 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
       if (to.length === 0) throw new Error('Nessun destinatario trovato')
 
       const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Sessione non valida. Rieffettua il login.')
+
       const res = await supabase.functions.invoke('send-email', {
         body: {
           to,
           subject: subject.trim(),
-          html: body.replace(/\n/g, '<br/>'),
+          html: body.replaceAll('\n', '<br/>'),
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
         },
       })
 
       if (res.error) throw new Error(res.error.message)
-      setResult({ success: true, message: `Email inviata a ${to.length} destinatari!` })
-    } catch (err: any) {
-      setResult({ success: false, message: err.message || 'Errore durante l\'invio.' })
+      setResult({ success: true, message: `✓ Email inviata a ${to.length} destinatari!` })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Errore durante l'invio."
+      setResult({ success: false, message: msg })
     }
     setSending(false)
   }
