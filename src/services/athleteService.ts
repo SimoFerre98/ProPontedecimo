@@ -5,11 +5,33 @@ export type Player = {
   first_name: string
   last_name: string
   team_sector: string | null
+  // Anagrafica
   birth_date: string | null
-  parent1_phone: string | null
+  birth_place: string | null
+  citizenship: string | null
+  tax_code: string | null
+  // Residenza
+  address_street: string | null
+  address_locality: string | null
+  address_city: string | null
+  address_zip: string | null
+  // Contatti
+  phone_home: string | null
   phone_player: string | null
   email: string | null
+  // Genitore 1 (Papà)
+  parent1_name: string | null
+  parent1_phone: string | null
+  parent1_tax_code: string | null
+  // Genitore 2 (Mamma)
+  parent2_name: string | null
+  parent2_phone: string | null
+  parent2_tax_code: string | null
+  // Sport / Amministrazione
+  figc_registration: string | null
   medical_expiry: string | null
+  notes: string | null
+  privacy_accepted: boolean | null
   is_active: boolean
   created_at?: string
 }

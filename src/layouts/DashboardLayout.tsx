@@ -12,7 +12,6 @@ import {
   ClipboardList,
   LogOut,
   ChevronRight,
-  Shield,
   Menu,
   X,
   User,
@@ -81,9 +80,11 @@ export default function DashboardLayout() {
       {/* ── Header ── */}
       <header className="sticky top-0 z-40 w-full h-16 border-b border-white/10 glass-morphism px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-9 h-9 pill bg-primary shadow-lg glow-primary">
-            <Shield className="w-5 h-5 text-white" />
-          </div>
+          <img
+            src="/Logo ASD Pro Pontedecimo.png"
+            alt="Pro Pontedecimo"
+            className="w-10 h-10 object-contain drop-shadow-sm flex-shrink-0"
+          />
           <div className="hidden sm:block leading-tight">
             <p className="text-sm font-bold tracking-tight">Pro Pontedecimo</p>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Manager</p>
