@@ -2,6 +2,18 @@
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
 
+## [0.7.0] - 2026-04-03
+
+### Aggiunto
+- **FilterToolbar Universale**: Nuovo componente `FilterToolbar` introdotto nelle sezioni Atleti e Visite Mediche con barra di ricerca a comparsa (animazione) e controlli scroll orizzontali.
+- **Conteggi Visite Globali**: Ora le statistiche nella dashboard delle Visite Mediche sono calcolate tramite `medicalService.getMedicalStats` prendendo i dati reali a livello globale di società, indipendentemente dalla paginazione locale.
+
+### Corretto
+- Risolti bug legati all'aggiornamento dei ruoli in `SettingsModal` (implementata proper Supabase Policy per amministratori e aggiunto mapping per ruolo Parent).
+- Risolto errore database `23502` durante l'inserimento di nuovi atleti (auto fetch di `season_id` se mancante).
+- Aggiornato selector della leva con pre-fetch dinamico dal database (`getUniqueSectors`).
+- Pulizia globale di warning TypeScript e organizzazione degli import in `Athletes.tsx` e `MedicalVisits.tsx`.
+
 ## [0.6.0] - 2026-03-27
 
 ### Aggiunto

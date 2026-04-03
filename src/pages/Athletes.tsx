@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Search, 
   UserPlus, 
   Filter, 
-  MoreVertical, 
   User, 
   Calendar, 
   Smartphone,
@@ -14,14 +12,12 @@ import {
   ChevronRight,
   TrendingUp,
   Users,
-  Award,
-  LayoutGrid,
-  List,
   Activity
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { athleteService, type Player } from '@/services/athleteService'
+import { FilterToolbar } from '@/components/ui/FilterToolbar'
 import AddAthleteModal from '@/components/modals/AddAthleteModal'
 import { Pagination } from '@/components/ui/Pagination'
 
@@ -115,66 +111,27 @@ export default function Athletes() {
         ))}
       </div>
 
-      {/* Filter Toolbar */}
-      <div className="glass-card p-4 flex flex-col md:flex-row gap-4 items-center w-full">
-          <div className="relative flex-1 group w-full">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-primary transition-all duration-300" />
-            <input
-              type="text"
-              placeholder="Cerca calciatore..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-                setPage(0) // Reset to first page on search
-              }}
-              className="h-16 pl-16 w-full text-xl pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary shadow-2xl transition-all font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground focus:outline-none"
-            />
-          </div>
-
-          <div className="flex items-center gap-2 p-1.5 glass-card rounded-2xl border-black/5 dark:border-white/10 overflow-x-auto no-scrollbar w-full md:w-auto">
-            {filterSectors.map(sector => (
-              <button
-                key={sector}
-                onClick={() => {
-                  setSectorFilter(sector)
-                  setPage(0) // Reset to first page on filter
-                }}
-                className={cn(
-                  "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
-                  sectorFilter === sector 
-                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
-                    : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
-                )}
-              >
-                {sector === 'all' ? 'Tutti' : sector}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-black/10 dark:border-white/10 h-[60px] shrink-0">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={cn(
-                "p-3 rounded-xl transition-all h-full aspect-square flex items-center justify-center",
-                viewMode === 'grid' ? "bg-white dark:bg-black/50 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <LayoutGrid className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setViewMode('table')}
-              className={cn(
-                "p-3 rounded-xl transition-all h-full aspect-square flex items-center justify-center",
-                viewMode === 'table' ? "bg-white dark:bg-black/50 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <List className="w-5 h-5" />
-            </button>
-          </div>
-          <Button variant="outline" className="pill border-black/10 dark:border-white/10 hover:border-primary h-14 aspect-square p-0">
-            <Filter className="w-5 h-5" />
-          </Button>
-        </div>
+      <div className="flex w-full items-center gap-2">
+        <FilterToolbar
+          search={search}
+          onSearchChange={(value) => {
+            setSearch(value)
+            setPage(0)
+          }}
+          searchPlaceholder="Cerca atleti..."
+          sectors={filterSectors}
+          activeSector={sectorFilter}
+          onSectorChange={(sector) => {
+            setSectorFilter(sector)
+            setPage(0)
+          }}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+        />
+        <Button variant="outline" className="pill border-black/10 dark:border-white/10 hover:border-primary h-14 aspect-square p-0 shrink-0">
+          <Filter className="w-5 h-5" />
+        </Button>
+      </div>
 
       {/* Main List Grid/Table */}
       {isLoading ? (

@@ -46,6 +46,34 @@ export const medicalService = {
     return 'valid'
   },
 
+  async getMedicalStats(search?: string, sector?: string) {
+    let query = supabase
+      .from('players')
+      .select('medical_expiry')
+      .eq('is_active', true)
+
+    if (search) {
+      query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`)
+    }
+    if (sector && sector !== 'all') {
+      query = query.eq('team_sector', sector)
+    }
+
+    const { data, error } = await query
+    if (error) throw error
+
+    return (data || []).reduce(
+      (acc, visit) => {
+        const status = medicalService.calculateStatus(visit.medical_expiry)
+        if (status === 'expired' || status === 'missing') acc.expired++
+        else if (status === 'expiring') acc.expiring++
+        else acc.valid++
+        return acc
+      },
+      { expired: 0, expiring: 0, valid: 0 }
+    )
+  },
+
   async updateMedicalExpiry(playerId: string, expiryDate: string | null) {
     const { error } = await supabase
       .from('players')

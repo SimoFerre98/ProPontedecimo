@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Search, 
   Stethoscope, 
   AlertTriangle, 
   CheckCircle2, 
@@ -15,6 +14,7 @@ import {
 import { cn } from '@/lib/utils'
 import { medicalService, type MedicalVisitRecord, type VisitStatus } from '@/services/medicalService'
 import { Pagination } from '@/components/ui/Pagination'
+import { FilterToolbar } from '@/components/ui/FilterToolbar'
 import MedicalVisitModal from '@/components/modals/MedicalVisitModal'
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
@@ -42,17 +42,12 @@ export default function MedicalVisits() {
   // Get unique sectors for filter
   const sectors = ['all', ...Array.from(new Set(visits.map((p: MedicalVisitRecord) => p.team_sector).filter((s: string | null): s is string => !!s) || []))]
 
-  const stats = useMemo(() => {
-    if (!visits) return { expired: 0, expiring: 0, valid: 0 }
+  const { data: statsData } = useQuery({
+    queryKey: ['medical-visits-stats', search, sectorFilter],
+    queryFn: () => medicalService.getMedicalStats(search, sectorFilter),
+  })
 
-    return visits.reduce((acc, visit) => {
-      const status = medicalService.calculateStatus(visit.medical_expiry)
-      if (status === 'expired' || status === 'missing') acc.expired++
-      else if (status === 'expiring') acc.expiring++
-      else acc.valid++
-      return acc
-    }, { expired: 0, expiring: 0, valid: 0 })
-  }, [visits])
+  const stats = statsData || { expired: 0, expiring: 0, valid: 0 }
 
   // filteredVisits is now handled server-side, so we just use 'visits'
   const filteredVisits = visits
@@ -81,41 +76,20 @@ export default function MedicalVisits() {
       </div>
 
       {/* Filters Bar */}
-      <div className="glass-card p-4 flex flex-col md:flex-row gap-4 items-center w-full">
-          <div className="relative flex-1 group w-full">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-primary transition-all duration-300" />
-            <input
-              type="text"
-              placeholder="Cerca atleti..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-                setPage(0)
-              }}
-              className="h-16 pl-16 w-full text-xl pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary shadow-2xl transition-all font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground focus:outline-none"
-            />
-          </div>
-
-          <div className="flex items-center gap-2 p-1.5 glass-card rounded-2xl border-black/5 dark:border-white/10 overflow-x-auto no-scrollbar w-full md:w-auto">
-            {sectors.map(sector => (
-              <button
-                key={sector}
-                onClick={() => {
-                  setSectorFilter(sector)
-                  setPage(0)
-                }}
-                className={cn(
-                  "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                  sectorFilter === sector 
-                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
-                    : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
-                )}
-              >
-                {sector === 'all' ? 'Tutti' : sector}
-              </button>
-            ))}
-          </div>
-      </div>
+      <FilterToolbar
+        search={search}
+        onSearchChange={(value) => {
+          setSearch(value)
+          setPage(0)
+        }}
+        searchPlaceholder="Cerca atleti..."
+        sectors={sectors}
+        activeSector={sectorFilter}
+        onSectorChange={(sector) => {
+          setSectorFilter(sector)
+          setPage(0)
+        }}
+      />
 
       {/* Main Content */}
       <div className="glass-card overflow-hidden border-black/5 dark:border-white/10">

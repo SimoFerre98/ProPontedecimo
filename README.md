@@ -1,73 +1,46 @@
-# React + TypeScript + Vite
+# Pro Pontedecimo Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Piattaforma gestionale completa per le attività della società sportiva Pro Pontedecimo.
+Sviluppata interamente con tecnologie moderne per offrire una user experience premium agli atleti, dirigenti e allenatori.
 
-Currently, two official plugins are available:
+## 🚀 Tecnologie
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS v4, Componenti Glassmorphism, Shadcn/ui
+- **Stato & Dati**: React Query, Zustand (opzionale)
+- **Backend as a Service**: Supabase (PostgreSQL, Auth, Edge Functions)
+- **Animazioni**: Framer Motion, Lucide React
 
-## React Compiler
+## 📦 Struttura del progetto e Guidelines
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Per un approfondimento sulle regole di sviluppo (specie se affidato ad assistenti AI), consulta le direttive centralizzate in `AI/AGENTS.md`.
 
-## Expanding the ESLint configuration
+## 📌 Main Features
+- Gestione Anagrafica Atleti
+- Controllo Visite Mediche e Scadenze
+- Modulo di pagamento integrato e gestione Quote
+- Ruoli Utente e RBAC (Admin, Director, Coach, Player, Parent)
+- Magazzino e Distinta Vestiario
+- Dashboard Analitica e Tracking
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🔧 Installazione e Sviluppo
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Installa le dipendenze
+npm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Avvia l'ambiente di sviluppo locale
+npm run dev
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Manda in build l'app per la produzione
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📜 Versionamento e Branching
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Si applica **Strict Git Flow**:
+1. Lavorare sempre in branch di `feature/*` staccate da `dev`
+2. PR da `feature/*` verso `dev` (sempre con Squash & Merge)
+3. Release su `main` previa validazione totale
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Consultare il file `CHANGELOG.md` per lo storico completo delle versioni.
