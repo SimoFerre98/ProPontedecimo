@@ -11,8 +11,8 @@ export default function RoleGuard({ allowedRoles, fallbackPath }: RoleGuardProps
 
   if (loading) return null
 
-  // Se l'utente non ha il ruolo permesso, reindirizza al fallback
-  if (role && !allowedRoles.includes(role)) {
+  // Se l'utente non ha un ruolo o non ha il ruolo permesso, reindirizza al fallback
+  if (!role || !allowedRoles.includes(role)) {
     return <Navigate to={fallbackPath} replace />
   }
 

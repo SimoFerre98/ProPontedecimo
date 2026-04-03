@@ -6,7 +6,7 @@ export type Player = {
   last_name: string
   team_sector: string | null
   birth_date: string | null
-  phone_parent: string | null
+  parent1_phone: string | null
   phone_player: string | null
   email: string | null
   medical_expiry: string | null

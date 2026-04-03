@@ -13,7 +13,9 @@ import {
   ChevronRight,
   TrendingUp,
   Users,
-  Award
+  Award,
+  LayoutGrid,
+  List
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -27,6 +29,8 @@ export default function Athletes() {
   const [page, setPage] = useState(0)
   const pageSize = 12
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null)
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
 
   const { data, isLoading } = useQuery({
     queryKey: ['players', search, sectorFilter, page],
@@ -62,7 +66,10 @@ export default function Athletes() {
             <span className="text-2xl font-black text-foreground">{totalCount || 0}</span>
           </div>
           <Button 
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setSelectedPlayer(null)
+              setIsModalOpen(true)
+            }}
             className="pill bg-primary hover:bg-primary/90 text-white gap-2 h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/30 active:scale-95 transition-all"
           >
             <UserPlus className="w-5 h-5 transition-transform group-hover:rotate-12" /> 
@@ -131,17 +138,113 @@ export default function Athletes() {
               </button>
             ))}
           </div>
+          <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-black/10 dark:border-white/10 h-14">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={cn(
+                "p-3 rounded-xl transition-all h-full aspect-square flex items-center justify-center",
+                viewMode === 'grid' ? "bg-white dark:bg-black/50 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <LayoutGrid className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={cn(
+                "p-3 rounded-xl transition-all h-full aspect-square flex items-center justify-center",
+                viewMode === 'table' ? "bg-white dark:bg-black/50 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <List className="w-5 h-5" />
+            </button>
+          </div>
           <Button variant="outline" className="pill border-black/10 dark:border-white/10 hover:border-primary h-14 aspect-square p-0">
             <Filter className="w-5 h-5" />
           </Button>
         </div>
 
-      {/* Main List Grid */}
+      {/* Main List Grid/Table */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={`athlete-skel-${i}`} className="glass-card p-8 h-64 animate-pulse bg-muted/20 border-black/5 dark:border-white/10 rounded-[2rem]" />
           ))}
+        </div>
+      ) : viewMode === 'table' ? (
+        <div className="glass-card overflow-x-auto rounded-[2rem] border-black/5 dark:border-white/10 no-scrollbar">
+          <table className="w-full text-left border-collapse min-w-[700px]">
+            <thead className="bg-black/5 dark:bg-white/5">
+              <tr className="border-b border-black/5 dark:border-white/10 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <th className="p-6">Atleta</th>
+                <th className="p-6">Settore</th>
+                <th className="p-6">Contatto</th>
+                <th className="p-6">Scadenza Medica</th>
+                <th className="p-6">Stato</th>
+                <th className="p-6 text-right">Azioni</th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence mode="popLayout">
+                {players?.map((player) => {
+                  const statusLabel = player.is_active ? 'Attivo' : 'Inattivo'
+                  return (
+                    <motion.tr
+                      layout
+                      key={player.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="group border-b border-black/5 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                    >
+                      <td className="p-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20 shadow-inner group-hover:scale-105 transition-transform">
+                            <User className="w-6 h-6 text-primary" />
+                          </div>
+                          <div>
+                            <div className="font-black text-sm uppercase italic group-hover:text-primary transition-colors">{player.last_name} <span className="text-primary NOT-italic">{player.first_name}</span></div>
+                            <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">{player.birth_date || 'Data n.n.'}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-6">
+                        <span className="text-xs font-bold uppercase tracking-wider">{player.team_sector || '-'}</span>
+                      </td>
+                      <td className="p-6">
+                        <span className="text-xs font-bold tabular-nums">{player.phone_player || player.parent1_phone || '-'}</span>
+                      </td>
+                      <td className="p-6">
+                        <span className="text-xs font-bold tabular-nums">{player.medical_expiry || '-'}</span>
+                      </td>
+                      <td className="p-6">
+                        <div className={cn(
+                          "inline-flex px-3 py-1.5 rounded-xl flex items-center gap-2 border transition-all",
+                          player.is_active 
+                            ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.05)]" 
+                            : "bg-slate-500/10 text-slate-400 border-slate-500/20"
+                        )}>
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                          <span className="text-[10px] font-black uppercase tracking-widest">{statusLabel}</span>
+                        </div>
+                      </td>
+                      <td className="p-6 text-right">
+                        <button 
+                          onClick={() => {
+                            setSelectedPlayer(player)
+                            setIsModalOpen(true)
+                          }}
+                          className="text-primary hover:text-primary/80 transition-colors flex items-center justify-end gap-1.5 group/btn"
+                        >
+                          <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
+                          <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                        </button>
+                      </td>
+                    </motion.tr>
+                  )
+                })}
+              </AnimatePresence>
+            </tbody>
+          </table>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -177,9 +280,6 @@ export default function Athletes() {
                         </div>
                       </div>
                     </div>
-                    <button className="p-2 pill hover:bg-white/10 text-muted-foreground/40 hover:text-primary transition-all">
-                      <MoreVertical className="w-4 h-4" />
-                    </button>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 pt-2">
@@ -195,7 +295,7 @@ export default function Athletes() {
                         <Smartphone className="w-3 h-3" />
                         <span className="text-[9px] font-black uppercase tracking-tighter">Telefono</span>
                       </div>
-                      <p className="text-xs font-bold text-foreground truncate">{player.phone_player || player.phone_parent || '-'}</p>
+                      <p className="text-xs font-bold text-foreground truncate">{player.phone_player || player.parent1_phone || '-'}</p>
                     </div>
                   </div>
 
@@ -209,7 +309,13 @@ export default function Athletes() {
                       <ShieldCheck className="w-3.5 h-3.5" />
                       <span className="text-[10px] font-black uppercase tracking-widest">{statusLabel}</span>
                     </div>
-                    <button className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5 group/btn">
+                    <button 
+                      onClick={() => {
+                        setSelectedPlayer(player)
+                        setIsModalOpen(true)
+                      }}
+                      className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5 group/btn"
+                    >
                       <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
                       <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
                     </button>
@@ -231,9 +337,14 @@ export default function Athletes() {
 
       <AddAthleteModal 
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        player={selectedPlayer}
+        onClose={() => {
+          setIsModalOpen(false)
+          setSelectedPlayer(null)
+        }}
         onSuccess={() => {
           setIsModalOpen(false)
+          setSelectedPlayer(null)
         }}
       />
     </div>

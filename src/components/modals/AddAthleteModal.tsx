@@ -1,18 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, UserPlus, Calendar, Smartphone, Users, Save, Loader2, Mail, HeartPulse } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { athleteService } from '@/services/athleteService'
+import { athleteService, type Player } from '@/services/athleteService'
 import { useQueryClient } from '@tanstack/react-query'
 
 interface AddAthleteModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess?: () => void
+  player?: Player | null
 }
 
-export default function AddAthleteModal({ isOpen, onClose, onSuccess }: Readonly<AddAthleteModalProps>) {
+export default function AddAthleteModal({ isOpen, onClose, onSuccess, player }: Readonly<AddAthleteModalProps>) {
   const [loading, setLoading] = useState(false)
   const queryClient = useQueryClient()
   const [formData, setFormData] = useState({
@@ -20,42 +21,69 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess }: Readonly
     last_name: '',
     birth_date: '',
     phone_player: '',
-    phone_parent: '',
+    parent1_phone: '',
     email: '',
     team_sector: '',
     medical_expiry: '',
     is_active: true
   })
 
+  // Popola o resetta i dati quando il modale si apre/chiude o il giocatore cambia
+  useEffect(() => {
+    if (isOpen) {
+      if (player) {
+        setFormData({
+          first_name: player.first_name || '',
+          last_name: player.last_name || '',
+          birth_date: player.birth_date || '',
+          phone_player: player.phone_player || '',
+          parent1_phone: player.parent1_phone || '',
+          email: player.email || '',
+          team_sector: player.team_sector || '',
+          medical_expiry: player.medical_expiry || '',
+          is_active: player.is_active ?? true
+        })
+      } else {
+        setFormData({
+          first_name: '',
+          last_name: '',
+          birth_date: '',
+          phone_player: '',
+          parent1_phone: '',
+          email: '',
+          team_sector: '',
+          medical_expiry: '',
+          is_active: true
+        })
+      }
+    }
+  }, [isOpen, player])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     try {
-      await athleteService.createPlayer({
+      const payload = {
         ...formData,
         birth_date: formData.birth_date || null,
         phone_player: formData.phone_player || null,
-        phone_parent: formData.phone_parent || null,
+        parent1_phone: formData.parent1_phone || null,
         email: formData.email || null,
         team_sector: formData.team_sector || null,
         medical_expiry: formData.medical_expiry || null,
-      })
+      }
+      
+      if (player?.id) {
+        await athleteService.updatePlayer(player.id, payload)
+      } else {
+        await athleteService.createPlayer(payload)
+      }
+      
       queryClient.invalidateQueries({ queryKey: ['players'] })
       onSuccess?.()
       onClose()
-      setFormData({
-        first_name: '',
-        last_name: '',
-        birth_date: '',
-        phone_player: '',
-        phone_parent: '',
-        email: '',
-        team_sector: '',
-        medical_expiry: '',
-        is_active: true
-      })
     } catch (error) {
-      console.error('Error adding athlete:', error)
+      console.error('Error saving athlete:', error)
     } finally {
       setLoading(false)
     }
@@ -86,8 +114,8 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess }: Readonly
                   <UserPlus className="w-8 h-8" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-black text-foreground italic uppercase leading-none">Nuovo <span className="text-primary NOT-italic">Atleta</span></h2>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">Registrazione completa anagrafica e medica</p>
+                  <h2 className="text-3xl font-black text-foreground italic uppercase leading-none">{player ? 'Dettagli' : 'Nuovo'} <span className="text-primary NOT-italic">Atleta</span></h2>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">{player ? 'Modifica o visualizza dati atleta' : 'Registrazione completa anagrafica e medica'}</p>
                 </div>
               </div>
               <button 
@@ -182,8 +210,8 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess }: Readonly
                       <Input
                         id="athlete-parent-phone"
                         placeholder="Emergenza"
-                        value={formData.phone_parent}
-                        onChange={e => setFormData({ ...formData, phone_parent: e.target.value })}
+                        value={formData.parent1_phone}
+                        onChange={e => setFormData({ ...formData, parent1_phone: e.target.value })}
                         className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold tabular-nums"
                       />
                     </div>
@@ -238,7 +266,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess }: Readonly
                   className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all"
                 >
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-                  Finalizza Registrazione
+                  {player ? 'Salva Modifiche' : 'Finalizza Registrazione'}
                 </Button>
               </div>
             </form>

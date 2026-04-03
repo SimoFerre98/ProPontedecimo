@@ -28,21 +28,27 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [fetchingProfile, setFetchingProfile] = useState(false)
 
   async function fetchProfile(userId: string) {
+    setFetchingProfile(true)
     const { data } = await supabase
       .from('profiles')
       .select('id, email, full_name, role, avatar_url')
       .eq('id', userId)
       .maybeSingle()
     if (data) setProfile(data as Profile)
+    setFetchingProfile(false)
   }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
-      if (session?.user) fetchProfile(session.user.id)
-      setLoading(false)
+      if (session?.user) {
+        fetchProfile(session.user.id).finally(() => setLoading(false))
+      } else {
+        setLoading(false)
+      }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -61,9 +67,9 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
     user: session?.user ?? null,
     profile,
     role: profile?.role ?? null,
-    loading,
+    loading: loading || fetchingProfile,
     signOut: async () => { await supabase.auth.signOut() },
-  }), [session, profile, loading])
+  }), [session, profile, loading, fetchingProfile])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
