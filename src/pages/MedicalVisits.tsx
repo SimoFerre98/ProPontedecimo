@@ -81,8 +81,8 @@ export default function MedicalVisits() {
       </div>
 
       {/* Filters Bar */}
-      <div className="glass-card p-4 flex flex-col md:flex-row gap-4 items-center">
-          <div className="relative flex-1 group">
+      <div className="glass-card p-4 flex flex-col md:flex-row gap-4 items-center w-full">
+          <div className="relative flex-1 group w-full">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-primary transition-all duration-300" />
             <input
               type="text"

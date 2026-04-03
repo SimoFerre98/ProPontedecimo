@@ -116,9 +116,9 @@ export default function Athletes() {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
-          <div className="relative flex-1">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground" />
+      <div className="glass-card p-4 flex flex-col md:flex-row gap-4 items-center w-full">
+          <div className="relative flex-1 group w-full">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground group-focus-within:text-primary transition-all duration-300" />
             <input
               type="text"
               placeholder="Cerca calciatore..."
@@ -127,11 +127,11 @@ export default function Athletes() {
                 setSearch(e.target.value)
                 setPage(0) // Reset to first page on search
               }}
-              className="w-full h-16 pl-16 pr-8 text-xl pill glass-card border-2 border-black/5 dark:border-white/10 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium"
+              className="h-16 pl-16 w-full text-xl pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary shadow-2xl transition-all font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground focus:outline-none"
             />
           </div>
 
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
+          <div className="flex items-center gap-2 p-1.5 glass-card rounded-2xl border-black/5 dark:border-white/10 overflow-x-auto no-scrollbar w-full md:w-auto">
             {filterSectors.map(sector => (
               <button
                 key={sector}
@@ -140,17 +140,18 @@ export default function Athletes() {
                   setPage(0) // Reset to first page on filter
                 }}
                 className={cn(
-                  "px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider whitespace-nowrap transition-all border",
+                  "px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
                   sectorFilter === sector 
-                    ? "bg-primary text-white border-primary glow-primary" 
-                    : "bg-black/5 dark:bg-white/5 text-muted-foreground border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10"
+                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105" 
+                    : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
                 )}
               >
                 {sector === 'all' ? 'Tutti' : sector}
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-black/10 dark:border-white/10 h-14">
+
+          <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-black/10 dark:border-white/10 h-[60px] shrink-0">
             <button
               onClick={() => setViewMode('grid')}
               className={cn(
