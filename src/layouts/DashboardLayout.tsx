@@ -129,7 +129,7 @@ export default function DashboardLayout() {
                     initial={{ opacity: 0, y: -10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    className="absolute top-full right-0 mt-4 w-72 glass-card p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border-white/20 z-50 flex flex-col gap-1 cursor-default text-foreground"
+                    className="absolute top-full right-0 mt-4 w-72 bg-background/95 backdrop-blur-3xl p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50 flex flex-col gap-1 cursor-default text-foreground"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="p-4 border-b border-black/5 dark:border-white/10 mb-2">

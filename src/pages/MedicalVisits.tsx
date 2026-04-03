@@ -15,6 +15,7 @@ import {
 import { cn } from '@/lib/utils'
 import { medicalService, type MedicalVisitRecord, type VisitStatus } from '@/services/medicalService'
 import { Pagination } from '@/components/ui/Pagination'
+import MedicalVisitModal from '@/components/modals/MedicalVisitModal'
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { it } from "date-fns/locale/it";
@@ -24,6 +25,9 @@ export default function MedicalVisits() {
   const [sectorFilter, setSectorFilter] = useState('all')
   const [page, setPage] = useState(0)
   const pageSize = 15
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedVisit, setSelectedVisit] = useState<MedicalVisitRecord | null>(null)
 
   const { data, isLoading } = useQuery({
     queryKey: ['medical-visits', search, sectorFilter, page],
@@ -57,7 +61,7 @@ export default function MedicalVisits() {
     <div className="space-y-8 animate-in fade-in duration-700">
       {/* Header & Stats */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-1">
+        <div className="space-y-1 flex flex-col items-center md:items-start text-center md:text-left">
           <h1 className="text-4xl font-black tracking-tighter text-foreground flex items-center gap-3">
             <div className="p-2 pill bg-primary/10 border border-primary/20">
               <Stethoscope className="w-8 h-8 text-primary" />
@@ -69,7 +73,7 @@ export default function MedicalVisits() {
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 justify-center md:justify-end w-full md:w-auto">
           <StatBadge count={stats.expired} label="Scadute" type="expired" />
           <StatBadge count={stats.expiring} label="In Scadenza" type="expiring" />
           <StatBadge count={stats.valid} label="Valide" type="valid" />
@@ -92,7 +96,7 @@ export default function MedicalVisits() {
             />
           </div>
 
-          <div className="flex items-center gap-2 p-1.5 glass-card rounded-2xl border-black/5 dark:border-white/10 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-2 p-1.5 glass-card rounded-2xl border-black/5 dark:border-white/10 overflow-x-auto no-scrollbar w-full md:w-auto">
             {sectors.map(sector => (
               <button
                 key={sector}
@@ -161,8 +165,12 @@ export default function MedicalVisits() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        onClick={() => {
+                          setSelectedVisit(visit)
+                          setIsModalOpen(true)
+                        }}
                         whileHover={{ backgroundColor: 'rgba(255,255,255,0.01)' }}
-                        className="group transition-colors"
+                        className="group transition-colors cursor-pointer"
                       >
                         <td className="px-6 py-5 text-center font-bold text-muted-foreground/50 tabular-nums text-xs italic">
                           {idx + 1}
@@ -218,6 +226,15 @@ export default function MedicalVisits() {
         pageSize={pageSize}
         onPageChange={setPage}
         className="mt-6"
+      />
+
+      <MedicalVisitModal
+        isOpen={isModalOpen}
+        record={selectedVisit}
+        onClose={() => {
+          setIsModalOpen(false)
+          setSelectedVisit(null)
+        }}
       />
     </div>
   )

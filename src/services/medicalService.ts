@@ -44,5 +44,14 @@ export const medicalService = {
     const days = differenceInDays(date, new Date())
     if (days <= 30) return 'expiring'
     return 'valid'
+  },
+
+  async updateMedicalExpiry(playerId: string, expiryDate: string | null) {
+    const { error } = await supabase
+      .from('players')
+      .update({ medical_expiry: expiryDate })
+      .eq('id', playerId)
+
+    if (error) throw error
   }
 }
