@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, UserPlus, Calendar, Smartphone, Users, Save, Loader2,
-  Mail, HeartPulse, MapPin, FileText, User, Home, CreditCard, ClipboardList
+  Mail, HeartPulse, MapPin, FileText, User, Home, CreditCard, ClipboardList, ShieldCheck
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -54,6 +54,7 @@ const EMPTY_FORM = {
   privacy_accepted: false,
   team_sector: '',
   is_active: true,
+  is_registered: false,
 }
 
 function FieldLabel({ label, required }: Readonly<{ label: string; required?: boolean }>) {
@@ -119,6 +120,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
           privacy_accepted: player.privacy_accepted ?? false,
           team_sector: player.team_sector || '',
           is_active: player.is_active ?? true,
+          is_registered: player.is_registered ?? false,
         })
         setIsCreatingNewSector(false)
       } else {
@@ -192,7 +194,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
             initial={{ opacity: 0, scale: 0.9, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 30 }}
-            className="relative w-full max-w-2xl glass-card shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border-black/5 dark:border-white/10 rounded-[3rem] overflow-hidden flex flex-col max-h-[92vh]"
+            className="relative w-[95vw] max-w-4xl glass-card shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border-black/5 dark:border-white/10 rounded-[3rem] overflow-hidden flex flex-col max-h-[96vh]"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-8 pt-8 pb-4 shrink-0">
@@ -477,6 +479,46 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                 {/* ── SEZIONE SPORT & NOTE ── */}
                 {activeSection === 'sport' && (
                   <div className="space-y-4">
+                    {/* Tesserament Card — highlighted */}
+                    <div
+                      className={`flex items-center justify-between p-5 rounded-3xl border-2 cursor-pointer transition-all ${
+                        formData.is_registered
+                          ? 'border-emerald-500/40 bg-emerald-500/5'
+                          : 'border-amber-500/30 bg-amber-500/5'
+                      }`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => set('is_registered', !formData.is_registered)}
+                      onKeyDown={(e) => e.key === 'Enter' && set('is_registered', !formData.is_registered)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 pill flex items-center justify-center border transition-all ${
+                          formData.is_registered
+                            ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-500'
+                            : 'bg-amber-500/10 border-amber-500/20 text-amber-500'
+                        }`}>
+                          <ShieldCheck className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <p className="font-black text-sm uppercase tracking-wider text-foreground">
+                            {formData.is_registered ? 'Tesserato FIGC' : 'Non Tesserato'}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {formData.is_registered
+                              ? 'Atleta con tessera federale valida'
+                              : 'Tessera federale non ancora confermata'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className={`relative w-14 h-7 rounded-full transition-all ${
+                        formData.is_registered ? 'bg-emerald-500' : 'bg-muted/60 border border-border'
+                      }`}>
+                        <div className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow-md transition-all ${
+                          formData.is_registered ? 'left-8' : 'left-1'
+                        }`} />
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <FieldLabel label="Scadenza Visita Medica" />

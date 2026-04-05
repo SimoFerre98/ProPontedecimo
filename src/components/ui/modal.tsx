@@ -24,33 +24,33 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-background/40 backdrop-blur-md"
+            className="fixed inset-0 bg-background/50 backdrop-blur-md"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className={cn(
-              "relative w-full max-w-lg glass-card p-0 overflow-hidden shadow-2xl border-white/10",
+              "relative w-[95vw] max-w-2xl glass-card p-0 overflow-hidden shadow-2xl border-white/10 max-h-[94vh] flex flex-col",
               className
             )}
           >
-            <div className="flex items-center justify-between p-6 border-b border-white/5 bg-white/[0.02]">
-              <h2 className="text-xl font-black tracking-tight text-foreground">{title}</h2>
+            <div className="flex items-center justify-between p-8 border-b border-white/5 bg-white/[0.02] shrink-0">
+              <h2 className="text-2xl font-black tracking-tight text-foreground">{title}</h2>
               <button
                 onClick={onClose}
-                className="p-2 h-auto pill hover:bg-white/10 text-muted-foreground hover:text-foreground transition-all"
+                className="p-3 h-auto pill hover:bg-white/10 text-muted-foreground hover:text-foreground transition-all hover:rotate-90"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="p-6">
+            <div className="p-8 overflow-y-auto no-scrollbar flex-1">
               {children}
             </div>
           </motion.div>

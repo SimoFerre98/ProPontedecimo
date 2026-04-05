@@ -1,6 +1,36 @@
 # Changelog
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
+## [0.8.0] - 2026-04-05
+
+### Aggiunto
+- **Campo Tesseramento FIGC** (`is_registered`): Nuova colonna `boolean` nella tabella `players` per tracciare se un atleta è tesserato federalmente. Distingue il tesseramento dallo stato "In Rosa" (attivo in squadra).
+- **Toggle Tesserato nel Modale Atleta**: Card interattiva con toggle nella sezione "Sport" del modale `AddAthleteModal`. Verde = Tesserato FIGC, Ambra = Non Tesserato. Visibile in fase di iscrizione e modifica.
+- **Filtri Avanzati Atleti**: Pannello filtri espandibile nella sezione Atleti con 4 dimensioni di filtraggio:
+  - *Stato Squadra*: Tutti / In Rosa / Ritirati
+  - *Tesseramento FIGC*: Tutti / Tesserati / Non Tesserati
+  - *Visita Medica*: Tutte / Valida / Scaduta / Mancante
+  - *Ordina Per*: Cognome A→Z / Ultimi Iscritti / Scadenza Medica (con toggle asc/desc)
+- **Chip filtri attivi**: Mostrati sotto la toolbar con possibilità di rimozione singola.
+- **Badge duplici sulle card atleta**: Ogni card mostra ora sia lo stato squadra ("In Rosa"/"Ritirato") che il tesseramento ("Tesserato"/"Non Tess.") con colori differenziati.
+- **Colonna Tesserato in vista tabella**: Aggiunta colonna dedicata con badge colorato nella vista lista.
+- **Stato vuoto intelligente**: Messaggio dedicato quando nessun atleta corrisponde ai filtri attivi, con pulsante "Azzera Filtri".
+- **Allarme scadenza medica**: Nelle card atleta, le visite scadute appaiono evidenziate in rosso.
+- **Ricerca estesa**: Ora la ricerca per nome/cognome include anche il codice fiscale.
+- **Ordinamento server-side**: `athleteService.getPlayers` supporta ora parametri `sortBy` e `sortDir` con query Supabase.
+
+### Modificato
+- **Semantica `is_active`**: Rinominato da "Attivo/Inattivo" a **"In Rosa / Ritirato"** per maggiore chiarezza operativa. Un atleta "In Rosa" partecipa attivamente; "Ritirato" è fuori rosa ma conservato in archivio.
+- **Statistiche header Atleti**: Aggiornate da 3 a 4 card:  Totale In Rosa · Tesserati FIGC · Settori · Visite Scadute.
+- **Modali più grandi e accessibili**: Tutti i modali usano ora `w-[95vw]` con `max-h-[96vh]` per massimizzare la leggibilità su qualsiasi schermo. Header e padding aumentati (`p-8`, testo `text-2xl`).
+- **Chiusura click-fuori**: Pannelli Notifiche, Impostazioni e Profilo ora si chiudono cliccando fuori dall'area.
+- **Selettore Stagione nell'header**: Aggiunto menu a tendina per la selezione della stagione sportiva (UI placeholder, pronto per integrazione backend).
+- **Icona Notifiche nell'header**: Aggiunta campanella con badge (UI placeholder, pronto per integrazione backend).
+- **Logo header ingrandito**: Logo Pro Pontedecimo aumentato per maggiore visibilità (`w-12 h-12`).
+
+### Corretto
+- Rimosso import inutilizzato `Shield` da `SettingsModal.tsx`.
+- Aggiunto `role="presentation"` e `onKeyDown` ai div backdrop del selettore stagione per conformità accessibilità.
 
 ## [0.7.0] - 2026-04-03
 

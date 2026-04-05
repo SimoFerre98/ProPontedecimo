@@ -61,7 +61,7 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg glass-card p-8 shadow-2xl border-black/5 dark:border-white/10 rounded-[2.5rem] overflow-hidden"
+            className="relative w-[95vw] max-w-2xl glass-card p-8 shadow-2xl border-black/5 dark:border-white/10 rounded-[2.5rem] overflow-hidden max-h-[96vh] overflow-y-auto"
           >
             {/* Background Decor */}
             <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />

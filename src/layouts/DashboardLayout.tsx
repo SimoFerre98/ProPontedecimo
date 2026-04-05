@@ -19,7 +19,10 @@ import {
   Sun,
   Moon,
   Monitor,
-  Mail
+  Mail,
+  Bell,
+  ChevronDown,
+  Calendar
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/hooks/useTheme'
@@ -53,6 +56,8 @@ const getVisibleNavItems = (userRole: string | null) => {
   return NAV_ITEMS
 }
 
+const SEASONS = ['2022/2023', '2023/2024', '2024/2025', '2025/2026']
+
 export default function DashboardLayout() {
   const { profile, role, signOut } = useAuth()
   const navigate = useNavigate()
@@ -63,6 +68,9 @@ export default function DashboardLayout() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const [isSeasonDropdownOpen, setIsSeasonDropdownOpen] = useState(false)
+  const [selectedSeason, setSelectedSeason] = useState('2024/2025')
 
   async function handleSignOut() {
     await signOut()
@@ -86,7 +94,7 @@ export default function DashboardLayout() {
           <img
             src="/Logo ASD Pro Pontedecimo.png"
             alt="Pro Pontedecimo"
-            className="w-10 h-10 object-contain drop-shadow-sm flex-shrink-0"
+            className="w-12 h-12 object-contain drop-shadow-sm flex-shrink-0"
           />
           <div className="hidden sm:block leading-tight">
             <p className="text-sm font-bold tracking-tight">Pro Pontedecimo</p>
@@ -94,10 +102,87 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium">
-            <span className="text-muted-foreground">Stagione</span>
-            <span className="text-primary">2024/2025</span>
+        <div className="flex items-center gap-3">
+          {/* Season Selector */}
+          <div className="relative hidden sm:block">
+            <button
+              onClick={() => { setIsSeasonDropdownOpen(!isSeasonDropdownOpen); setIsNotificationsOpen(false); setIsProfileMenuOpen(false) }}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium hover:border-primary/40 hover:bg-primary/5 transition-all"
+            >
+              <Calendar className="w-3 h-3 text-muted-foreground" />
+              <span className="text-muted-foreground">Stagione</span>
+              <span className="text-primary font-bold">{selectedSeason}</span>
+              <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+            <AnimatePresence>
+              {isSeasonDropdownOpen && (
+                <>
+                  <div role="presentation" className="fixed inset-0 z-40" onClick={() => setIsSeasonDropdownOpen(false)} onKeyDown={() => setIsSeasonDropdownOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                    className="absolute top-full left-0 mt-2 w-44 bg-background/95 backdrop-blur-3xl p-2 rounded-2xl shadow-[0_16px_40px_-8px_rgba(0,0,0,0.4)] border border-black/10 dark:border-white/20 z-50 flex flex-col gap-1"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {SEASONS.map(season => (
+                      <button
+                        key={season}
+                        onClick={() => { setSelectedSeason(season); setIsSeasonDropdownOpen(false) }}
+                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                          selectedSeason === season
+                            ? 'bg-primary text-white'
+                            : 'text-foreground/70 hover:bg-primary/10 hover:text-primary'
+                        }`}
+                      >
+                        <span>{season}</span>
+                        {selectedSeason === season && <span className="text-[10px] opacity-70">✓</span>}
+                      </button>
+                    ))}
+                    <div className="mt-1 pt-2 border-t border-black/5 dark:border-white/10 px-3 pb-1">
+                      <p className="text-[10px] text-muted-foreground font-medium">Funzionalità in arrivo</p>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Notifications Bell */}
+          <div className="relative">
+            <button
+              onClick={() => { setIsNotificationsOpen(!isNotificationsOpen); setIsSeasonDropdownOpen(false); setIsProfileMenuOpen(false) }}
+              className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted/60 border border-border/50 hover:border-primary/30 transition-all"
+            >
+              <Bell className="w-4 h-4 text-muted-foreground" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_oklch(0.33_0.13_15/0.7)]"/>
+            </button>
+            <AnimatePresence>
+              {isNotificationsOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    className="absolute top-full right-0 mt-3 w-80 bg-background/95 backdrop-blur-3xl p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-black/5 dark:border-white/10">
+                      <p className="text-sm font-black text-foreground">Notifiche</p>
+                      <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">0 nuove</span>
+                    </div>
+                    <div className="flex flex-col items-center justify-center py-10 gap-3">
+                      <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+                        <Bell className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                      <p className="text-sm font-semibold text-muted-foreground">Nessuna notifica</p>
+                      <p className="text-xs text-muted-foreground/60 text-center max-w-[180px]">Le notifiche del sistema appariranno qui</p>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
           </div>
           
           <div className="relative">

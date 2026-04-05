@@ -32,27 +32,56 @@ export type Player = {
   medical_expiry: string | null
   notes: string | null
   privacy_accepted: boolean | null
-  is_active: boolean
+  is_active: boolean       // true = In Rosa, false = Ritirato
+  is_registered: boolean   // true = Tesserato FIGC, false = Non tesserato
   created_at?: string
+  updated_at?: string
 }
 
 export const athleteService = {
-  async getPlayers(search?: string, sector?: string, page = 0, pageSize = 12) {
+  async getPlayers(
+    search?: string,
+    sector?: string,
+    page = 0,
+    pageSize = 12,
+    filters?: {
+      isActive?: 'all' | 'active' | 'inactive'
+      isRegistered?: 'all' | 'yes' | 'no'
+      medicalStatus?: 'all' | 'expired' | 'valid' | 'missing'
+      sortBy?: 'last_name' | 'created_at' | 'medical_expiry'
+      sortDir?: 'asc' | 'desc'
+    }
+  ) {
     const from = page * pageSize
     const to = from + pageSize - 1
+
+    const sortField = filters?.sortBy ?? 'last_name'
+    const sortAsc = (filters?.sortDir ?? 'asc') === 'asc'
 
     let query = supabase
       .from('players')
       .select('*', { count: 'exact' })
-      .order('last_name', { ascending: true })
+      .order(sortField, { ascending: sortAsc })
       .range(from, to)
 
     if (search) {
-      query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`)
+      query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,tax_code.ilike.%${search}%`)
     }
     
     if (sector && sector !== 'all') {
       query = query.eq('team_sector', sector)
+    }
+
+    if (filters?.isActive === 'active') query = query.eq('is_active', true)
+    if (filters?.isActive === 'inactive') query = query.eq('is_active', false)
+    if (filters?.isRegistered === 'yes') query = query.eq('is_registered', true)
+    if (filters?.isRegistered === 'no') query = query.eq('is_registered', false)
+    if (filters?.medicalStatus === 'expired') {
+      query = query.not('medical_expiry', 'is', null).lt('medical_expiry', new Date().toISOString().split('T')[0])
+    } else if (filters?.medicalStatus === 'valid') {
+      query = query.not('medical_expiry', 'is', null).gte('medical_expiry', new Date().toISOString().split('T')[0])
+    } else if (filters?.medicalStatus === 'missing') {
+      query = query.is('medical_expiry', null)
     }
 
     const { data, error, count } = await query
