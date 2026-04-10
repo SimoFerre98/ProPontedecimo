@@ -17,14 +17,18 @@ import {
   SortAsc,
   SortDesc,
   ClipboardCheck,
-  Clock
+  Clock,
+  Trash2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/contexts/AuthContext'
 import { athleteService, type Player } from '@/services/athleteService'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
 import AddAthleteModal from '@/components/modals/AddAthleteModal'
+import DeleteAthleteModal from '@/components/modals/DeleteAthleteModal'
 import { Pagination } from '@/components/ui/Pagination'
+import { useQueryClient } from '@tanstack/react-query'
 
 type FiltersState = {
   isActive: 'all' | 'active' | 'inactive'
@@ -66,6 +70,11 @@ export default function Athletes() {
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState<FiltersState>(DEFAULT_FILTERS)
   const [pendingFilters, setPendingFilters] = useState<FiltersState>(DEFAULT_FILTERS)
+  const [athleteToDelete, setAthleteToDelete] = useState<Player | null>(null)
+  const { role } = useAuth()
+  const queryClient = useQueryClient()
+
+  const isAdmin = role === 'president' || role === 'director'
 
   const { data, isLoading } = useQuery({
     queryKey: ['players', search, sectorFilter, page, filters],
@@ -594,6 +603,18 @@ export default function Athletes() {
                           <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
                           <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
                         </button>
+                        {isAdmin && (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setAthleteToDelete(player)
+                            }}
+                            className="p-2 pill text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                            title="Elimina"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </td>
                     </motion.tr>
                   )
@@ -704,6 +725,19 @@ export default function Athletes() {
                       <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
                     </button>
                   </div>
+
+                  {isAdmin && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setAthleteToDelete(player)
+                      }}
+                      className="absolute top-4 right-4 p-2 pill bg-background/50 backdrop-blur-sm border border-black/5 dark:border-white/10 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100 shadow-sm z-20"
+                      title="Elimina"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                 </motion.div>
               )
             })}
@@ -730,6 +764,17 @@ export default function Athletes() {
         onSuccess={() => {
           setIsModalOpen(false)
           setSelectedPlayer(null)
+          queryClient.invalidateQueries({ queryKey: ['players'] })
+        }}
+      />
+
+      <DeleteAthleteModal 
+        isOpen={!!athleteToDelete}
+        athlete={athleteToDelete}
+        onClose={() => setAthleteToDelete(null)}
+        onSuccess={() => {
+          setAthleteToDelete(null)
+          queryClient.invalidateQueries({ queryKey: ['players'] })
         }}
       />
     </div>

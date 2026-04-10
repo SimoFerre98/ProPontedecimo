@@ -141,5 +141,26 @@ export const athleteService = {
       .eq('id', id)
 
     if (error) throw error
+  },
+
+  async deleteAthlete(id: string) {
+    const { error } = await supabase
+      .from('players')
+      .delete()
+      .eq('id', id)
+    
+    if (error) throw error
+  },
+
+  async hasUnfinishedPayments(id: string) {
+    const { data, error } = await supabase
+      .from('payments')
+      .select('id')
+      .eq('player_id', id)
+      .in('status', ['pending', 'overdue'])
+      .limit(1)
+
+    if (error) throw error
+    return data && data.length > 0
   }
 }
