@@ -1,6 +1,21 @@
 # Changelog
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
+## [0.10.0] - 2026-04-10
+
+### Aggiunto
+- **Supporto Orario**: Introdotta la possibilità di specificare l'ora di inizio e fine per ogni task (formato 24h).
+- **Multi-day Tasks**: Il calendario ora visualizza correttamente i task che si sviluppano su più giorni.
+- **Visualizzazione Calendario**: Gli orari dei task sono ora visibili direttamente nel titolo dell'evento nel calendario.
+
+### Modificato
+- **Flessibilità Task**: La data di fine è ora opzionale; i task vengono creati per un singolo giorno di default.
+- **UI Professionale**: Sostituito l'alert di sistema con un modale professionale (`MedicalVisitModal`) per la gestione delle visite mediche direttamente dal calendario.
+
+### Corretto
+- **Migrazione Database**: Convertite le colonne delle date in `timestamptz` per supportare correttamente l'orario e risolvere l'errore di salvataggio.
+- **Sincronizzazione Timezone**: Risolto il problema dello slittamento dei task (offset) tra mesi e giorni diversi nel calendario.
+
 ## [0.9.0] - 2026-04-10
 
 ### Aggiunto

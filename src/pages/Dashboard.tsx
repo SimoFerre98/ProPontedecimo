@@ -166,7 +166,7 @@ export default function Dashboard() {
         <div className="flex gap-2">
           <div className="glass-card pill px-4 py-2 flex items-center gap-2 text-xs font-bold border-black/10 dark:border-white/20">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            Sistema Operativo
+            Stato: Operativo
           </div>
         </div>
       </div>
