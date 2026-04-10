@@ -109,7 +109,7 @@ export default function KanbanBoard({ tasks, onTaskClick, onStatusChange, onAddT
                     exit={{ opacity: 0, scale: 0.9, y: -10 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     draggable
-                    onDragStart={(e) => handleDragStart(e, task.id)}
+                    onDragStart={(e: any) => handleDragStart(e, task.id)}
                     onClick={() => onTaskClick(task)}
                     className={cn(
                       "glass-card p-5 group/card cursor-grab active:cursor-grabbing hover:border-primary/30 transition-all border-white/5 relative",

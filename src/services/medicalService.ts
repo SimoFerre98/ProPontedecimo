@@ -13,7 +13,14 @@ export interface MedicalVisitRecord {
 }
 
 export const medicalService = {
-  async getMedicalVisits(search?: string, sector?: string, page = 0, pageSize = 15) {
+  async getMedicalVisits(
+    search?: string, 
+    sector?: string, 
+    page = 0, 
+    pageSize = 15,
+    sortBy: 'last_name' | 'first_name' | 'team_sector' | 'medical_expiry' = 'last_name',
+    sortDir: 'asc' | 'desc' = 'asc'
+  ) {
     const from = page * pageSize
     const to = from + pageSize - 1
 
@@ -21,7 +28,7 @@ export const medicalService = {
       .from('players')
       .select('id, first_name, last_name, team_sector, medical_expiry', { count: 'exact' })
       .eq('is_active', true)
-      .order('last_name', { ascending: true })
+      .order(sortBy, { ascending: sortDir === 'asc' })
       .range(from, to)
 
     if (search) {

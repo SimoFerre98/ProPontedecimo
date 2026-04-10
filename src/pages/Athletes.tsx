@@ -30,7 +30,8 @@ type FiltersState = {
   isActive: 'all' | 'active' | 'inactive'
   isRegistered: 'all' | 'yes' | 'no'
   medicalStatus: 'all' | 'expired' | 'valid' | 'missing'
-  sortBy: 'last_name' | 'created_at' | 'medical_expiry'
+  privacyStatus: 'all' | 'accepted' | 'missing'
+  sortBy: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
   sortDir: 'asc' | 'desc'
 }
 
@@ -38,6 +39,7 @@ const DEFAULT_FILTERS: FiltersState = {
   isActive: 'all',
   isRegistered: 'all',
   medicalStatus: 'all',
+  privacyStatus: 'all',
   sortBy: 'last_name',
   sortDir: 'asc',
 }
@@ -47,6 +49,7 @@ function activeFilterCount(f: FiltersState) {
   if (f.isActive !== 'all') c++
   if (f.isRegistered !== 'all') c++
   if (f.medicalStatus !== 'all') c++
+  if (f.privacyStatus !== 'all') c++
   if (f.sortBy !== 'last_name' || f.sortDir !== 'asc') c++
   return c
 }
@@ -96,6 +99,15 @@ export default function Athletes() {
 
   function setPending<K extends keyof FiltersState>(key: K, value: FiltersState[K]) {
     setPendingFilters(prev => ({ ...prev, [key]: value }))
+  }
+
+  function handleSort(field: FiltersState['sortBy']) {
+    const isNew = filters.sortBy !== field
+    const newDir = isNew ? 'asc' : (filters.sortDir === 'asc' ? 'desc' : 'asc')
+    
+    setFilters(f => ({ ...f, sortBy: field, sortDir: newDir }))
+    setPendingFilters(f => ({ ...f, sortBy: field, sortDir: newDir }))
+    setPage(0)
   }
 
   return (
@@ -252,7 +264,7 @@ export default function Athletes() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 
                 {/* Stato in Rosa */}
                 <div className="space-y-2">
@@ -320,6 +332,31 @@ export default function Athletes() {
                         className={cn(
                           "px-4 py-2.5 rounded-xl text-xs font-bold text-left transition-all border",
                           pendingFilters.medicalStatus === val
+                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/40 hover:text-foreground"
+                        )}
+                      >
+                        {lbl}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Privacy */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground pl-1">Privacy</p>
+                  <div className="flex flex-col gap-1.5">
+                    {([
+                      ['all', 'Tutti'],
+                      ['accepted', '✅ Accettata'],
+                      ['missing', '❓ Mancante'],
+                    ] as [FiltersState['privacyStatus'], string][]).map(([val, lbl]) => (
+                      <button
+                        key={val}
+                        onClick={() => setPending('privacyStatus', val)}
+                        className={cn(
+                          "px-4 py-2.5 rounded-xl text-xs font-bold text-left transition-all border",
+                          pendingFilters.privacyStatus === val
                             ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
                             : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/40 hover:text-foreground"
                         )}
@@ -409,6 +446,12 @@ export default function Athletes() {
               <button onClick={() => { setFilters(f => ({ ...f, medicalStatus: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
             </span>
           )}
+          {filters.privacyStatus !== 'all' && (
+            <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
+              Privacy: {filters.privacyStatus === 'accepted' ? 'Accettata' : 'Mancante'}
+              <button onClick={() => { setFilters(f => ({ ...f, privacyStatus: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
+            </span>
+          )}
           {(filters.sortBy !== 'last_name' || filters.sortDir !== 'asc') && (
             <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
               {filters.sortBy === 'created_at' ? 'Ultimi Iscritti' : filters.sortBy === 'medical_expiry' ? 'Scadenza Medica' : 'Cognome'} {filters.sortDir === 'desc' ? '↓' : '↑'}
@@ -445,12 +488,37 @@ export default function Athletes() {
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead className="bg-black/5 dark:bg-white/5">
               <tr className="border-b border-black/5 dark:border-white/10 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                <th className="p-6">Atleta</th>
-                <th className="p-6">Settore</th>
+                <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => handleSort('last_name')}>
+                  <div className="flex items-center gap-2">
+                    Atleta
+                    {filters.sortBy === 'last_name' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                  </div>
+                </th>
+                <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => handleSort('team_sector')}>
+                  <div className="flex items-center gap-2">
+                    Settore
+                    {filters.sortBy === 'team_sector' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                  </div>
+                </th>
                 <th className="p-6">Contatto</th>
-                <th className="p-6">Scadenza Medica</th>
-                <th className="p-6">Stato Squadra</th>
-                <th className="p-6">Tesserato</th>
+                <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => handleSort('medical_expiry')}>
+                  <div className="flex items-center gap-2">
+                    Scadenza Medica
+                    {filters.sortBy === 'medical_expiry' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                  </div>
+                </th>
+                <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => handleSort('is_active')}>
+                  <div className="flex items-center gap-2">
+                    Stato Squadra
+                    {filters.sortBy === 'is_active' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                  </div>
+                </th>
+                <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => handleSort('is_registered')}>
+                  <div className="flex items-center gap-2">
+                    Tesserato
+                    {filters.sortBy === 'is_registered' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                  </div>
+                </th>
                 <th className="p-6 text-right">Azioni</th>
               </tr>
             </thead>

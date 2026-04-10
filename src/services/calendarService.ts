@@ -14,7 +14,7 @@ export interface CalendarEvent {
 }
 
 export const calendarService = {
-  async getEventsForMonth(month: Date): Promise<CalendarEvent[]> {
+  async getEventsForMonth(_month: Date): Promise<CalendarEvent[]> {
     // 1. Get Tasks
     const tasks = await staffService.getTasks()
     
@@ -29,7 +29,7 @@ export const calendarService = {
         events.push({
           id: `task-${task.id}`,
           title: `Task: ${task.title}`,
-          description: task.description,
+          description: task.description ?? undefined,
           date: task.start_date,
           type: 'task',
           status: task.status,

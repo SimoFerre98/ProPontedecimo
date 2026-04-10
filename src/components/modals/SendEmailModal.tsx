@@ -29,7 +29,7 @@ const ROLE_LABELS: Record<UserRole, string> = {
 type RecipientMode = 'single' | 'group'
 type GroupTarget = 'all' | UserRole | `sector:${string}`
 
-function recipientLabel(target: GroupTarget, sectors: string[]): string {
+function recipientLabel(target: GroupTarget): string {
   if (target === 'all') return 'Tutti gli utenti'
   if (target.startsWith('sector:')) {
     const s = target.replace('sector:', '')
@@ -531,7 +531,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                     </span>
                     {!resolvingCount && resolvedCount !== null && (
                       <span className="text-[10px] text-muted-foreground font-semibold">
-                        · {recipientLabel(groupTarget, sectors)}
+                        · {recipientLabel(groupTarget)}
                       </span>
                     )}
                   </div>

@@ -48,7 +48,8 @@ export const athleteService = {
       isActive?: 'all' | 'active' | 'inactive'
       isRegistered?: 'all' | 'yes' | 'no'
       medicalStatus?: 'all' | 'expired' | 'valid' | 'missing'
-      sortBy?: 'last_name' | 'created_at' | 'medical_expiry'
+      privacyStatus?: 'all' | 'accepted' | 'missing'
+      sortBy?: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
       sortDir?: 'asc' | 'desc'
     }
   ) {
@@ -83,6 +84,9 @@ export const athleteService = {
     } else if (filters?.medicalStatus === 'missing') {
       query = query.is('medical_expiry', null)
     }
+
+    if (filters?.privacyStatus === 'accepted') query = query.eq('privacy_accepted', true)
+    if (filters?.privacyStatus === 'missing') query = query.or('privacy_accepted.eq.false,privacy_accepted.is.null')
 
     const { data, error, count } = await query
     if (error) throw error

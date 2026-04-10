@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
@@ -9,7 +9,9 @@ import {
   User,
   AlertCircle,
   Clock,
-  ChevronRight
+  ChevronRight,
+  ArrowDown,
+  ArrowUp
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { medicalService, type MedicalVisitRecord, type VisitStatus } from '@/services/medicalService'
@@ -28,11 +30,22 @@ export default function MedicalVisits() {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedVisit, setSelectedVisit] = useState<MedicalVisitRecord | null>(null)
+  const [sortBy, setSortBy] = useState<'last_name' | 'first_name' | 'team_sector' | 'medical_expiry'>('last_name')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['medical-visits', search, sectorFilter, page],
-    queryFn: () => medicalService.getMedicalVisits(search, sectorFilter, page, pageSize),
+    queryKey: ['medical-visits', search, sectorFilter, page, sortBy, sortDir],
+    queryFn: () => medicalService.getMedicalVisits(search, sectorFilter, page, pageSize, sortBy, sortDir),
   })
+
+  function handleSort(field: typeof sortBy) {
+    if (sortBy === field) {
+      setSortDir(p => p === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortBy(field)
+      setSortDir('asc')
+    }
+  }
 
   const visits = data?.data || []
   const totalCount = data?.count || 0
@@ -98,9 +111,24 @@ export default function MedicalVisits() {
             <thead>
               <tr className="border-b border-black/5 dark:border-white/10 bg-black/[0.01] dark:bg-white/[0.02]">
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center w-16">#</th>
-                <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Atleta</th>
-                <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Settore</th>
-                <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Data Scadenza</th>
+                <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none" onClick={() => handleSort('last_name')}>
+                  <div className="flex items-center gap-2">
+                    Atleta
+                    {sortBy === 'last_name' && (sortDir === 'asc' ? <ArrowUp className="w-3 h-3 text-primary" /> : <ArrowDown className="w-3 h-3 text-primary" />)}
+                  </div>
+                </th>
+                <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none" onClick={() => handleSort('team_sector')}>
+                  <div className="flex items-center gap-2">
+                    Settore
+                    {sortBy === 'team_sector' && (sortDir === 'asc' ? <ArrowUp className="w-3 h-3 text-primary" /> : <ArrowDown className="w-3 h-3 text-primary" />)}
+                  </div>
+                </th>
+                <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none" onClick={() => handleSort('medical_expiry')}>
+                  <div className="flex items-center gap-2">
+                    Data Scadenza
+                    {sortBy === 'medical_expiry' && (sortDir === 'asc' ? <ArrowUp className="w-3 h-3 text-primary" /> : <ArrowDown className="w-3 h-3 text-primary" />)}
+                  </div>
+                </th>
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Stato</th>
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-right">Dettagli</th>
               </tr>

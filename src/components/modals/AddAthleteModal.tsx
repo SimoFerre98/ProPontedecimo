@@ -65,18 +65,7 @@ function FieldLabel({ label, required }: Readonly<{ label: string; required?: bo
   )
 }
 
-function Field({ icon: Icon, children }: Readonly<{ icon?: React.ElementType; children: React.ReactNode }>) {
-  return (
-    <div className="space-y-2">
-      {children}
-      {Icon && (
-        <div className="relative">
-          <Icon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 pointer-events-none z-10" />
-        </div>
-      )}
-    </div>
-  )
-}
+
 
 export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, availableSectors = [] }: Readonly<AddAthleteModalProps>) {
   const [loading, setLoading] = useState(false)
