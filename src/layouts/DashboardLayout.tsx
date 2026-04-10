@@ -21,12 +21,15 @@ import {
   Moon,
   Monitor,
   Mail,
+  AlertCircle,
+  Info,
   Bell,
   ChevronDown,
   Calendar
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/hooks/useTheme'
+import { useNotifications } from '@/hooks/useNotifications'
 import ProfileModal from '@/components/modals/ProfileModal'
 import SettingsModal from '@/components/modals/SettingsModal'
 import SendEmailModal from '@/components/modals/SendEmailModal'
@@ -64,6 +67,7 @@ export default function DashboardLayout() {
   const { profile, role, signOut } = useAuth()
   const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
+  const { data: notifications = [], isLoading: isLoadingNotifications } = useNotifications()
   
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
@@ -171,7 +175,9 @@ export default function DashboardLayout() {
               className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted/60 border border-border/50 hover:border-primary/30 transition-all outline-none"
             >
               <Bell className="w-4 h-4 text-muted-foreground" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_oklch(0.33_0.13_15/0.7)]"/>
+              {notifications.length > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.7)] animate-pulse"/>
+              )}
             </button>
             <AnimatePresence>
               {isNotificationsOpen && (
@@ -179,18 +185,66 @@ export default function DashboardLayout() {
                   initial={{ opacity: 0, y: -10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  className="absolute top-full right-0 mt-3 w-80 bg-background/95 backdrop-blur-3xl p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50"
+                  className="absolute top-full right-0 mt-3 w-80 sm:w-96 bg-background/95 backdrop-blur-3xl p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50 overflow-hidden"
                 >
                   <div className="flex items-center justify-between px-4 py-3 border-b border-black/5 dark:border-white/10">
                     <p className="text-sm font-black text-foreground">Notifiche</p>
-                    <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">0 nuove</span>
+                    {notifications.length > 0 && (
+                      <span className="text-[10px] font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full">{notifications.length} da gestire</span>
+                    )}
                   </div>
-                  <div className="flex flex-col items-center justify-center py-10 gap-3">
-                    <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-                      <Bell className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                    <p className="text-sm font-semibold text-muted-foreground">Nessuna notifica</p>
-                    <p className="text-xs text-muted-foreground/60 text-center max-w-[180px]">Le notifiche del sistema appariranno qui</p>
+                  
+                  <div className="max-h-[350px] overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-white/10">
+                    {isLoadingNotifications ? (
+                      <div className="flex flex-col items-center justify-center py-10 gap-3">
+                        <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                      </div>
+                    ) : notifications.length > 0 ? (
+                      <div className="flex flex-col gap-1 p-1">
+                        {notifications.map((notif) => (
+                          <button
+                            key={notif.id}
+                            onClick={() => {
+                              setIsNotificationsOpen(false)
+                              navigate(notif.link)
+                            }}
+                            className={cn(
+                              "flex gap-3 items-start p-3 rounded-2xl hover:bg-muted/50 transition-colors text-left",
+                              notif.color === 'red' ? "hover:bg-red-500/5" :
+                              notif.color === 'yellow' ? "hover:bg-amber-500/5" : "hover:bg-primary/5"
+                            )}
+                          >
+                            <div className={cn(
+                              "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5",
+                              notif.color === 'red' ? "bg-red-500/10 text-red-500" :
+                              notif.color === 'yellow' ? "bg-amber-500/10 text-amber-500" :
+                              "bg-muted text-muted-foreground"
+                            )}>
+                              {notif.type === 'medical' ? <Stethoscope className="w-4 h-4" /> :
+                               notif.type === 'task' ? <ClipboardList className="w-4 h-4" /> :
+                               notif.type === 'privacy' ? <Info className="w-4 h-4" /> :
+                               <AlertCircle className="w-4 h-4" />}
+                            </div>
+                            <div className="flex-1">
+                              <p className={cn(
+                                "text-sm font-bold leading-tight mb-0.5",
+                                notif.color === 'red' ? "text-red-500" : 
+                                notif.color === 'yellow' ? "text-amber-500" : ""
+                              )}>{notif.title}</p>
+                              <p className="text-xs text-muted-foreground leading-snug">{notif.message}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-10 gap-3">
+                        <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+                          <Bell className="w-5 h-5 text-muted-foreground" />
+                        </div>
+                        <p className="text-sm font-semibold text-muted-foreground">Nessuna notifica</p>
+                        <p className="text-xs text-muted-foreground/60 text-center max-w-[180px]">Non ci sono elementi urgenti da gestire</p>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}

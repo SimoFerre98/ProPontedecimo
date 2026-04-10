@@ -33,7 +33,11 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
     setLoading(true)
     try {
       await medicalService.updateMedicalExpiry(record.id, medicalExpiry || null)
+      
+      // Invalida tutte le query correlate per aggiornare liste, stats e campanella
       queryClient.invalidateQueries({ queryKey: ['medical-visits'] })
+      queryClient.invalidateQueries({ queryKey: ['medical-visits-stats'] })
+      queryClient.invalidateQueries({ queryKey: ['notifications'] })
       onSuccess?.()
       onClose()
     } catch (error) {
