@@ -1,11 +1,19 @@
 # Changelog
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
-## [0.8.1] - 2026-04-10
+## [0.9.0] - 2026-04-10
+
+### Aggiunto
+- **Configurazione Vercel**: Creato `vercel.json` per gestire il client-side routing (rewrites) e prevenire errori 404 al ricaricamento della pagina.
+- **Sistema di Notifiche Stateless**: Implementato calcolo real-time di avvisi per visite mediche in scadenza e task scaduti.
+- **Badge Notifiche**: Aggiornato il layout con campanella dinamica e dropdown interattivo.
 
 ### Corretto
-- **Fix Overflow Mobile Atleti**: Risolto il problema del pulsante "Filtri" che fuoriusciva dallo schermo su mobile impostando la direttiva `flex-col` al blocco padre su schermi ridotti e permettendo al pulsante di occupare il 100% della larghezza sotto la barra degli strumenti.
-- **Miglioramento Metrica LCP**: Ridotta la durata dell'animazione di entrata della `Dashboard` (da `duration-700` a `duration-300`) per mitigare l'inflazione artificiale del tempo di LCP causato dai fade-in nei tool di testing delle performance locali.
+- **Robustezza Supabase**: Aggiunto controllo esplicito sulle variabili d'ambiente `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` con logging di errore dettagliato.
+- **Sincronizzazione Contatori**: Fix invalidazione cache dopo l'aggiornamento di una visita medica; ora i badge delle statistiche e le notifiche si aggiornano istantaneamente.
+- **Pulsante Filtri Mobile**: Garantita la visibilità del pulsante filtri su schermi ridotti in `AthletesPage`.
+
+## [0.8.1] - 2026-04-10
 
 ## [0.8.0] - 2026-04-05
 
