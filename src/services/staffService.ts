@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase'
 
-export type TaskStatus = 'todo' | 'in_progress' | 'done'
+export type TaskStatus = 'created' | 'ready' | 'done' | 'archive' | 'todo' | 'in_progress'
 
 export interface StaffTask {
   id: string
@@ -9,6 +9,8 @@ export interface StaffTask {
   assigned_to: string | null
   status: TaskStatus
   due_date: string | null
+  start_date: string | null
+  end_date: string | null
   created_by: string | null
   created_at: string
   updated_at: string
@@ -37,6 +39,18 @@ export const staffService = {
     const { data, error } = await supabase
       .from('staff_tasks')
       .insert(task)
+      .select()
+      .single()
+
+    if (error) throw error
+    return data as StaffTask
+  },
+
+  async updateTask(id: string, updates: Partial<Omit<StaffTask, 'id' | 'created_at' | 'assignee'>>) {
+    const { data, error } = await supabase
+      .from('staff_tasks')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
       .select()
       .single()
 

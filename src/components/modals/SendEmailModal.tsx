@@ -17,12 +17,6 @@ interface Profile {
   role: UserRole
 }
 
-interface PlayerEmail {
-  email: string | null
-  first_name: string
-  last_name: string
-  team_sector: string | null
-}
 
 const ROLE_LABELS: Record<UserRole, string> = {
   president: 'Presidenti',
@@ -44,9 +38,46 @@ function recipientLabel(target: GroupTarget, sectors: string[]): string {
   return ROLE_LABELS[target as UserRole] ?? target
 }
 
+interface EmailStats {
+  monthly_emails_sent: number
+  daily_emails_sent: number
+  monthly_limit: number
+  daily_limit: number
+}
+
 interface SendEmailModalProps {
   isOpen: boolean
   onClose: () => void
+}
+
+// Gauge arc component for visual limit display
+function UsageArc({ value, max, color }: { value: number; max: number; color: string }) {
+  const pct = Math.min(value / max, 1)
+  const radius = 28
+  const circumference = Math.PI * radius // half circle
+  const offset = circumference * (1 - pct)
+  const isWarning = pct >= 0.8
+  const arcColor = isWarning ? (pct >= 0.95 ? '#ef4444' : '#f59e0b') : color
+
+  return (
+    <svg viewBox="0 0 72 40" className="w-16 h-10">
+      {/* Track */}
+      <path
+        d="M 8 36 A 28 28 0 0 1 64 36"
+        fill="none" stroke="currentColor" strokeWidth="6"
+        strokeLinecap="round" className="text-muted/20"
+      />
+      {/* Fill */}
+      <path
+        d="M 8 36 A 28 28 0 0 1 64 36"
+        fill="none" stroke={arcColor} strokeWidth="6"
+        strokeLinecap="round"
+        strokeDasharray={`${circumference}`}
+        strokeDashoffset={`${offset}`}
+        style={{ transition: 'stroke-dashoffset 0.6s ease, stroke 0.3s ease' }}
+      />
+    </svg>
+  )
 }
 
 export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailModalProps>) {
@@ -64,6 +95,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
   const [resolvedCount, setResolvedCount] = useState<number | null>(null)
   const [resolvingCount, setResolvingCount] = useState(false)
   const [showSectorDropdown, setShowSectorDropdown] = useState(false)
+  const [emailStats, setEmailStats] = useState<EmailStats | null>(null)
   const sectorRef = useRef<HTMLDivElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
@@ -79,10 +111,10 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
       setResult(null)
       setResolvedCount(null)
       void fetchSectors()
+      void fetchEmailStats()
     }
   }, [isOpen])
 
-  // Resolve recipient count whenever mode/target changes
   useEffect(() => {
     if (!isOpen) return
     void resolveCount()
@@ -96,6 +128,31 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
     if (data) {
       const unique = Array.from(new Set(data.map(p => p.team_sector).filter(Boolean))) as string[]
       setSectors(unique.sort())
+    }
+  }
+
+  const fetchEmailStats = async () => {
+    // Get this month's usage from email_usage table
+    const now = new Date()
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
+
+    const { data: monthData } = await supabase
+      .from('email_usage')
+      .select('recipient_count, sent_at')
+      .gte('sent_at', startOfMonth)
+
+    if (monthData) {
+      const monthly_emails_sent = monthData.reduce((sum, r) => sum + r.recipient_count, 0)
+      const daily_emails_sent = monthData
+        .filter(r => r.sent_at >= startOfDay)
+        .reduce((sum, r) => sum + r.recipient_count, 0)
+      setEmailStats({
+        monthly_emails_sent,
+        daily_emails_sent,
+        monthly_limit: 3000,
+        daily_limit: 100,
+      })
     }
   }
 
@@ -120,7 +177,6 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
     const emails: string[] = []
 
     if (groupTarget === 'all' || !groupTarget.startsWith('sector:')) {
-      // From profiles
       let query = supabase.from('profiles').select('email')
       if (groupTarget !== 'all') {
         query = query.eq('role', groupTarget as UserRole)
@@ -130,7 +186,6 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
     }
 
     if (groupTarget.startsWith('sector:')) {
-      // From players table
       const sector = groupTarget.replace('sector:', '')
       const { data } = await supabase
         .from('players')
@@ -168,6 +223,11 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
       const to = await resolveRecipients(true)
       if (to.length === 0) throw new Error('Nessun destinatario trovato')
 
+      // Check daily limit
+      if (emailStats && emailStats.daily_emails_sent + to.length > emailStats.daily_limit) {
+        throw new Error(`Limite giornaliero superato: puoi ancora inviare ${Math.max(0, emailStats.daily_limit - emailStats.daily_emails_sent)} email oggi.`)
+      }
+
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Sessione non valida. Rieffettua il login.')
 
@@ -176,6 +236,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
           to,
           subject: subject.trim(),
           html: body.replaceAll('\n', '<br/>'),
+          groupTarget: mode === 'group' ? groupTarget : undefined,
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
@@ -184,6 +245,8 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
 
       if (res.error) throw new Error(res.error.message)
       setResult({ success: true, message: `✓ Email inviata a ${to.length} destinatari!` })
+      // Refresh stats after sending
+      void fetchEmailStats()
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Errore durante l'invio."
       setResult({ success: false, message: msg })
@@ -193,6 +256,10 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
 
   const canSend = subject.trim().length > 0 && body.trim().length > 0 &&
     (mode === 'group' || singleEmail.includes('@'))
+
+  // Warn if this send would exceed limits
+  const dailyRemaining = emailStats ? Math.max(0, emailStats.daily_limit - emailStats.daily_emails_sent) : null
+  const wouldExceedDaily = dailyRemaining !== null && resolvedCount !== null && resolvedCount > dailyRemaining
 
   if (!isOpen) return null
 
@@ -223,7 +290,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                     Invia <span className="text-primary not-italic">Email</span>
                   </h2>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">
-                    Comunicazione interna alla società
+                    Comunicazione interna · da onboarding@resend.dev
                   </p>
                 </div>
               </div>
@@ -232,7 +299,89 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto no-scrollbar px-8 pb-8 space-y-6">
+            {/* ── Email Usage Counter ── */}
+            {emailStats && (
+              <div className="mx-8 mb-2 shrink-0">
+                <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
+                  {/* Daily */}
+                  <div className="flex items-center gap-3">
+                    <div className="relative flex flex-col items-center">
+                      <UsageArc
+                        value={emailStats.daily_emails_sent}
+                        max={emailStats.daily_limit}
+                        color="#6366f1"
+                      />
+                      <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground -mt-1">Oggi</span>
+                    </div>
+                    <div>
+                      <div className="flex items-baseline gap-1">
+                        <span className={cn(
+                          "text-xl font-black tabular-nums",
+                          emailStats.daily_emails_sent / emailStats.daily_limit >= 0.95 ? "text-red-500" :
+                          emailStats.daily_emails_sent / emailStats.daily_limit >= 0.8 ? "text-amber-500" : "text-foreground"
+                        )}>
+                          {emailStats.daily_emails_sent}
+                        </span>
+                        <span className="text-sm text-muted-foreground font-bold">/ {emailStats.daily_limit}</span>
+                      </div>
+                      <p className="text-[10px] font-bold text-muted-foreground leading-tight">
+                        <span className={cn(
+                          "font-black",
+                          (emailStats.daily_limit - emailStats.daily_emails_sent) <= 10 ? "text-red-500" : "text-primary"
+                        )}>
+                          {Math.max(0, emailStats.daily_limit - emailStats.daily_emails_sent)}
+                        </span> rimaste oggi
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Monthly */}
+                  <div className="flex items-center gap-3 border-l border-black/5 dark:border-white/10 pl-3">
+                    <div className="relative flex flex-col items-center">
+                      <UsageArc
+                        value={emailStats.monthly_emails_sent}
+                        max={emailStats.monthly_limit}
+                        color="#10b981"
+                      />
+                      <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground -mt-1">Mese</span>
+                    </div>
+                    <div>
+                      <div className="flex items-baseline gap-1">
+                        <span className={cn(
+                          "text-xl font-black tabular-nums",
+                          emailStats.monthly_emails_sent / emailStats.monthly_limit >= 0.95 ? "text-red-500" :
+                          emailStats.monthly_emails_sent / emailStats.monthly_limit >= 0.8 ? "text-amber-500" : "text-foreground"
+                        )}>
+                          {emailStats.monthly_emails_sent}
+                        </span>
+                        <span className="text-sm text-muted-foreground font-bold">/ {emailStats.monthly_limit}</span>
+                      </div>
+                      <p className="text-[10px] font-bold text-muted-foreground leading-tight">
+                        <span className={cn(
+                          "font-black",
+                          (emailStats.monthly_limit - emailStats.monthly_emails_sent) <= 100 ? "text-amber-500" : "text-emerald-500"
+                        )}>
+                          {Math.max(0, emailStats.monthly_limit - emailStats.monthly_emails_sent)}
+                        </span> rimaste questo mese
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Warning if about to exceed */}
+                {wouldExceedDaily && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold"
+                  >
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    Attenzione: {resolvedCount} destinatari supererebbe il limite giornaliero ({dailyRemaining} email rimaste).
+                  </motion.div>
+                )}
+              </div>
+            )}
+
+            <div className="flex-1 overflow-y-auto no-scrollbar px-8 pb-8 space-y-6 pt-2">
 
               {/* ── Mode Toggle ── */}
               <div className="flex gap-2 bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-black/5 dark:border-white/10">
@@ -451,7 +600,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                 </button>
                 <button
                   onClick={() => void handleSend()}
-                  disabled={!canSend || sending}
+                  disabled={!canSend || sending || wouldExceedDaily}
                   className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 active:scale-95"
                 >
                   {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}

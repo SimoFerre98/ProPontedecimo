@@ -194,7 +194,7 @@ export default function Athletes() {
       </div>
 
       {/* Toolbar + Filter Button */}
-      <div className="flex w-full items-center gap-2">
+      <div className="flex flex-col lg:flex-row w-full items-stretch lg:items-center gap-2">
         <FilterToolbar
           search={search}
           onSearchChange={(value) => {
@@ -215,7 +215,7 @@ export default function Athletes() {
           variant="outline"
           onClick={() => { setShowFilters(!showFilters); setPendingFilters(filters) }}
           className={cn(
-            "pill h-14 px-5 shrink-0 gap-2 border transition-all font-black uppercase tracking-widest text-[10px]",
+            "pill h-14 px-5 shrink-0 gap-2 border transition-all font-black uppercase tracking-widest text-[10px] w-full lg:w-auto justify-center",
             filterCount > 0
               ? "border-primary/50 bg-primary/10 text-primary hover:bg-primary/20"
               : "border-black/10 dark:border-white/10 hover:border-primary"

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useClickOutside } from '@/hooks/useClickOutside'
 import {
   LayoutDashboard,
   Users,
@@ -29,6 +30,7 @@ import { useTheme } from '@/hooks/useTheme'
 import ProfileModal from '@/components/modals/ProfileModal'
 import SettingsModal from '@/components/modals/SettingsModal'
 import SendEmailModal from '@/components/modals/SendEmailModal'
+import CalendarModal from '@/components/modals/CalendarModal'
 
 const NAV_ITEMS = [
   { to: '/',          icon: LayoutDashboard, label: 'Dashboard',      exact: true },
@@ -70,7 +72,16 @@ export default function DashboardLayout() {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [isSeasonDropdownOpen, setIsSeasonDropdownOpen] = useState(false)
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
   const [selectedSeason, setSelectedSeason] = useState('2024/2025')
+
+  const profileRef = useRef<HTMLDivElement>(null)
+  const notificationsRef = useRef<HTMLDivElement>(null)
+  const seasonRef = useRef<HTMLDivElement>(null)
+
+  useClickOutside(profileRef, () => setIsProfileMenuOpen(false), isProfileMenuOpen)
+  useClickOutside(notificationsRef, () => setIsNotificationsOpen(false), isNotificationsOpen)
+  useClickOutside(seasonRef, () => setIsSeasonDropdownOpen(false), isSeasonDropdownOpen)
 
   async function handleSignOut() {
     await signOut()
@@ -104,10 +115,10 @@ export default function DashboardLayout() {
 
         <div className="flex items-center gap-3">
           {/* Season Selector */}
-          <div className="relative hidden sm:block">
+          <div className="relative hidden sm:block" ref={seasonRef}>
             <button
               onClick={() => { setIsSeasonDropdownOpen(!isSeasonDropdownOpen); setIsNotificationsOpen(false); setIsProfileMenuOpen(false) }}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium hover:border-primary/40 hover:bg-primary/5 transition-all"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium hover:border-primary/40 hover:bg-primary/5 transition-all outline-none"
             >
               <Calendar className="w-3 h-3 text-muted-foreground" />
               <span className="text-muted-foreground">Stagione</span>
@@ -116,76 +127,77 @@ export default function DashboardLayout() {
             </button>
             <AnimatePresence>
               {isSeasonDropdownOpen && (
-                <>
-                  <div role="presentation" className="fixed inset-0 z-40" onClick={() => setIsSeasonDropdownOpen(false)} onKeyDown={() => setIsSeasonDropdownOpen(false)} />
-                  <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                    className="absolute top-full left-0 mt-2 w-44 bg-background/95 backdrop-blur-3xl p-2 rounded-2xl shadow-[0_16px_40px_-8px_rgba(0,0,0,0.4)] border border-black/10 dark:border-white/20 z-50 flex flex-col gap-1"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {SEASONS.map(season => (
-                      <button
-                        key={season}
-                        onClick={() => { setSelectedSeason(season); setIsSeasonDropdownOpen(false) }}
-                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                          selectedSeason === season
-                            ? 'bg-primary text-white'
-                            : 'text-foreground/70 hover:bg-primary/10 hover:text-primary'
-                        }`}
-                      >
-                        <span>{season}</span>
-                        {selectedSeason === season && <span className="text-[10px] opacity-70">✓</span>}
-                      </button>
-                    ))}
-                    <div className="mt-1 pt-2 border-t border-black/5 dark:border-white/10 px-3 pb-1">
-                      <p className="text-[10px] text-muted-foreground font-medium">Funzionalità in arrivo</p>
-                    </div>
-                  </motion.div>
-                </>
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                  className="absolute top-full left-0 mt-2 w-44 bg-background/95 backdrop-blur-3xl p-2 rounded-2xl shadow-[0_16px_40px_-8px_rgba(0,0,0,0.4)] border border-black/10 dark:border-white/20 z-50 flex flex-col gap-1"
+                >
+                  {SEASONS.map(season => (
+                    <button
+                      key={season}
+                      onClick={() => { setSelectedSeason(season); setIsSeasonDropdownOpen(false) }}
+                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                        selectedSeason === season
+                          ? 'bg-primary text-white'
+                          : 'text-foreground/70 hover:bg-primary/10 hover:text-primary'
+                      }`}
+                    >
+                      <span>{season}</span>
+                      {selectedSeason === season && <span className="text-[10px] opacity-70">✓</span>}
+                    </button>
+                  ))}
+                  <div className="mt-1 pt-2 border-t border-black/5 dark:border-white/10 px-3 pb-1">
+                    <p className="text-[10px] text-muted-foreground font-medium">Funzionalità in arrivo</p>
+                  </div>
+                </motion.div>
               )}
             </AnimatePresence>
           </div>
 
+          {/* Calendar Button */}
+          <button
+            onClick={() => setIsCalendarModalOpen(true)}
+            className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted/60 border border-border/50 hover:border-primary/30 transition-all group/cal"
+            title="Calendario"
+          >
+            <Calendar className="w-4 h-4 text-muted-foreground group-hover/cal:text-primary transition-colors" />
+          </button>
+
           {/* Notifications Bell */}
-          <div className="relative">
+          <div className="relative" ref={notificationsRef}>
             <button
               onClick={() => { setIsNotificationsOpen(!isNotificationsOpen); setIsSeasonDropdownOpen(false); setIsProfileMenuOpen(false) }}
-              className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted/60 border border-border/50 hover:border-primary/30 transition-all"
+              className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted/60 border border-border/50 hover:border-primary/30 transition-all outline-none"
             >
               <Bell className="w-4 h-4 text-muted-foreground" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary shadow-[0_0_6px_oklch(0.33_0.13_15/0.7)]"/>
             </button>
             <AnimatePresence>
               {isNotificationsOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)} />
-                  <motion.div
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    className="absolute top-full right-0 mt-3 w-80 bg-background/95 backdrop-blur-3xl p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-black/5 dark:border-white/10">
-                      <p className="text-sm font-black text-foreground">Notifiche</p>
-                      <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">0 nuove</span>
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  className="absolute top-full right-0 mt-3 w-80 bg-background/95 backdrop-blur-3xl p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50"
+                >
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-black/5 dark:border-white/10">
+                    <p className="text-sm font-black text-foreground">Notifiche</p>
+                    <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">0 nuove</span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center py-10 gap-3">
+                    <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+                      <Bell className="w-5 h-5 text-muted-foreground" />
                     </div>
-                    <div className="flex flex-col items-center justify-center py-10 gap-3">
-                      <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
-                        <Bell className="w-5 h-5 text-muted-foreground" />
-                      </div>
-                      <p className="text-sm font-semibold text-muted-foreground">Nessuna notifica</p>
-                      <p className="text-xs text-muted-foreground/60 text-center max-w-[180px]">Le notifiche del sistema appariranno qui</p>
-                    </div>
-                  </motion.div>
-                </>
+                    <p className="text-sm font-semibold text-muted-foreground">Nessuna notifica</p>
+                    <p className="text-xs text-muted-foreground/60 text-center max-w-[180px]">Le notifiche del sistema appariranno qui</p>
+                  </div>
+                </motion.div>
               )}
             </AnimatePresence>
           </div>
           
-          <div className="relative">
+          <div className="relative" ref={profileRef}>
             <button 
               onClick={toggleProfileMenu}
               className="flex items-center gap-3 pl-4 border-l border-border hover:opacity-80 transition-opacity text-left outline-none"
@@ -206,21 +218,12 @@ export default function DashboardLayout() {
             {/* Profile Dropdown Menu */}
             <AnimatePresence>
               {isProfileMenuOpen && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-40" 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setIsProfileMenuOpen(false)
-                    }}
-                  />
-                  <motion.div
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    className="absolute top-full right-0 mt-4 w-72 bg-background/95 backdrop-blur-3xl p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50 flex flex-col gap-1 cursor-default text-foreground"
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  className="absolute top-full right-0 mt-4 w-72 bg-background/95 backdrop-blur-3xl p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50 flex flex-col gap-1 cursor-default text-foreground"
+                >
                     <div className="p-4 border-b border-black/5 dark:border-white/10 mb-2">
                       <p className="text-base font-black truncate text-foreground">
                         {profile?.full_name ?? 'Utente'}
@@ -301,7 +304,6 @@ export default function DashboardLayout() {
                       </button>
                     </div>
                   </motion.div>
-                </>
               )}
             </AnimatePresence>
           </div>
@@ -390,6 +392,7 @@ export default function DashboardLayout() {
       <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
       <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
       <SendEmailModal isOpen={isEmailModalOpen} onClose={() => setIsEmailModalOpen(false)} />
+      <CalendarModal isOpen={isCalendarModalOpen} onClose={() => setIsCalendarModalOpen(false)} />
     </div>
   )
 }
