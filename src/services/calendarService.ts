@@ -1,5 +1,7 @@
 import { medicalService } from './medicalService'
 import { staffService, type StaffTask } from './staffService'
+import { eachDayOfInterval, format, parseISO, isValid } from 'date-fns'
+import { it } from 'date-fns/locale'
 
 export type CalendarEventType = 'task' | 'medical'
 
@@ -23,12 +25,53 @@ export const calendarService = {
 
     const events: CalendarEvent[] = []
 
-    // Map Tasks to events (showing on start_date)
+    // Map Tasks to events (handling multi-day and time)
     tasks.forEach((task: StaffTask) => {
-      if (task.start_date) {
+      if (!task.start_date) return
+
+      const start = parseISO(task.start_date)
+      if (!isValid(start)) return
+
+      const end = task.end_date || task.due_date ? parseISO(task.end_date || task.due_date!) : null
+      
+      const timeStr = task.start_date.includes('T') 
+        ? task.start_date.split('T')[1].substring(0, 5)
+        : null
+
+      const displayTitle = timeStr ? `${timeStr} - ${task.title}` : task.title
+
+      if (end && isValid(end) && end > start) {
+        // Multi-day task
+        try {
+          const days = eachDayOfInterval({ start, end })
+          days.forEach((day, index) => {
+            events.push({
+              id: `task-${task.id}-${index}`,
+              title: index === 0 ? `Task: ${displayTitle}` : `Cont. ${task.title}`,
+              description: task.description ?? undefined,
+              date: day.toISOString(),
+              type: 'task',
+              status: task.status,
+              originalData: task
+            })
+          })
+        } catch (e) {
+          // Fallback to single day if interval is invalid
+          events.push({
+            id: `task-${task.id}`,
+            title: `Task: ${displayTitle}`,
+            description: task.description ?? undefined,
+            date: task.start_date,
+            type: 'task',
+            status: task.status,
+            originalData: task
+          })
+        }
+      } else {
+        // Single day task
         events.push({
           id: `task-${task.id}`,
-          title: `Task: ${task.title}`,
+          title: `Task: ${displayTitle}`,
           description: task.description ?? undefined,
           date: task.start_date,
           type: 'task',

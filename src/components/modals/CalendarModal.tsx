@@ -26,7 +26,9 @@ import { cn } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import { calendarService, type CalendarEvent } from '@/services/calendarService'
 import TaskModal from './TaskModal'
+import MedicalVisitModal from './MedicalVisitModal'
 import type { StaffTask } from '@/services/staffService'
+import type { MedicalVisitRecord } from '@/services/medicalService'
 
 interface CalendarModalProps {
   isOpen: boolean
@@ -36,7 +38,9 @@ interface CalendarModalProps {
 export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModalProps>) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedTask, setSelectedTask] = useState<StaffTask | null>(null)
+  const [selectedMedical, setSelectedMedical] = useState<MedicalVisitRecord | null>(null)
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
+  const [isMedicalModalOpen, setIsMedicalModalOpen] = useState(false)
 
   const { data: events = [] } = useQuery({
     queryKey: ['calendar-events', format(currentDate, 'yyyy-MM')],
@@ -59,8 +63,8 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
       setSelectedTask(event.originalData)
       setIsTaskModalOpen(true)
     } else if (event.type === 'medical') {
-      // For medical, we could navigate or show a small alert
-      alert(`Scadenza Visita: ${event.originalData.first_name} ${event.originalData.last_name}\nData: ${format(new Date(event.originalData.medical_expiry), 'PPP', { locale: it })}`)
+      setSelectedMedical(event.originalData)
+      setIsMedicalModalOpen(true)
     }
   }
 
@@ -163,13 +167,13 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
                     )}
                   </div>
 
-                  <div className="space-y-1.5">
-                    {dayEvents.slice(0, 3).map((event) => (
+                  <div className="space-y-1.5 max-h-[80px] overflow-y-auto no-scrollbar pr-1">
+                    {dayEvents.map((event) => (
                       <button
                         key={event.id}
                         onClick={() => handleEventClick(event)}
                         className={cn(
-                          "w-full text-left px-2 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-tighter truncate transition-all flex items-center gap-1.5 border",
+                          "w-full text-left px-2 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-tighter truncate transition-all flex items-center gap-1.5 border shrink-0",
                           event.type === 'task' 
                             ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20" 
                             : "bg-rose-500/10 text-rose-500 border-rose-500/20 hover:bg-rose-500/20"
@@ -179,11 +183,6 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
                         {event.title.replace('Task: ', '').replace('Scadenza Visita: ', '')}
                       </button>
                     ))}
-                    {dayEvents.length > 3 && (
-                      <p className="text-[8px] font-bold text-center text-muted-foreground pt-1 italic">
-                        +{dayEvents.length - 3} altri...
-                      </p>
-                    )}
                   </div>
                 </div>
               )
@@ -208,6 +207,15 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
         isOpen={isTaskModalOpen} 
         onClose={() => setIsTaskModalOpen(false)}
         task={selectedTask}
+      />
+
+      <MedicalVisitModal
+        isOpen={isMedicalModalOpen}
+        onClose={() => setIsMedicalModalOpen(false)}
+        onSuccess={() => {
+          setIsMedicalModalOpen(false)
+        }}
+        record={selectedMedical}
       />
     </div>
   )

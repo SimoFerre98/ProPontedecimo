@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
+import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ClipboardList, User, Calendar, FileText, Save, Loader2, Trash2 } from 'lucide-react'
+import { X, ClipboardList, User, Calendar, FileText, Save, Loader2, Trash2, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { staffService, type StaffTask, type TaskStatus } from '@/services/staffService'
@@ -25,34 +26,59 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
     queryFn: () => staffService.getProfiles()
   })
 
+  const [showEndTime, setShowEndTime] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     assigned_to: '',
     status: 'created' as TaskStatus,
     start_date: new Date().toISOString().split('T')[0],
-    end_date: new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0], // +7 days default
+    start_time: '09:00',
+    end_date: '',
+    end_time: '10:00',
   })
+
+  // Helpers to handle ISO to Local Data
+  const parseDateTime = (isoString: string | null) => {
+    if (!isoString) return { date: '', time: '' }
+    const [date, rest] = isoString.split('T')
+    const time = rest ? rest.substring(0, 5) : ''
+    return { date, time }
+  }
+
+  const combineDateTime = (date: string, time: string) => {
+    if (!date) return null
+    if (!time) return `${date}T00:00:00`
+    return `${date}T${time}:00`
+  }
 
   useEffect(() => {
     if (isOpen) {
       if (task) {
+        const start = parseDateTime(task.start_date)
+        const end = parseDateTime(task.end_date || task.due_date)
+        setShowEndTime(!!(task.end_date || task.due_date))
         setFormData({
           title: task.title || '',
           description: task.description || '',
           assigned_to: task.assigned_to || '',
           status: task.status || 'created',
-          start_date: task.start_date || new Date().toISOString().split('T')[0],
-          end_date: task.end_date || task.due_date || new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0],
+          start_date: start.date || new Date().toISOString().split('T')[0],
+          start_time: start.time || '09:00',
+          end_date: end.date || '',
+          end_time: end.time || '10:00',
         })
       } else {
+        setShowEndTime(false)
         setFormData({
           title: '',
           description: '',
           assigned_to: '',
           status: defaultStatus || 'created',
           start_date: new Date().toISOString().split('T')[0],
-          end_date: new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0],
+          start_time: '09:00',
+          end_date: '',
+          end_time: '10:00',
         })
       }
       setResult(null)
@@ -66,16 +92,25 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
     setLoading(true)
     setResult(null)
     try {
+      const startIso = combineDateTime(formData.start_date, formData.start_time)
+      const endIso = showEndTime ? combineDateTime(formData.end_date, formData.end_time) : null
+
+      const payload = {
+        title: formData.title,
+        description: formData.description,
+        assigned_to: formData.assigned_to,
+        status: formData.status,
+        start_date: startIso,
+        end_date: endIso,
+        due_date: endIso
+      }
+
       if (task) {
-        await staffService.updateTask(task.id, {
-          ...formData,
-          due_date: formData.end_date // Keep due_date in sync for now
-        })
+        await staffService.updateTask(task.id, payload)
       } else {
         const { data: { user } } = await supabase.auth.getUser()
         await staffService.createTask({
-          ...formData,
-          due_date: formData.end_date,
+          ...payload,
           created_by: user?.id || ''
         })
       }
@@ -196,33 +231,77 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label htmlFor="task_start" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Data Inizio</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40" />
-                    <Input
-                      id="task_start"
-                      type="date"
-                      required
-                      value={formData.start_date}
-                      onChange={e => setFormData({ ...formData, start_date: e.target.value })}
-                      className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold"
-                    />
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label htmlFor="task_start" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Inizio</label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                        <Input
+                          id="task_start"
+                          type="date"
+                          required
+                          value={formData.start_date}
+                          onChange={e => setFormData({ ...formData, start_date: e.target.value })}
+                          className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-sm pl-11 font-bold"
+                        />
+                      </div>
+                      <div className="relative w-32">
+                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                        <Input
+                          type="time"
+                          value={formData.start_time}
+                          onChange={e => setFormData({ ...formData, start_time: e.target.value })}
+                          className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-sm pl-11 font-bold"
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="task_end" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Data Fine</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40" />
-                    <Input
-                      id="task_end"
-                      type="date"
-                      required
-                      value={formData.end_date}
-                      onChange={e => setFormData({ ...formData, end_date: e.target.value })}
-                      className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold"
-                    />
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center pr-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Fine (Opzionale)</label>
+                      <button
+                        type="button"
+                        onClick={() => setShowEndTime(!showEndTime)}
+                        className={cn(
+                          "text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg transition-all",
+                          showEndTime ? "bg-primary text-white" : "bg-black/5 dark:bg-white/5 text-muted-foreground"
+                        )}
+                      >
+                        {showEndTime ? 'Disattiva' : 'Attiva'}
+                      </button>
+                    </div>
+                    
+                    {showEndTime ? (
+                      <div className="flex gap-2 animate-in fade-in slide-in-from-top-2">
+                        <div className="relative flex-1">
+                          <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                          <Input
+                            id="task_end"
+                            type="date"
+                            required={showEndTime}
+                            value={formData.end_date}
+                            onChange={e => setFormData({ ...formData, end_date: e.target.value })}
+                            className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-sm pl-11 font-bold"
+                          />
+                        </div>
+                        <div className="relative w-32">
+                          <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                          <Input
+                            type="time"
+                            value={formData.end_time}
+                            onChange={e => setFormData({ ...formData, end_time: e.target.value })}
+                            className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-sm pl-11 font-bold"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="h-12 flex items-center justify-center border border-dashed border-black/10 dark:border-white/10 rounded-full opacity-50">
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase">Attività di un solo giorno</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
