@@ -110,12 +110,15 @@ export const paymentService = {
   // Crea o aggiorna un pagamento
   async upsertPayment(payload: PaymentUpsertPayload) {
     // Cerca se esiste già per quell'atleta + rata
-    const { data: existing } = await supabase
+    const { data: existing, error: findError } = await supabase
       .from('payments')
       .select('id')
       .eq('player_id', payload.player_id)
       .eq('installment_no', payload.installment_no)
-      .single()
+      .maybeSingle()
+
+    // Ignora errore PGRST116 (no rows) — è il caso normale per nuovi atleti
+    if (findError && findError.code !== 'PGRST116') throw findError
 
     if (existing) {
       const { error } = await supabase

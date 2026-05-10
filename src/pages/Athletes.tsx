@@ -19,7 +19,6 @@ import {
   ClipboardCheck,
   Clock,
   Trash2,
-  Euro,
   AlertCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -306,8 +305,8 @@ export default function Athletes() {
                   <div className="flex flex-col gap-1.5">
                     {([
                       ['all', 'Tutti'],
-                      ['active', '🟢 In Rosa'],
-                      ['inactive', '⚫ Ritirati'],
+                      ['active', '🟢 Attivo'],
+                      ['inactive', '⚫ Non Attivo'],
                     ] as [FiltersState['isActive'], string][]).map(([val, lbl]) => (
                       <button
                         key={val}
@@ -464,7 +463,7 @@ export default function Athletes() {
           <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Filtri attivi:</span>
           {filters.isActive !== 'all' && (
             <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
-              {filters.isActive === 'active' ? 'In Rosa' : 'Ritirati'}
+              {filters.isActive === 'active' ? 'Attivo' : 'Non Attivo'}
               <button onClick={() => { setFilters(f => ({ ...f, isActive: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
             </span>
           )}
@@ -600,7 +599,7 @@ export default function Athletes() {
                             : "bg-slate-500/10 text-slate-400 border-slate-500/20"
                         )}>
                           <span className="text-[10px] font-black uppercase tracking-widest">
-                            {player.is_active ? 'In Rosa' : 'Ritirato'}
+                            {player.is_active ? 'Attivo' : 'Non Attivo'}
                           </span>
                         </div>
                       </td>
