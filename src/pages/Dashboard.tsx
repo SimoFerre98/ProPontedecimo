@@ -84,70 +84,36 @@ export default function Dashboard() {
   const in30Days = new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]
   const in7Days = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]
 
-  // Totale atleti attivi
-  const { data: totalPlayers, isLoading: l1 } = useQuery({
-    queryKey: [...QK.stats, 'players'],
+  // Recupero unificato delle statistiche tramite RPC
+  const { data: statsData, isLoading: isLoadingStats } = useQuery({
+    queryKey: ['dashboard', 'unified-stats'],
     queryFn: async () => {
-      const { count } = await supabase.from('players').select('*', { count: 'exact', head: true }).eq('is_active', true)
-      return count ?? 0
+      const { data, error } = await supabase.rpc('get_dashboard_stats')
+      if (error) {
+        console.error('Error fetching dashboard stats:', error)
+        return null
+      }
+      return data as {
+        totalPlayers: number
+        expiringMedical: number
+        urgentMedical: number
+        pendingPayments: number
+        sectors: { sector: string; count: number }[]
+      }
     },
   })
 
-  // Scadenze mediche nei prossimi 30 giorni
-  const { data: expiringMedical, isLoading: l2 } = useQuery({
-    queryKey: QK.expiringMedical,
-    queryFn: async () => {
-      const { count } = await supabase.from('players')
-        .select('*', { count: 'exact', head: true })
-        .gte('medical_expiry', today)
-        .lte('medical_expiry', in30Days)
-        .eq('is_active', true)
-      return count ?? 0
-    },
-  })
-
-  // Scadenze mediche entro 7 giorni (urgenti)
-  const { data: urgentMedical, isLoading: l3 } = useQuery({
-    queryKey: [...QK.expiringMedical, 'urgent'],
-    queryFn: async () => {
-      const { count } = await supabase.from('players')
-        .select('*', { count: 'exact', head: true })
-        .gte('medical_expiry', today)
-        .lte('medical_expiry', in7Days)
-        .eq('is_active', true)
-      return count ?? 0
-    },
-  })
-
-  // Pagamenti pending
-  const { data: pendingPayments, isLoading: l4 } = useQuery({
-    queryKey: QK.unpaidPayments,
-    queryFn: async () => {
-      const { count } = await supabase.from('payments')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending')
-      return count ?? 0
-    },
-  })
-
-  // Atleti per settore
-  const { data: sectors } = useQuery({
-    queryKey: [...QK.stats, 'sectors'],
-    queryFn: async () => {
-      const { data } = await supabase.from('players')
-        .select('team_sector')
-        .eq('is_active', true)
-      if (!data) return []
-      const map: Record<string, number> = {}
-      data.forEach(r => {
-        const s = r.team_sector ?? 'Non assegnato'
-        map[s] = (map[s] ?? 0) + 1
-      })
-      return Object.entries(map)
-        .map(([sector, count]) => ({ sector, count }))
-        .sort((a, b) => b.count - a.count)
-    },
-  })
+  const totalPlayers = statsData?.totalPlayers ?? 0
+  const expiringMedical = statsData?.expiringMedical ?? 0
+  const urgentMedical = statsData?.urgentMedical ?? 0
+  const pendingPayments = statsData?.pendingPayments ?? 0
+  const sectors = statsData?.sectors ?? []
+  
+  // Rinomino le variabili di loading per compatibilità con il jsx esistente
+  const l1 = isLoadingStats
+  const l2 = isLoadingStats
+  const l3 = isLoadingStats
+  const l4 = isLoadingStats
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
