@@ -8,7 +8,10 @@ ALTER TABLE payments
   ADD COLUMN IF NOT EXISTS plan TEXT DEFAULT 'installments' CHECK (plan IN ('annual', 'installments')),
   ADD COLUMN IF NOT EXISTS due_date DATE,
   ADD COLUMN IF NOT EXISTS paid_amount_eur NUMERIC(10,2),
-  ADD COLUMN IF NOT EXISTS payment_method TEXT CHECK (payment_method IN ('satispay', 'contanti', 'pos', 'iban'));
+  ADD COLUMN IF NOT EXISTS payment_method TEXT CHECK (payment_method IN ('satispay', 'contanti', 'pos', 'iban')),
+  ADD COLUMN IF NOT EXISTS receipt_number TEXT,
+  ADD COLUMN IF NOT EXISTS receipt_date DATE,
+  ADD COLUMN IF NOT EXISTS notes TEXT;
 
 -- 2. Aggiorna le scadenze delle rate esistenti (opzionale, se ci sono dati)
 -- 1ª rata = 15 settembre dell'anno corrente

@@ -140,6 +140,10 @@ export type Database = {
           season_id: string
           status: Database["public"]["Enums"]["payment_status"] | null
           updated_at: string | null
+          plan: "annual" | "installments" | null
+          due_date: string | null
+          paid_amount_eur: number | null
+          payment_method: "satispay" | "contanti" | "pos" | "iban" | null
         }
         Insert: {
           amount_eur?: number | null
@@ -153,6 +157,10 @@ export type Database = {
           season_id: string
           status?: Database["public"]["Enums"]["payment_status"] | null
           updated_at?: string | null
+          plan?: "annual" | "installments" | null
+          due_date?: string | null
+          paid_amount_eur?: number | null
+          payment_method?: "satispay" | "contanti" | "pos" | "iban" | null
         }
         Update: {
           amount_eur?: number | null
@@ -166,6 +174,10 @@ export type Database = {
           season_id?: string
           status?: Database["public"]["Enums"]["payment_status"] | null
           updated_at?: string | null
+          plan?: "annual" | "installments" | null
+          due_date?: string | null
+          paid_amount_eur?: number | null
+          payment_method?: "satispay" | "contanti" | "pos" | "iban" | null
         }
         Relationships: [
           {

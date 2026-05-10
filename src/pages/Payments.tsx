@@ -31,7 +31,7 @@ export default function Payments() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['payments', search, statusFilter, page],
-    queryFn: () => paymentService.getPayments(search, statusFilter, page, pageSize)
+    queryFn: () => paymentService.getPayments(search, statusFilter, page, pageSize),
   })
 
   const payments = data?.data || []
