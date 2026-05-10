@@ -18,12 +18,15 @@ import {
   SortDesc,
   ClipboardCheck,
   Clock,
-  Trash2
+  Trash2,
+  Euro,
+  AlertCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
 import { athleteService, type Player } from '@/services/athleteService'
+import { paymentService } from '@/services/paymentService'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
 import AddAthleteModal from '@/components/modals/AddAthleteModal'
 import DeleteAthleteModal from '@/components/modals/DeleteAthleteModal'
@@ -83,6 +86,13 @@ export default function Athletes() {
 
   const players = data?.data || []
   const totalCount = data?.count || 0
+
+  const { data: overduePaymentsCount } = useQuery({
+    queryKey: ['overduePaymentsCount'],
+    queryFn: () => paymentService.getOverdueCount(),
+  })
+
+  const overdueCount = overduePaymentsCount || 0
 
   const { data: sectorsData } = useQuery({
     queryKey: ['sectors'],
@@ -154,17 +164,32 @@ export default function Athletes() {
         </div>
       </div>
 
+      {/* Banner Pagamenti in Sospeso */}
+      {overdueCount > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          onClick={() => navigate('/pagamenti')}
+          className="cursor-pointer flex items-center gap-4 px-6 py-4 rounded-3xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/15 transition-all group"
+        >
+          <div className="w-10 h-10 pill bg-red-500/20 flex items-center justify-center shrink-0">
+            <AlertCircle className="w-5 h-5 text-red-500" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest">
+              {overdueCount} {overdueCount === 1 ? 'atleta ha' : 'atleti hanno'} rate non pagate
+            </p>
+            <p className="text-xs text-red-500/70 font-medium mt-0.5">
+              Rata scaduta da oltre 15 giorni — clicca per gestire i pagamenti
+            </p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-red-500/50 transition-transform group-hover:translate-x-1" />
+        </motion.div>
+      )}
+
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { 
-            label: 'In Rosa', 
-            val: players?.filter(p => p.is_active).length || 0, 
-            icon: Users, 
-            color: 'text-emerald-500', 
-            bg: 'bg-emerald-500/10',
-            hint: 'Atleti attualmente in squadra'
-          },
           { 
             label: 'Tesserati FIGC', 
             val: players?.filter(p => p.is_registered).length || 0, 

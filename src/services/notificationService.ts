@@ -123,6 +123,38 @@ export const notificationService = {
       }
     }
 
+    // 3. Fetch Pagamenti in ritardo (>15 giorni dalla scadenza)
+    if (role === 'director' || role === 'president') {
+      const fifteenDaysAgo = new Date()
+      fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15)
+      const dateStr = fifteenDaysAgo.toISOString().split('T')[0]
+
+      const { data: overduePayments } = await supabase
+        .from('payments')
+        .select(`
+          id, installment_no, due_date, amount_eur, status,
+          player:players!inner(first_name, last_name)
+        `)
+        .in('status', ['pending', 'overdue'])
+        .not('due_date', 'is', null)
+        .lt('due_date', dateStr)
+
+      if (overduePayments) {
+        overduePayments.forEach((p: any) => {
+          const daysLate = differenceInDays(now, new Date(p.due_date))
+          notifications.push({
+            id: `payment-overdue-${p.id}`,
+            type: 'payment',
+            title: 'Pagamento Non Ricevuto',
+            message: `${p.player.first_name} ${p.player.last_name} — ${p.installment_no === 1 ? '1ª Rata' : '2ª Rata'} in ritardo di ${daysLate} giorn${daysLate === 1 ? 'o' : 'i'}${p.amount_eur ? ` (€ ${p.amount_eur})` : ''}.`,
+            color: 'red',
+            link: '/pagamenti',
+            timestamp: p.due_date
+          })
+        })
+      }
+    }
+
     // Sor to show most critical/recent first
     // Colors prioritization: red > yellow > blue/gray
     const colorWeight = { red: 3, yellow: 2, blue: 1, gray: 0 }
