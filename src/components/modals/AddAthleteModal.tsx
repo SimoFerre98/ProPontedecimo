@@ -74,7 +74,54 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
   const queryClient = useQueryClient()
   const [formData, setFormData] = useState({ ...EMPTY_FORM })
 
-  const isFormValid = formData.first_name.trim() !== '' && formData.last_name.trim() !== '' && formData.team_sector.trim() !== ''
+  // Calcola età per determinare se è minorenne
+  const isMinor = (() => {
+    if (!formData.birth_date) return false
+    const today = new Date()
+    const birth = new Date(formData.birth_date)
+    const age = today.getFullYear() - birth.getFullYear()
+    const monthDiff = today.getMonth() - birth.getMonth()
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      return age - 1 < 18
+    }
+    return age < 18
+  })()
+
+  // Almeno un telefono obbligatorio
+  const hasPhone = formData.phone_player.trim() !== '' || formData.phone_home.trim() !== ''
+
+  // Se minorenne: almeno un genitore con nome e telefono
+  const hasParentData = (
+    (formData.parent1_name.trim() !== '' && formData.parent1_phone.trim() !== '') ||
+    (formData.parent2_name.trim() !== '' && formData.parent2_phone.trim() !== '')
+  )
+  const parentRequirementMet = !isMinor || hasParentData
+
+  // Tutti i campi obbligatori per sezione
+  const anagrValid =
+    formData.first_name.trim() !== '' &&
+    formData.last_name.trim() !== '' &&
+    formData.birth_date.trim() !== '' &&
+    formData.birth_place.trim() !== '' &&
+    formData.tax_code.trim() !== '' &&
+    formData.citizenship.trim() !== '' &&
+    formData.team_sector.trim() !== ''
+
+  const residenzaValid =
+    formData.address_street.trim() !== '' &&
+    formData.address_city.trim() !== '' &&
+    formData.address_zip.trim() !== ''
+
+  const contattiValid = hasPhone && formData.email.trim() !== ''
+
+  const sportValid = formData.privacy_accepted === true
+
+  const isFormValid =
+    anagrValid &&
+    residenzaValid &&
+    contattiValid &&
+    sportValid &&
+    parentRequirementMet
 
   const set = (key: keyof typeof EMPTY_FORM, value: string | boolean) =>
     setFormData(prev => ({ ...prev, [key]: value }))
@@ -268,28 +315,28 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <FieldLabel label="Luogo di Nascita" />
+                        <FieldLabel label="Luogo di Nascita" required />
                         <div className="relative">
                           <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input placeholder="Genova" value={formData.birth_place} onChange={e => set('birth_place', e.target.value)} className={inputClass} />
+                          <Input required placeholder="Genova" value={formData.birth_place} onChange={e => set('birth_place', e.target.value)} className={inputClass} />
                         </div>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <FieldLabel label="Codice Fiscale" />
+                        <FieldLabel label="Codice Fiscale" required />
                         <div className="relative">
                           <CreditCard className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input placeholder="RSSMRA80A01D969X" value={formData.tax_code}
+                          <Input required placeholder="RSSMRA80A01D969X" value={formData.tax_code}
                             onChange={e => set('tax_code', e.target.value.toUpperCase())} className={inputClass} />
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <FieldLabel label="Cittadinanza" />
+                        <FieldLabel label="Cittadinanza" required />
                         <div className="relative">
                           <FileText className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input placeholder="Italiana" value={formData.citizenship} onChange={e => set('citizenship', e.target.value)} className={inputClass} />
+                          <Input required placeholder="Italiana" value={formData.citizenship} onChange={e => set('citizenship', e.target.value)} className={inputClass} />
                         </div>
                       </div>
                     </div>
@@ -339,23 +386,23 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                 {activeSection === 'residenza' && (
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <FieldLabel label="Indirizzo" />
+                      <FieldLabel label="Indirizzo" required />
                       <div className="relative">
                         <Home className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                        <Input placeholder="Via Roma 1" value={formData.address_street} onChange={e => set('address_street', e.target.value)} className={inputClass} />
+                        <Input required placeholder="Via Roma 1" value={formData.address_street} onChange={e => set('address_street', e.target.value)} className={inputClass} />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <FieldLabel label="Città" />
+                        <FieldLabel label="Città" required />
                         <div className="relative">
                           <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input placeholder="Genova" value={formData.address_city} onChange={e => set('address_city', e.target.value)} className={inputClass} />
+                          <Input required placeholder="Genova" value={formData.address_city} onChange={e => set('address_city', e.target.value)} className={inputClass} />
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <FieldLabel label="CAP" />
-                        <Input placeholder="16100" value={formData.address_zip} onChange={e => set('address_zip', e.target.value)} className={inputClassNoIcon} />
+                        <FieldLabel label="CAP" required />
+                        <Input required placeholder="16100" value={formData.address_zip} onChange={e => set('address_zip', e.target.value)} className={inputClassNoIcon} />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -368,27 +415,56 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                 {/* ── SEZIONE CONTATTI ── */}
                 {activeSection === 'contatti' && (
                   <div className="space-y-4">
+                    {/* Avviso telefono obbligatorio */}
+                    <div className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-2xl border text-xs font-bold transition-all",
+                      !hasPhone
+                        ? "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400"
+                        : "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+                    )}>
+                      <Smartphone className="w-4 h-4 shrink-0" />
+                      <span>
+                        {!hasPhone
+                          ? '⚠ Inserisci almeno un numero di telefono (cellulare o fisso)'
+                          : '✓ Contatto telefonico presente'}
+                      </span>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <FieldLabel label="Telefono Atleta" />
+                        <FieldLabel label="Cellulare Atleta" required />
                         <div className="relative">
                           <Smartphone className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input type="tel" placeholder="+39 333 ..." value={formData.phone_player} onChange={e => set('phone_player', e.target.value)} className={inputClass} />
+                          <Input
+                            type="tel"
+                            placeholder="+39 333 ..."
+                            value={formData.phone_player}
+                            onChange={e => set('phone_player', e.target.value)}
+                            className={cn(inputClass, !hasPhone && "border-amber-500/50 focus-visible:ring-amber-500")}
+                          />
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <FieldLabel label="Telefono di Casa" />
+                        <FieldLabel label="Telefono Fisso" required />
                         <div className="relative">
                           <Home className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input type="tel" placeholder="+39 010 ..." value={formData.phone_home} onChange={e => set('phone_home', e.target.value)} className={inputClass} />
+                          <Input
+                            type="tel"
+                            placeholder="+39 010 ..."
+                            value={formData.phone_home}
+                            onChange={e => set('phone_home', e.target.value)}
+                            className={cn(inputClass, !hasPhone && "border-amber-500/50 focus-visible:ring-amber-500")}
+                          />
                         </div>
                       </div>
                     </div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 pl-2">
+                      * È sufficiente inserire almeno uno dei due numeri
+                    </p>
                     <div className="space-y-2">
-                      <FieldLabel label="Email di riferimento" />
+                      <FieldLabel label="Email di riferimento" required />
                       <div className="relative">
                         <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                        <Input type="email" placeholder="atleta@esempio.it" value={formData.email} onChange={e => set('email', e.target.value)} className={inputClass} />
+                        <Input required type="email" placeholder="atleta@esempio.it" value={formData.email} onChange={e => set('email', e.target.value)} className={inputClass} />
                       </div>
                     </div>
                   </div>
@@ -397,14 +473,49 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                 {/* ── SEZIONE GENITORI ── */}
                 {activeSection === 'genitori' && (
                   <div className="space-y-6">
+                    {/* Banner stato minorenne / maggiorenne */}
+                    {formData.birth_date ? (
+                      <div className={cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-2xl border text-xs font-bold transition-all",
+                        isMinor
+                          ? (!hasParentData
+                              ? "bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400"
+                              : "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400")
+                          : "bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400"
+                      )}>
+                        <Users className="w-4 h-4 shrink-0" />
+                        <span>
+                          {isMinor
+                            ? (!hasParentData
+                                ? '⚠ Atleta minorenne — inserisci nome e telefono di almeno un genitore'
+                                : '✓ Dati genitore presenti — requisito soddisfatto')
+                            : '✓ Atleta maggiorenne — i dati dei genitori sono facoltativi'}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border bg-muted/30 border-black/5 dark:border-white/10 text-xs font-bold text-muted-foreground">
+                        <Users className="w-4 h-4 shrink-0" />
+                        <span>Inserisci la data di nascita nell'anagrafica per determinare l'obbligo dei dati genitoriali</span>
+                      </div>
+                    )}
+
                     {/* Genitore 1 */}
                     <div className="space-y-3">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 pl-2 flex items-center gap-2">
+                      <p className={cn(
+                        "text-[10px] font-black uppercase tracking-[0.2em] pl-2 flex items-center gap-2",
+                        isMinor && !hasParentData ? "text-red-500/70" : "text-primary/60"
+                      )}>
                         <span>👨 Genitore 1 (Papà)</span>
+                        {isMinor && <span className="text-red-500">*</span>}
                       </p>
-                      <div className="space-y-4 p-4 glass-card rounded-3xl border border-black/5 dark:border-white/10">
+                      <div className={cn(
+                        "space-y-4 p-4 glass-card rounded-3xl border transition-all",
+                        isMinor && !hasParentData
+                          ? "border-red-500/30 bg-red-500/5"
+                          : "border-black/5 dark:border-white/10"
+                      )}>
                         <div className="space-y-2">
-                          <FieldLabel label="Nominativo" />
+                          <FieldLabel label="Nominativo" required={isMinor} />
                           <div className="relative">
                             <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
                             <Input placeholder="Mario Rossi" value={formData.parent1_name} onChange={e => set('parent1_name', e.target.value)} className={inputClass} />
@@ -412,7 +523,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <FieldLabel label="Telefono" />
+                            <FieldLabel label="Telefono" required={isMinor} />
                             <div className="relative">
                               <Smartphone className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
                               <Input type="tel" placeholder="+39 333 ..." value={formData.parent1_phone} onChange={e => set('parent1_phone', e.target.value)} className={inputClass} />
@@ -434,6 +545,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                     <div className="space-y-3">
                       <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 pl-2">
                         👩 Genitore 2 (Mamma)
+                        {isMinor && <span className="text-muted-foreground font-normal ml-2 normal-case tracking-normal">(opzionale se Genitore 1 è compilato)</span>}
                       </p>
                       <div className="space-y-4 p-4 glass-card rounded-3xl border border-black/5 dark:border-white/10">
                         <div className="space-y-2">
@@ -536,7 +648,12 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         className="w-full rounded-3xl glass-card border border-black/5 dark:border-white/10 focus:ring-2 focus:ring-primary/20 focus:outline-none px-6 py-4 text-base font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground resize-none"
                       />
                     </div>
-                    <div className="flex items-center gap-3 px-4 py-3 glass-card rounded-2xl border border-black/5 dark:border-white/10">
+                    <div className={cn(
+                      "flex items-center gap-3 px-4 py-3 glass-card rounded-2xl border transition-all",
+                      !formData.privacy_accepted
+                        ? "border-red-500/30 bg-red-500/5"
+                        : "border-emerald-500/30 bg-emerald-500/5"
+                    )}>
                       <input
                         id="privacy-check"
                         type="checkbox"
@@ -544,9 +661,14 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         onChange={e => set('privacy_accepted', e.target.checked)}
                         className="w-5 h-5 rounded accent-primary cursor-pointer"
                       />
-                      <label htmlFor="privacy-check" className="text-sm font-semibold cursor-pointer text-foreground">
+                      <label htmlFor="privacy-check" className="text-sm font-semibold cursor-pointer text-foreground flex-1">
                         Consenso privacy e trattamento dati accettato
+                        <span className="text-red-500 ml-1">*</span>
                       </label>
+                      {formData.privacy_accepted
+                        ? <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">✓ Accettato</span>
+                        : <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">Obbligatorio</span>
+                      }
                     </div>
                   </div>
                 )}
@@ -555,9 +677,33 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
               {/* Footer */}
               <div className="px-8 pb-8 pt-4 shrink-0 border-t border-black/5 dark:border-white/10">
                 {!isFormValid && (
-                  <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-500 mb-3">
-                    * Completa Nome, Cognome, Data di Nascita e Leva per proseguire
-                  </p>
+                  <div className="mb-3 space-y-1">
+                    {!anagrValid && (
+                      <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-500">
+                        ✗ Anagrafica incompleta — compila tutti i campi obbligatori
+                      </p>
+                    )}
+                    {!residenzaValid && (
+                      <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-500">
+                        ✗ Residenza incompleta — inserisci indirizzo, città e CAP
+                      </p>
+                    )}
+                    {!contattiValid && (
+                      <p className="text-center text-[10px] font-black uppercase tracking-widest text-amber-500">
+                        ✗ Contatti incompleti — {!hasPhone ? 'almeno un telefono' : 'email'}{!hasPhone && formData.email.trim() === '' ? ' ed email' : ''} mancante
+                      </p>
+                    )}
+                    {isMinor && !hasParentData && (
+                      <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-500">
+                        ✗ Atleta minorenne — inserisci almeno un genitore (sezione Genitori)
+                      </p>
+                    )}
+                    {!sportValid && (
+                      <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-500">
+                        ✗ Consenso privacy obbligatorio (sezione Sport &amp; Note)
+                      </p>
+                    )}
+                  </div>
                 )}
                 <div className="flex items-center gap-4">
                   <Button type="button" variant="ghost" onClick={onClose}

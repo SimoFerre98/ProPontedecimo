@@ -27,6 +27,7 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minuti di cache
       retry: 1,
+      refetchOnWindowFocus: false, // Non ricaricare i dati quando si cambia tab del browser
     },
   },
 })

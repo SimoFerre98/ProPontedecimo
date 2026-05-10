@@ -36,7 +36,7 @@ export default function LoginPage() {
             Gestisci la tua<br />società calcistica
           </h1>
           <p className="text-white/70 text-sm leading-relaxed max-w-sm">
-            Atleti, pagamenti, visite mediche e presenze: tutto in un unico posto sicuro.
+            Tutti gli strumenti necessari per la gestione operativa e il controllo amministrativo del tuo club.
           </p>
         </div>
         <p className="text-white/30 text-xs">© 2025 Pro Pontedecimo ASD</p>
