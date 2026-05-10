@@ -72,8 +72,8 @@ export default function RegisterPage() {
       {/* Left – branding */}
       <div className="hidden lg:flex flex-col justify-between w-1/2 bg-[#800020] p-12 text-white">
         <div className="flex items-center gap-3">
-          <img src="/Logo ASD Pro Pontedecimo.png" alt="Pro Pontedecimo" className="w-12 h-12 object-contain" />
-          <span className="text-xl font-bold">Pro Pontedecimo</span>
+          <img src="/Logo ASD Pro Pontedecimo.png" alt="Pontedecimo" className="w-12 h-12 object-contain" />
+          <span className="text-xl font-bold">Pontedecimo</span>
         </div>
         <div>
           <h1 className="text-4xl font-bold leading-tight mb-4">
@@ -83,7 +83,7 @@ export default function RegisterPage() {
             Registrati come Atleta o Genitore per accedere alla tua area personale e rimanere aggiornato sulla stagione.
           </p>
         </div>
-        <p className="text-white/30 text-xs">© 2025 Pro Pontedecimo ASD</p>
+        <p className="text-white/30 text-xs">© 2025 Pontedecimo ASD</p>
       </div>
 
       {/* Right – form */}
@@ -91,8 +91,8 @@ export default function RegisterPage() {
         <div className="w-full max-w-sm py-8">
           {/* Mobile logo */}
           <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <img src="/Logo ASD Pro Pontedecimo.png" alt="Pro Pontedecimo" className="w-10 h-10 object-contain" />
-            <span className="font-bold text-foreground">Pro Pontedecimo</span>
+            <img src="/Logo ASD Pro Pontedecimo.png" alt="Pontedecimo" className="w-10 h-10 object-contain" />
+            <span className="font-bold text-foreground">Pontedecimo</span>
           </div>
 
           <h2 className="text-2xl font-bold text-foreground mb-1">Crea un account</h2>

@@ -56,7 +56,7 @@ export default function PortalLayout() {
               <div className="w-8 h-8 rounded bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                 <Shield className="w-4 h-4 text-white" />
               </div>
-              <span className="font-black text-xl tracking-tight hidden sm:block">Pro Pontedecimo</span>
+              <span className="font-black text-xl tracking-tight hidden sm:block">Pontedecimo</span>
             </div>
           </div>
           
