@@ -141,7 +141,7 @@ export default function Athletes() {
             Anagrafica <span className="text-primary NOT-italic">Atleti</span>
           </h1>
           <p className="text-muted-foreground font-medium border-l-2 border-primary/30 pl-4 max-w-xl">
-            Gestione centralizzata di tutti gli atleti della Pro Pontedecimo. Monitora stato, tesseramenti e scadenze.
+            Gestione centralizzata di tutti gli atleti della Pontedecimo. Monitora stato, tesseramenti e scadenze.
           </p>
         </div>
         

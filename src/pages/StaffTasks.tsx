@@ -82,7 +82,7 @@ export default function StaffTasks() {
             </div>
           </div>
           <p className="text-muted-foreground font-medium border-l-2 border-primary/30 pl-4 ml-2 max-w-xl text-lg italic">
-            Coordinamento delle attività societarie e sportive della Pro Pontedecimo.
+            Coordinamento delle attività societarie e sportive della Pontedecimo.
           </p>
         </div>
         

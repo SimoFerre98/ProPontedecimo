@@ -108,11 +108,11 @@ export default function DashboardLayout() {
         <div className="flex items-center gap-3">
           <img
             src="/Logo ASD Pro Pontedecimo.png"
-            alt="Pro Pontedecimo"
+            alt="Pontedecimo"
             className="w-12 h-12 object-contain drop-shadow-sm flex-shrink-0"
           />
           <div className="hidden sm:block leading-tight">
-            <p className="text-sm font-bold tracking-tight">Pro Pontedecimo</p>
+            <p className="text-sm font-bold tracking-tight">Pontedecimo</p>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Manager</p>
           </div>
         </div>
