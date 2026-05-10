@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, CheckCircle2, Clock, AlertCircle, Plus,
@@ -28,7 +28,6 @@ export default function Payments() {
   const pageSize = 15
   const [selectedPayment, setSelectedPayment] = useState<PaymentReference | null>(null)
   const [showNewModal, setShowNewModal] = useState(false)
-  const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery({
     queryKey: ['payments', search, statusFilter, page],
