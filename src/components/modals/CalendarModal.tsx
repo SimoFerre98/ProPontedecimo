@@ -27,8 +27,8 @@ import { useQuery } from '@tanstack/react-query'
 import { calendarService, type CalendarEvent } from '@/services/calendarService'
 import TaskModal from './TaskModal'
 import MedicalVisitModal from './MedicalVisitModal'
-import type { StaffTask } from '@/services/staffService'
-import type { MedicalVisitRecord } from '@/services/medicalService'
+import { medicalService } from '@/services/medicalService'
+import { staffService, type StaffTask } from '@/services/staffService'
 
 interface CalendarModalProps {
   isOpen: boolean
