@@ -71,18 +71,10 @@ function StatCard({ title, value, subtitle, icon, color, loading }: Readonly<Sta
   )
 }
 
-// Query keys
-const QK = {
-  stats: ['dashboard', 'stats'],
-  expiringMedical: ['dashboard', 'expiring-medical'],
-  unpaidPayments: ['dashboard', 'unpaid-payments'],
-}
+// Query keys non più utilizzate qui ma le rimuoviamo per evitare l'errore TS
 
 export default function Dashboard() {
   const { profile } = useAuth()
-  const today = new Date().toISOString().split('T')[0]
-  const in30Days = new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]
-  const in7Days = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]
 
   // Recupero unificato delle statistiche tramite RPC
   const { data: statsData, isLoading: isLoadingStats } = useQuery({
