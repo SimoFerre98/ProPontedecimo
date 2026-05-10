@@ -91,7 +91,7 @@ export default function PortalLayout() {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute top-14 right-0 w-64 glass-card p-2 z-50 rounded-3xl shadow-2xl border-white/20 flex flex-col gap-1"
+                    className="absolute top-14 right-0 w-64 bg-background/98 backdrop-blur-md p-2 z-50 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 flex flex-col gap-1"
                   >
                     <div className="px-4 py-3 border-b border-black/5 dark:border-white/10 sm:hidden">
                       <p className="text-sm font-bold text-foreground">{profile?.full_name || 'Utente'}</p>
