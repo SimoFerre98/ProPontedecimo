@@ -185,7 +185,7 @@ export default function DashboardLayout() {
                   initial={{ opacity: 0, y: -10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  className="absolute top-full right-0 sm:right-auto sm:-translate-x-1/2 mt-3 w-[calc(100vw-2rem)] sm:w-96 max-w-sm bg-background/98 backdrop-blur-md p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50 overflow-hidden origin-top-right sm:origin-top"
+                  className="fixed sm:absolute top-16 sm:top-full left-4 right-4 sm:left-auto sm:right-0 mt-2 sm:mt-3 sm:w-96 bg-background/98 backdrop-blur-md p-2 rounded-3xl shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-black/10 dark:border-white/20 z-50 overflow-hidden origin-top-right"
                 >
                   <div className="flex items-center justify-between px-4 py-3 border-b border-black/5 dark:border-white/10">
                     <p className="text-sm font-black text-foreground">Notifiche</p>
