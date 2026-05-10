@@ -38,14 +38,6 @@ export default function Payments() {
   const payments = data?.data || []
   const totalCount = data?.count || 0
 
-  const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: PaymentStatus }) =>
-      paymentService.updateStatus(id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['payments'] })
-      queryClient.invalidateQueries({ queryKey: ['overduePaymentsCount'] })
-    }
-  })
 
   const stats = useMemo(() => ({
     paid: payments.filter((p: any) => p.status === 'paid').reduce((a: number, p: any) => a + (p.paid_amount_eur ?? p.amount_eur ?? 0), 0),
