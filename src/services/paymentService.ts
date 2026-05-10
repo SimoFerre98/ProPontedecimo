@@ -1,13 +1,20 @@
 import { supabase } from '@/lib/supabase'
 
 export type PaymentStatus = 'pending' | 'paid' | 'overdue'
+export type PaymentPlan = 'annual' | 'installments'
+export type PaymentMethod = 'satispay' | 'contanti' | 'pos' | 'iban'
 
 export interface PaymentReference {
   id: string
-  installment_no: number
+  player_id: string
+  installment_no: number         // 1 = unica/prima rata, 2 = seconda rata
+  plan: PaymentPlan              // 'annual' | 'installments'
+  due_date: string | null        // Scadenza: 15 set o 15 gen
   amount_eur: number | null
+  paid_amount_eur: number | null // Quanto è stato effettivamente pagato
   receipt_number: string | null
   receipt_date: string | null
+  payment_method: PaymentMethod | null
   status: PaymentStatus
   notes: string | null
   created_at: string
@@ -15,7 +22,35 @@ export interface PaymentReference {
     first_name: string
     last_name: string
     team_sector: string | null
+    birth_date: string | null
   }
+}
+
+export interface PaymentUpsertPayload {
+  player_id: string
+  installment_no: number
+  plan: PaymentPlan
+  due_date?: string | null
+  amount_eur?: number | null
+  paid_amount_eur?: number | null
+  receipt_number?: string | null
+  receipt_date?: string | null
+  payment_method?: PaymentMethod | null
+  status?: PaymentStatus
+  notes?: string | null
+}
+
+export const PAYMENT_METHODS: { value: PaymentMethod; label: string; icon: string }[] = [
+  { value: 'satispay', label: 'Satispay', icon: '📱' },
+  { value: 'contanti', label: 'Contanti', icon: '💵' },
+  { value: 'pos', label: 'POS', icon: '💳' },
+  { value: 'iban', label: 'Bonifico IBAN', icon: '🏦' },
+]
+
+// Scadenze fisse delle rate
+export const INSTALLMENT_DUE_DATES = {
+  1: `${new Date().getFullYear()}-09-15`, // 15 settembre
+  2: `${new Date().getFullYear() + (new Date().getMonth() >= 8 ? 1 : 0)}-01-15`, // 15 gennaio (anno successivo se siamo già dopo settembre)
 }
 
 export const paymentService = {
@@ -27,8 +62,9 @@ export const paymentService = {
       .from('payments')
       .select(`
         *,
-        player:players!inner(first_name, last_name, team_sector)
+        player:players!inner(first_name, last_name, team_sector, birth_date)
       `, { count: 'exact' })
+      .order('due_date', { ascending: true })
       .order('created_at', { ascending: false })
       .range(from, to)
 
@@ -45,12 +81,112 @@ export const paymentService = {
     return { data: data as unknown as PaymentReference[], count: count || 0 }
   },
 
+  // Recupera tutti i pagamenti di un singolo atleta
+  async getPaymentsByPlayer(playerId: string) {
+    const { data, error } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('player_id', playerId)
+      .order('installment_no', { ascending: true })
+    if (error) throw error
+    return data as PaymentReference[]
+  },
+
+  // Conta atleti con pagamenti in sospeso/scaduti (per banner Athletes)
+  async getOverdueCount() {
+    const fifteenDaysAgo = new Date()
+    fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15)
+    
+    const { count, error } = await supabase
+      .from('payments')
+      .select('*', { count: 'exact', head: true })
+      .in('status', ['pending', 'overdue'])
+      .lt('due_date', fifteenDaysAgo.toISOString().split('T')[0])
+    
+    if (error) throw error
+    return count || 0
+  },
+
+  // Crea o aggiorna un pagamento
+  async upsertPayment(payload: PaymentUpsertPayload) {
+    // Cerca se esiste già per quell'atleta + rata
+    const { data: existing } = await supabase
+      .from('payments')
+      .select('id')
+      .eq('player_id', payload.player_id)
+      .eq('installment_no', payload.installment_no)
+      .single()
+
+    if (existing) {
+      const { error } = await supabase
+        .from('payments')
+        .update(payload)
+        .eq('id', existing.id)
+      if (error) throw error
+      return existing.id
+    } else {
+      const { data, error } = await supabase
+        .from('payments')
+        .insert(payload)
+        .select('id')
+        .single()
+      if (error) throw error
+      return data.id
+    }
+  },
+
+  // Registra un pagamento ricevuto (segna come pagato)
+  async recordPayment(id: string, payload: {
+    paid_amount_eur: number
+    receipt_number: string
+    receipt_date: string
+    payment_method: PaymentMethod
+    notes?: string
+  }) {
+    const { error } = await supabase
+      .from('payments')
+      .update({
+        ...payload,
+        status: 'paid',
+      })
+      .eq('id', id)
+    if (error) throw error
+  },
+
+  // Aggiorna solo lo stato
   async updateStatus(id: string, status: PaymentStatus) {
     const { error } = await supabase
       .from('payments')
       .update({ status })
       .eq('id', id)
-    
     if (error) throw error
+  },
+
+  // Aggiorna importo e dati generali
+  async updatePayment(id: string, payload: Partial<PaymentUpsertPayload>) {
+    const { error } = await supabase
+      .from('payments')
+      .update(payload)
+      .eq('id', id)
+    if (error) throw error
+  },
+
+  // Recupera pagamenti scaduti di 15+ giorni (per notifiche)
+  async getOverduePayments() {
+    const fifteenDaysAgo = new Date()
+    fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15)
+    const dateStr = fifteenDaysAgo.toISOString().split('T')[0]
+
+    const { data, error } = await supabase
+      .from('payments')
+      .select(`
+        id, installment_no, due_date, amount_eur, status,
+        player:players!inner(first_name, last_name)
+      `)
+      .in('status', ['pending', 'overdue'])
+      .lt('due_date', dateStr)
+
+    if (error) throw error
+    return data as unknown as Pick<PaymentReference, 'id' | 'installment_no' | 'due_date' | 'amount_eur' | 'status' | 'player'>[]
   }
 }
