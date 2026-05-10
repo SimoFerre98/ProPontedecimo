@@ -1,7 +1,6 @@
 import { medicalService } from './medicalService'
 import { staffService, type StaffTask } from './staffService'
-import { eachDayOfInterval, format, parseISO, isValid } from 'date-fns'
-import { it } from 'date-fns/locale'
+import { eachDayOfInterval, parseISO, isValid } from 'date-fns'
 
 export type CalendarEventType = 'task' | 'medical'
 
