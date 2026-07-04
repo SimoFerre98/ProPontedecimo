@@ -5,11 +5,20 @@ Lo schema del database è versionato nel repository tramite la **Supabase CLI** 
 ## Setup al primo clone
 
 1. `npm install` — installa anche la CLI (`supabase` in devDependencies)
-2. Copia `.env.example` in `.env` e compila i valori:
-   - `SUPABASE_ACCESS_TOKEN` — token personale generato da [app.supabase.com/account/tokens](https://app.supabase.com/account/tokens)
-   - `SUPABASE_DB_PASSWORD` — password Postgres del progetto (Dashboard → Settings → Database)
+2. Autenticati alla CLI. ⚠️ La CLI **non** legge automaticamente il `.env` di root: le variabili devono stare nell'ambiente del processo. Due alternative:
+   - **Consigliata:** `npx supabase login` (apre il browser, il token resta salvato nel profilo utente)
+   - **Oppure:** esporta il token nella shell prima dei comandi:
+     ```bash
+     # bash / Git Bash
+     export SUPABASE_ACCESS_TOKEN="<token da app.supabase.com/account/tokens>"
+     ```
+     ```powershell
+     # PowerShell
+     $env:SUPABASE_ACCESS_TOKEN = "<token>"
+     ```
+3. Tieni la password Postgres del progetto a portata di mano (Dashboard → Settings → Database): serve nella connection string del pooler (sotto) o al prompt interattivo. Puoi annotarla nel `.env` locale (`SUPABASE_DB_PASSWORD`, mai committato) come promemoria, ma ricorda che i comandi non la leggono da lì in automatico.
    - ⚠️ **Mai** prefissare i segreti con `VITE_`: le variabili `VITE_*` finiscono nel bundle client
-3. Collega il progetto cloud:
+4. Collega il progetto cloud:
    ```bash
    npx supabase link --project-ref nkfbctwduojwxuvwjhdm
    ```

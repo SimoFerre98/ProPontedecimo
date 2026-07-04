@@ -1,6 +1,7 @@
 # Changelog
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
+
 ## [0.11.0] - 2026-07-04
 
 ### Aggiunto

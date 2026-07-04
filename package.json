@@ -1,7 +1,7 @@
 {
   "name": "temp-vite",
   "private": true,
-  "version": "0.10.0",
+  "version": "0.11.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,7 @@
     "db:new": "supabase migration new",
     "db:pull": "supabase db pull",
     "db:push": "supabase db push",
-    "db:diff": "supabase db diff --linked",
+    "db:diff": "supabase db diff",
     "db:list": "supabase migration list"
   },
   "dependencies": {
