@@ -1,6 +1,18 @@
 # Changelog
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
+## [0.11.0] - 2026-07-04
+
+### Aggiunto
+- **Supabase CLI e Migrazioni Versionate (US-001)**: la CLI è ora una devDependency con script npm dedicati (`db:new`, `db:pull`, `db:push`, `db:diff`, `db:list`); lo schema del database è versionato in `supabase/migrations/`.
+- **Migrazione Baseline**: `20260704154518_baseline_schema.sql` fotografa l'intero schema di produzione (9 tabelle, funzioni incluse `get_dashboard_stats`, 27 policy RLS), incluso il trigger `on_auth_user_created` su `auth.users` non coperto dal dump automatico.
+- **Documentazione Database**: nuova guida `docs/database.md` con setup al primo clone, flusso delle migrazioni e nota sul session pooler IPv4.
+
+### Modificato
+- **Archiviazione script manuali**: `supabase/migrations/payments_update.sql` spostato in `scripts/sql-archive/` (già applicato al cloud, catturato dalla baseline).
+- **Migration history remota**: riparate 14 voci orfane del setup iniziale (marzo-aprile 2026) marcandole come `reverted`; la history riparte dalla baseline.
+- `.gitignore` aggiornato con gli artefatti locali della CLI (`supabase/.temp/`).
+
 ## [0.10.0] - 2026-04-10
 
 ### Aggiunto
