@@ -7,6 +7,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { readFileSync } from 'node:fs'
+import { randomBytes } from 'node:crypto'
 
 // --- caricamento .env (la CLI/node non lo leggono in automatico) ---
 const env = {}
@@ -25,7 +26,9 @@ if (!URL_ || !ANON || !SERVICE) {
 const admin = createClient(URL_, SERVICE, { auth: { persistSession: false } })
 
 const ROLES = ['president', 'director', 'coach', 'player', 'parent']
-const PASSWORD = 'Test-Rls-2026!'
+// Password monouso generata a runtime: mai una credenziale fissa nel repo
+// (gli utenti di prova vivono sul DB reale per la durata della run).
+const PASSWORD = `Rls!${randomBytes(24).toString('base64url')}`
 const emailFor = (role) => `test-rls-${role}@propontedecimo.test`
 const LEVA_A = 'TEST_RLS_LEVA_A'
 const LEVA_B = 'TEST_RLS_LEVA_B'
@@ -45,6 +48,28 @@ async function loginAs(role) {
 }
 
 const ctx = { users: {}, players: {}, payments: {} }
+
+// Rimuove residui di run precedenti fallite: senza, createUser fallisce con
+// "already registered" e lo script resta bloccato finché non si pulisce a mano.
+async function precleanup() {
+  const { data } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 })
+  for (const u of data?.users ?? []) {
+    if (u.email?.startsWith('test-rls-') && u.email?.endsWith('@propontedecimo.test')) {
+      await admin.from('parent_players').delete().eq('parent_profile_id', u.id)
+      await admin.from('coach_teams').delete().eq('profile_id', u.id)
+      await admin.from('profiles').delete().eq('id', u.id)
+      await admin.auth.admin.deleteUser(u.id)
+    }
+  }
+  const { data: leftovers } = await admin.from('players').select('id').like('first_name', 'TEST_RLS%')
+  if (leftovers?.length) {
+    const ids = leftovers.map((p) => p.id)
+    await admin.from('attendance').delete().in('player_id', ids)
+    await admin.from('payments').delete().in('player_id', ids)
+    await admin.from('parent_players').delete().in('player_id', ids)
+    await admin.from('players').delete().in('id', ids)
+  }
+}
 
 async function setup() {
   // utenti (il trigger handle_new_user crea il profilo; il ruolo si imposta via service key)
@@ -108,7 +133,10 @@ async function runMatrix() {
     check('president vede tutti i pagamenti di test', pay?.length === 2, `visti ${pay?.length}`)
     const { error: er } = await c.from('profiles').update({ role: 'director' }).eq('id', ctx.users.player)
     check('president può cambiare i ruoli', !er, er?.message)
-    if (!er) await admin.from('profiles').update({ role: 'player' }).eq('id', ctx.users.player) // ripristino
+    if (!er) {
+      const { error: erRestore } = await admin.from('profiles').update({ role: 'player' }).eq('id', ctx.users.player)
+      check('ripristino ruolo player riuscito (precondizione test successivi)', !erRestore, erRestore?.message)
+    }
     await c.auth.signOut()
   }
 
@@ -139,6 +167,10 @@ async function runMatrix() {
     check('coach NON registra presenze per altre leve', !!eOut, eOut ? 'bloccato' : 'INSERITO FUORI LEVA!')
     const { error: er } = await c.from('profiles').update({ role: 'president' }).eq('id', ctx.users.coach)
     check('coach NON può auto-promuoversi', !!er, er ? 'bloccato dal trigger' : 'ESCALATION RIUSCITA!')
+    const { error: eSelf } = await c.from('coach_teams').insert({ profile_id: ctx.users.coach, team_sector: LEVA_B })
+    check('coach NON può auto-assegnarsi una leva', !!eSelf, eSelf ? 'bloccato' : 'AUTO-ASSEGNAZIONE RIUSCITA!')
+    const { data: updP } = await c.from('players').update({ notes: 'coach edit' }).eq('id', ctx.players.A).select()
+    check('coach NON può modificare l\'anagrafica atleti', (updP ?? []).length === 0, updP?.length ? 'MODIFICA RIUSCITA!' : 'nessuna riga modificata')
     await c.auth.signOut()
   }
 
@@ -189,6 +221,8 @@ async function cleanup() {
 }
 
 try {
+  console.log('Pre-cleanup residui di run precedenti...')
+  await precleanup()
   console.log('Setup dati di prova (marcati TEST_RLS_*)...')
   await setup()
   console.log('Esecuzione matrice di accesso...\n')

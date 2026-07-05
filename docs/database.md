@@ -81,9 +81,11 @@ L'accesso ai dati è governato da Row Level Security con ruoli in `profiles.role
 | attendance | CRUD | CRUD | CRUD (proprie leve) | R (proprie) | R (figli) |
 | medical_visits | CRUD | CRUD | R (proprie leve) | R (proprie) | R (figli) |
 | payments | CRUD | CRUD | — | R (propri) | R (figli) |
-| profiles | CRUD | CRU (no ruoli) | R/U proprio | R/U proprio | R/U proprio |
+| profiles | RU (+ruoli) | RU (no ruoli) | R/U proprio | R/U proprio | R/U proprio |
 | seasons | CRUD | R | R | R | R |
-| email_usage | CR | CR | — | — | — |
+| email_usage | CR | CR | CR | — | — |
+
+> Su `profiles` non esistono policy DELETE e l'INSERT via API è consentito solo per il proprio `id` (la creazione dei profili passa dal trigger `handle_new_user` alla registrazione); la modifica del campo `role` è riservata al Presidente dal trigger anti-escalation, che copre anche l'INSERT.
 
 **Anti-escalation:** il trigger `trg_enforce_role_change` su `profiles` blocca ogni modifica di `role` da parte di chi non è president (il `service_role`, con `auth.uid()` NULL, resta libero per gli strumenti amministrativi). Le policy non possono confrontare OLD/NEW: per questo è un trigger e non una policy.
 

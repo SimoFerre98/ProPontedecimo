@@ -70,4 +70,10 @@ Il cuore della verifica è una matrice di accesso eseguita via API con utenti re
 
 ---
 
+## Note di implementazione (deviazioni dal piano)
+
+- **TASK-03:** le policy `profiles_update_admin`/`profiles_update_self` sono state lasciate **invariate di proposito**: il trigger `trg_enforce_role_change` è il punto unico di enforcement sul campo `role` (vede OLD/NEW, copre entrambe le policy e l'upsert). Confermato adeguato in code review e verificato dalla matrice di accesso.
+- **TASK-06:** la restrizione di `email_usage` è stata estesa in review anche al ruolo `coach` (migrazione `20260705012858`): la UI espone "Invia Email" anche agli allenatori e limitarla a president/director avrebbe rotto quote e logging dei loro invii.
+- La code review ha prodotto una **seconda migrazione** (`20260705012858_rls_review_fixes.sql`): trigger anti-escalation esteso all'INSERT, policy parent vincolate al ruolo `parent`, `WITH CHECK` espliciti.
+
 _Piano generato via Archetipo Planning — 2026-07-05_
