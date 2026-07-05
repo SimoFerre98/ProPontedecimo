@@ -91,6 +91,10 @@ L'accesso ai dati è governato da Row Level Security con ruoli in `profiles.role
 
 **Verifica:** `node scripts/test-rls.mjs` esegue la matrice di accesso completa contro il cloud con utenti di prova `TEST_RLS_*` (creazione, asserzioni per i 5 ruoli + anonimo, cleanup). Richiede `SUPABASE_SERVICE_ROLE_KEY` nel `.env`.
 
+## Indici (US-003)
+
+I filtri delle liste sono coperti da indici btree: dalla baseline `idx_players_season/sector/profile`, `idx_payments_status/player/season`, `idx_medical_visits_expiry/player`, `idx_attendance_date/player`; dalla migrazione `20260705161330` anche `idx_players_is_active` e `idx_players_medical_expiry`. Nota: la ricerca testuale `ilike '%term%'` su nome/cognome/CF non è indicizzabile con btree — se diventerà lenta al crescere dei dati servirà `pg_trgm` + indice GIN (story dedicata).
+
 ## Sviluppo locale (opzionale, futuro)
 
 `npx supabase start` avvia l'intero stack Supabase in locale via Docker (Postgres, Auth, Studio). Non è richiesto per il flusso attuale: le migrazioni si applicano direttamente al cloud. Da valutare quando servirà sviluppare Edge Functions (US-006) o testare RLS in isolamento (US-002).

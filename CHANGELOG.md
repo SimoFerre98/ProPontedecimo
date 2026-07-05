@@ -2,6 +2,11 @@
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
 
+## [0.12.1] - 2026-07-05
+
+### Prestazioni
+- **Indici database (US-003)**: aggiunti `idx_players_is_active` e `idx_players_medical_expiry` per i filtri delle liste atleti (`idx_payments_status` era già presente dalla baseline). Verificato con `EXPLAIN (ANALYZE)` sul cloud; matrice RLS rieseguita come non-regressione (23/23).
+
 ## [0.12.0] - 2026-07-05
 
 ### Sicurezza
