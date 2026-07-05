@@ -18,6 +18,6 @@ After implementing this story, the user can: accedere con un account Allenatore 
 - [ ] Un tentativo di accesso a dati fuori competenza (via API diretta) restituisce un risultato vuoto o un errore, mai i dati
 - [ ] Le policy sono versionate come migrazione (dipende da US-001)
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [docs/planning/US-002-plan.md](../planning/US-002-plan.md)
 
