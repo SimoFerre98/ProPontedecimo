@@ -2,7 +2,7 @@
 
 **Generato da:** Archetipo Planning Team
 **Data:** 2026-07-04
-**Stato:** ✅ COMPLETATO — squash & merge su `dev` (commit `4917814`, 2026-07-05) dopo code review (2 cicli)
+**Stato:** ✅ COMPLETATO — squash & merge su `dev` (commit `c849774`, 2026-07-05) dopo code review (2 cicli)
 
 ---
 

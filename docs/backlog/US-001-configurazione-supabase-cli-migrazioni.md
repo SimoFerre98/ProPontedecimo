@@ -18,5 +18,5 @@ After implementing this story, the user can: eseguire `supabase db diff` e gener
 
 **Status:** DONE
 **Plan:** [docs/planning/US-001-plan.md](../planning/US-001-plan.md)
-**Merge:** squash su `dev` — commit `4917814` (2026-07-05), branch `feature/us-001-supabase-cli-migrazioni` conservato su origin
+**Merge:** squash su `dev` — commit `c849774` (2026-07-05), branch `feature/us-001-supabase-cli-migrazioni` conservato su origin
 
