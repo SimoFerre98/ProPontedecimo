@@ -15,6 +15,6 @@ After implementing this story, the user can: filtrare la lista atleti per stato 
 - [ ] Il query plan (`EXPLAIN`) delle query di filtro atleti e pagamenti utilizza i nuovi indici
 - [ ] Nessuna regressione funzionale nelle liste esistenti dopo l'applicazione degli indici
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [docs/planning/US-003-plan.md](../planning/US-003-plan.md)
 
