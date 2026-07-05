@@ -2,6 +2,7 @@
 
 **Generato da:** Archetipo Planning Team
 **Data:** 2026-07-05
+**Stato:** ✅ COMPLETATO — squash & merge su `dev` (commit `59aefec`, 2026-07-05) dopo code review (2 cicli, matrice RLS 23/23)
 
 ---
 
