@@ -60,8 +60,8 @@ export default function RegisterPage() {
         navigate('/login')
       }, 3000)
 
-    } catch (err: any) {
-      setError(err.message || 'Errore durante la registrazione. Riprova.')
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : 'Errore durante la registrazione. Riprova.')
     } finally {
       setLoading(false)
     }

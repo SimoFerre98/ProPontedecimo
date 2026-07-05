@@ -1,28 +1,7 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import type { Session, User } from '@supabase/supabase-js'
+import { useEffect, useMemo, useState } from 'react'
+import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import type { Database } from '@/types/database'
-
-type UserRole = Database['public']['Enums']['user_role']
-
-interface Profile {
-  id: string
-  email: string
-  full_name: string | null
-  role: UserRole
-  avatar_url: string | null
-}
-
-interface AuthContextValue {
-  session: Session | null
-  user: User | null
-  profile: Profile | null
-  role: UserRole | null
-  loading: boolean
-  signOut: () => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextValue | null>(null)
+import { AuthContext, type AuthContextValue, type Profile } from '@/contexts/auth-context'
 
 export function AuthProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [session, setSession] = useState<Session | null>(null)
@@ -72,10 +51,4 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
   }), [session, profile, loading, fetchingProfile])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
-  return ctx
 }

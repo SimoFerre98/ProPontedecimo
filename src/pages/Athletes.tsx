@@ -23,7 +23,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { athleteService, type Player } from '@/services/athleteService'
 import { paymentService } from '@/services/paymentService'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
@@ -80,7 +80,7 @@ export default function Athletes() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['players', search, sectorFilter, page, filters],
-    queryFn: () => athleteService.getPlayers(search, sectorFilter, page, pageSize, filters as any),
+    queryFn: () => athleteService.getPlayers(search, sectorFilter, page, pageSize, filters),
   })
 
   const players = data?.data || []

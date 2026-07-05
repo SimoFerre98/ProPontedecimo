@@ -31,7 +31,7 @@ export default function Inventory() {
     queryFn: () => inventoryService.getInventory(search, categoryFilter, page, pageSize),
   })
 
-  const items = data?.data || []
+  const items = useMemo(() => data?.data ?? [], [data])
   const totalCount = data?.count || 0
 
   // Prendi le categorie uniche per il filtro

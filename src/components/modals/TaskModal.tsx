@@ -83,7 +83,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
       }
       setResult(null)
     }
-  }, [isOpen, task])
+  }, [isOpen, task, defaultStatus])
 
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null)
 
@@ -209,7 +209,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                       className="w-full h-14 pl-14 pr-4 bg-transparent border border-black/5 dark:border-white/10 rounded-full focus:outline-none focus:border-primary/50 text-foreground text-sm font-bold appearance-none backdrop-blur-md"
                     >
                       <option value="" className="text-foreground bg-background">Seleziona Staff...</option>
-                      {profiles?.map((p: any) => (
+                      {profiles?.map((p: { id: string; full_name: string | null }) => (
                         <option key={p.id} value={p.id} className="text-foreground bg-background">{p.full_name}</option>
                       ))}
                     </select>
