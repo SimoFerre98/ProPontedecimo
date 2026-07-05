@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-005 · Premium Glass — Modal Style Tokens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .page { max-width: 72rem; margin: 0 auto; padding: 7rem 2rem 6rem; }
+
+  /* Hero */
+  .hero { margin-bottom: 4rem; }
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4.2rem);
+    font-weight: 900; font-style: italic;
+    text-transform: uppercase; letter-spacing: -0.06em; line-height: .95;
+  }
+  .hero h1 .accent { color: var(--primary-soft); font-style: normal; }
+  .hero h1 .gold { color: var(--gold); font-style: normal; }
+  .hero p { max-width: 46rem; margin-top: 1.25rem; color: var(--muted-foreground); font-size: .9rem; line-height: 1.7; font-weight: 500; }
+  .hero .chip { margin-top: 1rem; }
+
+  /* Sezioni */
+  .section { margin-bottom: 3.5rem; animation: rise .5s ease both; }
+  .section-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.25rem; }
+  .section-num {
+    font-family: var(--font-mono); font-size: .8rem; color: var(--gold);
+    border: 1px solid oklch(0.84 0.115 85 / 0.3); border-radius: var(--radius-pill);
+    padding: .15rem .7rem;
+  }
+  .section-head h2 {
+    font-size: 1.35rem; font-weight: 900; font-style: italic;
+    text-transform: uppercase; letter-spacing: -0.04em;
+  }
+  .section-desc { color: var(--muted-foreground); font-size: .82rem; font-weight: 500; line-height: 1.65; max-width: 50rem; margin-bottom: 1.5rem; }
+
+  .panel {
+    border-radius: var(--radius-32);
+    border: 1px solid var(--border-soft);
+    background: oklch(0.205 0 0 / 0.35);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    padding: 2rem; overflow-x: auto;
+  }
+  .panel + .panel { margin-top: 1rem; }
+
+  .spec-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 1rem; align-items: stretch; }
+  @media (max-width: 860px) { .spec-grid { grid-template-columns: 1fr; } }
+
+  .spec-list { list-style: none; display: flex; flex-direction: column; gap: .65rem; }
+  .spec-list li { display: flex; flex-direction: column; gap: .25rem; padding-bottom: .65rem; border-bottom: 1px dashed oklch(1 0 0 / 0.07); }
+  .spec-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .spec-k { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .18em; color: oklch(0.708 0 0 / 0.55); }
+
+  /* 01 · Overlay: demo a strati */
+  .layers-demo { position: relative; height: 15rem; border-radius: var(--radius-32); overflow: hidden; border: 1px solid var(--border-soft); }
+  .layers-demo .l-app { position: absolute; inset: 0; padding: 1.25rem; display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; align-content: start;
+    background: radial-gradient(ellipse at 20% 0%, oklch(0.33 0.13 15 / 0.4), oklch(0.145 0 0) 70%); }
+  .layers-demo .l-app div { height: 3.5rem; border-radius: var(--radius-xl); background: oklch(1 0 0 / 0.12); }
+  .layers-demo .l-overlay { position: absolute; inset: 0; background: oklch(0.145 0.006 15 / 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+  .layers-demo .l-card { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .layers-demo .l-card > div {
+    width: min(75%, 22rem); height: 9rem; border-radius: var(--radius-48);
+    background: oklch(0.205 0 0 / 0.4); border: 1px solid var(--border-strong);
+    backdrop-filter: blur(16px); box-shadow: 0 25px 50px -12px oklch(0 0 0 / 0.55);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* 03 · Anatomia header: etichette annotate */
+  .anatomy { position: relative; }
+  .anatomy .modal-header { border-radius: var(--radius-32) var(--radius-32) 0 0; border: 1px solid var(--border-soft); }
+  .anatomy-notes { border: 1px solid var(--border-soft); border-top: none; border-radius: 0 0 var(--radius-32) var(--radius-32); background: var(--ink-20); padding: 1.5rem 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: 1.25rem; }
+  .note { display: flex; flex-direction: column; gap: .35rem; }
+  .note b { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .16em; color: var(--foreground); }
+  .note b::before { content: '◆ '; color: var(--gold); }
+  .note .chip { white-space: normal; }
+
+  /* 04-05 · Pulsanti */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 1rem 1.25rem; align-items: center; }
+  .btn-demo { display: flex; flex-direction: column; gap: .6rem; align-items: flex-start; }
+  .btn-demo .spec-k { padding-left: .5rem; }
+
+  /* 06 · Scala raggi */
+  .radius-scale { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(10.5rem, 100%), 1fr)); gap: 1rem; }
+  .radius-item { border: 1px solid var(--border-soft); background: var(--surface-05); padding: 1.25rem; display: flex; flex-direction: column; gap: .8rem; min-height: 11rem; }
+  .radius-swatch { flex: 1; background: oklch(0.33 0.13 15 / 0.25); border: 1.5px solid var(--primary-soft); min-height: 4.5rem; }
+  .radius-item h4 { font-family: var(--font-mono); font-size: .78rem; color: var(--gold); font-weight: 500; }
+  .radius-item p { font-size: .72rem; color: var(--muted-foreground); font-weight: 500; line-height: 1.5; }
+
+  /* 07 · Palette */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr)); gap: 1rem; }
+  .swatch { border-radius: var(--radius-2xl); border: 1px solid var(--border-soft); overflow: hidden; background: var(--surface-05); }
+  .swatch-color { height: 5.5rem; }
+  .swatch-meta { padding: .8rem 1rem; }
+  .swatch-meta b { display: block; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; }
+  .swatch-meta span { font-family: var(--font-mono); font-size: 10px; color: var(--muted-foreground); }
+
+  /* 08 · Tipografia */
+  .type-specimen { display: flex; flex-direction: column; gap: 1.75rem; }
+  .type-row { display: grid; grid-template-columns: 1fr; gap: .5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed oklch(1 0 0 / 0.07); }
+  .type-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+  /* 09 · Badge */
+  .badge-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+
+  /* Callout finale */
+  .callout {
+    border-radius: var(--radius-32);
+    border: 1px solid oklch(0.84 0.115 85 / 0.3);
+    background: oklch(0.84 0.115 85 / 0.05);
+    padding: 1.75rem 2rem;
+    display: flex; gap: 1.25rem; align-items: flex-start;
+  }
+  .callout .icon-box { background: oklch(0.84 0.115 85 / 0.12); border-color: oklch(0.84 0.115 85 / 0.3); color: var(--gold); }
+  .callout h3 { font-size: .95rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: .4rem; }
+  .callout p { font-size: .82rem; color: var(--muted-foreground); font-weight: 500; line-height: 1.65; }
+
+  @media (max-width: 640px) {
+    .page { padding: 6.5rem 1.25rem 4rem; }
+    .panel { padding: 1.25rem; }
+    .anatomy .modal-header { padding: 1.25rem; }
+    .mock-nav .nav-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="mock-nav">
+  <span class="nav-tag">US-005</span>
+  <a href="profile-modal.html">Il Mio Profilo</a>
+  <a href="modal-style-tokens.html" class="active">Style Tokens</a>
+</nav>
+
+<main class="page">
+
+  <!-- Hero -->
+  <header class="hero">
+    <p class="eyebrow">Pro Pontedecimo · Design Reference · US-005</p>
+    <h1>Premium <span class="accent">Glass</span><br>Modal <span class="gold">Tokens</span></h1>
+    <p>Lo stile canonico dei modali della piattaforma, estratto da <strong>CalendarModal.tsx</strong> (riferimento) e dai token di <strong>src/index.css</strong>. Ogni modale nuovo o rifattorizzato — incluso ProfileModal — deve comporre esclusivamente gli elementi documentati in questa pagina.</p>
+    <span class="chip">React · Tailwind CSS v4 · font: Geist Variable · tema scuro predominante</span>
+  </header>
+
+  <!-- 01 · Overlay -->
+  <section class="section">
+    <div class="section-head"><span class="section-num">01</span><h2>Overlay</h2></div>
+    <p class="section-desc">Strato di fondo cliccabile che chiude il modale. Scurisce l'app al 60% e la sfoca pesantemente: è il blur, non il colore, a creare la profondità "premium".</p>
+    <div class="panel spec-grid">
+      <div class="layers-demo" aria-hidden="true">
+        <div class="l-app"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <div class="l-overlay"></div>
+        <div class="l-card"><div><span class="eyebrow">glass-card</span></div></div>
+      </div>
+      <ul class="spec-list">
+        <li><span class="spec-k">Classi</span><span class="chip">absolute inset-0 bg-background/60 backdrop-blur-xl</span></li>
+        <li><span class="spec-k">Colore</span><span class="chip">oklch(0.145 0 0 / 0.6)</span></li>
+        <li><span class="spec-k">Blur</span><span class="chip">backdrop-filter: blur(24px)</span></li>
+        <li><span class="spec-k">Comportamento</span><span style="font-size:.78rem;color:var(--muted-foreground);font-weight:500">onClick → onClose · fade-in con framer-motion</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 02 · Contenitore -->
+  <section class="section">
+    <div class="section-head"><span class="section-num">02</span><h2>Contenitore glass-card</h2></div>
+    <p class="section-desc">Il corpo del modale è una <span class="chip">.glass-card</span> con raggio 3rem e bordo bianco al 20%. I modali grandi (Calendario) occupano l'80% del viewport; quelli compatti (Profilo, Task) usano una max-width e scroll interno.</p>
+    <div class="panel spec-grid">
+      <div class="modal-card" style="min-height:13rem; align-items:center; justify-content:center;">
+        <span class="eyebrow">rounded-[3rem] · border-white/20 · blur 16px</span>
+      </div>
+      <ul class="spec-list">
+        <li><span class="spec-k">Classi base</span><span class="chip">glass-card rounded-[3rem] border border-white/20 shadow-2xl</span></li>
+        <li><span class="spec-k">Sfondo (dark)</span><span class="chip">oklch(0.205 0 0 / 0.4) + blur(16px)</span></li>
+        <li><span class="spec-k">Modale grande</span><span class="chip">w-[95vw] lg:w-[80vw] h-[90vh] flex flex-col</span></li>
+        <li><span class="spec-k">Modale compatto</span><span class="chip">w-[95vw] max-w-xl max-h-[90vh] overflow-y-auto</span></li>
+        <li><span class="spec-k">Ingresso</span><span class="chip">initial={{ opacity:0, scale:0.95, y:20 }}</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 03 · Header -->
+  <section class="section">
+    <div class="section-head"><span class="section-num">03</span><h2>Anatomia dell'header</h2></div>
+    <p class="section-desc">Ogni modale apre con lo stesso rituale: box icona bordeaux, titolo urlato in corsivo con una parola accentata, sottotitolo sussurrato in maiuscoletto, chiusura a pillola sulla destra.</p>
+    <div class="anatomy">
+      <header class="modal-header">
+        <div class="modal-header-id">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div>
+            <h2 class="modal-title">Titolo <span class="accent">Modale</span></h2>
+            <p class="modal-subtitle">Sottotitolo descrittivo della funzione</p>
+          </div>
+        </div>
+        <button type="button" class="close-btn" aria-label="Chiudi (demo hover)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </header>
+      <div class="anatomy-notes">
+        <div class="note">
+          <b>Wrapper header</b>
+          <span class="chip">p-8 border-b border-white/10 bg-white/5 flex items-center justify-between</span>
+        </div>
+        <div class="note">
+          <b>Box icona 12×12</b>
+          <span class="chip">w-12 h-12 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center</span>
+          <span class="chip">icona lucide: w-6 h-6 text-primary</span>
+        </div>
+        <div class="note">
+          <b>Titolo</b>
+          <span class="chip">text-2xl font-black italic tracking-tighter uppercase text-foreground</span>
+          <span class="chip">parola accento: &lt;span class="text-primary not-italic"&gt;</span>
+        </div>
+        <div class="note">
+          <b>Sottotitolo</b>
+          <span class="chip">text-xs font-bold text-muted-foreground uppercase tracking-widest mt-0.5</span>
+        </div>
+        <div class="note">
+          <b>Pulsante chiusura</b>
+          <span class="chip">w-10 h-10 pill border border-white/10 hover:bg-rose-500 hover:text-white hover:border-rose-500 group</span>
+          <span class="chip">icona X: group-hover:rotate-90 transition-transform</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · Pulsanti -->
+  <section class="section">
+    <div class="section-head"><span class="section-num">04</span><h2>Pulsanti a pillola</h2></div>
+    <p class="section-desc">Altezza 14 (3.5rem), raggio full, etichetta micro in maiuscolo pesante. Il primario porta l'ombra bordeaux; il ghost resta trasparente; il distruttivo si accende di rosso solo al passaggio.</p>
+    <div class="panel">
+      <div class="btn-row">
+        <div class="btn-demo">
+          <span class="spec-k">Primario</span>
+          <button type="button" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
+            Salva Modifiche
+          </button>
+          <span class="chip">h-14 pill bg-primary text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 active:scale-95</span>
+        </div>
+        <div class="btn-demo">
+          <span class="spec-k">Ghost</span>
+          <button type="button" class="btn btn-ghost" style="border:1px solid var(--border-soft)">Annulla</button>
+          <span class="chip">variant="ghost" h-14 pill hover:bg-white/5</span>
+        </div>
+        <div class="btn-demo">
+          <span class="spec-k">Distruttivo</span>
+          <button type="button" class="btn btn-danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Elimina
+          </button>
+          <span class="chip">text-red-500 hover:bg-red-500/10</span>
+        </div>
+        <div class="btn-demo">
+          <span class="spec-k">Disabilitato</span>
+          <button type="button" class="btn btn-primary" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Modifica Profilo
+          </button>
+          <span class="chip">disabled → opacity-45 cursor-not-allowed, senza ombra</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · Scala raggi -->
+  <section class="section">
+    <div class="section-head"><span class="section-num">05</span><h2>Scala dei raggi</h2></div>
+    <p class="section-desc">Quattro fermate più la pillola. La regola: più l'elemento è esterno e grande, più il raggio cresce. Mai valori intermedi fuori scala.</p>
+    <div class="radius-scale">
+      <div class="radius-item" style="border-radius: var(--radius-xl)">
+        <div class="radius-swatch" style="border-radius: var(--radius-xl)"></div>
+        <h4>rounded-xl · 0.75rem</h4>
+        <p>Chip evento, micro-toggle, riquadri messaggio compatti.</p>
+      </div>
+      <div class="radius-item" style="border-radius: var(--radius-2xl)">
+        <div class="radius-swatch" style="border-radius: var(--radius-2xl)"></div>
+        <h4>rounded-2xl · 1rem</h4>
+        <p>Box icona dell'header (12×12), alert di esito.</p>
+      </div>
+      <div class="radius-item" style="border-radius: var(--radius-32)">
+        <div class="radius-swatch" style="border-radius: var(--radius-32)"></div>
+        <h4>rounded-[2rem]</h4>
+        <p>Celle del calendario, textarea, pannelli interni.</p>
+      </div>
+      <div class="radius-item" style="border-radius: var(--radius-48)">
+        <div class="radius-swatch" style="border-radius: var(--radius-48)"></div>
+        <h4>rounded-[3rem]</h4>
+        <p>Il contenitore del modale. Firma visiva del sistema.</p>
+      </div>
+      <div class="radius-item" style="border-radius: var(--radius-pill)">
+        <div class="radius-swatch" style="border-radius: var(--radius-pill)"></div>
+        <h4>.pill · 9999px</h4>
+        <p>Pulsanti, input, badge, righe dato, chiusura.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · Palette -->
+  <section class="section">
+    <div class="section-head"><span class="section-num">06</span><h2>Palette</h2></div>
+    <p class="section-desc">Bordeaux come voce dominante, oro come premio raro, bianco a percentuali basse per vetro e bordi. Il rosa acceso è riservato ad azioni distruttive e scadenze mediche.</p>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-color" style="background:oklch(0.33 0.13 15)"></div><div class="swatch-meta"><b style="color:var(--primary-soft)">Primary · Bordeaux</b><span>#800020 · oklch(0.33 0.13 15)</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:oklch(0.33 0.13 15 / 0.2)"></div><div class="swatch-meta"><b style="color:var(--primary-soft)">Primary / 20</b><span>bg-primary/20 · box icona</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:oklch(0.84 0.115 85)"></div><div class="swatch-meta"><b style="color:var(--gold)">Oro</b><span>oklch(0.84 0.115 85) · accenti</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:oklch(0.145 0.006 15)"></div><div class="swatch-meta"><b>Background</b><span>oklch(0.145 0 0)</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:oklch(0.205 0 0 / 0.4); backdrop-filter:blur(16px)"></div><div class="swatch-meta"><b>Glass card</b><span>oklch(0.205 0 0 / 0.4)</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:oklch(1 0 0 / 0.1)"></div><div class="swatch-meta"><b>White / 10</b><span>bordi e superfici vetro</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:oklch(0.645 0.246 16.44)"></div><div class="swatch-meta"><b style="color:var(--rose)">Rose 500</b><span>hover distruttivi, scadenze</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:oklch(0.708 0 0)"></div><div class="swatch-meta"><b>Muted foreground</b><span>oklch(0.708 0 0)</span></div></div>
+    </div>
+  </section>
+
+  <!-- 07 · Tipografia -->
+  <section class="section">
+    <div class="section-head"><span class="section-num">07</span><h2>Tipografia</h2></div>
+    <p class="section-desc">Una sola famiglia — Geist Variable — spinta agli estremi: nero corsivo compresso per i titoli, micro-maiuscole spaziate per etichette e sussurri.</p>
+    <div class="panel type-specimen">
+      <div class="type-row">
+        <span class="modal-title" style="font-size:2rem">Calendario <span class="accent">Eventi</span></span>
+        <span class="chip">text-2xl font-black italic tracking-tighter uppercase · accento text-primary not-italic</span>
+      </div>
+      <div class="type-row">
+        <span class="modal-subtitle">Monitoraggio task e visite mediche</span>
+        <span class="chip">text-xs font-bold uppercase tracking-widest text-muted-foreground</span>
+      </div>
+      <div class="type-row">
+        <span class="field-label">Etichetta campo</span>
+        <span class="chip">text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3</span>
+      </div>
+      <div class="type-row">
+        <span style="font-size:.875rem; font-weight:700">Valore del dato in sola lettura</span>
+        <span class="chip">text-sm font-bold text-foreground</span>
+      </div>
+      <div class="type-row">
+        <span class="eyebrow">Legenda / eyebrow</span>
+        <span class="chip">text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · Badge ruolo -->
+  <section class="section">
+    <div class="section-head"><span class="section-num">08</span><h2>Badge ruolo</h2></div>
+    <p class="section-desc">Pillole con etichetta micro. L'oro appartiene solo al Presidente; il bordeaux al Dirigente; gli altri ruoli restano nella scala di grigi e nel rosa dell'app.</p>
+    <div class="panel">
+      <div class="badge-row">
+        <span class="badge badge-president">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.735H5.81a1 1 0 0 1-.957-.735L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/></svg>
+          Presidente
+        </span>
+        <span class="badge badge-director">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+          Dirigente
+        </span>
+        <span class="badge badge-coach">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16"/><path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/><path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/><path d="M18 9h1.5a1 1 0 0 0 0-5H18"/><path d="M6 9H4.5a1 1 0 0 1 0-5H6"/><path d="M6 2h12v7a6 6 0 0 1-12 0z"/></svg>
+          Allenatore
+        </span>
+        <span class="badge badge-player">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7l4.5 3.3-1.7 5.4H9.2L7.5 10.3z"/></svg>
+          Giocatore
+        </span>
+        <span class="badge badge-parent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Genitore
+        </span>
+      </div>
+      <p class="section-desc" style="margin:1.25rem 0 0">
+        <span class="chip">h-8 px-4 pill text-[10px] font-black uppercase tracking-widest border + colore per ruolo</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Nota tecnica -->
+  <section class="section">
+    <div class="callout">
+      <div class="icon-box" style="flex-shrink:0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      </div>
+      <div>
+        <h3>Nota per il refactor · <span style="color:var(--gold)">NOT-italic → not-italic</span></h3>
+        <p>In CalendarModal.tsx e TaskModal.tsx la parola accentata del titolo usa la classe <span class="chip">NOT-italic</span>, che non esiste in Tailwind: oggi l'accento resta in corsivo. Durante l'allineamento US-005 sostituire con <span class="chip">not-italic</span> in tutti i modali, così la parola in bordeaux si raddrizza come da intento originale (convenzione adottata in questa pagina).</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
