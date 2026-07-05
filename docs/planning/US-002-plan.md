@@ -57,16 +57,16 @@ Il cuore della verifica è una matrice di accesso eseguita via API con utenti re
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Migrazione: tabelle di associazione | Creare con `db:new` la migrazione con `coach_teams` e `parent_players` (PK composte, FK verso profiles/players, indici) e relative policy RLS (admin gestisce, interessato legge le proprie righe). | Impl | - |
-| TODO | TASK-02 | Funzioni helper SECURITY DEFINER | Aggiungere `get_coach_sectors()` e `get_parent_player_ids()` con `search_path` fissato, stesso pattern di `get_user_role()`. | Impl | TASK-01 |
-| TODO | TASK-03 | Trigger anti-escalation ruoli | Trigger BEFORE UPDATE su `profiles`: modifica di `role` consentita solo al president; ristrutturare `profiles_update_admin`/`profiles_update_self` di conseguenza. | Impl | TASK-02 |
-| TODO | TASK-04 | Revisione policy coach | Sostituire le policy coach su `players`/`attendance`/`medical_visits` con versioni filtrate per `get_coach_sectors()`; DROP di `payments_select_coach` e della legacy "Staff can manage payments". | Impl | TASK-02 |
-| TODO | TASK-05 | Policy parent | Nuove policy SELECT su `players`, `medical_visits`, `payments`, `attendance` filtrate su `get_parent_player_ids()`. | Impl | TASK-02 |
-| TODO | TASK-06 | Hardening residuo | Lettura `email_usage` solo staff; aggiungere `WITH CHECK` dove mancante sulle policy `FOR ALL`. | Impl | TASK-04 |
-| TODO | TASK-07 | Push migrazione al cloud | `db:push --yes` via pooler `aws-1` e verifica `migration list` allineata. | Impl | TASK-03, TASK-04, TASK-05, TASK-06 |
-| TODO | TASK-08 | Script matrice di accesso | Scrivere `scripts/test-rls.mjs` (utenti di prova per i 5 ruoli via service key, asserzioni sulla matrice attesa, cleanup finale). | Test | TASK-07 |
-| TODO | TASK-09 | Esecuzione matrice + smoke test | Eseguire lo script contro il cloud e verificare manualmente l'app con l'utente admin reale (Dashboard, Atleti, Pagamenti). | Test | TASK-08 |
-| TODO | TASK-10 | Documentazione | Aggiornare `docs/database.md` con una sezione sul modello RLS (ruoli, associazioni, matrice di accesso sintetica). | Impl | TASK-07 |
+| DONE | TASK-01 | Migrazione: tabelle di associazione | Creare con `db:new` la migrazione con `coach_teams` e `parent_players` (PK composte, FK verso profiles/players, indici) e relative policy RLS (admin gestisce, interessato legge le proprie righe). | Impl | - |
+| DONE | TASK-02 | Funzioni helper SECURITY DEFINER | Aggiungere `get_coach_sectors()` e `get_parent_player_ids()` con `search_path` fissato, stesso pattern di `get_user_role()`. | Impl | TASK-01 |
+| DONE | TASK-03 | Trigger anti-escalation ruoli | Trigger BEFORE UPDATE su `profiles`: modifica di `role` consentita solo al president; ristrutturare `profiles_update_admin`/`profiles_update_self` di conseguenza. | Impl | TASK-02 |
+| DONE | TASK-04 | Revisione policy coach | Sostituire le policy coach su `players`/`attendance`/`medical_visits` con versioni filtrate per `get_coach_sectors()`; DROP di `payments_select_coach` e della legacy "Staff can manage payments". | Impl | TASK-02 |
+| DONE | TASK-05 | Policy parent | Nuove policy SELECT su `players`, `medical_visits`, `payments`, `attendance` filtrate su `get_parent_player_ids()`. | Impl | TASK-02 |
+| DONE | TASK-06 | Hardening residuo | Lettura `email_usage` solo staff; aggiungere `WITH CHECK` dove mancante sulle policy `FOR ALL`. | Impl | TASK-04 |
+| DONE | TASK-07 | Push migrazione al cloud | `db:push --yes` via pooler `aws-1` e verifica `migration list` allineata. | Impl | TASK-03, TASK-04, TASK-05, TASK-06 |
+| DONE | TASK-08 | Script matrice di accesso | Scrivere `scripts/test-rls.mjs` (utenti di prova per i 5 ruoli via service key, asserzioni sulla matrice attesa, cleanup finale). | Test | TASK-07 |
+| DONE | TASK-09 | Esecuzione matrice + smoke test | Eseguire lo script contro il cloud e verificare manualmente l'app con l'utente admin reale (Dashboard, Atleti, Pagamenti). | Test | TASK-08 |
+| DONE | TASK-10 | Documentazione | Aggiornare `docs/database.md` con una sezione sul modello RLS (ruoli, associazioni, matrice di accesso sintetica). | Impl | TASK-07 |
 
 ---
 

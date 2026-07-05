@@ -58,7 +58,7 @@
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
 | [US-001](backlog/US-001-configurazione-supabase-cli-migrazioni.md) | Configurazione Supabase CLI e migrazioni versionate | HIGH | 2 | DONE |
-| [US-002](backlog/US-002-policy-rls-ruoli.md) | Policy RLS per tutti i ruoli | HIGH | 5 | PLANNED |
+| [US-002](backlog/US-002-policy-rls-ruoli.md) | Policy RLS per tutti i ruoli | HIGH | 5 | IN PROGRESS |
 | [US-003](backlog/US-003-indici-database-filtri-atleti.md) | Indici database per filtri atleti e pagamenti | MEDIUM | 2 | TODO |
 | [US-004](backlog/US-004-risoluzione-warning-linter-typescript.md) | Risoluzione warning linter e TypeScript | MEDIUM | 1 | TODO |
 | [US-005](backlog/US-005-allineamento-grafico-modali-stile.md) | Allineamento grafico dei modali allo stile Premium Glass | MEDIUM | 3 | TODO |
