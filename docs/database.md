@@ -64,6 +64,33 @@ Sul progetto cloud attuale la baseline è marcata come già applicata (repair `-
 - `migration/*.sql` — script una-tantum di import dati atleti da Excel (INSERT): **non sono migrazioni di schema** e non vanno spostati in `supabase/migrations/`
 - Le 14 voci di history remote orfane (marzo-aprile 2026, dal setup iniziale del progetto) sono state marcate `reverted` il 2026-07-04 per ripartire dalla baseline
 
+## Modello RLS (US-002)
+
+L'accesso ai dati è governato da Row Level Security con ruoli in `profiles.role` (`president`, `director`, `coach`, `player`, `parent`), letti dalle policy tramite `get_user_role()` (SECURITY DEFINER).
+
+**Associazioni:**
+- `coach_teams (profile_id, team_sector)` — leve seguite da ciascun allenatore (match testuale con `players.team_sector`)
+- `parent_players (parent_profile_id, player_id)` — figli associati a ciascun genitore
+- Entrambe gestibili solo da president/director; l'interessato legge le proprie righe
+
+**Matrice di accesso sintetica:**
+
+| Tabella | President | Director | Coach | Player | Parent |
+|---|---|---|---|---|---|
+| players | CRUD | CRUD | R (proprie leve) | R (proprio record) | R (figli associati) |
+| attendance | CRUD | CRUD | CRUD (proprie leve) | R (proprie) | R (figli) |
+| medical_visits | CRUD | CRUD | R (proprie leve) | R (proprie) | R (figli) |
+| payments | CRUD | CRUD | — | R (propri) | R (figli) |
+| profiles | RU (+ruoli) | RU (no ruoli) | R/U proprio | R/U proprio | R/U proprio |
+| seasons | CRUD | R | R | R | R |
+| email_usage | CR | CR | CR | — | — |
+
+> Su `profiles` non esistono policy DELETE e l'INSERT via API è consentito solo per il proprio `id` (la creazione dei profili passa dal trigger `handle_new_user` alla registrazione); la modifica del campo `role` è riservata al Presidente dal trigger anti-escalation, che copre anche l'INSERT.
+
+**Anti-escalation:** il trigger `trg_enforce_role_change` su `profiles` blocca ogni modifica di `role` da parte di chi non è president (il `service_role`, con `auth.uid()` NULL, resta libero per gli strumenti amministrativi). Le policy non possono confrontare OLD/NEW: per questo è un trigger e non una policy.
+
+**Verifica:** `node scripts/test-rls.mjs` esegue la matrice di accesso completa contro il cloud con utenti di prova `TEST_RLS_*` (creazione, asserzioni per i 5 ruoli + anonimo, cleanup). Richiede `SUPABASE_SERVICE_ROLE_KEY` nel `.env`.
+
 ## Sviluppo locale (opzionale, futuro)
 
 `npx supabase start` avvia l'intero stack Supabase in locale via Docker (Postgres, Auth, Studio). Non è richiesto per il flusso attuale: le migrazioni si applicano direttamente al cloud. Da valutare quando servirà sviluppare Edge Functions (US-006) o testare RLS in isolamento (US-002).

@@ -2,6 +2,14 @@
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
 
+## [0.12.0] - 2026-07-05
+
+### Sicurezza
+- **RLS per tutti i ruoli (US-002)**: chiuse tre falle della baseline — escalation di privilegio su `profiles.role` (chiunque poteva auto-promuoversi via API), policy coach senza filtro squadra (vedeva tutti gli atleti e tutti i pagamenti), ruolo parent privo di policy.
+- **Anti-escalation**: trigger `trg_enforce_role_change` — solo il Presidente può modificare i ruoli utente.
+- **Nuove associazioni**: tabelle `coach_teams` (leve per allenatore) e `parent_players` (figli per genitore) con RLS dedicate.
+- **Matrice di accesso verificata**: nuovo script `scripts/test-rls.mjs` (20 controlli sui 5 ruoli + anonimo, con utenti di prova e cleanup automatico).
+
 ## [0.11.0] - 2026-07-04
 
 ### Aggiunto
