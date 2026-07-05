@@ -15,6 +15,6 @@ After implementing this story, the user can: eseguire build e lint del progetto 
 - [ ] Il linter non segnala alcun warning, incluse le chiavi di array basate su index
 - [ ] Nessuna soppressione generica dei warning (es. `eslint-disable` di massa) introdotta come scorciatoia
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [docs/planning/US-004-plan.md](../planning/US-004-plan.md)
 
