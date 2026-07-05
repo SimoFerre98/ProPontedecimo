@@ -11,10 +11,11 @@ così che il lavoro quotidiano di consultazione non subisca rallentamenti al cre
 After implementing this story, the user can: filtrare la lista atleti per stato attivo o scadenza medica con tempi di risposta ridotti, verificabili dal query plan.
 
 **Acceptance Criteria**
-- [ ] Gli indici `idx_players_is_active`, `idx_players_medical_expiry` e `idx_payments_status` sono creati via migrazione
-- [ ] Il query plan (`EXPLAIN`) delle query di filtro atleti e pagamenti utilizza i nuovi indici
-- [ ] Nessuna regressione funzionale nelle liste esistenti dopo l'applicazione degli indici
+- [x] Gli indici `idx_players_is_active`, `idx_players_medical_expiry` e `idx_payments_status` sono creati via migrazione
+- [x] Il query plan (`EXPLAIN`) delle query di filtro atleti e pagamenti utilizza i nuovi indici
+- [x] Nessuna regressione funzionale nelle liste esistenti dopo l'applicazione degli indici
 
-**Status:** REVIEW
+**Status:** DONE
 **Plan:** [docs/planning/US-003-plan.md](../planning/US-003-plan.md)
 
+**Merge:** merge --no-ff su `dev` (2026-07-05), branch conservato su origin
