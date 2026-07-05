@@ -2,6 +2,14 @@
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
 
+## [0.12.2] - 2026-07-05
+
+### Qualità
+- **Zero warning linter e TypeScript (US-004)**: risolti tutti i 26 problemi ESLint (14 `any` espliciti sostituiti con tipi reali, variabili inutilizzate, dipendenze `useMemo`/`useEffect`, regole `react-refresh` e `react-hooks/set-state-in-effect`), senza alcuna soppressione.
+- **Refactoring auth**: hook `useAuth` estratto in `src/hooks/useAuth.ts` e context in `src/contexts/auth-context.ts` (Fast Refresh conforme); `buttonVariants` estratto in `button-variants.ts`.
+- **SettingsModal**: caricamento utenti migrato a TanStack Query con update ottimistici via cache (`setQueryData`).
+- **CalendarEvent**: tipo ridefinito come unione discriminata (`task`/`medical`) con `originalData` tipizzato.
+
 ## [0.12.0] - 2026-07-05
 
 ### Sicurezza

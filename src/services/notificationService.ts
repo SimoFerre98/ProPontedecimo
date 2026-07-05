@@ -129,6 +129,15 @@ export const notificationService = {
       fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15)
       const dateStr = fifteenDaysAgo.toISOString().split('T')[0]
 
+      interface OverduePaymentRow {
+        id: string
+        installment_no: number
+        due_date: string
+        amount_eur: number | null
+        status: string
+        player: { first_name: string; last_name: string }
+      }
+
       const { data: overduePayments } = await supabase
         .from('payments')
         .select(`
@@ -140,7 +149,7 @@ export const notificationService = {
         .lt('due_date', dateStr)
 
       if (overduePayments) {
-        overduePayments.forEach((p: any) => {
+        (overduePayments as unknown as OverduePaymentRow[]).forEach((p) => {
           const daysLate = differenceInDays(now, new Date(p.due_date))
           notifications.push({
             id: `payment-overdue-${p.id}`,

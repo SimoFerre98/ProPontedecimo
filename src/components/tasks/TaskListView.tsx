@@ -8,6 +8,7 @@ import {
   Briefcase,
   MoreVertical
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { StaffTask, TaskStatus } from '@/services/staffService'
 import { format } from 'date-fns'
@@ -18,7 +19,7 @@ interface TaskListViewProps {
   onTaskClick: (task: StaffTask) => void
 }
 
-const STATUS_MAP: Record<TaskStatus, { label: string; icon: any; color: string; bg: string }> = {
+const STATUS_MAP: Record<TaskStatus, { label: string; icon: LucideIcon; color: string; bg: string }> = {
   created: { label: 'Creato', icon: Briefcase, color: 'text-slate-400', bg: 'bg-slate-500/10' },
   ready: { label: 'Pronto', icon: Clock, color: 'text-amber-500', bg: 'bg-amber-500/10' },
   done: { label: 'Completato', icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },

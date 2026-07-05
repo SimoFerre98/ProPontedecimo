@@ -11,6 +11,7 @@ import {
   Clock,
   Briefcase
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { StaffTask, TaskStatus } from '@/services/staffService'
 import { format } from 'date-fns'
@@ -23,7 +24,7 @@ interface KanbanBoardProps {
   onAddTask: (status: TaskStatus) => void
 }
 
-const COLUMNS: { id: TaskStatus; label: string; icon: any; color: string }[] = [
+const COLUMNS: { id: TaskStatus; label: string; icon: LucideIcon; color: string }[] = [
   { id: 'created', label: 'Created', icon: Briefcase, color: 'text-slate-400' },
   { id: 'ready', label: 'Ready', icon: Clock, color: 'text-amber-500' },
   { id: 'done', label: 'Done', icon: CheckCircle2, color: 'text-emerald-500' },
@@ -109,7 +110,7 @@ export default function KanbanBoard({ tasks, onTaskClick, onStatusChange, onAddT
                     exit={{ opacity: 0, scale: 0.9, y: -10 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     draggable
-                    onDragStart={(e: any) => handleDragStart(e, task.id)}
+                    onDragStart={(e) => handleDragStart(e as unknown as React.DragEvent, task.id)}
                     onClick={() => onTaskClick(task)}
                     className={cn(
                       "glass-card p-5 group/card cursor-grab active:cursor-grabbing hover:border-primary/30 transition-all border-white/5 relative",

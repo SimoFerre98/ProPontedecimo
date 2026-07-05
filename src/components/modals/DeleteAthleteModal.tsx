@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trash2, X, Loader2, ShieldAlert, CreditCard } from 'lucide-react'
 import { athleteService, type Player } from '@/services/athleteService'
@@ -18,15 +18,7 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
   const [inputValue, setInputValue] = useState('')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (isOpen && athlete) {
-      checkPayments()
-      setInputValue('')
-      setErrorMsg(null)
-    }
-  }, [isOpen, athlete])
-
-  const checkPayments = async () => {
+  const checkPayments = useCallback(async () => {
     if (!athlete) return
     setCheckingPayments(true)
     try {
@@ -38,7 +30,15 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
     } finally {
       setCheckingPayments(false)
     }
-  }
+  }, [athlete])
+
+  useEffect(() => {
+    if (isOpen && athlete) {
+      checkPayments()
+      setInputValue('')
+      setErrorMsg(null)
+    }
+  }, [isOpen, athlete, checkPayments])
 
   const expectedName = athlete ? `${athlete.first_name} ${athlete.last_name}`.trim().toLowerCase() : ''
   const isConfirmValid = inputValue.trim().toLowerCase() === expectedName

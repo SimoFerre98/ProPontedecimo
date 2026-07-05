@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, UserCog, Mail, ShieldAlert, Loader2, Trash2, X, Users, AlertTriangle } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import type { Database } from '@/types/database'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
 
 type UserRole = Database['public']['Enums']['user_role']
@@ -45,8 +46,7 @@ interface DeleteConfirmState {
 
 export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModalProps>) {
   const { user } = useAuth()
-  const [profiles, setProfiles] = useState<Profile[]>([])
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
   const [searchTerm, setSearchTerm] = useState('')
   const [roleFilter, setRoleFilter] = useState<UserRole | 'all'>('all')
   const [updatingId, setUpdatingId] = useState<string | null>(null)
@@ -54,30 +54,39 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState | null>(null)
 
-  useEffect(() => {
+  // Fetch via TanStack Query (idioma del progetto): niente setState negli effect.
+  const { data: profilesData, isLoading: loading, isError: loadError } = useQuery({
+    queryKey: ['settings-profiles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      return (data ?? []) as Profile[]
+    },
+    enabled: isOpen,
+  })
+  const profiles = profilesData ?? []
+
+  // Reset dei campi all'apertura: pattern "adjust state on prop change" durante il
+  // render (React docs) — un setState sincrono dentro l'effect causerebbe render a cascata.
+  const [prevOpen, setPrevOpen] = useState(false)
+  if (isOpen !== prevOpen) {
+    setPrevOpen(isOpen)
     if (isOpen) {
-      void fetchProfiles()
       setSearchTerm('')
       setRoleFilter('all')
       setErrorMsg(null)
     }
-  }, [isOpen])
-
-  const fetchProfiles = async () => {
-    setLoading(true)
-    setErrorMsg(null)
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      setErrorMsg('Errore nel caricamento degli utenti.')
-    } else if (data) {
-      setProfiles(data as Profile[])
-    }
-    setLoading(false)
   }
+
+  // All'apertura invalida la cache così la lista utenti è sempre fresca
+  useEffect(() => {
+    if (isOpen) {
+      void queryClient.invalidateQueries({ queryKey: ['settings-profiles'] })
+    }
+  }, [isOpen, queryClient])
 
   const handleRoleChange = async (profileId: string, newRole: UserRole) => {
     setUpdatingId(profileId)
@@ -90,7 +99,8 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
     if (error) {
       setErrorMsg("Errore durante l'aggiornamento del ruolo.")
     } else {
-      setProfiles(prev => prev.map(p => p.id === profileId ? { ...p, role: newRole } : p))
+      queryClient.setQueryData<Profile[]>(['settings-profiles'], prev =>
+        (prev ?? []).map(p => p.id === profileId ? { ...p, role: newRole } : p))
     }
     setUpdatingId(null)
   }
@@ -119,7 +129,8 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
       }
     }
 
-    setProfiles(prev => prev.filter(p => p.id !== profile.id))
+    queryClient.setQueryData<Profile[]>(['settings-profiles'], prev =>
+      (prev ?? []).filter(p => p.id !== profile.id))
     setDeleteConfirm(null)
     setDeletingId(null)
   }
@@ -231,6 +242,11 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
             </div>
 
             {/* Error */}
+            {loadError && !errorMsg && (
+              <div className="mx-8 mt-4 px-4 py-3 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-semibold">
+                Errore nel caricamento degli utenti.
+              </div>
+            )}
             {errorMsg && (
               <div className="mx-8 mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-sm font-semibold flex items-center gap-2 shrink-0">
                 <ShieldAlert className="w-5 h-5 flex-shrink-0" />

@@ -44,7 +44,7 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
 
   const { data: events = [] } = useQuery({
     queryKey: ['calendar-events', format(currentDate, 'yyyy-MM')],
-    queryFn: () => calendarService.getEventsForMonth(currentDate),
+    queryFn: () => calendarService.getEventsForMonth(),
     enabled: isOpen
   })
 

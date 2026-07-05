@@ -1,21 +1,24 @@
-import { medicalService } from './medicalService'
+import { medicalService, type MedicalVisitRecord } from './medicalService'
 import { staffService, type StaffTask } from './staffService'
 import { eachDayOfInterval, parseISO, isValid } from 'date-fns'
 
 export type CalendarEventType = 'task' | 'medical'
 
-export interface CalendarEvent {
+// Unione discriminata su `type`: chi consuma l'evento ottiene il tipo
+// corretto di originalData semplicemente controllando event.type.
+export type CalendarEvent = {
   id: string
   title: string
   description?: string
   date: string // ISO date
-  type: CalendarEventType
   status?: string
-  originalData: any
-}
+} & (
+  | { type: 'task'; originalData: StaffTask }
+  | { type: 'medical'; originalData: MedicalVisitRecord }
+)
 
 export const calendarService = {
-  async getEventsForMonth(_month: Date): Promise<CalendarEvent[]> {
+  async getEventsForMonth(): Promise<CalendarEvent[]> {
     // 1. Get Tasks
     const tasks = await staffService.getTasks()
     
@@ -54,7 +57,7 @@ export const calendarService = {
               originalData: task
             })
           })
-        } catch (e) {
+        } catch {
           // Fallback to single day if interval is invalid
           events.push({
             id: `task-${task.id}`,

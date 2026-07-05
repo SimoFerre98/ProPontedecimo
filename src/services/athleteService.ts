@@ -104,7 +104,7 @@ export const athleteService = {
   },
 
   async createPlayer(player: Omit<Player, 'id' | 'created_at'>) {
-    const playerToInsert = { ...player } as any
+    const playerToInsert = { ...player } as Omit<Player, 'id' | 'created_at'> & { season_id?: string }
     if (!playerToInsert.season_id) {
       const { data: season } = await supabase.from('seasons').select('id').eq('is_active', true).single()
       if (season) {

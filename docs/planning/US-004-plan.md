@@ -48,12 +48,12 @@ Story di bonifica: la verifica primaria è l'output degli strumenti stessi, più
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Fix meccanici | Rimuovere le variabili inutilizzate in `calendarService.ts` e sistemare i due `useMemo` segnalati da exhaustive-deps in `Inventory.tsx` e `Payments.tsx`. | Impl | - |
-| TODO | TASK-02 | Sostituzione degli `any` | Tipizzare le 12 occorrenze segnalate riusando i tipi di `src/types/database.ts` dove esistono; tipi minimi locali per filtri e catch. | Impl | - |
-| TODO | TASK-03 | Estrazione export non-componente | `buttonVariants` → `components/ui/button-variants.ts`; `useAuth` → `src/hooks/useAuth.ts`; aggiornare tutti gli import. | Impl | - |
-| TODO | TASK-04 | Verifica tooling | `npm run lint` (atteso 0 problemi) e `npm run build` (attesa build pulita); grep anti-soppressioni sul diff. | Test | TASK-01, TASK-02, TASK-03 |
-| TODO | TASK-05 | Smoke funzionale | Verifica delle pagine toccate (login/auth, Payments, Inventory, Athletes, task list): rendering e comportamento invariati. | Test | TASK-04 |
-| TODO | TASK-06 | CHANGELOG e versione | Voce CHANGELOG e bump patch di `package.json`. | Impl | TASK-04 |
+| DONE | TASK-01 | Fix meccanici | Rimuovere le variabili inutilizzate in `calendarService.ts` e sistemare i due `useMemo` segnalati da exhaustive-deps in `Inventory.tsx` e `Payments.tsx`. | Impl | - |
+| DONE | TASK-02 | Sostituzione degli `any` | Tipizzare le 12 occorrenze segnalate riusando i tipi di `src/types/database.ts` dove esistono; tipi minimi locali per filtri e catch. | Impl | - |
+| DONE | TASK-03 | Estrazione export non-componente | `buttonVariants` → `components/ui/button-variants.ts`; `useAuth` → `src/hooks/useAuth.ts`; aggiornare tutti gli import. | Impl | - |
+| DONE | TASK-04 | Verifica tooling | `npm run lint` (atteso 0 problemi) e `npm run build` (attesa build pulita); grep anti-soppressioni sul diff. | Test | TASK-01, TASK-02, TASK-03 |
+| DONE | TASK-05 | Smoke funzionale | Verifica delle pagine toccate (login/auth, Payments, Inventory, Athletes, task list): rendering e comportamento invariati. | Test | TASK-04 |
+| DONE | TASK-06 | CHANGELOG e versione | Voce CHANGELOG e bump patch di `package.json`. | Impl | TASK-04 |
 
 ---
 

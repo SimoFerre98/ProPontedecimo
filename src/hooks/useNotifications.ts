@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { notificationService } from '@/services/notificationService'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 
 export function useNotifications() {
   const { role } = useAuth()
