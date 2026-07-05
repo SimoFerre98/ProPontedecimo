@@ -47,11 +47,11 @@ Story infrastrutturale senza codice applicativo: verifica del piano di esecuzion
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Migrazione indici | Creare la migrazione `performance_indexes` con `idx_players_is_active` e `idx_players_medical_expiry` (IF NOT EXISTS) e commento sullo stato di `idx_payments_status` (già in baseline). | Impl | - |
-| TODO | TASK-02 | Push al cloud | `db:push --yes` via pooler `aws-1` e verifica `migration list` allineata. | Impl | TASK-01 |
-| TODO | TASK-03 | Verifica query plan | `EXPLAIN (ANALYZE)` via pooler sulle query rappresentative dei filtri atleti/pagamenti; conferma dell'uso degli indici nei casi selettivi. | Test | TASK-02 |
-| TODO | TASK-04 | Non-regressione | Riesecuzione `scripts/test-rls.mjs` (23 controlli attesi verdi). | Test | TASK-02 |
-| TODO | TASK-05 | Documentazione | Nota indici in `docs/database.md` e voce CHANGELOG. | Impl | TASK-03 |
+| DONE | TASK-01 | Migrazione indici | Creare la migrazione `performance_indexes` con `idx_players_is_active` e `idx_players_medical_expiry` (IF NOT EXISTS) e commento sullo stato di `idx_payments_status` (già in baseline). | Impl | - |
+| DONE | TASK-02 | Push al cloud | `db:push --yes` via pooler `aws-1` e verifica `migration list` allineata. | Impl | TASK-01 |
+| DONE | TASK-03 | Verifica query plan | `EXPLAIN (ANALYZE)` via pooler sulle query rappresentative dei filtri atleti/pagamenti; conferma dell'uso degli indici nei casi selettivi. | Test | TASK-02 |
+| DONE | TASK-04 | Non-regressione | Riesecuzione `scripts/test-rls.mjs` (23 controlli attesi verdi). | Test | TASK-02 |
+| DONE | TASK-05 | Documentazione | Nota indici in `docs/database.md` e voce CHANGELOG. | Impl | TASK-03 |
 
 ---
 
