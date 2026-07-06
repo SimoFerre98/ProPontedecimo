@@ -1,5 +1,5 @@
 import { useEffect, type ComponentType } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   X,
   User,
@@ -99,8 +99,6 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
     return () => window.removeEventListener('keydown', handleEsc)
   }, [isOpen, onClose])
 
-  if (!isOpen) return null
-
   const badge = profile ? ROLE_BADGES[profile.role] : null
   const displayName = profile?.full_name ?? profile?.email ?? '—'
   const initials = getInitials(profile?.full_name ?? null, profile?.email ?? '')
@@ -115,6 +113,8 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
   ]
 
   return (
+    <AnimatePresence>
+      {isOpen && (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0 }}
@@ -247,5 +247,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
         </div>
       </motion.div>
     </div>
+      )}
+    </AnimatePresence>
   )
 }
