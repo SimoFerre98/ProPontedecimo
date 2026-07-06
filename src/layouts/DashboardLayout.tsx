@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useClickOutside } from '@/hooks/useClickOutside'
 import { useQuery } from '@tanstack/react-query'
@@ -79,7 +79,7 @@ export default function DashboardLayout() {
   const [isSeasonDropdownOpen, setIsSeasonDropdownOpen] = useState(false)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
 
-  const { seasons, selectedSeasonId, activeSeasonId, setSeasons, setSelectedSeasonId } = useAppStore()
+  const { seasons, selectedSeasonId, setSeasons, setSelectedSeasonId } = useAppStore()
 
   // Caricamento stagioni
   const { data: fetchedSeasons } = useQuery({
