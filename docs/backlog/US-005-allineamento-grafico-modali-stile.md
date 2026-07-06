@@ -15,6 +15,6 @@ After implementing this story, the user can: aprire il proprio profilo da qualsi
 - [ ] `ProfileModal.tsx` è rifattorizzato da placeholder a modale funzionante con i dati del profilo utente
 - [ ] I modali sono utilizzabili e leggibili anche su viewport mobile
 
-**Status:** PLANNED
+**Status:** REVIEW
 **Plan:** [docs/planning/US-005-plan.md](../planning/US-005-plan.md)
 
