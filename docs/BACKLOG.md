@@ -15,7 +15,7 @@
 
 | Epic | Title | Stories | Story Points | Scope |
 |---|---|---|---|---|
-| EP-001 | Fondamenta Tecniche & Qualità del Codice | 6 | 16 | MVP |
+| EP-001 | Fondamenta Tecniche & Qualità del Codice | 7 | 19 | MVP |
 | EP-002 | Gestione Stagioni Sportive | 2 | 8 | MVP |
 | EP-003 | Anagrafica Atleti & Validazione | 3 | 7 | MVP |
 | EP-004 | Calendario Eventi & Sincronizzazione | 3 | 11 | MVP |
@@ -30,9 +30,9 @@
 | EP-013 | Sistema di Notifiche Color-Coded | 1 | 5 | Vision |
 | EP-014 | Refactoring Architetturale & Resilienza | 6 | 15 | MVP |
 
-**Total stories:** 40
-**Total story points:** 128
-**MVP stories:** 28 (84pt)
+**Total stories:** 41
+**Total story points:** 131
+**MVP stories:** 29 (87pt)
 
 ---
 
@@ -53,7 +53,7 @@
 ### EP-001: Fondamenta Tecniche & Qualità del Codice
 
 > Consolidare le fondamenta del progetto: tooling del database, sicurezza RLS, performance e coerenza visiva.
-> **Scope:** MVP | **Stories:** 6 | **Story Points:** 16
+> **Scope:** MVP | **Stories:** 7 | **Story Points:** 19
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
@@ -63,6 +63,7 @@
 | [US-004](backlog/US-004-risoluzione-warning-linter-typescript.md) | Risoluzione warning linter e TypeScript | MEDIUM | 1 | DONE |
 | [US-005](backlog/US-005-allineamento-grafico-modali-stile.md) | Allineamento grafico dei modali allo stile Premium Glass | MEDIUM | 3 | PLANNED |
 | [US-006](backlog/US-006-architettura-invio-email-template.md) | Architettura invio email e template promemoria visite mediche | MEDIUM | 3 | TODO |
+| [US-041](backlog/US-041-revisione-contrasti-tema-scuro.md) | Revisione contrasti e leggibilità del tema scuro | MEDIUM | 3 | TODO |
 
 ### EP-002: Gestione Stagioni Sportive
 
