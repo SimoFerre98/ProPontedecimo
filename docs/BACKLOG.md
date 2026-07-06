@@ -61,7 +61,7 @@
 | [US-002](backlog/US-002-policy-rls-ruoli.md) | Policy RLS per tutti i ruoli | HIGH | 5 | DONE |
 | [US-003](backlog/US-003-indici-database-filtri-atleti.md) | Indici database per filtri atleti e pagamenti | MEDIUM | 2 | DONE |
 | [US-004](backlog/US-004-risoluzione-warning-linter-typescript.md) | Risoluzione warning linter e TypeScript | MEDIUM | 1 | DONE |
-| [US-005](backlog/US-005-allineamento-grafico-modali-stile.md) | Allineamento grafico dei modali allo stile Premium Glass | MEDIUM | 3 | PLANNED |
+| [US-005](backlog/US-005-allineamento-grafico-modali-stile.md) | Allineamento grafico dei modali allo stile Premium Glass | MEDIUM | 3 | REVIEW |
 | [US-006](backlog/US-006-architettura-invio-email-template.md) | Architettura invio email e template promemoria visite mediche | MEDIUM | 3 | PLANNED |
 | [US-041](backlog/US-041-revisione-contrasti-tema-scuro.md) | Revisione contrasti e leggibilità del tema scuro | MEDIUM | 3 | TODO |
 
@@ -72,7 +72,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-007](backlog/US-007-selettore-stagione-globale-header.md) | Selettore stagione globale in header | HIGH | 3 | TODO |
+| [US-007](backlog/US-007-selettore-stagione-globale-header.md) | Selettore stagione globale in header | HIGH | 3 | PLANNED |
 | [US-008](backlog/US-008-wizard-creazione-nuova-stagione.md) | Wizard creazione nuova stagione | HIGH | 5 | TODO |
 
 ### EP-003: Anagrafica Atleti & Validazione

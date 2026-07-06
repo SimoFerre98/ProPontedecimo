@@ -149,7 +149,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-background/90 backdrop-blur-md"
+            className="absolute inset-0 bg-background/60 backdrop-blur-xl"
           />
           
           <motion.div
@@ -166,18 +166,18 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                 </div>
                 <div>
                   <h2 className="text-3xl font-black text-foreground italic uppercase leading-none">
-                    {task ? 'Modifica' : 'Nuovo'} <span className="text-primary NOT-italic">Task</span>
+                    {task ? 'Modifica' : 'Nuovo'} <span className="text-primary not-italic">Task</span>
                   </h2>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">
                     {task ? 'Aggiorna i dettagli dell\'attività' : 'Assegnazione compiti allo staff'}
                   </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={onClose}
-                className="p-3 pill hover:bg-black/5 dark:hover:bg-white/10 text-muted-foreground transition-all hover:rotate-90"
+                className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
             </div>
 

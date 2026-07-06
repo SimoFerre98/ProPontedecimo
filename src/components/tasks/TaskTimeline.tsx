@@ -58,7 +58,7 @@ export default function TaskTimeline({ tasks, onTaskClick }: Readonly<TaskTimeli
             <Calendar className="w-4 h-4 text-primary" />
           </div>
           <h3 className="text-xs font-black uppercase tracking-[0.2em] text-foreground italic">
-            Timeline <span className="text-primary NOT-italic">Settimanale</span>
+            Timeline <span className="text-primary not-italic">Settimanale</span>
           </h3>
         </div>
         <div className="flex gap-1">

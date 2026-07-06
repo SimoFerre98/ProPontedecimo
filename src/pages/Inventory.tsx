@@ -57,7 +57,7 @@ export default function Inventory() {
             <span>Storehouse Manager</span>
           </div>
           <h1 className="text-5xl font-black text-foreground tracking-tight italic uppercase">
-            Gestione <span className="text-primary NOT-italic">Magazzino</span>
+            Gestione <span className="text-primary not-italic">Magazzino</span>
           </h1>
           <p className="text-muted-foreground font-medium border-l-2 border-primary/30 pl-4 max-w-xl">
             Monitoraggio in tempo reale delle scorte, attrezzature e materiale tecnico della società.

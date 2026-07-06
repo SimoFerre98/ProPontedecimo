@@ -2,6 +2,14 @@
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
 
+## [0.13.0] - 2026-07-06
+
+### Interfaccia
+- **Modali allineati allo stile Premium Glass (US-005)**: overlay canonico `bg-background/60 backdrop-blur-xl` e pulsante di chiusura pill uniforme su tutti gli 11 modali; scala dei raggi normalizzata.
+- **ProfileModal reale**: sostituito il placeholder con il modale "Il Mio Profilo" (avatar/iniziali, nome, email, badge ruolo, data registrazione) in sola lettura, fedele al mockup approvato; pulsante "Modifica Profilo" disabilitato (editing in US-018).
+- **Responsive**: aggiunti vincoli viewport e scroll interno a `DeleteAthleteModal`, `NewPaymentModal`, `PaymentModal`.
+- **Fix typo**: corretta la classe inesistente `NOT-italic` → `not-italic` in 5 file (CalendarModal, TaskModal, MedicalVisitModal, AddInventoryModal, Athletes, Inventory, StaffTasks, TaskTimeline).
+
 ## [0.12.2] - 2026-07-05
 
 ### Qualità
