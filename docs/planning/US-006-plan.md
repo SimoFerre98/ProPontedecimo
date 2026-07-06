@@ -54,14 +54,14 @@ Story infrastrutturale con una componente verificabile end-to-end (invio reale i
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Client Resend + layout condivisi | Creare `supabase/functions/_shared/` con client Resend (fetch API, no SDK) e layout HTML base brandizzato riutilizzabile. | Impl | - |
-| TODO | TASK-02 | Template promemoria visite mediche | Implementare `medicalReminder({ playerName, expiryDate, daysLeft })` sul layout base, palette bordeaux/oro e logo società. | Impl | TASK-01 |
-| TODO | TASK-03 | Edge Function `send-email` | Allineare la funzione al contratto usato da `SendEmailModal` (to/subject/html/groupTarget + Authorization), verifica JWT+ruolo staff, invio Resend, log in `email_usage`, errori strutturati. | Impl | TASK-01 |
-| TODO | TASK-04 | Edge Function `medical-reminders` | Funzione che seleziona gli atleti con `medical_expiry` entro N giorni, compone il template (TASK-02) e invia via client Resend, registrando l'esito; predisposta per scheduling. | Impl | TASK-02, TASK-03 |
-| TODO | TASK-05 | Config secret e .env.example | Documentare/impostare `RESEND_API_KEY` come secret Edge Runtime; aggiornare `.env.example` con placeholder e nota `supabase secrets set`. | Impl | TASK-03 |
-| TODO | TASK-06 | Test invio + errori | Invio di test reale in sandbox (AC1) con verifica riga `email_usage`; test di fallimento Resend (AC4: errore strutturato, nessun crash, batch resiliente). | Test | TASK-04, TASK-05 |
-| TODO | TASK-07 | Non-regressione SendEmailModal | Smoke sul modale email esistente: invio gruppo/singolo e gestione errori col contratto invariato. | Test | TASK-03 |
-| TODO | TASK-08 | Documentazione architettura | Sezione dedicata (docs/edge-functions.md o in docs/database.md): architettura, deploy, secret, scheduling futuro dei promemoria. | Impl | TASK-06 |
+| DONE | TASK-01 | Client Resend + layout condivisi | Creare `supabase/functions/_shared/` con client Resend (fetch API, no SDK) e layout HTML base brandizzato riutilizzabile. | Impl | - |
+| DONE | TASK-02 | Template promemoria visite mediche | Implementare `medicalReminder({ playerName, expiryDate, daysLeft })` sul layout base, palette bordeaux/oro e logo società. | Impl | TASK-01 |
+| DONE | TASK-03 | Edge Function `send-email` | Allineare la funzione al contratto usato da `SendEmailModal` (to/subject/html/groupTarget + Authorization), verifica JWT+ruolo staff, invio Resend, log in `email_usage`, errori strutturati. | Impl | TASK-01 |
+| DONE | TASK-04 | Edge Function `medical-reminders` | Funzione che seleziona gli atleti con `medical_expiry` entro N giorni, compone il template (TASK-02) e invia via client Resend, registrando l'esito; predisposta per scheduling. | Impl | TASK-02, TASK-03 |
+| DONE | TASK-05 | Config secret e .env.example | Documentare/impostare `RESEND_API_KEY` come secret Edge Runtime; aggiornare `.env.example` con placeholder e nota `supabase secrets set`. | Impl | TASK-03 |
+| DONE | TASK-06 | Test invio + errori | Invio di test reale in sandbox (AC1) con verifica riga `email_usage`; test di fallimento Resend (AC4: errore strutturato, nessun crash, batch resiliente). | Test | TASK-04, TASK-05 |
+| DONE | TASK-07 | Non-regressione SendEmailModal | Smoke sul modale email esistente: invio gruppo/singolo e gestione errori col contratto invariato. | Test | TASK-03 |
+| DONE | TASK-08 | Documentazione architettura | Sezione dedicata (docs/edge-functions.md o in docs/database.md): architettura, deploy, secret, scheduling futuro dei promemoria. | Impl | TASK-06 |
 
 ---
 

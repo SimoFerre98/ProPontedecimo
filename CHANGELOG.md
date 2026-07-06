@@ -2,6 +2,12 @@
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
 
+## [Unreleased]
+### Added
+- **US-006**: Aggiunte Supabase Edge Functions per invio email (`send-email` e `medical-reminders`).
+- **US-006**: Template grafico brandizzato (bordeaux/oro) per email e promemoria visite mediche (`_shared/templates.ts`).
+- **US-006**: Documentazione architettura in `docs/edge-functions.md` per l'invio email e il setup segreti.
+
 ## [0.12.2] - 2026-07-05
 
 ### Qualità
