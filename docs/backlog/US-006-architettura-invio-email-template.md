@@ -16,6 +16,6 @@ After implementing this story, the user can: innescare l'invio di un'email di pr
 - [ ] L'architettura (trigger, scheduling, gestione errori di invio) è documentata per i futuri casi d'uso email
 - [ ] Un invio fallito viene registrato e non blocca l'applicazione
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [docs/planning/US-006-plan.md](../planning/US-006-plan.md)
 
