@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trash2, X, Loader2, ShieldAlert, CreditCard } from 'lucide-react'
 import { athleteService, type Player } from '@/services/athleteService'
@@ -18,15 +18,7 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
   const [inputValue, setInputValue] = useState('')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (isOpen && athlete) {
-      checkPayments()
-      setInputValue('')
-      setErrorMsg(null)
-    }
-  }, [isOpen, athlete])
-
-  const checkPayments = async () => {
+  const checkPayments = useCallback(async () => {
     if (!athlete) return
     setCheckingPayments(true)
     try {
@@ -38,7 +30,15 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
     } finally {
       setCheckingPayments(false)
     }
-  }
+  }, [athlete])
+
+  useEffect(() => {
+    if (isOpen && athlete) {
+      checkPayments()
+      setInputValue('')
+      setErrorMsg(null)
+    }
+  }, [isOpen, athlete, checkPayments])
 
   const expectedName = athlete ? `${athlete.first_name} ${athlete.last_name}`.trim().toLowerCase() : ''
   const isConfirmValid = inputValue.trim().toLowerCase() === expectedName
@@ -70,14 +70,14 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-background/60 backdrop-blur-xl"
           />
           
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-md glass-card rounded-[2.5rem] p-8 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.7)] border border-red-500/20 overflow-hidden"
+            className="relative w-[95vw] max-w-md max-h-[90vh] glass-card rounded-[3rem] p-8 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.7)] border border-red-500/20 overflow-hidden overflow-y-auto no-scrollbar"
           >
             {/* Background Decor */}
             <div className="absolute -right-10 -top-10 w-32 h-32 bg-red-500/5 rounded-full blur-3xl" />
@@ -95,11 +95,11 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
                   Azione irreversibile
                 </p>
               </div>
-              <button 
+              <button
                 onClick={onClose}
-                className="p-2 pill hover:bg-black/5 dark:hover:bg-white/10 text-muted-foreground transition-all"
+                className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
             </div>
 

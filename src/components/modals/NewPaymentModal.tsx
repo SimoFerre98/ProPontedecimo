@@ -50,14 +50,10 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
       const nextYear = new Date().getMonth() >= 8 ? currentYear + 1 : currentYear
       const jan15 = `${nextYear}-01-15`
 
-      const { data: season } = await supabase.from('seasons').select('id').eq('is_active', true).single()
-      if (!season) throw new Error("No active season found")
-
       if (plan === 'annual') {
         // Unica rata con scadenza 15 settembre
         await paymentService.upsertPayment({
           player_id: selectedPlayer.id,
-          season_id: season.id,
           installment_no: 1,
           plan: 'annual',
           due_date: sep15,
@@ -67,8 +63,8 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
       } else {
         // Due rate uguali
         const half = Math.round((amountNum / 2) * 100) / 100
-        await paymentService.upsertPayment({ player_id: selectedPlayer.id, season_id: season.id, installment_no: 1, plan: 'installments', due_date: sep15, amount_eur: half, status: 'pending' })
-        await paymentService.upsertPayment({ player_id: selectedPlayer.id, season_id: season.id, installment_no: 2, plan: 'installments', due_date: jan15, amount_eur: amountNum - half, status: 'pending' })
+        await paymentService.upsertPayment({ player_id: selectedPlayer.id, installment_no: 1, plan: 'installments', due_date: sep15, amount_eur: half, status: 'pending' })
+        await paymentService.upsertPayment({ player_id: selectedPlayer.id, installment_no: 2, plan: 'installments', due_date: jan15, amount_eur: amountNum - half, status: 'pending' })
       }
 
       queryClient.invalidateQueries({ queryKey: ['payments'] })
@@ -90,13 +86,13 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-background/90 backdrop-blur-md"
+            className="absolute inset-0 bg-background/60 backdrop-blur-xl"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-md glass-card rounded-[2.5rem] shadow-2xl border-black/5 dark:border-white/10 overflow-hidden"
+            className="relative w-[95vw] max-w-md max-h-[90vh] glass-card rounded-[3rem] shadow-2xl border-black/5 dark:border-white/10 overflow-hidden overflow-y-auto no-scrollbar"
           >
             <div className="flex items-center justify-between px-8 pt-8 pb-4">
               <div>
@@ -107,8 +103,8 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
                   Assegna quota associativa a un atleta
                 </p>
               </div>
-              <button onClick={onClose} className="p-2 pill hover:bg-black/5 dark:hover:bg-white/10 text-muted-foreground transition-all hover:rotate-90">
-                <X className="w-5 h-5" />
+              <button onClick={onClose} className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0">
+                <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
             </div>
 

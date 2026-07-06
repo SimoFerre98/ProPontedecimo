@@ -54,14 +54,14 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-background/60 backdrop-blur-xl"
           />
           
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-[95vw] max-w-2xl glass-card p-8 shadow-2xl border-black/5 dark:border-white/10 rounded-[2.5rem] overflow-hidden max-h-[96vh] overflow-y-auto"
+            className="relative w-[95vw] max-w-2xl glass-card p-8 shadow-2xl border-black/5 dark:border-white/10 rounded-[3rem] overflow-hidden max-h-[96vh] overflow-y-auto"
           >
             {/* Background Decor */}
             <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
@@ -72,15 +72,15 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
                   <Package className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-foreground italic uppercase">Nuovo <span className="text-primary NOT-italic">Articolo</span></h2>
+                  <h2 className="text-2xl font-black text-foreground italic uppercase">Nuovo <span className="text-primary not-italic">Articolo</span></h2>
                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Inserimento materiale a magazzino</p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={onClose}
-                className="p-3 pill hover:bg-black/5 dark:hover:bg-white/10 text-muted-foreground transition-all"
+                className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
             </div>
 

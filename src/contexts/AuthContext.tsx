@@ -1,34 +1,15 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import type { Session, User } from '@supabase/supabase-js'
+import { useEffect, useMemo, useState } from 'react'
+import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import type { Database } from '@/types/database'
-
-type UserRole = Database['public']['Enums']['user_role']
-
-interface Profile {
-  id: string
-  email: string
-  full_name: string | null
-  role: UserRole
-  avatar_url: string | null
-}
-
-interface AuthContextValue {
-  session: Session | null
-  user: User | null
-  profile: Profile | null
-  role: UserRole | null
-  loading: boolean
-  signOut: () => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextValue | null>(null)
+import { AuthContext, type AuthContextValue, type Profile } from '@/contexts/auth-context'
+import { useAppStore } from '@/store/useAppStore'
 
 export function AuthProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [session, setSession] = useState<Session | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
+  const [profile, setProfileState] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [fetchingProfile, setFetchingProfile] = useState(false)
+  const { setProfile: setStoreProfile } = useAppStore()
 
   async function fetchProfile(userId: string) {
     setFetchingProfile(true)
@@ -37,7 +18,14 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       .select('id, email, full_name, role, avatar_url')
       .eq('id', userId)
       .maybeSingle()
-    if (data) setProfile(data as Profile)
+    if (data) {
+      const prof = data as Profile
+      setProfileState(prof)
+      setStoreProfile(prof)
+    } else {
+      setProfileState(null)
+      setStoreProfile(null)
+    }
     setFetchingProfile(false)
   }
 
@@ -47,6 +35,8 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       if (session?.user) {
         fetchProfile(session.user.id).finally(() => setLoading(false))
       } else {
+        setProfileState(null)
+        setStoreProfile(null)
         setLoading(false)
       }
     })
@@ -56,7 +46,8 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       if (session?.user) {
         fetchProfile(session.user.id)
       } else {
-        setProfile(null)
+        setProfileState(null)
+        setStoreProfile(null)
       }
     })
     return () => subscription.unsubscribe()
@@ -72,10 +63,4 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
   }), [session, profile, loading, fetchingProfile])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
-  return ctx
 }

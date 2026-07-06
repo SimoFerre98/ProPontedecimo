@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import { useAppStore } from '@/store/useAppStore'
 import { motion } from 'framer-motion'
 import {
   Users,
@@ -71,16 +72,32 @@ function StatCard({ title, value, subtitle, icon, color, loading }: Readonly<Sta
   )
 }
 
-// Query keys non più utilizzate qui ma le rimuoviamo per evitare l'errore TS
+// Query keys
+const QK = {
+  stats: ['dashboard', 'stats'],
+  expiringMedical: ['dashboard', 'expiring-medical'],
+  unpaidPayments: ['dashboard', 'unpaid-payments'],
+}
 
 export default function Dashboard() {
   const { profile } = useAuth()
+  const { selectedSeasonId, seasons } = useAppStore()
+  
+  const selectedSeason = seasons.find(s => s.id === selectedSeasonId)
+  const seasonName = selectedSeason?.name || 'Stagione Corrente'
+
+  const today = new Date().toISOString().split('T')[0]
+  const in30Days = new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]
+  const in7Days = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]
 
   // Recupero unificato delle statistiche tramite RPC
   const { data: statsData, isLoading: isLoadingStats } = useQuery({
-    queryKey: ['dashboard', 'unified-stats'],
+    queryKey: ['dashboard', 'unified-stats', selectedSeasonId],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_dashboard_stats')
+      // Se non abbiamo ancora il selectedSeasonId dallo store, usiamo null
+      // La RPC farà fallback sulla stagione attiva.
+      const params = selectedSeasonId ? { p_season_id: selectedSeasonId } : {}
+      const { data, error } = await supabase.rpc('get_dashboard_stats', params)
       if (error) {
         console.error('Error fetching dashboard stats:', error)
         return null
@@ -93,6 +110,8 @@ export default function Dashboard() {
         sectors: { sector: string; count: number }[]
       }
     },
+    // Rimuoviamo enabled: !!selectedSeasonId per permettere il primo caricamento
+    // e mostrare comunque i dati (con fallback DB) mentre lo store si idrata
   })
 
   const totalPlayers = statsData?.totalPlayers ?? 0
@@ -117,7 +136,7 @@ export default function Dashboard() {
           </h1>
           <p className="text-muted-foreground mt-2 font-medium flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            Ecco il riepilogo della stagione <span className="text-foreground">2024/2025</span>
+            Ecco il riepilogo della stagione <span className="text-foreground">{seasonName}</span>
           </p>
         </div>
         

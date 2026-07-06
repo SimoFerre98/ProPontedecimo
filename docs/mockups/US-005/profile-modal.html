@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-005 · Il Mio Profilo — Premium Glass Modal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* ============ Scena dimostrativa ============ */
+  .stage {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .4s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* Finta dashboard dietro il modale: dà sostanza al backdrop-blur */
+  .backdrop-app { position: absolute; inset: 0; overflow: hidden; }
+  .fake-sidebar {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 260px;
+    background: oklch(0.22 0.06 15 / 0.85);
+    border-right: 1px solid oklch(0.30 0.08 15 / 0.3);
+    padding: 2rem 1.5rem;
+  }
+  .fake-logo { display: flex; align-items: center; gap: .75rem; margin-bottom: 2.5rem; }
+  .fake-logo-mark {
+    width: 2.5rem; height: 2.5rem; border-radius: var(--radius-2xl);
+    background: linear-gradient(135deg, oklch(0.45 0.16 15), oklch(0.28 0.11 15));
+    border: 1px solid oklch(0.84 0.115 85 / 0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-style: italic; font-size: .8rem; color: var(--gold);
+  }
+  .fake-logo span { font-size: .8rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; }
+  .fake-navitem { height: 2.75rem; border-radius: var(--radius-pill); background: oklch(1 0 0 / 0.06); margin-bottom: .75rem; }
+  .fake-navitem.hot { background: oklch(1 0 0 / 0.14); }
+  .fake-main { position: absolute; top: 0; right: 0; bottom: 0; left: 260px; padding: 3rem; }
+  .fake-title { width: 40%; height: 2.2rem; border-radius: var(--radius-xl); background: oklch(1 0 0 / 0.1); margin-bottom: 2rem; }
+  .fake-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .fake-card { height: 10rem; border-radius: var(--radius-32); background: oklch(0.205 0 0 / 0.5); border: 1px solid var(--border-soft); }
+  .fake-card.accent { background: oklch(0.33 0.13 15 / 0.25); border-color: oklch(0.33 0.13 15 / 0.35); }
+  .fake-wide { margin-top: 1.5rem; height: 14rem; border-radius: var(--radius-32); background: oklch(0.205 0 0 / 0.5); border: 1px solid var(--border-soft); }
+
+  /* Overlay canonico: absolute inset-0 bg-background/60 backdrop-blur-xl */
+  .modal-overlay {
+    position: absolute; inset: 0;
+    background: oklch(0.145 0.006 15 / 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    animation: fade .3s ease both;
+  }
+
+  /* ============ Il modale ============ */
+  .modal-viewport {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem; pointer-events: none;
+  }
+  .profile-modal {
+    width: 100%; max-width: 34rem;      /* w-[95vw] max-w-xl */
+    max-height: 90vh;                    /* max-h-[90vh]      */
+    pointer-events: auto;
+    animation: rise .35s cubic-bezier(.2,.9,.3,1.2) both;
+  }
+  .profile-body { overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1.75rem; }
+
+  /* Identità: avatar + nome + badge */
+  .identity { display: flex; flex-direction: column; align-items: center; text-align: center; gap: .9rem; padding-top: .5rem; }
+  .avatar-ring {
+    width: 7rem; height: 7rem; border-radius: var(--radius-pill);
+    padding: 4px;
+    background: conic-gradient(from 210deg, oklch(0.84 0.115 85 / .8), oklch(0.45 0.16 15), oklch(0.84 0.115 85 / .15), oklch(0.45 0.16 15), oklch(0.84 0.115 85 / .8));
+    box-shadow: 0 0 35px oklch(0.33 0.13 15 / 0.45);
+  }
+  .avatar {
+    width: 100%; height: 100%; border-radius: var(--radius-pill);
+    background: linear-gradient(150deg, oklch(0.42 0.15 15), oklch(0.24 0.1 15));
+    border: 1px solid oklch(1 0 0 / 0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em;
+    color: oklch(0.97 0.02 85);
+    text-shadow: 0 2px 12px oklch(0 0 0 / 0.4);
+  }
+  .identity h3 {
+    font-size: 1.6rem; font-weight: 900; font-style: italic;
+    text-transform: uppercase; letter-spacing: -0.05em; line-height: 1;
+  }
+  .identity .identity-email { font-size: .8rem; font-weight: 500; color: var(--muted-foreground); margin-top: -0.35rem; }
+
+  .rows { display: flex; flex-direction: column; gap: .75rem; }
+  .rows-label { padding-left: .75rem; margin-bottom: -0.1rem; }
+
+  /* Footer azioni: pt + bordo superiore, bg-black/20 come la legenda del calendario */
+  .modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid oklch(1 0 0 / 0.05);
+    background: var(--ink-20);
+    display: flex; gap: 1rem; align-items: center;
+    flex-shrink: 0;
+  }
+  .modal-footer .btn-ghost { flex: 1; border: 1px solid var(--border-soft); }
+  .edit-wrap { position: relative; flex: 2; display: flex; }
+  .edit-wrap .btn { width: 100%; }
+  .soon-tag {
+    position: absolute; top: -0.55rem; right: 1rem; z-index: 2;
+    display: inline-flex; align-items: center; gap: .3rem;
+    height: 1.25rem; padding: 0 .6rem;
+    border-radius: var(--radius-pill);
+    background: oklch(0.16 0.02 85);
+    border: 1px solid oklch(0.84 0.115 85 / 0.45);
+    color: var(--gold);
+    font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: .18em;
+    box-shadow: 0 4px 14px oklch(0 0 0 / .4);
+  }
+  .soon-tag svg { width: .65rem; height: .65rem; }
+
+  /* ============ Toggle Desktop / Mobile ============ */
+  .viewport-toggle {
+    position: fixed; top: 1.25rem; right: 1.25rem; z-index: 200;
+    display: flex; align-items: center; gap: .375rem; padding: .375rem;
+    border-radius: var(--radius-pill);
+    background: oklch(0.145 0 0 / 0.7);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-soft);
+  }
+  .viewport-toggle button {
+    display: inline-flex; align-items: center; gap: .5rem;
+    height: 2.25rem; padding: 0 1rem;
+    border-radius: var(--radius-pill); border: 1px solid transparent;
+    background: transparent; color: var(--muted-foreground);
+    font-family: inherit; font-size: 10px; font-weight: 900;
+    text-transform: uppercase; letter-spacing: .12em; cursor: pointer;
+    transition: all .2s ease;
+  }
+  .viewport-toggle button svg { width: .9rem; height: .9rem; }
+  .viewport-toggle button:hover { color: var(--foreground); background: var(--surface-05); }
+  .viewport-toggle button.active { background: oklch(0.33 0.13 15 / 0.35); border-color: oklch(0.33 0.13 15 / 0.5); color: #fff; }
+
+  /* ---- Modalità mobile: cornice 390px, il modale si adatta ---- */
+  body.vp-mobile .stage {
+    inset: auto; position: fixed;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 390px; height: min(800px, 94vh);
+    border-radius: 3.2rem; overflow: hidden;
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 40px 90px -20px oklch(0 0 0 / 0.7), 0 0 0 10px oklch(0.1 0 0);
+  }
+  body.vp-mobile .fake-sidebar { display: none; }
+  body.vp-mobile .fake-main { left: 0; padding: 1.5rem; }
+  body.vp-mobile .fake-cards { grid-template-columns: 1fr; }
+  body.vp-mobile .modal-viewport { padding: .75rem; }
+  body.vp-mobile .profile-modal { max-width: 95vw; max-height: 92%; }
+  body.vp-mobile .modal-header { padding: 1.5rem 1.25rem; }
+  body.vp-mobile .modal-title { font-size: 1.25rem; }
+  body.vp-mobile .modal-subtitle { font-size: .65rem; }
+  body.vp-mobile .profile-body { padding: 1.5rem 1.25rem; gap: 1.4rem; }
+  body.vp-mobile .avatar-ring { width: 5.75rem; height: 5.75rem; }
+  body.vp-mobile .identity h3 { font-size: 1.35rem; }
+  body.vp-mobile .modal-footer { flex-direction: column-reverse; padding: 1.25rem; gap: .75rem; }
+  body.vp-mobile .modal-footer .btn-ghost, body.vp-mobile .edit-wrap { width: 100%; flex: none; }
+
+  /* Responsive reale (senza toggle) per viewport stretti */
+  @media (max-width: 640px) {
+    .fake-sidebar { display: none; }
+    .fake-main { left: 0; padding: 1.5rem; }
+    .fake-cards { grid-template-columns: 1fr; }
+    .modal-header { padding: 1.5rem 1.25rem; }
+    .modal-title { font-size: 1.25rem; }
+    .profile-body { padding: 1.5rem 1.25rem; gap: 1.4rem; }
+    .modal-footer { flex-direction: column-reverse; padding: 1.25rem; gap: .75rem; }
+    .modal-footer .btn-ghost, .edit-wrap { width: 100%; flex: none; }
+    .viewport-toggle { display: none; }
+    .mock-nav .nav-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigazione fra i mockup US-005 -->
+<nav class="mock-nav">
+  <span class="nav-tag">US-005</span>
+  <a href="profile-modal.html" class="active">Il Mio Profilo</a>
+  <a href="modal-style-tokens.html">Style Tokens</a>
+</nav>
+
+<!-- Toggle demo viewport -->
+<div class="viewport-toggle" role="group" aria-label="Anteprima viewport">
+  <button type="button" id="btnDesktop" class="active" onclick="setViewport('desktop')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+    Desktop
+  </button>
+  <button type="button" id="btnMobile" onclick="setViewport('mobile')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+    Mobile 390px
+  </button>
+</div>
+
+<div class="stage">
+
+  <!-- Finta app dietro il modale (dimostra il backdrop-blur-xl) -->
+  <div class="backdrop-app" aria-hidden="true">
+    <div class="fake-sidebar">
+      <div class="fake-logo">
+        <div class="fake-logo-mark">PP</div>
+        <span>Pro Pontedecimo</span>
+      </div>
+      <div class="fake-navitem hot"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+    </div>
+    <div class="fake-main">
+      <div class="fake-title"></div>
+      <div class="fake-cards">
+        <div class="fake-card accent"></div>
+        <div class="fake-card"></div>
+        <div class="fake-card"></div>
+      </div>
+      <div class="fake-wide"></div>
+    </div>
+  </div>
+
+  <!-- Overlay canonico: bg-background/60 backdrop-blur-xl -->
+  <div class="modal-overlay"></div>
+
+  <!-- Modale "Il Mio Profilo" -->
+  <div class="modal-viewport">
+    <div class="modal-card profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+
+      <!-- Header canonico -->
+      <header class="modal-header">
+        <div class="modal-header-id">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <h2 class="modal-title" id="profileTitle">Il Mio <span class="accent">Profilo</span></h2>
+            <p class="modal-subtitle">I tuoi dati personali</p>
+          </div>
+        </div>
+        <button type="button" class="close-btn" aria-label="Chiudi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </header>
+
+      <!-- Corpo scrollabile -->
+      <div class="profile-body no-scrollbar">
+
+        <!-- Identità -->
+        <section class="identity">
+          <div class="avatar-ring">
+            <div class="avatar">SF</div>
+          </div>
+          <div>
+            <h3>Simone Ferrero</h3>
+            <p class="identity-email">s.ferrero@stamtech.com</p>
+          </div>
+          <span class="badge badge-president">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.735H5.81a1 1 0 0 1-.957-.735L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/></svg>
+            Presidente
+          </span>
+        </section>
+
+        <!-- Dati in sola lettura -->
+        <section class="rows" aria-label="Dettagli account">
+          <p class="field-label rows-label">Dettagli account</p>
+
+          <div class="info-row">
+            <span class="info-row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </span>
+            <span class="info-row-body">
+              <span class="info-row-label">Email</span>
+              <span class="info-row-value">s.ferrero@stamtech.com</span>
+            </span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+            </span>
+            <span class="info-row-body">
+              <span class="info-row-label">Ruolo</span>
+              <span class="info-row-value">Presidente</span>
+            </span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </span>
+            <span class="info-row-body">
+              <span class="info-row-label">Registrato il</span>
+              <span class="info-row-value">12 settembre 2025</span>
+            </span>
+          </div>
+        </section>
+      </div>
+
+      <!-- Footer azioni -->
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-ghost">Chiudi</button>
+        <div class="edit-wrap">
+          <span class="soon-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            In arrivo · US-018
+          </span>
+          <button type="button" class="btn btn-primary" disabled title="La modifica del profilo arriverà con la US-018">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Modifica Profilo
+          </button>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function setViewport(mode) {
+    document.body.classList.toggle('vp-mobile', mode === 'mobile');
+    document.getElementById('btnDesktop').classList.toggle('active', mode === 'desktop');
+    document.getElementById('btnMobile').classList.toggle('active', mode === 'mobile');
+  }
+</script>
+
+</body>
+</html>

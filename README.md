@@ -36,6 +36,11 @@ npm run dev
 npm run build
 ```
 
+## 🗄️ Database e Migrazioni
+
+Lo schema Supabase è versionato con la Supabase CLI in `supabase/migrations/`.
+Flusso di lavoro, setup al primo clone e comandi: vedi [docs/database.md](docs/database.md).
+
 ## 📜 Versionamento e Branching
 
 Si applica **Strict Git Flow**:

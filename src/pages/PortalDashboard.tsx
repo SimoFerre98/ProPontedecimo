@@ -1,4 +1,4 @@
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { CalendarDays, CreditCard, Stethoscope, Construction } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'

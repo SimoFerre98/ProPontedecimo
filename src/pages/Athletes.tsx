@@ -23,7 +23,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { athleteService, type Player } from '@/services/athleteService'
 import { paymentService } from '@/services/paymentService'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
@@ -31,6 +31,7 @@ import AddAthleteModal from '@/components/modals/AddAthleteModal'
 import DeleteAthleteModal from '@/components/modals/DeleteAthleteModal'
 import { Pagination } from '@/components/ui/Pagination'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAppStore } from '@/store/useAppStore'
 
 type FiltersState = {
   isActive: 'all' | 'active' | 'inactive'
@@ -75,12 +76,14 @@ export default function Athletes() {
   const [athleteToDelete, setAthleteToDelete] = useState<Player | null>(null)
   const { role } = useAuth()
   const queryClient = useQueryClient()
+  const { selectedSeasonId } = useAppStore()
 
   const isAdmin = role === 'president' || role === 'director'
 
   const { data, isLoading } = useQuery({
-    queryKey: ['players', search, sectorFilter, page, filters],
-    queryFn: () => athleteService.getPlayers(search, sectorFilter, page, pageSize, filters as any),
+    queryKey: ['players', search, sectorFilter, page, filters, selectedSeasonId],
+    queryFn: () => athleteService.getPlayers(search, sectorFilter, page, pageSize, filters, selectedSeasonId),
+    enabled: !!selectedSeasonId,
   })
 
   const players = data?.data || []
@@ -138,7 +141,7 @@ export default function Athletes() {
             <span>Database Atleti</span>
           </div>
           <h1 className="text-5xl font-black text-foreground tracking-tight italic uppercase">
-            Anagrafica <span className="text-primary NOT-italic">Atleti</span>
+            Anagrafica <span className="text-primary not-italic">Atleti</span>
           </h1>
           <p className="text-muted-foreground font-medium border-l-2 border-primary/30 pl-4 max-w-xl">
             Gestione centralizzata di tutti gli atleti della Pontedecimo. Monitora stato, tesseramenti e scadenze.
@@ -574,7 +577,7 @@ export default function Athletes() {
                             <User className="w-6 h-6 text-primary" />
                           </div>
                           <div>
-                            <div className="font-black text-sm uppercase italic group-hover:text-primary transition-colors">{player.last_name} <span className="text-primary NOT-italic">{player.first_name}</span></div>
+                            <div className="font-black text-sm uppercase italic group-hover:text-primary transition-colors">{player.last_name} <span className="text-primary not-italic">{player.first_name}</span></div>
                             <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">{player.birth_date || 'Data n.n.'}</div>
                           </div>
                         </div>
@@ -672,7 +675,7 @@ export default function Athletes() {
                       </div>
                       <div className="space-y-0.5">
                         <h3 className="text-xl font-black text-foreground leading-tight tracking-tight uppercase italic group-hover:text-primary transition-colors">
-                          {player.last_name} <span className="text-primary NOT-italic font-bold">{player.first_name}</span>
+                          {player.last_name} <span className="text-primary not-italic font-bold">{player.first_name}</span>
                         </h3>
                         <div className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />

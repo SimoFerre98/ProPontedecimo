@@ -56,7 +56,7 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-background/90 backdrop-blur-md"
+            className="absolute inset-0 bg-background/60 backdrop-blur-xl"
           />
           
           <motion.div
@@ -72,14 +72,14 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
                   <HeartPulse className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-foreground italic uppercase leading-none">Aggiorna <span className="text-primary NOT-italic">Visita</span></h2>
+                  <h2 className="text-2xl font-black text-foreground italic uppercase leading-none">Aggiorna <span className="text-primary not-italic">Visita</span></h2>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={onClose}
-                className="p-3 pill hover:bg-black/5 dark:hover:bg-white/10 text-muted-foreground transition-all hover:rotate-90"
+                className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
             </div>
 

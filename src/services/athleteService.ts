@@ -51,7 +51,8 @@ export const athleteService = {
       privacyStatus?: 'all' | 'accepted' | 'missing'
       sortBy?: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
       sortDir?: 'asc' | 'desc'
-    }
+    },
+    seasonId?: string | null
   ) {
     const from = page * pageSize
     const to = from + pageSize - 1
@@ -71,6 +72,10 @@ export const athleteService = {
     
     if (sector && sector !== 'all') {
       query = query.eq('team_sector', sector)
+    }
+
+    if (seasonId) {
+      query = query.eq('season_id', seasonId)
     }
 
     if (filters?.isActive === 'active') query = query.eq('is_active', true)
@@ -104,7 +109,7 @@ export const athleteService = {
   },
 
   async createPlayer(player: Omit<Player, 'id' | 'created_at'>) {
-    const playerToInsert = { ...player } as any
+    const playerToInsert = { ...player } as Omit<Player, 'id' | 'created_at'> & { season_id?: string }
     if (!playerToInsert.season_id) {
       const { data: season } = await supabase.from('seasons').select('id').eq('is_active', true).single()
       if (season) {

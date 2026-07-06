@@ -1,6 +1,68 @@
 # Changelog
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
+
+## [Unreleased]
+
+### Added
+- **US-007**: Store globale `useAppStore` (Zustand) con persistenza per gestire `seasons`, `theme` e `auth` (in sola lettura).
+- **US-007**: Nuovo servizio `seasonService.ts` per recuperare le stagioni dal database e individuare quella attiva.
+- **US-007**: Aggiunto parametro opzionale `seasonId` alle funzioni `getPlayers` e `getPayments` nei rispettivi servizi.
+
+### Interfaccia
+- **US-007**: Refactoring del dropdown stagioni in `DashboardLayout.tsx` per rimuovere l'array hardcoded, integrarlo con lo store Zustand e il db.
+- **US-007**: Aggiornate `Dashboard.tsx`, `Athletes.tsx` e `Payments.tsx` per ascoltare i cambiamenti di stagione nello store e aggiornare le query di React Query.
+
+### Modificato
+- **US-007**: Migrato `AuthProvider` per sincronizzare il profilo utente con `useAppStore`.
+- **US-007**: Migrazione SQL per la funzione `get_dashboard_stats`: aggiunto parametro `p_season_id` con fallback automatico sulla stagione attiva.
+
+## [0.13.0] - 2026-07-06
+
+### Added
+- **US-006**: Aggiunte Supabase Edge Functions per invio email (`send-email` e `medical-reminders`).
+- **US-006**: Template grafico brandizzato (bordeaux/oro) per email e promemoria visite mediche (`_shared/templates.ts`).
+- **US-006**: Documentazione architettura in `docs/edge-functions.md` per l'invio email e il setup segreti.
+
+### Interfaccia
+- **Modali allineati allo stile Premium Glass (US-005)**: overlay canonico `bg-background/60 backdrop-blur-xl` e pulsante di chiusura pill uniforme su tutti gli 11 modali; scala dei raggi normalizzata.
+- **ProfileModal reale**: sostituito il placeholder con il modale "Il Mio Profilo" (avatar/iniziali, nome, email, badge ruolo, data registrazione) in sola lettura, fedele al mockup approvato; pulsante "Modifica Profilo" disabilitato (editing in US-018).
+- **Responsive**: aggiunti vincoli viewport e scroll interno a `DeleteAthleteModal`, `NewPaymentModal`, `PaymentModal`.
+- **Fix typo**: corretta la classe inesistente `NOT-italic` -> `not-italic` in 5 file (CalendarModal, TaskModal, MedicalVisitModal, AddInventoryModal, Athletes, Inventory, StaffTasks, TaskTimeline).
+
+## [0.12.2] - 2026-07-05
+
+### Qualità
+- **Zero warning linter e TypeScript (US-004)**: risolti tutti i 26 problemi ESLint (14 `any` espliciti sostituiti con tipi reali, variabili inutilizzate, dipendenze `useMemo`/`useEffect`, regole `react-refresh` e `react-hooks/set-state-in-effect`), senza alcuna soppressione.
+- **Refactoring auth**: hook `useAuth` estratto in `src/hooks/useAuth.ts` e context in `src/contexts/auth-context.ts` (Fast Refresh conforme); `buttonVariants` estratto in `button-variants.ts`.
+- **SettingsModal**: caricamento utenti migrato a TanStack Query con update ottimistici via cache (`setQueryData`).
+- **CalendarEvent**: tipo ridefinito come unione discriminata (`task`/`medical`) con `originalData` tipizzato.
+
+## [0.12.1] - 2026-07-05
+
+### Prestazioni
+- **Indici database (US-003)**: aggiunti `idx_players_is_active` e `idx_players_medical_expiry` per i filtri delle liste atleti (`idx_payments_status` era già presente dalla baseline). Verificato con `EXPLAIN (ANALYZE)` sul cloud; matrice RLS rieseguita come non-regressione (23/23).
+
+## [0.12.0] - 2026-07-05
+
+### Sicurezza
+- **RLS per tutti i ruoli (US-002)**: chiuse tre falle della baseline — escalation di privilegio su `profiles.role` (chiunque poteva auto-promuoversi via API), policy coach senza filtro squadra (vedeva tutti gli atleti e tutti i pagamenti), ruolo parent privo di policy.
+- **Anti-escalation**: trigger `trg_enforce_role_change` — solo il Presidente può modificare i ruoli utente.
+- **Nuove associazioni**: tabelle `coach_teams` (leve per allenatore) e `parent_players` (figli per genitore) con RLS dedicate.
+- **Matrice di accesso verificata**: nuovo script `scripts/test-rls.mjs` (20 controlli sui 5 ruoli + anonimo, con utenti di prova e cleanup automatico).
+
+## [0.11.0] - 2026-07-04
+
+### Aggiunto
+- **Supabase CLI e Migrazioni Versionate (US-001)**: la CLI è ora una devDependency con script npm dedicati (`db:new`, `db:pull`, `db:push`, `db:diff`, `db:list`); lo schema del database è versionato in `supabase/migrations/`.
+- **Migrazione Baseline**: `20260704154518_baseline_schema.sql` fotografa l'intero schema di produzione (9 tabelle, funzioni incluse `get_dashboard_stats`, 27 policy RLS), incluso il trigger `on_auth_user_created` su `auth.users` non coperto dal dump automatico.
+- **Documentazione Database**: nuova guida `docs/database.md` con setup al primo clone, flusso delle migrazioni e nota sul session pooler IPv4.
+
+### Modificato
+- **Archiviazione script manuali**: `supabase/migrations/payments_update.sql` spostato in `scripts/sql-archive/` (già applicato al cloud, catturato dalla baseline).
+- **Migration history remota**: riparate 14 voci orfane del setup iniziale (marzo-aprile 2026) marcandole come `reverted`; la history riparte dalla baseline.
+- `.gitignore` aggiornato con gli artefatti locali della CLI (`supabase/.temp/`).
+
 ## [0.10.0] - 2026-04-10
 
 ### Aggiunto

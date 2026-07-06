@@ -13,6 +13,7 @@ import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/button'
 import PaymentModal from '@/components/modals/PaymentModal'
 import NewPaymentModal from '@/components/modals/NewPaymentModal'
+import { useAppStore } from '@/store/useAppStore'
 
 const METHOD_ICONS: Record<string, React.ElementType> = {
   satispay: Smartphone,
@@ -29,19 +30,21 @@ export default function Payments() {
   const [selectedPayment, setSelectedPayment] = useState<PaymentReference | null>(null)
   const [showNewModal, setShowNewModal] = useState(false)
 
+  const { selectedSeasonId } = useAppStore()
+
   const { data, isLoading } = useQuery({
-    queryKey: ['payments', search, statusFilter, page],
-    queryFn: () => paymentService.getPayments(search, statusFilter, page, pageSize),
+    queryKey: ['payments', search, statusFilter, page, selectedSeasonId],
+    queryFn: () => paymentService.getPayments(search, statusFilter, page, pageSize, 'due_date', 'asc', selectedSeasonId),
+    enabled: !!selectedSeasonId,
   })
 
-  const payments = data?.data || []
+  const payments = useMemo(() => data?.data ?? [], [data])
   const totalCount = data?.count || 0
 
-
   const stats = useMemo(() => ({
-    paid: payments.filter((p: any) => p.status === 'paid').reduce((a: number, p: any) => a + (p.paid_amount_eur ?? p.amount_eur ?? 0), 0),
-    pending: payments.filter((p: any) => p.status === 'pending').reduce((a: number, p: any) => a + (p.amount_eur ?? 0), 0),
-    overdue: payments.filter((p: any) => p.status === 'overdue').length,
+    paid: payments.filter((p) => p.status === 'paid').reduce((a, p) => a + (p.paid_amount_eur ?? p.amount_eur ?? 0), 0),
+    pending: payments.filter((p) => p.status === 'pending').reduce((a, p) => a + (p.amount_eur ?? 0), 0),
+    overdue: payments.filter((p) => p.status === 'overdue').length,
   }), [payments])
 
   return (

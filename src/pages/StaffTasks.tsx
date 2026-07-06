@@ -77,7 +77,7 @@ export default function StaffTasks() {
                 <Sparkles className="w-3 h-3 text-amber-500 animate-pulse" />
               </div>
               <h1 className="text-5xl font-black tracking-tighter text-foreground uppercase italic leading-none">
-                Gestione <span className="text-primary NOT-italic">Task</span>
+                Gestione <span className="text-primary not-italic">Task</span>
               </h1>
             </div>
           </div>

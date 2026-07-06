@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, Mail, Send, Users, User, Search, ChevronDown, Loader2,
@@ -115,10 +115,53 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
     }
   }, [isOpen])
 
+  const resolveRecipients = useCallback(async (validate = true): Promise<string[]> => {
+    if (mode === 'single') {
+      const addr = singleEmail.trim()
+      if (validate && !addr.includes('@')) throw new Error('Email non valida')
+      return addr ? [addr] : []
+    }
+
+    const emails: string[] = []
+
+    if (groupTarget === 'all' || !groupTarget.startsWith('sector:')) {
+      let query = supabase.from('profiles').select('email')
+      if (groupTarget !== 'all') {
+        query = query.eq('role', groupTarget as UserRole)
+      }
+      const { data } = await query
+      if (data) emails.push(...data.map(p => p.email).filter(Boolean))
+    }
+
+    if (groupTarget.startsWith('sector:')) {
+      const sector = groupTarget.replace('sector:', '')
+      const { data } = await supabase
+        .from('players')
+        .select('email')
+        .eq('team_sector', sector)
+        .eq('is_active', true)
+        .not('email', 'is', null)
+      if (data) emails.push(...data.map(p => p.email).filter(Boolean) as string[])
+    }
+
+    return [...new Set(emails)].filter(e => e.includes('@'))
+  }, [mode, singleEmail, groupTarget])
+
+  const resolveCount = useCallback(async () => {
+    setResolvingCount(true)
+    try {
+      const emails = await resolveRecipients(false)
+      setResolvedCount(emails.length)
+    } catch {
+      setResolvedCount(null)
+    }
+    setResolvingCount(false)
+  }, [resolveRecipients])
+
   useEffect(() => {
     if (!isOpen) return
     void resolveCount()
-  }, [mode, groupTarget, singleEmail, isOpen])
+  }, [isOpen, resolveCount])
 
   const fetchSectors = async () => {
     const { data } = await supabase
@@ -154,49 +197,6 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
         daily_limit: 100,
       })
     }
-  }
-
-  const resolveCount = async () => {
-    setResolvingCount(true)
-    try {
-      const emails = await resolveRecipients(false)
-      setResolvedCount(emails.length)
-    } catch {
-      setResolvedCount(null)
-    }
-    setResolvingCount(false)
-  }
-
-  const resolveRecipients = async (validate = true): Promise<string[]> => {
-    if (mode === 'single') {
-      const addr = singleEmail.trim()
-      if (validate && !addr.includes('@')) throw new Error('Email non valida')
-      return addr ? [addr] : []
-    }
-
-    const emails: string[] = []
-
-    if (groupTarget === 'all' || !groupTarget.startsWith('sector:')) {
-      let query = supabase.from('profiles').select('email')
-      if (groupTarget !== 'all') {
-        query = query.eq('role', groupTarget as UserRole)
-      }
-      const { data } = await query
-      if (data) emails.push(...data.map(p => p.email).filter(Boolean))
-    }
-
-    if (groupTarget.startsWith('sector:')) {
-      const sector = groupTarget.replace('sector:', '')
-      const { data } = await supabase
-        .from('players')
-        .select('email')
-        .eq('team_sector', sector)
-        .eq('is_active', true)
-        .not('email', 'is', null)
-      if (data) emails.push(...data.map(p => p.email).filter(Boolean) as string[])
-    }
-
-    return [...new Set(emails)].filter(e => e.includes('@'))
   }
 
   const handleSearch = async (query: string) => {
@@ -270,7 +270,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-background/90 backdrop-blur-md"
+            className="absolute inset-0 bg-background/60 backdrop-blur-xl"
           />
 
           <motion.div
@@ -294,8 +294,8 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                   </p>
                 </div>
               </div>
-              <button onClick={onClose} className="p-3 pill hover:bg-black/5 dark:hover:bg-white/10 text-muted-foreground transition-all hover:rotate-90">
-                <X className="w-6 h-6" />
+              <button onClick={onClose} className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0">
+                <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
             </div>
 

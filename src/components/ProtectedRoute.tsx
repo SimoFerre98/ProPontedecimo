@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function ProtectedRoute({ children }: Readonly<{ children: React.ReactNode }>) {
   const { session, loading } = useAuth()
