@@ -97,4 +97,8 @@ I filtri delle liste sono coperti da indici btree: dalla baseline `idx_players_s
 
 ## Sviluppo locale (opzionale, futuro)
 
-`npx supabase start` avvia l'intero stack Supabase in locale via Docker (Postgres, Auth, Studio). Non è richiesto per il flusso attuale: le migrazioni si applicano direttamente al cloud. Da valutare quando servirà sviluppare Edge Functions (US-006) o testare RLS in isolamento (US-002).
+`npx supabase start` avvia l'intero stack Supabase in locale via Docker (Postgres, Auth, Studio). Non è richiesto per il flusso attuale: le migrazioni si applicano direttamente al cloud. Da valutare quando servirà testare RLS in isolamento.
+
+### Edge Functions
+L'invio delle email (es. promemoria visite mediche) è gestito tramite Supabase Edge Functions in Deno. 
+Vedi la documentazione dedicata: [Edge Functions](edge-functions.md).
