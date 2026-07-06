@@ -94,7 +94,7 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
             </div>
             <div>
               <h2 className="text-2xl font-black italic tracking-tighter uppercase text-foreground">
-                Calendario <span className="text-primary NOT-italic">Eventi</span>
+                Calendario <span className="text-primary not-italic">Eventi</span>
               </h2>
               <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
                 Monitoraggio Task e Visite Mediche

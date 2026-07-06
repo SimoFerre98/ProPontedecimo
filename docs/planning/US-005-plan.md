@@ -49,12 +49,12 @@ Story visiva: la verifica è ispettiva sul dev server, con la fedeltà ai mockup
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | ProfileModal reale | Sostituire il placeholder con il modale profilo da mockup: dati da `useAuth()` (avatar/iniziali, nome, email, badge ruolo, data registrazione), pulsante Modifica disabilitato (scope US-018), base `Modal` condiviso. | Impl | - |
-| TODO | TASK-02 | Vincoli responsive mancanti | Aggiungere `w-[95vw]/max-w` e `max-h` con scroll interno a `DeleteAthleteModal`, `NewPaymentModal`, `PaymentModal`. | Impl | - |
-| TODO | TASK-03 | Normalizzazione dettagli | Uniformare overlay, scala raggi e hover sugli 11 modali secondo `docs/mockups/US-005/modal-style-tokens.html`. | Impl | TASK-02 |
-| TODO | TASK-04 | Passata visiva | Verifica su dev server di tutti i modali, desktop + mobile (375px); confronto ProfileModal ↔ mockup. | Test | TASK-01, TASK-03 |
-| TODO | TASK-05 | Guard-rail qualità | `npm run lint` (0 problemi) e build pulita; smoke sui flussi dei modali toccati. | Test | TASK-04 |
-| TODO | TASK-06 | CHANGELOG e versione | Voce CHANGELOG e bump di `package.json`. | Impl | TASK-05 |
+| DONE | TASK-01 | ProfileModal reale | Sostituire il placeholder con il modale profilo da mockup: dati da `useAuth()` (avatar/iniziali, nome, email, badge ruolo, data registrazione), pulsante Modifica disabilitato (scope US-018), base `Modal` condiviso. | Impl | - |
+| DONE | TASK-02 | Vincoli responsive mancanti | Aggiungere `w-[95vw]/max-w` e `max-h` con scroll interno a `DeleteAthleteModal`, `NewPaymentModal`, `PaymentModal`. | Impl | - |
+| DONE | TASK-03 | Normalizzazione dettagli | Uniformare overlay, scala raggi e hover sugli 11 modali secondo `docs/mockups/US-005/modal-style-tokens.html`. | Impl | TASK-02 |
+| DONE | TASK-04 | Passata visiva | Verifica su dev server di tutti i modali, desktop + mobile (375px); confronto ProfileModal ↔ mockup. | Test | TASK-01, TASK-03 |
+| DONE | TASK-05 | Guard-rail qualità | `npm run lint` (0 problemi) e build pulita; smoke sui flussi dei modali toccati. | Test | TASK-04 |
+| DONE | TASK-06 | CHANGELOG e versione | Voce CHANGELOG e bump di `package.json`. | Impl | TASK-05 |
 
 ---
 
