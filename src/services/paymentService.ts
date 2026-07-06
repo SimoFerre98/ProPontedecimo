@@ -28,7 +28,6 @@ export interface PaymentReference {
 
 export interface PaymentUpsertPayload {
   player_id: string
-  season_id: string
   installment_no: number
   plan: PaymentPlan
   due_date?: string | null
@@ -67,10 +66,7 @@ export const paymentService = {
       `, { count: 'exact' })
       .order('due_date', { ascending: true })
       .order('created_at', { ascending: false })
-
-    if (from !== undefined && to !== undefined) {
-        query = query.range(from, to)
-    }
+      .range(from, to)
 
     if (status && status !== 'all') {
       query = query.eq('status', status)
@@ -113,12 +109,11 @@ export const paymentService = {
 
   // Crea o aggiorna un pagamento
   async upsertPayment(payload: PaymentUpsertPayload) {
-    // Cerca se esiste già per quell'atleta + rata + stagione
+    // Cerca se esiste già per quell'atleta + rata
     const { data: existing, error: findError } = await supabase
       .from('payments')
       .select('id')
       .eq('player_id', payload.player_id)
-      .eq('season_id', payload.season_id)
       .eq('installment_no', payload.installment_no)
       .maybeSingle()
 

@@ -50,14 +50,10 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
       const nextYear = new Date().getMonth() >= 8 ? currentYear + 1 : currentYear
       const jan15 = `${nextYear}-01-15`
 
-      const { data: season } = await supabase.from('seasons').select('id').eq('is_active', true).single()
-      if (!season) throw new Error("No active season found")
-
       if (plan === 'annual') {
         // Unica rata con scadenza 15 settembre
         await paymentService.upsertPayment({
           player_id: selectedPlayer.id,
-          season_id: season.id,
           installment_no: 1,
           plan: 'annual',
           due_date: sep15,
@@ -67,8 +63,8 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
       } else {
         // Due rate uguali
         const half = Math.round((amountNum / 2) * 100) / 100
-        await paymentService.upsertPayment({ player_id: selectedPlayer.id, season_id: season.id, installment_no: 1, plan: 'installments', due_date: sep15, amount_eur: half, status: 'pending' })
-        await paymentService.upsertPayment({ player_id: selectedPlayer.id, season_id: season.id, installment_no: 2, plan: 'installments', due_date: jan15, amount_eur: amountNum - half, status: 'pending' })
+        await paymentService.upsertPayment({ player_id: selectedPlayer.id, installment_no: 1, plan: 'installments', due_date: sep15, amount_eur: half, status: 'pending' })
+        await paymentService.upsertPayment({ player_id: selectedPlayer.id, installment_no: 2, plan: 'installments', due_date: jan15, amount_eur: amountNum - half, status: 'pending' })
       }
 
       queryClient.invalidateQueries({ queryKey: ['payments'] })

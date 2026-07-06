@@ -17,6 +17,6 @@ After implementing this story, the user can: cambiare stagione dal dropdown in a
 - [ ] Se esiste una sola stagione, il selettore la mostra senza errori né stati vuoti anomali
 - [ ] Le stagioni sono caricate dinamicamente dal database (rimosso l'array hardcoded `SEASONS` in `DashboardLayout.tsx`)
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [docs/planning/US-007-plan.md](../planning/US-007-plan.md)
 
