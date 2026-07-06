@@ -13,6 +13,7 @@ import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/button'
 import PaymentModal from '@/components/modals/PaymentModal'
 import NewPaymentModal from '@/components/modals/NewPaymentModal'
+import { useAppStore } from '@/store/useAppStore'
 
 const METHOD_ICONS: Record<string, React.ElementType> = {
   satispay: Smartphone,
@@ -29,9 +30,12 @@ export default function Payments() {
   const [selectedPayment, setSelectedPayment] = useState<PaymentReference | null>(null)
   const [showNewModal, setShowNewModal] = useState(false)
 
+  const { selectedSeasonId } = useAppStore()
+
   const { data, isLoading } = useQuery({
-    queryKey: ['payments', search, statusFilter, page],
-    queryFn: () => paymentService.getPayments(search, statusFilter, page, pageSize),
+    queryKey: ['payments', search, statusFilter, page, selectedSeasonId],
+    queryFn: () => paymentService.getPayments(search, statusFilter, page, pageSize, 'due_date', 'asc', selectedSeasonId),
+    enabled: !!selectedSeasonId,
   })
 
   const payments = useMemo(() => data?.data ?? [], [data])

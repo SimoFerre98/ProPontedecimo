@@ -31,6 +31,7 @@ import AddAthleteModal from '@/components/modals/AddAthleteModal'
 import DeleteAthleteModal from '@/components/modals/DeleteAthleteModal'
 import { Pagination } from '@/components/ui/Pagination'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAppStore } from '@/store/useAppStore'
 
 type FiltersState = {
   isActive: 'all' | 'active' | 'inactive'
@@ -75,12 +76,14 @@ export default function Athletes() {
   const [athleteToDelete, setAthleteToDelete] = useState<Player | null>(null)
   const { role } = useAuth()
   const queryClient = useQueryClient()
+  const { selectedSeasonId } = useAppStore()
 
   const isAdmin = role === 'president' || role === 'director'
 
   const { data, isLoading } = useQuery({
-    queryKey: ['players', search, sectorFilter, page, filters],
-    queryFn: () => athleteService.getPlayers(search, sectorFilter, page, pageSize, filters),
+    queryKey: ['players', search, sectorFilter, page, filters, selectedSeasonId],
+    queryFn: () => athleteService.getPlayers(search, sectorFilter, page, pageSize, filters, selectedSeasonId),
+    enabled: !!selectedSeasonId,
   })
 
   const players = data?.data || []

@@ -1,8 +1,11 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useClickOutside } from '@/hooks/useClickOutside'
+import { useQuery } from '@tanstack/react-query'
+import { seasonService } from '@/services/seasonService'
+import { useAppStore } from '@/store/useAppStore'
 import {
   LayoutDashboard,
   Users,
@@ -61,8 +64,6 @@ const getVisibleNavItems = (userRole: string | null) => {
   return NAV_ITEMS
 }
 
-const SEASONS = ['2022/2023', '2023/2024', '2024/2025', '2025/2026']
-
 export default function DashboardLayout() {
   const { profile, role, signOut } = useAuth()
   const navigate = useNavigate()
@@ -77,7 +78,24 @@ export default function DashboardLayout() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [isSeasonDropdownOpen, setIsSeasonDropdownOpen] = useState(false)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
-  const [selectedSeason, setSelectedSeason] = useState('2024/2025')
+
+  const { seasons, selectedSeasonId, activeSeasonId, setSeasons, setSelectedSeasonId } = useAppStore()
+
+  // Caricamento stagioni
+  const { data: fetchedSeasons } = useQuery({
+    queryKey: ['seasons'],
+    queryFn: seasonService.getSeasons
+  })
+
+  // Sincronizza lo store quando arrivano i dati
+  useEffect(() => {
+    if (fetchedSeasons) {
+      setSeasons(fetchedSeasons)
+    }
+  }, [fetchedSeasons, setSeasons])
+
+  const selectedSeason = seasons.find(s => s.id === selectedSeasonId)
+  const hasMultipleSeasons = seasons.length > 1
 
   const profileRef = useRef<HTMLDivElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
@@ -121,35 +139,38 @@ export default function DashboardLayout() {
           {/* Season Selector */}
           <div className="relative hidden sm:block" ref={seasonRef}>
             <button
-              onClick={() => { setIsSeasonDropdownOpen(!isSeasonDropdownOpen); setIsNotificationsOpen(false); setIsProfileMenuOpen(false) }}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium hover:border-primary/40 hover:bg-primary/5 transition-all outline-none"
+              onClick={() => { if (hasMultipleSeasons) { setIsSeasonDropdownOpen(!isSeasonDropdownOpen); setIsNotificationsOpen(false); setIsProfileMenuOpen(false) } }}
+              className={cn("flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium transition-all outline-none", hasMultipleSeasons ? "hover:border-primary/40 hover:bg-primary/5" : "opacity-80 cursor-default")}
             >
               <Calendar className="w-3 h-3 text-muted-foreground" />
               <span className="text-muted-foreground">Stagione</span>
-              <span className="text-primary font-bold">{selectedSeason}</span>
-              <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />
+              <span className="text-primary font-bold">{selectedSeason?.name || 'Caricamento...'}</span>
+              {hasMultipleSeasons && <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />}
             </button>
             <AnimatePresence>
-              {isSeasonDropdownOpen && (
+              {isSeasonDropdownOpen && hasMultipleSeasons && (
                 <motion.div
                   initial={{ opacity: 0, y: -8, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.95 }}
                   className="absolute top-full left-0 mt-2 w-44 bg-background/95 backdrop-blur-3xl p-2 rounded-2xl shadow-[0_16px_40px_-8px_rgba(0,0,0,0.4)] border border-black/10 dark:border-white/20 z-50 flex flex-col gap-1"
                 >
-                  {SEASONS.map(season => (
+                  {seasons.map(season => (
                     <button
-                      key={season}
-                      onClick={() => { setSelectedSeason(season); setIsSeasonDropdownOpen(false) }}
-                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                        selectedSeason === season
-                          ? 'bg-primary text-white'
-                          : 'text-foreground/70 hover:bg-primary/10 hover:text-primary'
-                      }`}
-                    >
-                      <span>{season}</span>
-                      {selectedSeason === season && <span className="text-[10px] opacity-70">✓</span>}
-                    </button>
+                        key={season.id}
+                        onClick={() => { setSelectedSeasonId(season.id); setIsSeasonDropdownOpen(false) }}
+                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                          selectedSeasonId === season.id
+                            ? 'bg-primary text-white'
+                            : 'text-foreground/70 hover:bg-primary/10 hover:text-primary'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>{season.name}</span>
+                          {season.is_active && <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[9px] uppercase tracking-wider font-black">Attiva</span>}
+                        </div>
+                        {selectedSeasonId === season.id && <span className="text-[10px] opacity-70">✓</span>}
+                      </button>
                   ))}
                   <div className="mt-1 pt-2 border-t border-black/5 dark:border-white/10 px-3 pb-1">
                     <p className="text-[10px] text-muted-foreground font-medium">Funzionalità in arrivo</p>
@@ -325,28 +346,28 @@ export default function DashboardLayout() {
                     )}
 
                     <div className="flex items-center justify-between px-4 py-3 mt-1 border-t border-black/5 dark:border-white/10">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Tema</span>
-                      <div className="flex bg-black/5 dark:bg-white/10 pill p-1 gap-1">
-                        <button
-                          onClick={() => setTheme('light')}
-                          className={cn("p-2 pill transition-colors", theme === 'light' ? "bg-white dark:bg-black shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
-                        >
-                          <Sun className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => setTheme('dark')}
-                          className={cn("p-2 pill transition-colors", theme === 'dark' ? "bg-white dark:bg-black shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
-                        >
-                          <Moon className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => setTheme('system')}
-                          className={cn("p-2 pill transition-colors", theme === 'system' ? "bg-white dark:bg-black shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
-                        >
-                          <Monitor className="w-3.5 h-3.5" />
-                        </button>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Tema</span>
+                        <div className="flex bg-black/5 dark:bg-white/10 pill p-1 gap-1">
+                          <button
+                            onClick={() => setTheme('light')}
+                            className={cn("p-2 pill transition-colors", theme === 'light' ? "bg-white dark:bg-black shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+                          >
+                            <Sun className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => setTheme('dark')}
+                            className={cn("p-2 pill transition-colors", theme === 'dark' ? "bg-white dark:bg-black shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+                          >
+                            <Moon className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => setTheme('system')}
+                            className={cn("p-2 pill transition-colors", theme === 'system' ? "bg-white dark:bg-black shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+                          >
+                            <Monitor className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
 
                     <div className="border-t border-black/5 dark:border-white/10 mt-1 pt-1">
                       <button

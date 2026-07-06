@@ -54,7 +54,15 @@ export const INSTALLMENT_DUE_DATES = {
 }
 
 export const paymentService = {
-  async getPayments(search?: string, status?: PaymentStatus | 'all', page = 0, pageSize = 15) {
+  async getPayments(
+    search?: string,
+    status?: PaymentStatus | 'all',
+    page = 0,
+    pageSize = 15,
+    sortBy: 'due_date' | 'player_name' | 'amount' = 'due_date',
+    sortDir: 'asc' | 'desc' = 'asc',
+    seasonId?: string | null
+  ) {
     const from = page * pageSize
     const to = from + pageSize - 1
 
@@ -64,16 +72,27 @@ export const paymentService = {
         *,
         player:players!inner(first_name, last_name, team_sector, birth_date)
       `, { count: 'exact' })
-      .order('due_date', { ascending: true })
-      .order('created_at', { ascending: false })
       .range(from, to)
 
     if (status && status !== 'all') {
       query = query.eq('status', status)
     }
 
+    if (seasonId) {
+      query = query.eq('season_id', seasonId)
+    }
+
     if (search) {
       query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`, { foreignTable: 'players' })
+    }
+
+    if (sortBy === 'player_name') {
+      // Fallback: Supabase JS order by on foreign table requires specific setup
+      query = query.order('due_date', { ascending: sortDir === 'asc' })
+    } else if (sortBy === 'amount') {
+      query = query.order('amount_eur', { ascending: sortDir === 'asc' })
+    } else {
+      query = query.order(sortBy, { ascending: sortDir === 'asc' })
     }
 
     const { data, error, count } = await query

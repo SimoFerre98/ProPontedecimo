@@ -2,6 +2,21 @@
 
 Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentati in questo file.
 
+## [Unreleased]
+
+### Added
+- **US-007**: Store globale `useAppStore` (Zustand) con persistenza per gestire `seasons`, `theme` e `auth` (in sola lettura).
+- **US-007**: Nuovo servizio `seasonService.ts` per recuperare le stagioni dal database e individuare quella attiva.
+- **US-007**: Aggiunto parametro opzionale `seasonId` alle funzioni `getPlayers` e `getPayments` nei rispettivi servizi.
+
+### Interfaccia
+- **US-007**: Refactoring del dropdown stagioni in `DashboardLayout.tsx` per rimuovere l'array hardcoded, integrarlo con lo store Zustand e il db.
+- **US-007**: Aggiornate `Dashboard.tsx`, `Athletes.tsx` e `Payments.tsx` per ascoltare i cambiamenti di stagione nello store e aggiornare le query di React Query.
+
+### Modificato
+- **US-007**: Migrato `AuthProvider` per sincronizzare il profilo utente con `useAppStore`.
+- **US-007**: Migrazione SQL per la funzione `get_dashboard_stats`: aggiunto parametro `p_season_id` con fallback automatico sulla stagione attiva.
+
 ## [0.13.0] - 2026-07-06
 
 ### Added

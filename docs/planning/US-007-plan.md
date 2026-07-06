@@ -55,19 +55,19 @@ Story a metà tra infrastruttura (nuovo store, nuova dipendenza) e wiring di dat
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Aggiungere dipendenza Zustand | `npm install zustand`. | Impl | - |
-| TODO | TASK-02 | Creare `seasonService.ts` | Nuovo servizio con `getSeasons()` (ordinate per `start_date desc`); la stagione attiva si deriva da `is_active`. | Impl | - |
-| TODO | TASK-03 | Creare `useAppStore.ts` (slice season + theme + auth) | Store Zustand unico con `persist`: slice `season` (seasons, selectedSeasonId, activeSeasonId, setSelectedSeason, fallback su id non più valido), slice `theme` (migrazione da `useTheme.ts`, stessa chiave localStorage), slice `auth` (profile/role in sola lettura). | Impl | TASK-01 |
-| TODO | TASK-04 | Test unitari store | Selezione stagione, persistenza in localStorage, fallback quando l'id persistito non esiste più, toggle tema invariato. | Test | TASK-03 |
-| TODO | TASK-05 | Migrazione SQL `get_dashboard_stats(p_season_id)` | Aggiungere parametro `p_season_id uuid DEFAULT NULL`; filtrare players/payments per `season_id = coalesce(p_season_id, stagione attiva)`. | Impl | - |
-| TODO | TASK-06 | Filtro stagione in `athleteService`/`paymentService` | Aggiungere parametro opzionale `seasonId` a `getPlayers` e `getPayments`, con `.eq('season_id', seasonId)` quando presente. | Impl | - |
-| TODO | TASK-07 | Test filtro service | Verificare che i service costruiscano la query con `season_id` solo quando `seasonId` è passato; nessuna regressione quando è assente. | Test | TASK-06 |
-| TODO | TASK-08 | Rifattorizzare dropdown in `DashboardLayout.tsx` | Rimuovere `SEASONS` hardcoded e `useState` locale; alimentare il dropdown da `useQuery(['seasons'])` + store; badge "attiva" distinto da spunta "selezionata"; disabilitare apertura con una sola stagione. | Impl | TASK-02, TASK-03 |
-| TODO | TASK-09 | Migrare `AuthProvider` e header al tema/auth dello store | `AuthProvider` scrive profile/role nello store; `DashboardLayout` usa lo slice `theme` dello store al posto di `useTheme()`. | Impl | TASK-03 |
-| TODO | TASK-10 | Collegare `Athletes.tsx` e `Payments.tsx` a `selectedSeasonId` | Aggiungere `selectedSeasonId` alla `queryKey` e come argomento a `athleteService.getPlayers`/`paymentService.getPayments`, con `enabled: !!selectedSeasonId`. | Impl | TASK-06, TASK-08 |
-| TODO | TASK-11 | Collegare `Dashboard.tsx` alla stagione selezionata | Passare `selectedSeasonId` come parametro alla RPC `get_dashboard_stats`; sostituire l'etichetta stagione hardcoded ("2024/2025") col nome reale dallo store. | Impl | TASK-05, TASK-08 |
-| TODO | TASK-12 | Test propagazione stagione (Atleti/Pagamenti/Dashboard) | Verificare che il cambio stagione dal dropdown aggiorni le liste Atleti/Pagamenti e le statistiche Dashboard senza refresh manuale. | Test | TASK-10, TASK-11 |
-| TODO | TASK-13 | Test caso singola stagione | Con una sola riga in `seasons`, il dropdown mostra il nome senza stati vuoti o dropdown apribile a vuoto. | Test | TASK-08 |
+| DONE | TASK-01 | Aggiungere dipendenza Zustand | `npm install zustand`. | Impl | - |
+| DONE | TASK-02 | Creare `seasonService.ts` | Nuovo servizio con `getSeasons()` (ordinate per `start_date desc`); la stagione attiva si deriva da `is_active`. | Impl | - |
+| DONE | TASK-03 | Creare `useAppStore.ts` (slice season + theme + auth) | Store Zustand unico con `persist`: slice `season` (seasons, selectedSeasonId, activeSeasonId, setSelectedSeason, fallback su id non più valido), slice `theme` (migrazione da `useTheme.ts`, stessa chiave localStorage), slice `auth` (profile/role in sola lettura). | Impl | TASK-01 |
+| DONE | TASK-04 | Test unitari store | Selezione stagione, persistenza in localStorage, fallback quando l'id persistito non esiste più, toggle tema invariato. | Test | TASK-03 |
+| DONE | TASK-05 | Migrazione SQL `get_dashboard_stats(p_season_id)` | Aggiungere parametro `p_season_id uuid DEFAULT NULL`; filtrare players/payments per `season_id = coalesce(p_season_id, stagione attiva)`. | Impl | - |
+| DONE | TASK-06 | Filtro stagione in `athleteService`/`paymentService` | Aggiungere parametro opzionale `seasonId` a `getPlayers` e `getPayments`, con `.eq('season_id', seasonId)` quando presente. | Impl | - |
+| DONE | TASK-07 | Test filtro service | Verificare che i service costruiscano la query con `season_id` solo quando `seasonId` è passato; nessuna regressione quando è assente. | Test | TASK-06 |
+| DONE | TASK-08 | Rifattorizzare dropdown in `DashboardLayout.tsx` | Rimuovere `SEASONS` hardcoded e `useState` locale; alimentare il dropdown da `useQuery(['seasons'])` + store; badge "attiva" distinto da spunta "selezionata"; disabilitare apertura con una sola stagione. | Impl | TASK-02, TASK-03 |
+| DONE | TASK-09 | Migrare `AuthProvider` e header al tema/auth dello store | `AuthProvider` scrive profile/role nello store; `DashboardLayout` usa lo slice `theme` dello store al posto di `useTheme()`. | Impl | TASK-03 |
+| DONE | TASK-10 | Collegare `Athletes.tsx` e `Payments.tsx` a `selectedSeasonId` | Aggiungere `selectedSeasonId` alla `queryKey` e come argomento a `athleteService.getPlayers`/`paymentService.getPayments`, con `enabled: !!selectedSeasonId`. | Impl | TASK-06, TASK-08 |
+| DONE | TASK-11 | Collegare `Dashboard.tsx` alla stagione selezionata | Passare `selectedSeasonId` come parametro alla RPC `get_dashboard_stats`; sostituire l'etichetta stagione hardcoded ("2024/2025") col nome reale dallo store. | Impl | TASK-05, TASK-08 |
+| DONE | TASK-12 | Test propagazione stagione (Atleti/Pagamenti/Dashboard) | Verificare che il cambio stagione dal dropdown aggiorni le liste Atleti/Pagamenti e le statistiche Dashboard senza refresh manuale. | Test | TASK-10, TASK-11 |
+| DONE | TASK-13 | Test caso singola stagione | Con una sola riga in `seasons`, il dropdown mostra il nome senza stati vuoti o dropdown apribile a vuoto. | Test | TASK-08 |
 
 ---
 

@@ -72,7 +72,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-007](backlog/US-007-selettore-stagione-globale-header.md) | Selettore stagione globale in header | HIGH | 3 | PLANNED |
+| [US-007](backlog/US-007-selettore-stagione-globale-header.md) | Selettore stagione globale in header | HIGH | 3 | REVIEW |
 | [US-008](backlog/US-008-wizard-creazione-nuova-stagione.md) | Wizard creazione nuova stagione | HIGH | 5 | TODO |
 
 ### EP-003: Anagrafica Atleti & Validazione
