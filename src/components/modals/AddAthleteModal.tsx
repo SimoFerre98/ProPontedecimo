@@ -73,16 +73,22 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
   const [isCreatingNewSector, setIsCreatingNewSector] = useState(false)
   const queryClient = useQueryClient()
   const [formData, setFormData] = useState({ ...EMPTY_FORM })
+  const [touched, setTouched] = useState<Record<string, boolean>>({})
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
-  // Calcola età per determinare se è minorenne
+  // Calcola età per determinare se è minorenne.
+  // Il campo è una data pura (YYYY-MM-DD): la parsiamo a mano invece di usare `new Date(...)`,
+  // che la interpreterebbe come UTC e potrebbe disallinearsi di un giorno rispetto ai getter
+  // locali su fusi orari con offset negativo rispetto a UTC.
   const isMinor = (() => {
     if (!formData.birth_date) return false
+    const [birthYear, birthMonth, birthDay] = formData.birth_date.split('-').map(Number)
+    if (!birthYear || !birthMonth || !birthDay) return false
     const today = new Date()
-    const birth = new Date(formData.birth_date)
-    const age = today.getFullYear() - birth.getFullYear()
-    const monthDiff = today.getMonth() - birth.getMonth()
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      return age - 1 < 18
+    let age = today.getFullYear() - birthYear
+    const monthDiff = (today.getMonth() + 1) - birthMonth
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDay)) {
+      age--
     }
     return age < 18
   })()
@@ -91,44 +97,135 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
   const hasPhone = formData.phone_player.trim() !== '' || formData.phone_home.trim() !== ''
 
   // Se minorenne: almeno un genitore con nome e telefono
-  const hasParentData = (
-    (formData.parent1_name.trim() !== '' && formData.parent1_phone.trim() !== '') ||
-    (formData.parent2_name.trim() !== '' && formData.parent2_phone.trim() !== '')
-  )
-  const parentRequirementMet = !isMinor || hasParentData
+  const p1Name = formData.parent1_name.trim()
+  const p1Phone = formData.parent1_phone.trim()
+  const p2Name = formData.parent2_name.trim()
+  const p2Phone = formData.parent2_phone.trim()
+  const p1Complete = p1Name !== '' && p1Phone !== ''
+  const p2Complete = p2Name !== '' && p2Phone !== ''
+  const hasParentData = p1Complete || p2Complete
 
-  // Tutti i campi obbligatori per sezione
-  const anagrValid =
-    formData.first_name.trim() !== '' &&
-    formData.last_name.trim() !== '' &&
-    formData.birth_date.trim() !== '' &&
-    formData.birth_place.trim() !== '' &&
-    formData.tax_code.trim() !== '' &&
-    formData.citizenship.trim() !== '' &&
-    formData.team_sector.trim() !== ''
+  // Robust, reactive validation function returning errors in Italian
+  const errors = (() => {
+    const errs: Record<string, string> = {}
 
-  const residenzaValid =
-    formData.address_street.trim() !== '' &&
-    formData.address_city.trim() !== '' &&
-    formData.address_zip.trim() !== ''
+    if (!formData.first_name.trim()) {
+      errs.first_name = "Il nome è obbligatorio"
+    }
+    if (!formData.last_name.trim()) {
+      errs.last_name = "Il cognome è obbligatorio"
+    }
+    if (!formData.birth_date.trim()) {
+      errs.birth_date = "La data di nascita è obbligatoria"
+    }
+    if (!formData.birth_place.trim()) {
+      errs.birth_place = "Il luogo di nascita è obbligatorio"
+    }
+    if (!formData.citizenship.trim()) {
+      errs.citizenship = "La cittadinanza è obbligatoria"
+    }
+    if (!formData.team_sector.trim()) {
+      errs.team_sector = "Il settore/leva è obbligatorio"
+    }
 
-  const contattiValid = hasPhone && formData.email.trim() !== ''
+    // Codice Fiscale
+    const taxCodeTrimmed = formData.tax_code.trim()
+    if (!taxCodeTrimmed) {
+      errs.tax_code = "Il codice fiscale è obbligatorio"
+    } else {
+      const cfRegex = /^[A-Z]{6}[0-9LMNPQRSTUV]{2}[A-EHLMPR-T][0-9LMNPQRSTUV]{2}[A-MZ][0-9LMNPQRSTUV]{3}[A-Z]$/i
+      if (!cfRegex.test(taxCodeTrimmed)) {
+        errs.tax_code = "Il codice fiscale inserito non è valido (es. RSSMRA80A01D969X)"
+      }
+    }
 
-  const sportValid = formData.privacy_accepted === true
+    // Residenza
+    if (!formData.address_street.trim()) {
+      errs.address_street = "L'indirizzo è obbligatorio"
+    }
+    if (!formData.address_city.trim()) {
+      errs.address_city = "La città è obbligatoria"
+    }
+    if (!formData.address_zip.trim()) {
+      errs.address_zip = "Il CAP è obbligatorio"
+    }
 
-  const isFormValid =
-    anagrValid &&
-    residenzaValid &&
-    contattiValid &&
-    sportValid &&
-    parentRequirementMet
+    // Email
+    const emailTrimmed = formData.email.trim()
+    if (!emailTrimmed) {
+      errs.email = "L'email è obbligatoria"
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(emailTrimmed)) {
+        errs.email = "L'indirizzo email inserito non è valido"
+      }
+    }
 
-  const set = (key: keyof typeof EMPTY_FORM, value: string | boolean) =>
+    // Telefoni (Almeno uno obbligatorio)
+    if (!hasPhone) {
+      const phoneError = "Inserisci almeno un numero di telefono (cellulare o fisso)"
+      errs.phone_player = phoneError
+      errs.phone_home = phoneError
+    }
+
+    // Privacy
+    if (!formData.privacy_accepted) {
+      errs.privacy_accepted = "Il consenso privacy è obbligatorio"
+    }
+
+    // Genitori per minorenni
+    if (isMinor && !hasParentData) {
+      if (p1Name === '' && p1Phone === '' && p2Name === '' && p2Phone === '') {
+        errs.parent1_name = "Nominativo obbligatorio per atleti minorenni"
+        errs.parent1_phone = "Telefono obbligatorio per atleti minorenni"
+      } else {
+        if (p1Name !== '' || p1Phone !== '') {
+          if (p1Name === '') errs.parent1_name = "Il nome del genitore è obbligatorio"
+          if (p1Phone === '') errs.parent1_phone = "Il telefono del genitore è obbligatorio"
+        }
+        if (p2Name !== '' || p2Phone !== '') {
+          if (p2Name === '') errs.parent2_name = "Il nome del genitore è obbligatorio"
+          if (p2Phone === '') errs.parent2_phone = "Il telefono del genitore è obbligatorio"
+        }
+      }
+    }
+
+    return errs
+  })()
+
+  const isFormValid = Object.keys(errors).length === 0
+
+  // Calculate whether the fields inside each section have errors
+  const hasSectionErrors = (section: FormSection): boolean => {
+    switch (section) {
+      case 'anagrafica':
+        return !!(errors.first_name || errors.last_name || errors.birth_date || errors.birth_place || errors.citizenship || errors.tax_code || errors.team_sector)
+      case 'residenza':
+        return !!(errors.address_street || errors.address_city || errors.address_zip)
+      case 'contatti':
+        return !!(errors.phone_player || errors.phone_home || errors.email)
+      case 'genitori':
+        return !!(errors.parent1_name || errors.parent1_phone || errors.parent2_name || errors.parent2_phone)
+      case 'sport':
+        return !!(errors.privacy_accepted)
+      default:
+        return false
+    }
+  }
+
+  const set = (key: keyof typeof EMPTY_FORM, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [key]: value }))
+    setTouched(prev => ({ ...prev, [key]: true }))
+  }
+
+  const handleBlur = (key: keyof typeof EMPTY_FORM) => {
+    setTouched(prev => ({ ...prev, [key]: true }))
+  }
 
   useEffect(() => {
     if (isOpen) {
       setActiveSection('anagrafica')
+      setSubmitError(null)
       if (player) {
         setFormData({
           first_name: player.first_name || '',
@@ -159,9 +256,17 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
           is_registered: player.is_registered ?? false,
         })
         setIsCreatingNewSector(false)
+        
+        // Initialize all fields to touched = true for editing
+        const touchedAll = Object.keys(EMPTY_FORM).reduce((acc, key) => {
+          acc[key] = true
+          return acc
+        }, {} as Record<string, boolean>)
+        setTouched(touchedAll)
       } else {
         setFormData({ ...EMPTY_FORM, team_sector: availableSectors[0] || '' })
         setIsCreatingNewSector(availableSectors.length === 0)
+        setTouched({})
       }
     }
   }, [isOpen, player, availableSectors])
@@ -169,6 +274,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
+    setSubmitError(null)
     try {
       const payload = {
         ...formData,
@@ -176,11 +282,11 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
         medical_expiry: formData.medical_expiry || null,
         phone_home: formData.phone_home || null,
         phone_player: formData.phone_player || null,
-        email: formData.email || null,
+        email: formData.email.trim() || null,
         team_sector: formData.team_sector || null,
         birth_place: formData.birth_place || null,
         citizenship: formData.citizenship || null,
-        tax_code: formData.tax_code || null,
+        tax_code: formData.tax_code.trim() || null,
         address_street: formData.address_street || null,
         address_locality: formData.address_locality || null,
         address_city: formData.address_city || null,
@@ -206,6 +312,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
       onClose()
     } catch (error) {
       console.error('Error saving athlete:', error)
+      setSubmitError(error instanceof Error ? error.message : 'Si è verificato un errore durante il salvataggio. Riprova.')
     } finally {
       setLoading(false)
     }
@@ -213,6 +320,26 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
 
   const inputClass = "h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-14"
   const inputClassNoIcon = "h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-6"
+
+  const getInputClass = (key: keyof typeof EMPTY_FORM, hasIcon = true) => {
+    const baseClass = hasIcon ? inputClass : inputClassNoIcon
+    const hasError = errors[key] && touched[key]
+    return cn(
+      baseClass,
+      hasError && "border-red-500 dark:border-red-500/80 focus-visible:ring-red-500 focus-visible:border-red-500"
+    )
+  }
+
+  const renderFieldError = (key: keyof typeof EMPTY_FORM) => {
+    if (errors[key] && touched[key]) {
+      return (
+        <span className="text-xs text-red-500 font-bold pl-3 block mt-1 animate-fadeIn">
+          {errors[key]}
+        </span>
+      )
+    }
+    return null
+  }
 
   return (
     <AnimatePresence>
@@ -272,6 +399,9 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                   >
                     <s.icon className="w-3.5 h-3.5" />
                     <span className="hidden sm:inline">{s.label}</span>
+                    {hasSectionErrors(s.id) && (
+                      <span className="w-2 h-2 rounded-full bg-red-500 shrink-0 ml-1 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                    )}
                   </button>
                 ))}
               </div>
@@ -288,19 +418,25 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         <FieldLabel label="Nome" required />
                         <div className="relative">
                           <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input id="athlete-first-name" required placeholder="Nome"
-                            value={formData.first_name} onChange={e => set('first_name', e.target.value)}
-                            className={inputClass} />
+                          <Input id="athlete-first-name" placeholder="Nome"
+                            value={formData.first_name}
+                            onChange={e => set('first_name', e.target.value)}
+                            onBlur={() => handleBlur('first_name')}
+                            className={getInputClass('first_name')} />
                         </div>
+                        {renderFieldError('first_name')}
                       </div>
                       <div className="space-y-2">
                         <FieldLabel label="Cognome" required />
                         <div className="relative">
                           <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input id="athlete-last-name" required placeholder="Cognome"
-                            value={formData.last_name} onChange={e => set('last_name', e.target.value)}
-                            className={inputClass} />
+                          <Input id="athlete-last-name" placeholder="Cognome"
+                            value={formData.last_name}
+                            onChange={e => set('last_name', e.target.value)}
+                            onBlur={() => handleBlur('last_name')}
+                            className={getInputClass('last_name')} />
                         </div>
+                        {renderFieldError('last_name')}
                       </div>
                     </div>
 
@@ -309,17 +445,25 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         <FieldLabel label="Data di Nascita" required />
                         <div className="relative">
                           <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input id="athlete-birth-date" type="date" required
-                            value={formData.birth_date} onChange={e => set('birth_date', e.target.value)}
-                            className={inputClass} />
+                          <Input id="athlete-birth-date" type="date"
+                            value={formData.birth_date}
+                            onChange={e => set('birth_date', e.target.value)}
+                            onBlur={() => handleBlur('birth_date')}
+                            className={getInputClass('birth_date')} />
                         </div>
+                        {renderFieldError('birth_date')}
                       </div>
                       <div className="space-y-2">
                         <FieldLabel label="Luogo di Nascita" required />
                         <div className="relative">
                           <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input required placeholder="Genova" value={formData.birth_place} onChange={e => set('birth_place', e.target.value)} className={inputClass} />
+                          <Input placeholder="Genova"
+                            value={formData.birth_place}
+                            onChange={e => set('birth_place', e.target.value)}
+                            onBlur={() => handleBlur('birth_place')}
+                            className={getInputClass('birth_place')} />
                         </div>
+                        {renderFieldError('birth_place')}
                       </div>
                     </div>
 
@@ -328,16 +472,25 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         <FieldLabel label="Codice Fiscale" required />
                         <div className="relative">
                           <CreditCard className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input required placeholder="RSSMRA80A01D969X" value={formData.tax_code}
-                            onChange={e => set('tax_code', e.target.value.toUpperCase())} className={inputClass} />
+                          <Input placeholder="RSSMRA80A01D969X"
+                            value={formData.tax_code}
+                            onChange={e => set('tax_code', e.target.value.toUpperCase())}
+                            onBlur={() => handleBlur('tax_code')}
+                            className={getInputClass('tax_code')} />
                         </div>
+                        {renderFieldError('tax_code')}
                       </div>
                       <div className="space-y-2">
                         <FieldLabel label="Cittadinanza" required />
                         <div className="relative">
                           <FileText className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input required placeholder="Italiana" value={formData.citizenship} onChange={e => set('citizenship', e.target.value)} className={inputClass} />
+                          <Input placeholder="Italiana"
+                            value={formData.citizenship}
+                            onChange={e => set('citizenship', e.target.value)}
+                            onBlur={() => handleBlur('citizenship')}
+                            className={getInputClass('citizenship')} />
                         </div>
+                        {renderFieldError('citizenship')}
                       </div>
                     </div>
 
@@ -357,7 +510,11 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                                 set('team_sector', e.target.value)
                               }
                             }}
-                            className="w-full h-14 rounded-full glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold bg-white/5 appearance-none cursor-pointer"
+                            onBlur={() => handleBlur('team_sector')}
+                            className={cn(
+                              "w-full h-14 rounded-full glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold bg-white/5 appearance-none cursor-pointer",
+                              errors.team_sector && touched.team_sector && "border-red-500 dark:border-red-500/80 focus-visible:ring-red-500 focus-visible:border-red-500"
+                            )}
                           >
                             {availableSectors.map(s => (
                               <option key={s} value={s} className="text-black">{s}</option>
@@ -367,8 +524,10 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         ) : (
                           <div className="flex items-center gap-2">
                             <Input placeholder="Es. Primi Calci 2017" autoFocus
-                              value={formData.team_sector} onChange={e => set('team_sector', e.target.value)}
-                              className={inputClass} />
+                              value={formData.team_sector}
+                              onChange={e => set('team_sector', e.target.value)}
+                              onBlur={() => handleBlur('team_sector')}
+                              className={getInputClass('team_sector')} />
                             {availableSectors.length > 0 && (
                               <button type="button" onClick={() => { setIsCreatingNewSector(false); set('team_sector', availableSectors[0]) }}
                                 className="h-14 px-4 pill bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[10px] uppercase font-bold tracking-widest text-muted-foreground whitespace-nowrap transition-all">
@@ -378,6 +537,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                           </div>
                         )}
                       </div>
+                      {renderFieldError('team_sector')}
                     </div>
                   </div>
                 )}
@@ -389,25 +549,44 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                       <FieldLabel label="Indirizzo" required />
                       <div className="relative">
                         <Home className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                        <Input required placeholder="Via Roma 1" value={formData.address_street} onChange={e => set('address_street', e.target.value)} className={inputClass} />
+                        <Input placeholder="Via Roma 1"
+                          value={formData.address_street}
+                          onChange={e => set('address_street', e.target.value)}
+                          onBlur={() => handleBlur('address_street')}
+                          className={getInputClass('address_street')} />
                       </div>
+                      {renderFieldError('address_street')}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <FieldLabel label="Città" required />
                         <div className="relative">
                           <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input required placeholder="Genova" value={formData.address_city} onChange={e => set('address_city', e.target.value)} className={inputClass} />
+                          <Input placeholder="Genova"
+                            value={formData.address_city}
+                            onChange={e => set('address_city', e.target.value)}
+                            onBlur={() => handleBlur('address_city')}
+                            className={getInputClass('address_city')} />
                         </div>
+                        {renderFieldError('address_city')}
                       </div>
                       <div className="space-y-2">
                         <FieldLabel label="CAP" required />
-                        <Input required placeholder="16100" value={formData.address_zip} onChange={e => set('address_zip', e.target.value)} className={inputClassNoIcon} />
+                        <Input placeholder="16100"
+                          value={formData.address_zip}
+                          onChange={e => set('address_zip', e.target.value)}
+                          onBlur={() => handleBlur('address_zip')}
+                          className={getInputClass('address_zip', false)} />
+                        {renderFieldError('address_zip')}
                       </div>
                     </div>
                     <div className="space-y-2">
                       <FieldLabel label="Località / Frazione" />
-                      <Input placeholder="es. Pontedecimo" value={formData.address_locality} onChange={e => set('address_locality', e.target.value)} className={inputClassNoIcon} />
+                      <Input placeholder="es. Pontedecimo"
+                        value={formData.address_locality}
+                        onChange={e => set('address_locality', e.target.value)}
+                        onBlur={() => handleBlur('address_locality')}
+                        className={getInputClass('address_locality', false)} />
                     </div>
                   </div>
                 )}
@@ -439,9 +618,11 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                             placeholder="+39 333 ..."
                             value={formData.phone_player}
                             onChange={e => set('phone_player', e.target.value)}
-                            className={cn(inputClass, !hasPhone && "border-amber-500/50 focus-visible:ring-amber-500")}
+                            onBlur={() => handleBlur('phone_player')}
+                            className={getInputClass('phone_player')}
                           />
                         </div>
+                        {renderFieldError('phone_player')}
                       </div>
                       <div className="space-y-2">
                         <FieldLabel label="Telefono Fisso" required />
@@ -452,9 +633,11 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                             placeholder="+39 010 ..."
                             value={formData.phone_home}
                             onChange={e => set('phone_home', e.target.value)}
-                            className={cn(inputClass, !hasPhone && "border-amber-500/50 focus-visible:ring-amber-500")}
+                            onBlur={() => handleBlur('phone_home')}
+                            className={getInputClass('phone_home')}
                           />
                         </div>
+                        {renderFieldError('phone_home')}
                       </div>
                     </div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 pl-2">
@@ -464,8 +647,13 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                       <FieldLabel label="Email di riferimento" required />
                       <div className="relative">
                         <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                        <Input required type="email" placeholder="atleta@esempio.it" value={formData.email} onChange={e => set('email', e.target.value)} className={inputClass} />
+                        <Input type="email" placeholder="atleta@esempio.it"
+                          value={formData.email}
+                          onChange={e => set('email', e.target.value)}
+                          onBlur={() => handleBlur('email')}
+                          className={getInputClass('email')} />
                       </div>
+                      {renderFieldError('email')}
                     </div>
                   </div>
                 )}
@@ -518,23 +706,36 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                           <FieldLabel label="Nominativo" required={isMinor} />
                           <div className="relative">
                             <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                            <Input placeholder="Mario Rossi" value={formData.parent1_name} onChange={e => set('parent1_name', e.target.value)} className={inputClass} />
+                            <Input placeholder="Mario Rossi"
+                              value={formData.parent1_name}
+                              onChange={e => set('parent1_name', e.target.value)}
+                              onBlur={() => handleBlur('parent1_name')}
+                              className={getInputClass('parent1_name')} />
                           </div>
+                          {renderFieldError('parent1_name')}
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <FieldLabel label="Telefono" required={isMinor} />
                             <div className="relative">
                               <Smartphone className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                              <Input type="tel" placeholder="+39 333 ..." value={formData.parent1_phone} onChange={e => set('parent1_phone', e.target.value)} className={inputClass} />
+                              <Input type="tel" placeholder="+39 333 ..."
+                                value={formData.parent1_phone}
+                                onChange={e => set('parent1_phone', e.target.value)}
+                                onBlur={() => handleBlur('parent1_phone')}
+                                className={getInputClass('parent1_phone')} />
                             </div>
+                            {renderFieldError('parent1_phone')}
                           </div>
                           <div className="space-y-2">
                             <FieldLabel label="Codice Fiscale" />
                             <div className="relative">
                               <CreditCard className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                              <Input placeholder="RSSMRA..." value={formData.parent1_tax_code}
-                                onChange={e => set('parent1_tax_code', e.target.value.toUpperCase())} className={inputClass} />
+                              <Input placeholder="RSSMRA..."
+                                value={formData.parent1_tax_code}
+                                onChange={e => set('parent1_tax_code', e.target.value.toUpperCase())}
+                                onBlur={() => handleBlur('parent1_tax_code')}
+                                className={getInputClass('parent1_tax_code')} />
                             </div>
                           </div>
                         </div>
@@ -552,23 +753,36 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                           <FieldLabel label="Nominativo" />
                           <div className="relative">
                             <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                            <Input placeholder="Maria Rossi" value={formData.parent2_name} onChange={e => set('parent2_name', e.target.value)} className={inputClass} />
+                            <Input placeholder="Maria Rossi"
+                              value={formData.parent2_name}
+                              onChange={e => set('parent2_name', e.target.value)}
+                              onBlur={() => handleBlur('parent2_name')}
+                              className={getInputClass('parent2_name')} />
                           </div>
+                          {renderFieldError('parent2_name')}
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <FieldLabel label="Telefono" />
                             <div className="relative">
                               <Smartphone className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                              <Input type="tel" placeholder="+39 345 ..." value={formData.parent2_phone} onChange={e => set('parent2_phone', e.target.value)} className={inputClass} />
+                              <Input type="tel" placeholder="+39 345 ..."
+                                value={formData.parent2_phone}
+                                onChange={e => set('parent2_phone', e.target.value)}
+                                onBlur={() => handleBlur('parent2_phone')}
+                                className={getInputClass('parent2_phone')} />
                             </div>
+                            {renderFieldError('parent2_phone')}
                           </div>
                           <div className="space-y-2">
                             <FieldLabel label="Codice Fiscale" />
                             <div className="relative">
                               <CreditCard className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                              <Input placeholder="RSSMRA..." value={formData.parent2_tax_code}
-                                onChange={e => set('parent2_tax_code', e.target.value.toUpperCase())} className={inputClass} />
+                              <Input placeholder="RSSMRA..."
+                                value={formData.parent2_tax_code}
+                                onChange={e => set('parent2_tax_code', e.target.value.toUpperCase())}
+                                onBlur={() => handleBlur('parent2_tax_code')}
+                                className={getInputClass('parent2_tax_code')} />
                             </div>
                           </div>
                         </div>
@@ -626,15 +840,21 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         <div className="relative">
                           <HeartPulse className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
                           <Input id="athlete-medical" type="date"
-                            value={formData.medical_expiry} onChange={e => set('medical_expiry', e.target.value)}
-                            className={inputClass} />
+                            value={formData.medical_expiry}
+                            onChange={e => set('medical_expiry', e.target.value)}
+                            onBlur={() => handleBlur('medical_expiry')}
+                            className={getInputClass('medical_expiry')} />
                         </div>
                       </div>
                       <div className="space-y-2">
                         <FieldLabel label="Matricola FIGC" />
                         <div className="relative">
                           <FileText className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 z-10 pointer-events-none" />
-                          <Input placeholder="es. 12345678" value={formData.figc_registration} onChange={e => set('figc_registration', e.target.value)} className={inputClass} />
+                          <Input placeholder="es. 12345678"
+                            value={formData.figc_registration}
+                            onChange={e => set('figc_registration', e.target.value)}
+                            onBlur={() => handleBlur('figc_registration')}
+                            className={getInputClass('figc_registration')} />
                         </div>
                       </div>
                     </div>
@@ -645,20 +865,22 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         placeholder="Note aggiuntive..."
                         value={formData.notes}
                         onChange={e => set('notes', e.target.value)}
+                        onBlur={() => handleBlur('notes')}
                         className="w-full rounded-3xl glass-card border border-black/5 dark:border-white/10 focus:ring-2 focus:ring-primary/20 focus:outline-none px-6 py-4 text-base font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground resize-none"
                       />
                     </div>
                     <div className={cn(
                       "flex items-center gap-3 px-4 py-3 glass-card rounded-2xl border transition-all",
-                      !formData.privacy_accepted
-                        ? "border-red-500/30 bg-red-500/5"
-                        : "border-emerald-500/30 bg-emerald-500/5"
+                      !formData.privacy_accepted && touched.privacy_accepted
+                        ? "border-red-500 bg-red-500/5"
+                        : (!formData.privacy_accepted ? "border-red-500/30 bg-red-500/5" : "border-emerald-500/30 bg-emerald-500/5")
                     )}>
                       <input
                         id="privacy-check"
                         type="checkbox"
                         checked={formData.privacy_accepted}
                         onChange={e => set('privacy_accepted', e.target.checked)}
+                        onBlur={() => handleBlur('privacy_accepted')}
                         className="w-5 h-5 rounded accent-primary cursor-pointer"
                       />
                       <label htmlFor="privacy-check" className="text-sm font-semibold cursor-pointer text-foreground flex-1">
@@ -670,6 +892,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         : <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">Obbligatorio</span>
                       }
                     </div>
+                    {renderFieldError('privacy_accepted')}
                   </div>
                 )}
               </div>
@@ -678,31 +901,36 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
               <div className="px-8 pb-8 pt-4 shrink-0 border-t border-black/5 dark:border-white/10">
                 {!isFormValid && (
                   <div className="mb-3 space-y-1">
-                    {!anagrValid && (
+                    {hasSectionErrors('anagrafica') && (
                       <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-500">
-                        ✗ Anagrafica incompleta — compila tutti i campi obbligatori
+                        ✗ Anagrafica incompleta o non valida — controlla i campi obbligatori
                       </p>
                     )}
-                    {!residenzaValid && (
+                    {hasSectionErrors('residenza') && (
                       <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-500">
                         ✗ Residenza incompleta — inserisci indirizzo, città e CAP
                       </p>
                     )}
-                    {!contattiValid && (
+                    {hasSectionErrors('contatti') && (
                       <p className="text-center text-[10px] font-black uppercase tracking-widest text-amber-500">
-                        ✗ Contatti incompleti — {!hasPhone ? 'almeno un telefono' : 'email'}{!hasPhone && formData.email.trim() === '' ? ' ed email' : ''} mancante
+                        ✗ Contatti incompleti — inserisci email e almeno un numero di telefono
                       </p>
                     )}
-                    {isMinor && !hasParentData && (
+                    {isMinor && hasSectionErrors('genitori') && (
                       <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-500">
-                        ✗ Atleta minorenne — inserisci almeno un genitore (sezione Genitori)
+                        ✗ Atleta minorenne — inserisci nominativo e telefono di almeno un genitore
                       </p>
                     )}
-                    {!sportValid && (
+                    {hasSectionErrors('sport') && (
                       <p className="text-center text-[10px] font-black uppercase tracking-widest text-red-500">
                         ✗ Consenso privacy obbligatorio (sezione Sport &amp; Note)
                       </p>
                     )}
+                  </div>
+                )}
+                {submitError && (
+                  <div className="mb-3 px-4 py-3 rounded-2xl border border-red-500/30 bg-red-500/10 text-center text-xs font-bold text-red-500">
+                    {submitError}
                   </div>
                 )}
                 <div className="flex items-center gap-4">
