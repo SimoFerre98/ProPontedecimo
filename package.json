@@ -12,7 +12,8 @@
     "db:pull": "supabase db pull",
     "db:push": "supabase db push",
     "db:diff": "supabase db diff",
-    "db:list": "supabase migration list"
+    "db:list": "supabase migration list",
+    "test:integration": "node scripts/test-all.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

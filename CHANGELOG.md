@@ -5,11 +5,20 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-009**: Trigger database PostgreSQL `validate_player_fields` e trigger `trg_validate_player_fields` BEFORE INSERT OR UPDATE per impedire il salvataggio di atleti con dati obbligatori incompleti o formati codice fiscale non validi.
+- **US-009**: Script di test di integrazione del database `test-validation-trigger.mjs` che convalida i vincoli del trigger lato server.
+- **US-009**: Validazione frontend reattiva nel modale `AddAthleteModal.tsx` con stato degli errori reattivo in italiano, validazione codice fiscale conforme al database e blocco del pulsante di salvataggio.
+- **US-009**: Feedback visivo e UX in `AddAthleteModal.tsx` con bordi rossi per i campi non validi, messaggi d'errore localizzati in italiano, e pallini rossi pulsanti sui tab delle sezioni con errori.
+- **US-008**: Funzione RPC database `create_season_from_wizard(p_name text, p_start_date date, p_end_date date, p_players jsonb)` per la creazione atomica della nuova stagione, lo switch di stato `is_active` e la copia selettiva/dedup degli atleti con scatto di leva e regole di copia specifiche.
+- **US-008**: Utility pura `suggestLeva` in `src/lib/leva.ts` con mapping fasce d'età FIGC parametrizzato sull'anno di inizio stagione.
+- **US-008**: Nuovo modale multi-step `NewSeasonWizardModal.tsx` con stepper e layout fedele ai mockup per gestire i 4 step (dati, selezione atleti, scatto di leva/creazione leve, riepilogo e conferma).
+- **US-008**: Wrapper client-side `createSeasonFromWizard` in `seasonService.ts` e parametrizzazione `seasonId` su `getUniqueSectors` in `athleteService.ts`.
 - **US-007**: Store globale `useAppStore` (Zustand) con persistenza per gestire `seasons`, `theme` e `auth` (in sola lettura).
 - **US-007**: Nuovo servizio `seasonService.ts` per recuperare le stagioni dal database e individuare quella attiva.
 - **US-007**: Aggiunto parametro opzionale `seasonId` alle funzioni `getPlayers` e `getPayments` nei rispettivi servizi.
 
 ### Interfaccia
+- **US-008**: Modificato il dropdown stagioni in `DashboardLayout.tsx` per consentire l'apertura anche con una sola stagione per i ruoli admin e aggiunto il pulsante "+ Nuova stagione" nel footer del menu per avviare il wizard.
 - **US-007**: Refactoring del dropdown stagioni in `DashboardLayout.tsx` per rimuovere l'array hardcoded, integrarlo con lo store Zustand e il db.
 - **US-007**: Aggiornate `Dashboard.tsx`, `Athletes.tsx` e `Payments.tsx` per ascoltare i cambiamenti di stagione nello store e aggiornare le query di React Query.
 

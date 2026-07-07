@@ -73,7 +73,7 @@
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
 | [US-007](backlog/US-007-selettore-stagione-globale-header.md) | Selettore stagione globale in header | HIGH | 3 | REVIEW |
-| [US-008](backlog/US-008-wizard-creazione-nuova-stagione.md) | Wizard creazione nuova stagione | HIGH | 5 | TODO |
+| [US-008](backlog/US-008-wizard-creazione-nuova-stagione.md) | Wizard creazione nuova stagione | HIGH | 5 | DONE |
 
 ### EP-003: Anagrafica Atleti & Validazione
 
@@ -82,7 +82,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-009](backlog/US-009-validazione-campi-obbligatori-atleta.md) | Validazione campi obbligatori atleta | HIGH | 3 | TODO |
+| [US-009](backlog/US-009-validazione-campi-obbligatori-atleta.md) | Validazione campi obbligatori atleta | HIGH | 3 | DONE |
 | [US-010](backlog/US-010-gestione-numero-matricola.md) | Gestione numero matricola | MEDIUM | 2 | TODO |
 | [US-011](backlog/US-011-notifica-matricola-mancante.md) | Notifica per matricola mancante | LOW | 2 | TODO |
 

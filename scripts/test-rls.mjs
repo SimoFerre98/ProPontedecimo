@@ -90,9 +90,16 @@ async function setup() {
   ctx.seasonId = seasons[0].id
 
   // atleti: A nella leva del coach (e collegato all'utente player), B in un'altra leva
+  // NB: dall'introduzione di US-009 (trg_validate_player_fields) un insert diretto sui
+  // giocatori deve soddisfare tutti i campi obbligatori; qui sono atleti maggiorenni
+  // di test, quindi non serve alcun contatto genitore.
   const mk = (last, sector, profile_id = null) => ({
     first_name: 'TEST_RLS', last_name: last, team_sector: sector,
     season_id: ctx.seasonId, is_active: true, profile_id,
+    birth_date: '1990-01-01', birth_place: 'Genova', citizenship: 'Italiana',
+    address_street: 'Via Test 1', address_city: 'Genova', address_zip: '16100',
+    email: `test.rls.${last === 'ATLETA_A' ? 'a' : 'b'}@example.com`, phone_player: '3330000000',
+    privacy_accepted: true, tax_code: last === 'ATLETA_A' ? 'RLSATA90A01D969A' : 'RLSATB90A01D969B',
   })
   const { data: players, error: ep } = await admin.from('players')
     .insert([mk('ATLETA_A', LEVA_A, ctx.users.player), mk('ATLETA_B', LEVA_B)])

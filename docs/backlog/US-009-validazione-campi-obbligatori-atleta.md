@@ -11,11 +11,12 @@ così che il database non contenga schede atleta incomplete o inutilizzabili.
 After implementing this story, the user can: tentare di salvare un atleta senza codice fiscale e vedere il salvataggio bloccato con messaggi d'errore chiari sui campi mancanti.
 
 **Acceptance Criteria**
-- [ ] Il form nei modali atleti evidenzia i campi obbligatori mancanti o non validi prima dell'invio, con messaggi in italiano
-- [ ] La validazione è applicata anche lato server: una richiesta diretta con dati incompleti viene rifiutata
-- [ ] Il codice fiscale è validato nel formato
-- [ ] Un atleta esistente con dati incompleti può essere aperto in modifica, ma non salvato finché i campi obbligatori non sono completati
+- [x] Il form nei modali atleti evidenzia i campi obbligatori mancanti o non validi prima dell'invio, con messaggi in italiano
+- [x] La validazione è applicata anche lato server: una richiesta diretta con dati incompleti viene rifiutata
+- [x] Il codice fiscale è validato nel formato
+- [x] Un atleta esistente con dati incompleti può essere aperto in modifica, ma non salvato finché i campi obbligatori non sono completati
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE
+**Plan:** [US-009-plan.md](../planning/US-009-plan.md)
+
 

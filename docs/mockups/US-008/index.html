@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-008 · Wizard Nuova Stagione — Premium Glass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../US-005/shared.css">
+<style>
+  /* ============================================================
+     US-008 — Wizard creazione nuova stagione
+     Modale multi-step (4 step) · stile Premium Glass (token US-005)
+     ============================================================ */
+
+  :root {
+    --amber: oklch(0.769 0.188 70.08);   /* atleti "da verificare" */
+  }
+
+  /* ============ Scena dimostrativa ============ */
+  .stage { position: fixed; inset: 0; }
+
+  .backdrop-app { position: absolute; inset: 0; overflow: hidden; }
+  .fake-sidebar {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 260px;
+    background: oklch(0.22 0.06 15 / 0.85);
+    border-right: 1px solid oklch(0.30 0.08 15 / 0.3);
+    padding: 2rem 1.5rem;
+  }
+  .fake-logo { display: flex; align-items: center; gap: .75rem; margin-bottom: 2.5rem; }
+  .fake-logo-mark {
+    width: 2.5rem; height: 2.5rem; border-radius: var(--radius-2xl);
+    background: linear-gradient(135deg, oklch(0.45 0.16 15), oklch(0.28 0.11 15));
+    border: 1px solid oklch(0.84 0.115 85 / 0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-style: italic; font-size: .8rem; color: var(--gold);
+  }
+  .fake-logo span { font-size: .8rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; }
+  .fake-navitem { height: 2.75rem; border-radius: var(--radius-pill); background: oklch(1 0 0 / 0.06); margin-bottom: .75rem; }
+  .fake-navitem.hot { background: oklch(1 0 0 / 0.14); }
+  .fake-main { position: absolute; top: 0; right: 0; bottom: 0; left: 260px; }
+
+  /* Header app con selettore stagione: il punto d'ingresso del wizard */
+  .fake-header {
+    height: 4.5rem; padding: 0 2.5rem;
+    display: flex; align-items: center; justify-content: flex-end; gap: 1rem;
+    border-bottom: 1px solid var(--border-soft);
+    background: oklch(0.16 0.01 15 / 0.6);
+  }
+  .season-pill {
+    display: inline-flex; align-items: center; gap: .5rem;
+    height: 2.25rem; padding: 0 1rem;
+    border-radius: var(--radius-pill);
+    background: var(--surface-05); border: 1px solid oklch(0.62 0.19 12 / 0.4);
+    font-size: 11px; font-weight: 500; color: var(--muted-foreground);
+  }
+  .season-pill b { color: var(--primary-soft); font-weight: 700; }
+  .season-pill svg { width: .8rem; height: .8rem; transform: rotate(180deg); }
+  .fake-avatar { width: 2.25rem; height: 2.25rem; border-radius: var(--radius-pill); background: oklch(0.42 0.15 15); border: 1px solid var(--border-strong); }
+
+  /* Dropdown stagioni aperto (dietro l'overlay: racconta da dove nasce il wizard) */
+  .season-dropdown {
+    position: absolute; top: 3.9rem; right: 6.5rem; width: 15rem; z-index: 2;
+    border-radius: var(--radius-2xl);
+    background: oklch(0.18 0.01 15 / 0.95);
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 20px 45px oklch(0 0 0 / 0.5);
+    padding: .5rem; display: flex; flex-direction: column; gap: .25rem;
+  }
+  .season-item {
+    display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+    padding: .55rem .85rem; border-radius: var(--radius-xl);
+    font-size: .75rem; font-weight: 700; color: var(--foreground);
+  }
+  .season-item .tag-active {
+    padding: .1rem .5rem; border-radius: var(--radius-pill);
+    background: oklch(0.769 0.188 70.08 / 0.2); color: var(--amber);
+    font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em;
+  }
+  .season-item.muted { color: var(--muted-foreground); font-weight: 500; }
+  .season-sep { height: 1px; background: var(--border-soft); margin: .25rem .5rem; }
+  .season-item.new {
+    background: oklch(0.33 0.13 15 / 0.35); border: 1px solid oklch(0.33 0.13 15 / 0.5);
+    color: #fff; justify-content: flex-start;
+  }
+  .season-item.new svg { width: .85rem; height: .85rem; color: var(--gold); }
+
+  .fake-content { padding: 2.5rem; }
+  .fake-title { width: 40%; height: 2.2rem; border-radius: var(--radius-xl); background: oklch(1 0 0 / 0.1); margin-bottom: 2rem; }
+  .fake-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .fake-card { height: 9rem; border-radius: var(--radius-32); background: oklch(0.205 0 0 / 0.5); border: 1px solid var(--border-soft); }
+  .fake-card.accent { background: oklch(0.33 0.13 15 / 0.25); border-color: oklch(0.33 0.13 15 / 0.35); }
+  .fake-wide { margin-top: 1.5rem; height: 12rem; border-radius: var(--radius-32); background: oklch(0.205 0 0 / 0.5); border: 1px solid var(--border-soft); }
+
+  /* Overlay canonico */
+  .modal-overlay {
+    position: absolute; inset: 0; z-index: 5;
+    background: oklch(0.145 0.006 15 / 0.6);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    animation: fade .3s ease both;
+  }
+
+  /* ============ Il modale wizard ============ */
+  .modal-viewport {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.25rem; pointer-events: none;
+  }
+  .wizard-modal {
+    width: 100%; max-width: 56rem;
+    height: min(51rem, 94vh);
+    pointer-events: auto;
+    animation: rise .35s cubic-bezier(.2,.9,.3,1.2) both;
+  }
+
+  /* ---------- Stepper ---------- */
+  .stepper {
+    display: flex; align-items: center; gap: .75rem;
+    padding: 1.4rem 2rem;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--ink-20);
+    flex-shrink: 0;
+  }
+  .step { display: flex; align-items: center; gap: .65rem; cursor: default; background: none; border: none; padding: 0; font-family: inherit; color: inherit; }
+  .step.reachable { cursor: pointer; }
+  .step-dot {
+    width: 2.25rem; height: 2.25rem; flex-shrink: 0;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-soft);
+    background: var(--surface-05); color: var(--muted-foreground);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px;
+    transition: all .25s ease;
+  }
+  .step-dot svg { width: .95rem; height: .95rem; }
+  .step-name { display: flex; flex-direction: column; gap: .15rem; text-align: left; }
+  .step-name b {
+    font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em;
+    color: var(--muted-foreground); transition: color .25s ease; white-space: nowrap;
+  }
+  .step-name span { font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; color: oklch(0.708 0 0 / 0.45); white-space: nowrap; }
+  .step-line { flex: 1; height: 1px; background: var(--border-soft); min-width: .75rem; transition: background .3s ease; }
+
+  .step.active .step-dot {
+    background: var(--primary); border-color: oklch(0.62 0.19 12 / 0.6); color: #fff;
+    box-shadow: 0 0 22px oklch(0.33 0.13 15 / 0.55);
+  }
+  .step.active .step-name b { color: var(--foreground); }
+  .step.done .step-dot { background: oklch(0.33 0.13 15 / 0.35); border-color: oklch(0.33 0.13 15 / 0.5); color: var(--gold); }
+  .step-line.done { background: oklch(0.62 0.19 12 / 0.5); }
+
+  /* ---------- Corpo step ---------- */
+  .wizard-body { flex: 1; overflow-y: auto; padding: 2rem; }
+  .step-panel { display: none; flex-direction: column; gap: 1.5rem; animation: rise .3s ease both; }
+  .step-panel.active { display: flex; }
+
+  .panel-intro { display: flex; flex-direction: column; gap: .3rem; }
+  .panel-intro h3 { font-size: 1.05rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.03em; }
+  .panel-intro h3 .accent { color: var(--primary-soft); font-style: normal; }
+  .panel-intro p { font-size: .78rem; font-weight: 500; color: var(--muted-foreground); line-height: 1.6; max-width: 42rem; }
+
+  /* ---------- Step 1 · campi ---------- */
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .field { display: flex; flex-direction: column; gap: .5rem; }
+  .field.full { grid-column: 1 / -1; }
+  .field .field-label { padding-left: .9rem; }
+  .field-shell { position: relative; display: flex; align-items: center; }
+  .field-shell svg {
+    position: absolute; left: 1.25rem; width: 1.1rem; height: 1.1rem;
+    color: oklch(0.708 0 0 / 0.4); pointer-events: none;
+  }
+  .field-input {
+    width: 100%; height: 3.5rem;
+    border-radius: var(--radius-pill);
+    background: var(--surface-05);
+    border: 1px solid var(--border-soft);
+    color: var(--foreground);
+    font-family: inherit; font-size: .9rem; font-weight: 700;
+    padding: 0 1.5rem 0 3.25rem;
+    outline: none; transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .field-input::placeholder { color: oklch(0.708 0 0 / 0.4); font-weight: 500; }
+  .field-input:focus { border-color: oklch(0.62 0.19 12 / 0.5); box-shadow: 0 0 0 4px oklch(0.33 0.13 15 / 0.15); }
+  .field-hint { font-size: .68rem; font-weight: 500; color: oklch(0.708 0 0 / 0.55); padding-left: .9rem; }
+
+  .field.invalid .field-input { border-color: oklch(0.645 0.246 16.44 / 0.6); box-shadow: 0 0 0 4px oklch(0.645 0.246 16.44 / 0.12); }
+  .field-error {
+    display: none; align-items: center; gap: .4rem; padding-left: .9rem;
+    font-size: .7rem; font-weight: 700; color: var(--rose);
+  }
+  .field-error svg { width: .8rem; height: .8rem; flex-shrink: 0; }
+  .field.invalid .field-error { display: flex; }
+
+  /* Callout riusabile */
+  .callout {
+    border-radius: var(--radius-32);
+    border: 1px solid oklch(0.84 0.115 85 / 0.3);
+    background: oklch(0.84 0.115 85 / 0.05);
+    padding: 1.25rem 1.5rem;
+    display: flex; gap: 1rem; align-items: flex-start;
+  }
+  .callout .icon-box { width: 2.5rem; height: 2.5rem; flex-shrink: 0; background: oklch(0.84 0.115 85 / 0.12); border-color: oklch(0.84 0.115 85 / 0.3); color: var(--gold); }
+  .callout .icon-box svg { width: 1.15rem; height: 1.15rem; }
+  .callout h4 { font-size: .8rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: .25rem; }
+  .callout p { font-size: .74rem; color: var(--muted-foreground); font-weight: 500; line-height: 1.6; }
+  .callout.safe { border-color: oklch(0.696 0.17 162.48 / 0.3); background: oklch(0.696 0.17 162.48 / 0.05); }
+  .callout.safe .icon-box { background: oklch(0.696 0.17 162.48 / 0.12); border-color: oklch(0.696 0.17 162.48 / 0.3); color: var(--emerald); }
+  .callout.warn { border-color: oklch(0.769 0.188 70.08 / 0.35); background: oklch(0.769 0.188 70.08 / 0.06); }
+  .callout.warn .icon-box { background: oklch(0.769 0.188 70.08 / 0.12); border-color: oklch(0.769 0.188 70.08 / 0.35); color: var(--amber); }
+
+  /* ---------- Step 2 · selezione atleti ---------- */
+  .totals-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .9rem 1.5rem;
+    border-radius: var(--radius-pill);
+    background: oklch(0.33 0.13 15 / 0.15);
+    border: 1px solid oklch(0.33 0.13 15 / 0.3);
+  }
+  .totals-bar .eyebrow { color: var(--primary-soft); }
+  .totals-count { font-family: var(--font-mono); font-size: .85rem; color: var(--gold); }
+
+  .group-card {
+    border-radius: var(--radius-32);
+    border: 1px solid var(--border-soft);
+    background: var(--surface-05);
+    padding: 1.4rem 1.6rem;
+  }
+  .group-head { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .group-title { display: flex; align-items: center; gap: .75rem; margin-right: auto; }
+  .group-title h4 { font-size: .95rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; }
+  .count-chip {
+    font-family: var(--font-mono); font-size: 10.5px; color: var(--gold);
+    background: var(--ink-20); border: 1px solid var(--border-soft);
+    border-radius: var(--radius-pill); padding: .2rem .7rem;
+  }
+  .select-all {
+    display: inline-flex; align-items: center; gap: .55rem;
+    height: 2.25rem; padding: 0 1rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-soft); background: transparent;
+    color: var(--muted-foreground); cursor: pointer;
+    font-family: inherit; font-size: 9px; font-weight: 900;
+    text-transform: uppercase; letter-spacing: .14em;
+    transition: all .2s ease;
+  }
+  .select-all:hover { color: var(--foreground); background: var(--surface-05); }
+
+  .ath-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: .3rem .75rem; margin-top: 1rem;
+  }
+  .ath {
+    display: flex; align-items: center; gap: .7rem;
+    padding: .5rem .8rem;
+    border-radius: var(--radius-pill);
+    cursor: pointer; transition: background .15s ease;
+    user-select: none;
+  }
+  .ath:hover { background: var(--surface-05); }
+  .ath input { position: absolute; opacity: 0; pointer-events: none; }
+  .ath .box {
+    width: 1.2rem; height: 1.2rem; flex-shrink: 0;
+    border-radius: .4rem;
+    border: 1.5px solid var(--border-strong);
+    background: var(--ink-20);
+    display: flex; align-items: center; justify-content: center;
+    color: transparent; transition: all .15s ease;
+  }
+  .ath .box svg { width: .75rem; height: .75rem; }
+  .ath input:checked + .box { background: var(--primary); border-color: oklch(0.62 0.19 12 / 0.7); color: #fff; }
+  .ath-name { font-size: .82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ath input:not(:checked) ~ .ath-name { color: var(--muted-foreground); font-weight: 500; }
+  .ath-year { margin-left: auto; font-family: var(--font-mono); font-size: 9.5px; color: oklch(0.708 0 0 / 0.5); }
+  .ath-year.nodob { color: var(--amber); }
+
+  /* ---------- Step 3 · destinazione leve ---------- */
+  .map-card {
+    border-radius: var(--radius-32);
+    border: 1px solid var(--border-soft);
+    background: var(--surface-05);
+    padding: 1.25rem 1.6rem;
+    display: grid; grid-template-columns: 1fr auto 1.2fr; gap: 1.25rem; align-items: center;
+  }
+  .map-card.verify { border-color: oklch(0.769 0.188 70.08 / 0.4); background: oklch(0.769 0.188 70.08 / 0.05); }
+  .map-src { display: flex; flex-direction: column; gap: .25rem; min-width: 0; }
+  .map-src h4 { font-size: .92rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; }
+  .map-src span { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted-foreground); }
+  .map-src .names { font-size: .7rem; font-weight: 500; text-transform: none; letter-spacing: 0; color: oklch(0.708 0 0 / 0.6); line-height: 1.5; }
+  .map-arrow { color: oklch(0.708 0 0 / 0.4); display: flex; }
+  .map-arrow svg { width: 1.3rem; height: 1.3rem; }
+  .map-dest { display: flex; flex-direction: column; gap: .5rem; min-width: 0; }
+  .dest-row { display: flex; align-items: center; gap: .6rem; }
+  .dest-select-shell { position: relative; flex: 1; }
+  .dest-select {
+    width: 100%; height: 3.1rem;
+    border-radius: var(--radius-pill);
+    background: var(--ink-20);
+    border: 1px solid var(--border-soft);
+    color: var(--foreground);
+    font-family: inherit; font-size: .82rem; font-weight: 700;
+    padding: 0 2.8rem 0 1.35rem;
+    outline: none; cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    transition: border-color .2s ease;
+  }
+  .dest-select:focus { border-color: oklch(0.62 0.19 12 / 0.5); }
+  .dest-select option { background: oklch(0.18 0.01 15); color: var(--foreground); }
+  .dest-select-shell::after {
+    content: ''; position: absolute; right: 1.25rem; top: 50%;
+    width: .55rem; height: .55rem;
+    border-right: 1.5px solid var(--muted-foreground);
+    border-bottom: 1.5px solid var(--muted-foreground);
+    transform: translateY(-70%) rotate(45deg); pointer-events: none;
+  }
+  .dest-input {
+    flex: 1; height: 3.1rem;
+    border-radius: var(--radius-pill);
+    background: var(--ink-20);
+    border: 1px solid oklch(0.84 0.115 85 / 0.45);
+    color: var(--foreground);
+    font-family: inherit; font-size: .82rem; font-weight: 700;
+    padding: 0 1.35rem; outline: none;
+  }
+  .dest-input::placeholder { color: oklch(0.708 0 0 / 0.45); font-weight: 500; }
+  .dest-cancel {
+    flex-shrink: 0; width: 2.5rem; height: 2.5rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-soft); background: transparent;
+    color: var(--muted-foreground); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s ease;
+  }
+  .dest-cancel:hover { color: var(--foreground); background: var(--surface-05); }
+  .dest-cancel svg { width: .9rem; height: .9rem; }
+  .dest-meta { display: flex; align-items: center; gap: .5rem; padding-left: .5rem; flex-wrap: wrap; }
+  .hint-suggested { display: inline-flex; align-items: center; gap: .35rem; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .16em; color: oklch(0.708 0 0 / 0.55); }
+  .hint-suggested svg { width: .75rem; height: .75rem; color: var(--gold); }
+
+  .badge-new {
+    display: inline-flex; align-items: center; gap: .35rem;
+    height: 1.5rem; padding: 0 .7rem;
+    border-radius: var(--radius-pill);
+    background: oklch(0.84 0.115 85 / 0.1);
+    border: 1px solid oklch(0.84 0.115 85 / 0.35);
+    color: var(--gold);
+    font-size: 8.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .16em;
+  }
+  .badge-new svg { width: .7rem; height: .7rem; }
+  .badge-verify {
+    display: inline-flex; align-items: center; gap: .35rem;
+    height: 1.5rem; padding: 0 .7rem;
+    border-radius: var(--radius-pill);
+    background: oklch(0.769 0.188 70.08 / 0.12);
+    border: 1px solid oklch(0.769 0.188 70.08 / 0.4);
+    color: var(--amber);
+    font-size: 8.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .16em;
+  }
+  .badge-verify svg { width: .7rem; height: .7rem; }
+
+  /* ---------- Step 4 · riepilogo ---------- */
+  .summary-rows { display: flex; flex-direction: column; gap: .65rem; }
+  .summary-row {
+    display: flex; align-items: center; gap: 1rem;
+    min-height: 3.5rem; padding: .6rem 1.5rem;
+    border-radius: var(--radius-pill);
+    background: var(--surface-05);
+    border: 1px solid var(--border-soft);
+  }
+  .summary-row .icon-mini { color: oklch(0.708 0 0 / 0.4); display: flex; flex-shrink: 0; }
+  .summary-row .icon-mini svg { width: 1.05rem; height: 1.05rem; }
+  .summary-leva { font-size: .88rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; margin-right: auto; display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; }
+  .summary-count { font-family: var(--font-mono); font-size: .8rem; color: var(--gold); white-space: nowrap; }
+  .summary-total {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-pill);
+    background: oklch(0.33 0.13 15 / 0.2);
+    border: 1px solid oklch(0.33 0.13 15 / 0.4);
+  }
+  .summary-total b { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .16em; color: var(--primary-soft); }
+  .summary-total span { font-family: var(--font-mono); font-size: .95rem; color: #fff; }
+
+  /* ---------- Footer / navigazione ---------- */
+  .wizard-footer {
+    padding: 1.4rem 2rem;
+    border-top: 1px solid oklch(1 0 0 / 0.05);
+    background: var(--ink-20);
+    display: flex; align-items: center; gap: 1rem;
+    flex-shrink: 0;
+  }
+  .wizard-footer .btn-ghost { border: 1px solid var(--border-soft); }
+  .footer-status { margin: 0 auto; font-size: 9.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .18em; color: oklch(0.708 0 0 / 0.55); text-align: center; }
+  #btnBack.hidden { visibility: hidden; }
+
+  .spinner {
+    width: 1.1rem; height: 1.1rem; flex-shrink: 0;
+    border-radius: var(--radius-pill);
+    border: 2px solid oklch(1 0 0 / 0.3); border-top-color: #fff;
+    animation: spin .7s linear infinite;
+    display: none;
+  }
+  #btnNext.loading .spinner { display: block; }
+  #btnNext.loading .btn-icon { display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- Vista successo ---------- */
+  .success-view {
+    display: none; flex: 1;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 1.1rem; padding: 3rem 2rem; text-align: center;
+    animation: rise .4s ease both;
+  }
+  .success-view.active { display: flex; }
+  .success-ring {
+    width: 5.5rem; height: 5.5rem;
+    border-radius: var(--radius-pill);
+    background: oklch(0.696 0.17 162.48 / 0.12);
+    border: 1px solid oklch(0.696 0.17 162.48 / 0.4);
+    color: var(--emerald);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 45px oklch(0.696 0.17 162.48 / 0.25);
+  }
+  .success-ring svg { width: 2.4rem; height: 2.4rem; }
+  .success-view h3 { font-size: 1.6rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.05em; }
+  .success-view h3 .accent { color: var(--primary-soft); font-style: normal; }
+  .success-view p { font-size: .8rem; font-weight: 500; color: var(--muted-foreground); line-height: 1.7; max-width: 30rem; }
+  .success-view .chip { margin-top: .25rem; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .step-name span { display: none; }
+    .step:not(.active) .step-name { display: none; }
+    .map-card { grid-template-columns: 1fr; gap: .9rem; }
+    .map-arrow { transform: rotate(90deg); }
+  }
+  @media (max-width: 640px) {
+    .fake-sidebar { display: none; }
+    .fake-main { left: 0; }
+    .season-dropdown { right: 1rem; }
+    .fake-cards { grid-template-columns: 1fr; }
+    .modal-viewport { padding: .5rem; }
+    .wizard-modal { height: 96vh; }
+    .modal-header { padding: 1.5rem 1.25rem; }
+    .modal-title { font-size: 1.2rem; }
+    .stepper { padding: 1rem 1.25rem; gap: .5rem; }
+    .wizard-body { padding: 1.25rem; }
+    .fields { grid-template-columns: 1fr; }
+    .ath-grid { grid-template-columns: 1fr; }
+    .wizard-footer { padding: 1rem 1.25rem; flex-wrap: wrap; }
+    .footer-status { order: 3; width: 100%; }
+    .mock-nav .nav-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigazione fra i mockup -->
+<nav class="mock-nav">
+  <span class="nav-tag">US-008</span>
+  <a href="index.html" class="active">Wizard Nuova Stagione</a>
+  <a href="../US-005/modal-style-tokens.html">Style Tokens</a>
+</nav>
+
+<div class="stage">
+
+  <!-- Finta app dietro il modale: header con selettore stagione (punto d'ingresso) -->
+  <div class="backdrop-app" aria-hidden="true">
+    <div class="fake-sidebar">
+      <div class="fake-logo">
+        <div class="fake-logo-mark">PP</div>
+        <span>Pro Pontedecimo</span>
+      </div>
+      <div class="fake-navitem hot"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+    </div>
+    <div class="fake-main">
+      <div class="fake-header">
+        <span class="season-pill">
+          Stagione <b>2025/2026</b>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </span>
+        <div class="fake-avatar"></div>
+      </div>
+      <!-- Dropdown aperto: da qui parte il wizard -->
+      <div class="season-dropdown">
+        <div class="season-item"><span>2025/2026</span><span class="tag-active">Attiva</span></div>
+        <div class="season-item muted"><span>2024/2025</span></div>
+        <div class="season-sep"></div>
+        <div class="season-item new">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          <span>Crea nuova stagione…</span>
+        </div>
+      </div>
+      <div class="fake-content">
+        <div class="fake-title"></div>
+        <div class="fake-cards">
+          <div class="fake-card accent"></div>
+          <div class="fake-card"></div>
+          <div class="fake-card"></div>
+        </div>
+        <div class="fake-wide"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay canonico -->
+  <div class="modal-overlay"></div>
+
+  <!-- ======================= Modale wizard ======================= -->
+  <div class="modal-viewport">
+    <div class="modal-card wizard-modal" role="dialog" aria-modal="true" aria-labelledby="wizTitle">
+
+      <!-- Header canonico -->
+      <header class="modal-header">
+        <div class="modal-header-id">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><path d="M21 13V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8"/><path d="M3 10h18"/><path d="M16 19h6"/><path d="M19 16v6"/></svg>
+          </div>
+          <div>
+            <h2 class="modal-title" id="wizTitle">Nuova <span class="accent">Stagione</span></h2>
+            <p class="modal-subtitle">Passaggio di stagione · 1&deg; luglio</p>
+          </div>
+        </div>
+        <button type="button" class="close-btn" aria-label="Chiudi" title="Chiudi — nessun dato parziale viene salvato">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </header>
+
+      <!-- Stepper -->
+      <nav class="stepper" id="stepper" aria-label="Avanzamento wizard">
+        <button type="button" class="step" data-step="1">
+          <span class="step-dot">01</span>
+          <span class="step-name"><b>Dati stagione</b><span>Nome e date</span></span>
+        </button>
+        <span class="step-line" data-line="1"></span>
+        <button type="button" class="step" data-step="2">
+          <span class="step-dot">02</span>
+          <span class="step-name"><b>Atleti</b><span>Chi importare</span></span>
+        </button>
+        <span class="step-line" data-line="2"></span>
+        <button type="button" class="step" data-step="3">
+          <span class="step-dot">03</span>
+          <span class="step-name"><b>Destinazione leve</b><span>Scatto di leva</span></span>
+        </button>
+        <span class="step-line" data-line="3"></span>
+        <button type="button" class="step" data-step="4">
+          <span class="step-dot">04</span>
+          <span class="step-name"><b>Conferma</b><span>Riepilogo</span></span>
+        </button>
+      </nav>
+
+      <!-- Corpo -->
+      <div class="wizard-body no-scrollbar" id="wizardBody">
+
+        <!-- ============ STEP 1 · Dati stagione ============ -->
+        <section class="step-panel" data-panel="1" aria-label="Dati stagione">
+          <div class="panel-intro">
+            <h3>Dati della <span class="accent">nuova stagione</span></h3>
+            <p>Nome e date sono precompilati secondo il calendario sportivo (1&deg; luglio &rarr; 30 giugno). Puoi modificarli prima di procedere.</p>
+          </div>
+
+          <div class="fields">
+            <div class="field full" id="fieldName">
+              <label class="field-label" for="seasonName">Nome stagione</label>
+              <div class="field-shell">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="4" x2="8" y2="4"/><line x1="16" y1="4" x2="20" y2="4"/><path d="M12 16v2"/><path d="M8 22h8"/><path d="M10 18h4a1 1 0 0 1 1 1v3H9v-3a1 1 0 0 1 1-1z"/></svg>
+                <input class="field-input" type="text" id="seasonName" value="2026/2027" autocomplete="off">
+              </div>
+              <span class="field-error">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Esiste gi&agrave; una stagione con questo nome
+              </span>
+              <span class="field-hint">Suggerito in base alla stagione corrente 2025/2026 &middot; prova a digitare &laquo;2025/2026&raquo; per vedere la validazione</span>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="dateStart">Data inizio</label>
+              <div class="field-shell">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <input class="field-input" type="text" id="dateStart" value="01/07/2026" autocomplete="off">
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="dateEnd">Data fine</label>
+              <div class="field-shell">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+                <input class="field-input" type="text" id="dateEnd" value="30/06/2027" autocomplete="off">
+              </div>
+            </div>
+          </div>
+
+          <div class="callout safe">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <div>
+              <h4>Nessuna scrittura fino alla conferma</h4>
+              <p>Il wizard non crea nulla finch&eacute; non confermi allo step 4. Se lo chiudi a met&agrave;, la stagione 2025/2026 resta intatta e non rimangono dati parziali.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ STEP 2 · Selezione atleti ============ -->
+        <section class="step-panel" data-panel="2" aria-label="Selezione atleti">
+          <div class="panel-intro">
+            <h3>Quali <span class="accent">atleti</span> importare</h3>
+            <p>Gli atleti della stagione 2025/2026 sono raggruppati per leva di provenienza. Deseleziona chi non prosegue: nulla viene toccato nella stagione corrente.</p>
+          </div>
+
+          <div class="totals-bar">
+            <span class="eyebrow">Atleti selezionati per l'import</span>
+            <span class="totals-count" id="totalsCount">0 / 0</span>
+          </div>
+
+          <div id="groupsWrap" style="display:flex; flex-direction:column; gap:1rem;"></div>
+        </section>
+
+        <!-- ============ STEP 3 · Destinazione leve ============ -->
+        <section class="step-panel" data-panel="3" aria-label="Destinazione leve">
+          <div class="panel-intro">
+            <h3>Scatto di <span class="accent">leva</span></h3>
+            <p>Per ogni gruppo il sistema propone la leva 2026/2027 calcolata dall'anno di nascita (categorie FIGC). Puoi cambiare destinazione o creare una nuova leva digitandone il nome.</p>
+          </div>
+
+          <div id="mapsWrap" style="display:flex; flex-direction:column; gap:1rem;"></div>
+        </section>
+
+        <!-- ============ STEP 4 · Riepilogo e conferma ============ -->
+        <section class="step-panel" data-panel="4" aria-label="Riepilogo e conferma">
+          <div class="panel-intro">
+            <h3>Riepilogo <span class="accent" id="summarySeasonName">2026/2027</span></h3>
+            <p>Controlla la composizione della nuova stagione. Alla conferma la stagione verr&agrave; creata in un'unica operazione.</p>
+          </div>
+
+          <div class="summary-rows" id="summaryRows"></div>
+
+          <div class="summary-total">
+            <b>Totale atleti importati</b>
+            <span id="summaryTotal">0</span>
+          </div>
+
+          <div class="callout warn">
+            <div class="icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
+            </div>
+            <div>
+              <h4>La stagione 2025/2026 verr&agrave; storicizzata</h4>
+              <p>La nuova stagione diventer&agrave; quella attiva. La 2025/2026 rester&agrave; consultabile in sola lettura dal selettore stagione nell'header.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Vista successo (post conferma) -->
+      <div class="success-view" id="successView">
+        <div class="success-ring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <h3>Stagione <span class="accent" id="successSeasonName">2026/2027</span> creata</h3>
+        <p id="successDetail">24 atleti importati in 4 leve. La stagione 2025/2026 &egrave; stata storicizzata ed &egrave; consultabile dal selettore stagione.</p>
+        <span class="chip">la nuova stagione &egrave; ora quella attiva</span>
+      </div>
+
+      <!-- Footer navigazione -->
+      <footer class="wizard-footer" id="wizardFooter">
+        <button type="button" class="btn btn-ghost hidden" id="btnBack">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          Indietro
+        </button>
+        <span class="footer-status" id="footerStatus">Passo 1 di 4</span>
+        <button type="button" class="btn btn-primary" id="btnNext">
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="btnNextLabel">Avanti</span>
+          <svg class="btn-icon" id="btnNextIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </footer>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   Dati di esempio — stagione corrente 2025/2026
+   Scatto di leva calcolato per la stagione 2026/2027 (FIGC):
+   Pulcini 9-10 · Esordienti 11-12 · Giovanissimi 13-14 · Allievi 15-16
+   ============================================================ */
+const EXISTING_SEASONS = ['2025/2026', '2024/2025'];
+const EXISTING_LEVE = ['Piccoli Amici 2019', 'Primi Calci 2018', 'Pulcini 2016', 'Pulcini 2015', 'Esordienti 2013', 'Giovanissimi 2011'];
+
+const GROUPS = [
+  {
+    id: 'g1', name: 'Pulcini 2016', suggested: 'Pulcini 2016', suggestedNew: false,
+    note: 'nati 2016 · 10 anni al 1/7/2026 · restano Pulcini',
+    athletes: [
+      ['Lorenzo Parodi', 2016], ['Matteo Canepa', 2016], ['Alessandro Bruzzone', 2016],
+      ['Gabriele Rossi', 2016], ['Tommaso Oliveri', 2016], ['Federico Sciutto', 2016]
+    ]
+  },
+  {
+    id: 'g2', name: 'Pulcini 2015', suggested: 'Esordienti 2015', suggestedNew: true,
+    note: 'nati 2015 · 11 anni al 1/7/2026 · scatto a Esordienti',
+    athletes: [
+      ['Davide Costa', 2015], ['Riccardo Ferrando', 2015], ['Pietro Traverso', 2015],
+      ['Samuele Bianchi', 2015], ['Edoardo Molinari', 2015], ['Giulio Cambiaso', 2015],
+      ['Nicolò Barabino', 2015]
+    ]
+  },
+  {
+    id: 'g3', name: 'Esordienti 2013', suggested: 'Giovanissimi 2013', suggestedNew: true,
+    note: 'nati 2013 · 13 anni al 1/7/2026 · scatto a Giovanissimi',
+    athletes: [
+      ['Andrea Repetto', 2013], ['Filippo Grondona', 2013], ['Luca Pittaluga', 2013],
+      ['Marco Dagnino', 2013], ['Simone Carbone', 2013], ['Jacopo Firpo', 2013]
+    ]
+  },
+  {
+    id: 'g4', name: 'Giovanissimi 2011', suggested: 'Allievi 2011', suggestedNew: true,
+    note: 'nati 2011 · 15 anni al 1/7/2026 · scatto ad Allievi',
+    athletes: [
+      ['Christian Musso', 2011], ['Fabio Ratto', 2011], ['Stefano Ghiglione', 2011],
+      ['Emanuele Priano', 2011], ['Diego Balbi', null]   /* senza data di nascita */
+    ]
+  }
+];
+
+/* ---------------- Stato ---------------- */
+let currentStep = 1;
+let maxVisited = 1;
+const selected = new Set();          // 'gid:idx'
+const dest = {};                     // gid -> { label, isNew }        (atleti con DOB)
+const destVerify = {};               // gid -> { label, isNew }        (atleti senza DOB)
+let customLeve = [];                 // nuove leve create dall'utente
+
+GROUPS.forEach(g => {
+  g.athletes.forEach((_, i) => selected.add(g.id + ':' + i));
+  dest[g.id] = { label: g.suggested, isNew: g.suggestedNew };
+  if (g.athletes.some(a => a[1] === null)) destVerify[g.id] = { label: g.name, isNew: false };
+});
+
+/* ---------------- Helpers ---------------- */
+const $ = s => document.querySelector(s);
+const svgCheck = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+const selCount = g => g.athletes.filter((_, i) => selected.has(g.id + ':' + i)).length;
+const selWithDob = g => g.athletes.filter((a, i) => selected.has(g.id + ':' + i) && a[1] !== null);
+const selNoDob  = g => g.athletes.filter((a, i) => selected.has(g.id + ':' + i) && a[1] === null);
+const totalSelected = () => GROUPS.reduce((n, g) => n + selCount(g), 0);
+const totalAthletes = () => GROUPS.reduce((n, g) => n + g.athletes.length, 0);
+const seasonName = () => ($('#seasonName').value.trim() || '2026/2027');
+const isNewLabel = label => customLeve.includes(label) || GROUPS.some(g => g.suggestedNew && g.suggested === label);
+
+/* ---------------- Step 2 · render gruppi ---------------- */
+function renderGroups() {
+  const wrap = $('#groupsWrap');
+  wrap.innerHTML = '';
+  GROUPS.forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'group-card';
+    card.innerHTML =
+      '<div class="group-head">' +
+        '<div class="group-title"><h4>' + g.name + '</h4>' +
+        '<span class="count-chip" data-count="' + g.id + '"></span></div>' +
+        '<button type="button" class="select-all" data-selall="' + g.id + '"></button>' +
+      '</div><div class="ath-grid"></div>';
+    const grid = card.querySelector('.ath-grid');
+    g.athletes.forEach((a, i) => {
+      const key = g.id + ':' + i;
+      const label = document.createElement('label');
+      label.className = 'ath';
+      label.innerHTML =
+        '<input type="checkbox"' + (selected.has(key) ? ' checked' : '') + '>' +
+        '<span class="box">' + svgCheck + '</span>' +
+        '<span class="ath-name">' + a[0] + '</span>' +
+        '<span class="ath-year' + (a[1] === null ? ' nodob' : '') + '">' + (a[1] === null ? 'n.d.' : a[1]) + '</span>';
+      label.querySelector('input').addEventListener('change', e => {
+        e.target.checked ? selected.add(key) : selected.delete(key);
+        refreshCounters();
+      });
+      grid.appendChild(label);
+    });
+    card.querySelector('[data-selall]').addEventListener('click', () => {
+      const all = selCount(g) === g.athletes.length;
+      g.athletes.forEach((_, i) => { all ? selected.delete(g.id + ':' + i) : selected.add(g.id + ':' + i); });
+      card.querySelectorAll('.ath input').forEach(inp => inp.checked = !all);
+      refreshCounters();
+    });
+    wrap.appendChild(card);
+  });
+  refreshCounters();
+}
+
+function refreshCounters() {
+  GROUPS.forEach(g => {
+    const c = document.querySelector('[data-count="' + g.id + '"]');
+    const b = document.querySelector('[data-selall="' + g.id + '"]');
+    if (c) c.textContent = selCount(g) + ' / ' + g.athletes.length;
+    if (b) b.textContent = (selCount(g) === g.athletes.length ? 'Deseleziona tutti' : 'Seleziona tutti');
+  });
+  $('#totalsCount').textContent = totalSelected() + ' / ' + totalAthletes();
+  updateFooter();
+}
+
+/* ---------------- Step 3 · render destinazioni ---------------- */
+function destOptions(current) {
+  const news = [...new Set([...GROUPS.filter(g => g.suggestedNew).map(g => g.suggested), ...customLeve])];
+  let html = '<optgroup label="Leve esistenti">';
+  EXISTING_LEVE.forEach(l => { html += '<option value="' + l + '"' + (l === current ? ' selected' : '') + '>' + l + '</option>'; });
+  html += '</optgroup><optgroup label="Nuove leve 2026/2027">';
+  news.forEach(l => { html += '<option value="' + l + '"' + (l === current ? ' selected' : '') + '>' + l + ' ✦</option>'; });
+  html += '</optgroup><option value="__new__">+ Crea nuova leva…</option>';
+  return html;
+}
+
+function destRow(store, gid, suggestedLabel) {
+  const box = document.createElement('div');
+  box.className = 'map-dest';
+
+  function paint() {
+    const d = store[gid];
+    box.innerHTML =
+      '<div class="dest-row">' +
+        '<div class="dest-select-shell"><select class="dest-select">' + destOptions(d.label) + '</select></div>' +
+      '</div>' +
+      '<div class="dest-meta">' +
+        (suggestedLabel ? '<span class="hint-suggested"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2"/><path d="m5.6 5.6 1.4 1.4"/><path d="M3 12h2"/><path d="M19 12h2"/><path d="m17 7 1.4-1.4"/><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 7a5 5 0 0 1 3.5 8.5c-.6.6-1 1.4-1.2 2.5h-4.6c-.2-1.1-.6-1.9-1.2-2.5A5 5 0 0 1 12 7z"/></svg>Suggerita: ' + suggestedLabel + '</span>' : '') +
+        (d.isNew ? '<span class="badge-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1z"/></svg>Nuova leva</span>' : '') +
+      '</div>';
+    box.querySelector('select').addEventListener('change', e => {
+      if (e.target.value === '__new__') { paintNewInput(); return; }
+      store[gid] = { label: e.target.value, isNew: isNewLabel(e.target.value) };
+      paint();
+    });
+  }
+
+  function paintNewInput() {
+    box.innerHTML =
+      '<div class="dest-row">' +
+        '<input class="dest-input" type="text" placeholder="Nome nuova leva… es. Juniores 2008" autofocus>' +
+        '<button type="button" class="dest-cancel" title="Annulla"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>' +
+      '</div>' +
+      '<div class="dest-meta"><span class="hint-suggested">Invio per confermare</span></div>';
+    const inp = box.querySelector('input');
+    inp.focus();
+    function commit() {
+      const v = inp.value.trim();
+      if (v) {
+        if (!customLeve.includes(v) && !EXISTING_LEVE.includes(v)) customLeve.push(v);
+        store[gid] = { label: v, isNew: !EXISTING_LEVE.includes(v) };
+      }
+      paint();
+    }
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') paint(); });
+    inp.addEventListener('blur', () => { if (inp.value.trim()) commit(); });
+    box.querySelector('.dest-cancel').addEventListener('click', paint);
+  }
+
+  paint();
+  return box;
+}
+
+function renderMaps() {
+  const wrap = $('#mapsWrap');
+  wrap.innerHTML = '';
+  const arrow = '<span class="map-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>';
+
+  GROUPS.forEach(g => {
+    const withDob = selWithDob(g);
+    if (!withDob.length) return;
+    const card = document.createElement('div');
+    card.className = 'map-card';
+    card.innerHTML =
+      '<div class="map-src"><h4>' + g.name + '</h4>' +
+      '<span>' + withDob.length + ' atlet' + (withDob.length === 1 ? 'a' : 'i') + ' selezionat' + (withDob.length === 1 ? 'o' : 'i') + '</span>' +
+      '<span class="names">' + g.note + '</span></div>' + arrow;
+    card.appendChild(destRow(dest, g.id, g.suggested));
+    wrap.appendChild(card);
+  });
+
+  /* Atleti senza data di nascita: default leva di provenienza, da verificare */
+  GROUPS.forEach(g => {
+    const noDob = selNoDob(g);
+    if (!noDob.length) return;
+    const card = document.createElement('div');
+    card.className = 'map-card verify';
+    card.innerHTML =
+      '<div class="map-src"><h4>' + noDob.map(a => a[0]).join(', ') + '</h4>' +
+      '<span style="display:inline-flex; gap:.5rem; align-items:center;">Da ' + g.name +
+      ' <span class="badge-verify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Da verificare</span></span>' +
+      '<span class="names">Senza data di nascita: impossibile calcolare lo scatto. Default: leva di provenienza.</span></div>' + arrow;
+    card.appendChild(destRow(destVerify, g.id, null));
+    wrap.appendChild(card);
+  });
+}
+
+/* ---------------- Step 4 · riepilogo ---------------- */
+function renderSummary() {
+  const agg = new Map();   // label -> { count, isNew, verify }
+  GROUPS.forEach(g => {
+    const withDob = selWithDob(g);
+    if (withDob.length) {
+      const d = dest[g.id];
+      const cur = agg.get(d.label) || { count: 0, isNew: d.isNew, verify: 0 };
+      cur.count += withDob.length; cur.isNew = cur.isNew || d.isNew;
+      agg.set(d.label, cur);
+    }
+    const noDob = selNoDob(g);
+    if (noDob.length) {
+      const d = destVerify[g.id];
+      const cur = agg.get(d.label) || { count: 0, isNew: d.isNew, verify: 0 };
+      cur.count += noDob.length; cur.verify += noDob.length; cur.isNew = cur.isNew || d.isNew;
+      agg.set(d.label, cur);
+    }
+  });
+
+  const rows = $('#summaryRows');
+  rows.innerHTML = '';
+  const shirt = '<span class="icon-mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span>';
+  [...agg.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([label, v]) => {
+    const row = document.createElement('div');
+    row.className = 'summary-row';
+    row.innerHTML = shirt +
+      '<span class="summary-leva">' + label +
+      (v.isNew ? '<span class="badge-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1z"/></svg>Nuova</span>' : '') +
+      (v.verify ? '<span class="badge-verify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>' + v.verify + ' da verificare</span>' : '') +
+      '</span>' +
+      '<span class="summary-count">' + v.count + ' atlet' + (v.count === 1 ? 'a' : 'i') + '</span>';
+    rows.appendChild(row);
+  });
+
+  $('#summaryTotal').textContent = totalSelected();
+  $('#summarySeasonName').textContent = seasonName();
+  $('#successSeasonName').textContent = seasonName();
+  $('#successDetail').textContent = totalSelected() + ' atleti importati in ' + agg.size +
+    ' leve. La stagione 2025/2026 è stata storicizzata ed è consultabile dal selettore stagione.';
+}
+
+/* ---------------- Validazione step 1 ---------------- */
+function validateName(live) {
+  const field = $('#fieldName');
+  const dup = EXISTING_SEASONS.includes($('#seasonName').value.trim());
+  const empty = !$('#seasonName').value.trim();
+  field.classList.toggle('invalid', dup || (!live && empty));
+  return !dup && !empty;
+}
+$('#seasonName').addEventListener('input', () => { validateName(true); updateFooter(); });
+
+/* ---------------- Navigazione ---------------- */
+function goTo(step) {
+  currentStep = step;
+  maxVisited = Math.max(maxVisited, step);
+  if (step === 3) renderMaps();
+  if (step === 4) renderSummary();
+
+  document.querySelectorAll('.step-panel').forEach(p =>
+    p.classList.toggle('active', +p.dataset.panel === step));
+
+  document.querySelectorAll('.step').forEach(el => {
+    const n = +el.dataset.step;
+    el.classList.toggle('active', n === step);
+    el.classList.toggle('done', n < step);
+    el.classList.toggle('reachable', n < step);
+    el.querySelector('.step-dot').innerHTML = n < step ? svgCheck : ('0' + n);
+  });
+  document.querySelectorAll('.step-line').forEach(el =>
+    el.classList.toggle('done', +el.dataset.line < step));
+
+  $('#wizardBody').scrollTop = 0;
+  updateFooter();
+}
+
+function updateFooter() {
+  $('#btnBack').classList.toggle('hidden', currentStep === 1);
+  const labels = { 1: 'Avanti', 2: 'Avanti', 3: 'Avanti', 4: 'Crea Stagione ' + seasonName() };
+  $('#btnNextLabel').textContent = labels[currentStep];
+  $('#btnNextIcon').innerHTML = currentStep === 4
+    ? '<path d="M20 6 9 17l-5-5"/>'
+    : '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>';
+
+  const n = totalSelected();
+  const statuses = {
+    1: 'Passo 1 di 4 · dati stagione',
+    2: 'Passo 2 di 4 · ' + n + ' atleti selezionati',
+    3: 'Passo 3 di 4 · destinazione leve',
+    4: 'Passo 4 di 4 · nessuna scrittura prima della conferma'
+  };
+  $('#footerStatus').textContent = statuses[currentStep];
+  $('#btnNext').disabled = (currentStep === 2 && n === 0);
+}
+
+$('#btnBack').addEventListener('click', () => { if (currentStep > 1) goTo(currentStep - 1); });
+
+$('#btnNext').addEventListener('click', () => {
+  if (currentStep === 1 && !validateName(false)) return;
+  if (currentStep === 2 && totalSelected() === 0) return;
+  if (currentStep < 4) { goTo(currentStep + 1); return; }
+
+  /* Conferma finale: stato di caricamento, poi successo */
+  const btn = $('#btnNext');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  $('#btnNextLabel').textContent = 'Creazione in corso…';
+  $('#footerStatus').textContent = 'Storicizzazione 2025/2026 e creazione ' + seasonName() + '…';
+  setTimeout(() => {
+    $('#stepper').style.display = 'none';
+    $('#wizardBody').style.display = 'none';
+    $('#wizardFooter').style.display = 'none';
+    $('#successView').classList.add('active');
+  }, 1800);
+});
+
+document.querySelectorAll('.step').forEach(el => {
+  el.addEventListener('click', () => {
+    const n = +el.dataset.step;
+    if (n < currentStep) goTo(n);   // indietro sempre consentito dai passi completati
+  });
+});
+
+/* ---------------- Init ---------------- */
+renderGroups();
+goTo(1);
+</script>
+
+</body>
+</html>

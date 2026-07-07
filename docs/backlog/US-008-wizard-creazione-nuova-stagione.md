@@ -11,12 +11,12 @@ così che il passaggio di stagione (1° luglio) avvenga in modo controllato e la
 After implementing this story, the user can: completare il wizard e ritrovarsi con una nuova stagione attiva, gli atleti importati nella leva corretta e la stagione precedente consultabile dallo storico.
 
 **Acceptance Criteria**
-- [ ] Il wizard consente di selezionare quanti e quali giocatori importare e da quale leva
-- [ ] Il sistema suggerisce automaticamente la leva di destinazione degli atleti in base all'anno di nascita (scatto di leva)
-- [ ] È possibile creare nuove leve contestualmente alla nuova stagione
-- [ ] La stagione precedente viene storicizzata e resta consultabile dal selettore stagione (dipende da US-007)
-- [ ] Un wizard abbandonato a metà non lascia dati parziali nella nuova stagione
+- [x] Il wizard consente di selezionare quanti e quali giocatori importare e da quale leva
+- [x] Il sistema suggerisce automaticamente la leva di destinazione degli atleti in base all'anno di nascita (scatto di leva)
+- [x] È possibile creare nuove leve contestualmente alla nuova stagione
+- [x] La stagione precedente viene storicizzata e resta consultabile dal selettore stagione (dipende da US-007)
+- [x] Un wizard abbandonato a metà non lascia dati parziali nella nuova stagione
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE
+**Plan:** [US-008-plan.md](../planning/US-008-plan.md)
 

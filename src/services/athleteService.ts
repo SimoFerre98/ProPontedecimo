@@ -98,10 +98,16 @@ export const athleteService = {
     return { data: data as Player[], count: count || 0 }
   },
 
-  async getUniqueSectors() {
-    const { data, error } = await supabase
+  async getUniqueSectors(seasonId?: string) {
+    let query = supabase
       .from('players')
       .select('team_sector')
+
+    if (seasonId) {
+      query = query.eq('season_id', seasonId)
+    }
+
+    const { data, error } = await query
 
     if (error) throw error
     const sectors = Array.from(new Set(data.map(p => p.team_sector).filter(Boolean))) as string[]
