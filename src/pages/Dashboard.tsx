@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { useAppStore } from '@/store/useAppStore'
 import { motion } from 'framer-motion'
 import {
@@ -72,12 +72,6 @@ function StatCard({ title, value, subtitle, icon, color, loading }: Readonly<Sta
   )
 }
 
-// Query keys
-const QK = {
-  stats: ['dashboard', 'stats'],
-  expiringMedical: ['dashboard', 'expiring-medical'],
-  unpaidPayments: ['dashboard', 'unpaid-payments'],
-}
 
 export default function Dashboard() {
   const { profile } = useAuth()
@@ -85,10 +79,6 @@ export default function Dashboard() {
   
   const selectedSeason = seasons.find(s => s.id === selectedSeasonId)
   const seasonName = selectedSeason?.name || 'Stagione Corrente'
-
-  const today = new Date().toISOString().split('T')[0]
-  const in30Days = new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]
-  const in7Days = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]
 
   // Recupero unificato delle statistiche tramite RPC
   const { data: statsData, isLoading: isLoadingStats } = useQuery({

@@ -17,6 +17,6 @@ After implementing this story, the user can: completare il wizard e ritrovarsi c
 - [ ] La stagione precedente viene storicizzata e resta consultabile dal selettore stagione (dipende da US-007)
 - [ ] Un wizard abbandonato a metà non lascia dati parziali nella nuova stagione
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [US-008-plan.md](../planning/US-008-plan.md)
 

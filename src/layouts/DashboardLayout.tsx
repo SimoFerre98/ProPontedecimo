@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useClickOutside } from '@/hooks/useClickOutside'
 import { useQuery } from '@tanstack/react-query'
@@ -28,7 +28,8 @@ import {
   Info,
   Bell,
   ChevronDown,
-  Calendar
+  Calendar,
+  Plus
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/hooks/useTheme'
@@ -37,6 +38,7 @@ import ProfileModal from '@/components/modals/ProfileModal'
 import SettingsModal from '@/components/modals/SettingsModal'
 import SendEmailModal from '@/components/modals/SendEmailModal'
 import CalendarModal from '@/components/modals/CalendarModal'
+import NewSeasonWizardModal from '@/components/modals/NewSeasonWizardModal'
 
 const NAV_ITEMS = [
   { to: '/',          icon: LayoutDashboard, label: 'Dashboard',      exact: true },
@@ -78,8 +80,9 @@ export default function DashboardLayout() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [isSeasonDropdownOpen, setIsSeasonDropdownOpen] = useState(false)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
+  const [isNewSeasonWizardOpen, setIsNewSeasonWizardOpen] = useState(false)
 
-  const { seasons, selectedSeasonId, activeSeasonId, setSeasons, setSelectedSeasonId } = useAppStore()
+  const { seasons, selectedSeasonId, setSeasons, setSelectedSeasonId } = useAppStore()
 
   // Caricamento stagioni
   const { data: fetchedSeasons } = useQuery({
@@ -139,42 +142,71 @@ export default function DashboardLayout() {
           {/* Season Selector */}
           <div className="relative hidden sm:block" ref={seasonRef}>
             <button
-              onClick={() => { if (hasMultipleSeasons) { setIsSeasonDropdownOpen(!isSeasonDropdownOpen); setIsNotificationsOpen(false); setIsProfileMenuOpen(false) } }}
-              className={cn("flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium transition-all outline-none", hasMultipleSeasons ? "hover:border-primary/40 hover:bg-primary/5" : "opacity-80 cursor-default")}
+              onClick={() => {
+                const canManageSeasons = role === 'president' || role === 'director'
+                const isSeasonDropdownEnabled = hasMultipleSeasons || canManageSeasons
+                if (isSeasonDropdownEnabled) {
+                  setIsSeasonDropdownOpen(!isSeasonDropdownOpen)
+                  setIsNotificationsOpen(false)
+                  setIsProfileMenuOpen(false)
+                }
+              }}
+              className={cn(
+                "flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium transition-all outline-none",
+                (hasMultipleSeasons || role === 'president' || role === 'director')
+                  ? "hover:border-primary/40 hover:bg-primary/5 cursor-pointer"
+                  : "opacity-80 cursor-default"
+              )}
             >
               <Calendar className="w-3 h-3 text-muted-foreground" />
               <span className="text-muted-foreground">Stagione</span>
               <span className="text-primary font-bold">{selectedSeason?.name || 'Caricamento...'}</span>
-              {hasMultipleSeasons && <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />}
+              {(hasMultipleSeasons || role === 'president' || role === 'director') && (
+                <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />
+              )}
             </button>
             <AnimatePresence>
-              {isSeasonDropdownOpen && hasMultipleSeasons && (
+              {isSeasonDropdownOpen && (hasMultipleSeasons || role === 'president' || role === 'director') && (
                 <motion.div
                   initial={{ opacity: 0, y: -8, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                  className="absolute top-full left-0 mt-2 w-44 bg-background/95 backdrop-blur-3xl p-2 rounded-2xl shadow-[0_16px_40px_-8px_rgba(0,0,0,0.4)] border border-black/10 dark:border-white/20 z-50 flex flex-col gap-1"
+                  className="absolute top-full left-0 mt-2 w-48 bg-background/95 backdrop-blur-3xl p-2 rounded-2xl shadow-[0_16px_40px_-8px_rgba(0,0,0,0.4)] border border-black/10 dark:border-white/20 z-50 flex flex-col gap-1"
                 >
-                  {seasons.map(season => (
-                    <button
-                        key={season.id}
-                        onClick={() => { setSelectedSeasonId(season.id); setIsSeasonDropdownOpen(false) }}
-                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                          selectedSeasonId === season.id
-                            ? 'bg-primary text-white'
-                            : 'text-foreground/70 hover:bg-primary/10 hover:text-primary'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span>{season.name}</span>
-                          {season.is_active && <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[9px] uppercase tracking-wider font-black">Attiva</span>}
-                        </div>
-                        {selectedSeasonId === season.id && <span className="text-[10px] opacity-70">✓</span>}
-                      </button>
-                  ))}
-                  <div className="mt-1 pt-2 border-t border-black/5 dark:border-white/10 px-3 pb-1">
-                    <p className="text-[10px] text-muted-foreground font-medium">Funzionalità in arrivo</p>
+                  <div className="flex flex-col gap-1 max-h-48 overflow-y-auto no-scrollbar shrink-0">
+                    {seasons.map(season => (
+                      <button
+                          key={season.id}
+                          onClick={() => { setSelectedSeasonId(season.id); setIsSeasonDropdownOpen(false) }}
+                          className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 ${
+                            selectedSeasonId === season.id
+                              ? 'bg-primary text-white'
+                              : 'text-foreground/70 hover:bg-primary/10 hover:text-primary'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span>{season.name}</span>
+                            {season.is_active && <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[9px] uppercase tracking-wider font-black">Attiva</span>}
+                          </div>
+                          {selectedSeasonId === season.id && <span className="text-[10px] opacity-70">✓</span>}
+                        </button>
+                    ))}
                   </div>
+                  {(role === 'president' || role === 'director') && (
+                    <>
+                      <div className="h-[1px] bg-black/5 dark:bg-white/10 my-1 shrink-0" />
+                      <button
+                        onClick={() => {
+                          setIsNewSeasonWizardOpen(true)
+                          setIsSeasonDropdownOpen(false)
+                        }}
+                        className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs font-bold text-primary hover:bg-primary/10 transition-all text-left shrink-0 cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Nuova stagione</span>
+                      </button>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -468,6 +500,7 @@ export default function DashboardLayout() {
       <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
       <SendEmailModal isOpen={isEmailModalOpen} onClose={() => setIsEmailModalOpen(false)} />
       <CalendarModal isOpen={isCalendarModalOpen} onClose={() => setIsCalendarModalOpen(false)} />
+      <NewSeasonWizardModal isOpen={isNewSeasonWizardOpen} onClose={() => setIsNewSeasonWizardOpen(false)} />
     </div>
   )
 }
