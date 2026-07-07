@@ -16,6 +16,7 @@ After implementing this story, the user can: tentare di salvare un atleta senza 
 - [ ] Il codice fiscale è validato nel formato
 - [ ] Un atleta esistente con dati incompleti può essere aperto in modifica, ma non salvato finché i campi obbligatori non sono completati
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [US-009-plan.md](../planning/US-009-plan.md)
+
 
