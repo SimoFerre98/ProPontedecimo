@@ -1,37 +1,32 @@
 // Script di test per verificare il funzionamento del trigger validate_player_fields
 // Esecuzione: node scripts/test-validation-trigger.mjs
-// Richiede nel file .env: VITE_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+// Gira SEMPRE contro lo stack Supabase locale (mai contro .env, che può puntare a
+// produzione): usa le stesse credenziali demo pubbliche di `supabase start`.
 
 import { createClient } from '@supabase/supabase-js'
-import { readFileSync } from 'node:fs'
 
-// --- Caricamento delle variabili d'ambiente ---
-const env = {}
-const envUrl = new URL('../.env', import.meta.url)
-for (const line of readFileSync(envUrl, 'utf8').split('\n')) {
-  const m = line.match(/^([A-Z_]+)=(.*)$/)
-  if (m) env[m[1]] = m[2].trim()
-}
-const URL_ = env.VITE_SUPABASE_URL
-const SERVICE = env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!URL_ || !SERVICE) {
-  console.error('Errore: Variabili VITE_SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY non trovate nel file .env')
-  process.exit(1)
-}
+const URL_ = 'http://127.0.0.1:54321'
+const SERVICE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU'
 
 const admin = createClient(URL_, SERVICE, { auth: { persistSession: false } })
 
 async function runTests() {
   console.log('Avvio dei test di integrazione per il trigger di validazione atleti...')
 
-  // Recupera una stagione attiva dal database
-  const { data: seasons, error: es } = await admin.from('seasons').select('id').eq('is_active', true).limit(1)
-  if (es || !seasons?.length) {
-    console.error('Errore: Nessuna stagione attiva trovata per eseguire i test:', es?.message)
-    process.exit(1)
+  // Recupera una stagione attiva dal database, creandone una di test se non ce n'è
+  // nessuna (es. su un DB appena resettato senza seed.sql)
+  const { data: seasons } = await admin.from('seasons').select('id').eq('is_active', true).limit(1)
+  let seasonId = seasons?.[0]?.id
+  if (!seasonId) {
+    const { data: newSeason, error: seErr } = await admin.from('seasons')
+      .insert({ name: 'TEST_VAL_SEASON', start_date: '2026-07-01', end_date: '2027-06-30', is_active: true })
+      .select('id').single()
+    if (seErr) {
+      console.error('Errore creando una stagione di test:', seErr.message)
+      process.exit(1)
+    }
+    seasonId = newSeason.id
   }
-  const seasonId = seasons[0].id
   console.log(`Stagione di test utilizzata (ID): ${seasonId}\n`)
 
   let failures = 0
@@ -170,8 +165,9 @@ async function runTests() {
   // ==========================================
   // PULIZIA DATI
   // ==========================================
-  console.log('\nPulizia degli atleti di test...');
+  console.log('\nPulizia degli atleti/stagioni di test...');
   const { error: errCleanup } = await admin.from('players').delete().like('first_name', 'TEST_VAL_%')
+  await admin.from('seasons').delete().like('name', 'TEST_VAL_%')
   if (errCleanup) {
     console.error('Errore durante la pulizia dei dati di test:', errCleanup.message)
   } else {
