@@ -73,12 +73,12 @@ Per garantire l'integrità strutturale del database senza rompere la consultazio
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Creazione migrazione trigger SQL | Scrivere la migrazione PostgreSQL `validate_player_fields` in `supabase/migrations` con trigger `BEFORE INSERT OR UPDATE` e tutti i controlli strutturali. | Impl | - |
-| TODO | TASK-02 | Script di test integrazione SQL | Creare ed eseguire uno script `scratch/test_validation_trigger.sql` per convalidare il trigger contro le regole aziendali. | Test | TASK-01 |
-| TODO | TASK-03 | Logica di validazione frontend | Introdurre lo stato `errors` e le funzioni di validazione (inclusa regex CF) in `AddAthleteModal.tsx`. | Impl | - |
-| TODO | TASK-04 | Feedback visivo sui campi del form | Aggiornare i campi del form per renderizzare bordi rossi e testi d'errore localizzati in base allo stato `errors`. | Impl | TASK-03 |
-| TODO | TASK-05 | Indicatori di errore sui tab del modale | Calcolare se ciascuna sezione ha errori attivi e mostrare un pallino rosso grafico sul rispettivo pulsante del tab. | Impl | TASK-03 |
-| TODO | TASK-06 | Collaudo e2e e regressione | Verificare manualmente il flusso di inserimento, modifica di record parziali e blocco del salvataggio. | Test | TASK-04, TASK-05 |
+| DONE | TASK-01 | Creazione migrazione trigger SQL | Scrivere la migrazione PostgreSQL `validate_player_fields` in `supabase/migrations` con trigger `BEFORE INSERT OR UPDATE` e tutti i controlli strutturali. | Impl | - |
+| DONE | TASK-02 | Script di test integrazione SQL | Creare ed eseguire uno script `scratch/test_validation_trigger.sql` per convalidare il trigger contro le regole aziendali. | Test | TASK-01 |
+| DONE | TASK-03 | Logica di validazione frontend | Introdurre lo stato `errors` e le funzioni di validazione (inclusa regex CF) in `AddAthleteModal.tsx`. | Impl | - |
+| DONE | TASK-04 | Feedback visivo sui campi del form | Aggiornare i campi del form per renderizzare bordi rossi e testi d'errore localizzati in base allo stato `errors`. | Impl | TASK-03 |
+| DONE | TASK-05 | Indicatori di errore sui tab del modale | Calcolare se ciascuna sezione ha errori attivi e mostrare un pallino rosso grafico sul rispettivo pulsante del tab. | Impl | TASK-03 |
+| DONE | TASK-06 | Collaudo e2e e regressione | Verificare manualmente il flusso di inserimento, modifica di record parziali e blocco del salvataggio. | Test | TASK-04, TASK-05 |
 
 ---
 
