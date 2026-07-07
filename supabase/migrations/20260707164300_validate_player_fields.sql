@@ -4,6 +4,43 @@
 CREATE OR REPLACE FUNCTION public.validate_player_fields()
 RETURNS TRIGGER AS $$
 BEGIN
+  -- Bypass ad uso esclusivo di operazioni di sistema che copiano atleti già esistenti
+  -- (es. RPC create_season_from_wizard, US-008): i dati storici sono spesso incompleti
+  -- rispetto ai requisiti introdotti da questa story e non devono bloccare il passaggio
+  -- di stagione. Impostato solo internamente dalla RPC per la durata della transazione.
+  IF current_setting('app.bypass_player_validation', true) = 'true' THEN
+    RETURN NEW;
+  END IF;
+
+  -- Su UPDATE, rivalida solo se uno dei campi vincolati sta effettivamente cambiando.
+  -- Senza questo controllo, qualunque aggiornamento di sistema che tocca colonne non
+  -- vincolate su una riga storica incompleta (es. trg_sync_medical_expiry che aggiorna
+  -- solo medical_expiry dopo una visita medica, o un toggle di is_active/is_registered)
+  -- verrebbe bloccato dall'incompletezza di campi che l'operazione non sta nemmeno
+  -- toccando. Un INSERT (nuova riga o copia da wizard) è sempre validato per intero.
+  IF TG_OP = 'UPDATE' AND
+     NEW.first_name IS NOT DISTINCT FROM OLD.first_name AND
+     NEW.last_name IS NOT DISTINCT FROM OLD.last_name AND
+     NEW.birth_date IS NOT DISTINCT FROM OLD.birth_date AND
+     NEW.birth_place IS NOT DISTINCT FROM OLD.birth_place AND
+     NEW.citizenship IS NOT DISTINCT FROM OLD.citizenship AND
+     NEW.team_sector IS NOT DISTINCT FROM OLD.team_sector AND
+     NEW.address_street IS NOT DISTINCT FROM OLD.address_street AND
+     NEW.address_city IS NOT DISTINCT FROM OLD.address_city AND
+     NEW.address_zip IS NOT DISTINCT FROM OLD.address_zip AND
+     NEW.email IS NOT DISTINCT FROM OLD.email AND
+     NEW.phone_player IS NOT DISTINCT FROM OLD.phone_player AND
+     NEW.phone_home IS NOT DISTINCT FROM OLD.phone_home AND
+     NEW.privacy_accepted IS NOT DISTINCT FROM OLD.privacy_accepted AND
+     NEW.tax_code IS NOT DISTINCT FROM OLD.tax_code AND
+     NEW.parent1_name IS NOT DISTINCT FROM OLD.parent1_name AND
+     NEW.parent1_phone IS NOT DISTINCT FROM OLD.parent1_phone AND
+     NEW.parent2_name IS NOT DISTINCT FROM OLD.parent2_name AND
+     NEW.parent2_phone IS NOT DISTINCT FROM OLD.parent2_phone
+  THEN
+    RETURN NEW;
+  END IF;
+
   -- 1. Validazione anagrafica essenziale (non nulli e non vuoti dopo trim)
   IF NEW.first_name IS NULL OR trim(NEW.first_name) = '' THEN
     RAISE EXCEPTION 'Il nome dell''atleta è obbligatorio.';
@@ -62,8 +99,10 @@ BEGIN
     RAISE EXCEPTION 'Il codice fiscale dell''atleta è obbligatorio.';
   END IF;
 
-  -- Regex standard codice fiscale italiano (16 caratteri alfanumerici specifici)
-  IF NOT NEW.tax_code ~* '^[A-Z]{6}[0-9LMNPQRSTUV]{2}[A-EHLMPR-T][0-9LMNPQRSTUV]{2}[A-MZ][0-9LMNPQRSTUV]{3}[A-Z]$' THEN
+  -- Regex standard codice fiscale italiano (16 caratteri alfanumerici specifici).
+  -- trim() qui perché il frontend valida/mostra il codice fiscale già trimmato,
+  -- ma invia il valore così come digitato (con eventuali spazi accidentali).
+  IF NOT trim(NEW.tax_code) ~* '^[A-Z]{6}[0-9LMNPQRSTUV]{2}[A-EHLMPR-T][0-9LMNPQRSTUV]{2}[A-MZ][0-9LMNPQRSTUV]{3}[A-Z]$' THEN
     RAISE EXCEPTION 'Il formato del codice fiscale dell''atleta non è valido.';
   END IF;
 

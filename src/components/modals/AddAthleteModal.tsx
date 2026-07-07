@@ -74,15 +74,20 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
   const queryClient = useQueryClient()
   const [formData, setFormData] = useState({ ...EMPTY_FORM })
   const [touched, setTouched] = useState<Record<string, boolean>>({})
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
-  // Calcola età per determinare se è minorenne
+  // Calcola età per determinare se è minorenne.
+  // Il campo è una data pura (YYYY-MM-DD): la parsiamo a mano invece di usare `new Date(...)`,
+  // che la interpreterebbe come UTC e potrebbe disallinearsi di un giorno rispetto ai getter
+  // locali su fusi orari con offset negativo rispetto a UTC.
   const isMinor = (() => {
     if (!formData.birth_date) return false
+    const [birthYear, birthMonth, birthDay] = formData.birth_date.split('-').map(Number)
+    if (!birthYear || !birthMonth || !birthDay) return false
     const today = new Date()
-    const birth = new Date(formData.birth_date)
-    let age = today.getFullYear() - birth.getFullYear()
-    const monthDiff = today.getMonth() - birth.getMonth()
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    let age = today.getFullYear() - birthYear
+    const monthDiff = (today.getMonth() + 1) - birthMonth
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDay)) {
       age--
     }
     return age < 18
@@ -92,10 +97,13 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
   const hasPhone = formData.phone_player.trim() !== '' || formData.phone_home.trim() !== ''
 
   // Se minorenne: almeno un genitore con nome e telefono
-  const hasParentData = (
-    (formData.parent1_name.trim() !== '' && formData.parent1_phone.trim() !== '') ||
-    (formData.parent2_name.trim() !== '' && formData.parent2_phone.trim() !== '')
-  )
+  const p1Name = formData.parent1_name.trim()
+  const p1Phone = formData.parent1_phone.trim()
+  const p2Name = formData.parent2_name.trim()
+  const p2Phone = formData.parent2_phone.trim()
+  const p1Complete = p1Name !== '' && p1Phone !== ''
+  const p2Complete = p2Name !== '' && p2Phone !== ''
+  const hasParentData = p1Complete || p2Complete
 
   // Robust, reactive validation function returning errors in Italian
   const errors = (() => {
@@ -166,28 +174,18 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
     }
 
     // Genitori per minorenni
-    if (isMinor) {
-      const p1Name = formData.parent1_name.trim()
-      const p1Phone = formData.parent1_phone.trim()
-      const p2Name = formData.parent2_name.trim()
-      const p2Phone = formData.parent2_phone.trim()
-
-      const p1Complete = p1Name !== '' && p1Phone !== ''
-      const p2Complete = p2Name !== '' && p2Phone !== ''
-
-      if (!p1Complete && !p2Complete) {
-        if (p1Name === '' && p1Phone === '' && p2Name === '' && p2Phone === '') {
-          errs.parent1_name = "Nominativo obbligatorio per atleti minorenni"
-          errs.parent1_phone = "Telefono obbligatorio per atleti minorenni"
-        } else {
-          if (p1Name !== '' || p1Phone !== '') {
-            if (p1Name === '') errs.parent1_name = "Il nome del genitore è obbligatorio"
-            if (p1Phone === '') errs.parent1_phone = "Il telefono del genitore è obbligatorio"
-          }
-          if (p2Name !== '' || p2Phone !== '') {
-            if (p2Name === '') errs.parent2_name = "Il nome del genitore è obbligatorio"
-            if (p2Phone === '') errs.parent2_phone = "Il telefono del genitore è obbligatorio"
-          }
+    if (isMinor && !hasParentData) {
+      if (p1Name === '' && p1Phone === '' && p2Name === '' && p2Phone === '') {
+        errs.parent1_name = "Nominativo obbligatorio per atleti minorenni"
+        errs.parent1_phone = "Telefono obbligatorio per atleti minorenni"
+      } else {
+        if (p1Name !== '' || p1Phone !== '') {
+          if (p1Name === '') errs.parent1_name = "Il nome del genitore è obbligatorio"
+          if (p1Phone === '') errs.parent1_phone = "Il telefono del genitore è obbligatorio"
+        }
+        if (p2Name !== '' || p2Phone !== '') {
+          if (p2Name === '') errs.parent2_name = "Il nome del genitore è obbligatorio"
+          if (p2Phone === '') errs.parent2_phone = "Il telefono del genitore è obbligatorio"
         }
       }
     }
@@ -227,6 +225,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
   useEffect(() => {
     if (isOpen) {
       setActiveSection('anagrafica')
+      setSubmitError(null)
       if (player) {
         setFormData({
           first_name: player.first_name || '',
@@ -275,6 +274,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
+    setSubmitError(null)
     try {
       const payload = {
         ...formData,
@@ -282,11 +282,11 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
         medical_expiry: formData.medical_expiry || null,
         phone_home: formData.phone_home || null,
         phone_player: formData.phone_player || null,
-        email: formData.email || null,
+        email: formData.email.trim() || null,
         team_sector: formData.team_sector || null,
         birth_place: formData.birth_place || null,
         citizenship: formData.citizenship || null,
-        tax_code: formData.tax_code || null,
+        tax_code: formData.tax_code.trim() || null,
         address_street: formData.address_street || null,
         address_locality: formData.address_locality || null,
         address_city: formData.address_city || null,
@@ -312,6 +312,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
       onClose()
     } catch (error) {
       console.error('Error saving athlete:', error)
+      setSubmitError(error instanceof Error ? error.message : 'Si è verificato un errore durante il salvataggio. Riprova.')
     } finally {
       setLoading(false)
     }
@@ -925,6 +926,11 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         ✗ Consenso privacy obbligatorio (sezione Sport &amp; Note)
                       </p>
                     )}
+                  </div>
+                )}
+                {submitError && (
+                  <div className="mb-3 px-4 py-3 rounded-2xl border border-red-500/30 bg-red-500/10 text-center text-xs font-bold text-red-500">
+                    {submitError}
                   </div>
                 )}
                 <div className="flex items-center gap-4">

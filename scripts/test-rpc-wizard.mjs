@@ -96,10 +96,20 @@ async function setup() {
   ctx.sourceSeasonId = season.id
 
   // 4. Create source players
+  // NB: dal introduzione di US-009 (trg_validate_player_fields) un insert diretto sui
+  // giocatori deve soddisfare tutti i campi obbligatori: qui i giocatori sono minorenni,
+  // quindi serve anche almeno un genitore con nome e telefono.
+  const baseFields = {
+    birth_place: 'Genova', citizenship: 'Italiana',
+    address_street: 'Via Test 1', address_city: 'Genova', address_zip: '16100',
+    email: 'test.wizard@example.com', phone_player: '3331112222',
+    privacy_accepted: true,
+    parent1_name: 'Genitore Test', parent1_phone: '3339998888'
+  }
   const { data: players, error: pe } = await admin.from('players').insert([
-    { first_name: 'TEST_WIZARD_A', last_name: 'Player1', team_sector: 'Pulcini 2016', season_id: ctx.sourceSeasonId, birth_date: '2016-05-15', is_active: true, medical_expiry: '2027-01-10', figc_registration: 'FIGC123', is_registered: true },
-    { first_name: 'TEST_WIZARD_B', last_name: 'Player2', team_sector: 'Pulcini 2015', season_id: ctx.sourceSeasonId, birth_date: '2015-08-20', is_active: true, is_registered: false },
-    { first_name: 'TEST_WIZARD_C', last_name: 'Player3', team_sector: 'Pulcini 2015', season_id: ctx.sourceSeasonId, birth_date: null, is_active: true, is_registered: true }
+    { ...baseFields, first_name: 'TEST_WIZARD_A', last_name: 'Player1', team_sector: 'Pulcini 2016', season_id: ctx.sourceSeasonId, birth_date: '2016-05-15', is_active: true, medical_expiry: '2027-01-10', figc_registration: 'FIGC123', is_registered: true, tax_code: 'PLYAAA16E15D969A' },
+    { ...baseFields, first_name: 'TEST_WIZARD_B', last_name: 'Player2', team_sector: 'Pulcini 2015', season_id: ctx.sourceSeasonId, birth_date: '2015-08-20', is_active: true, is_registered: false, tax_code: 'PLYBBB15M20D969B' },
+    { ...baseFields, first_name: 'TEST_WIZARD_C', last_name: 'Player3', team_sector: 'Pulcini 2015', season_id: ctx.sourceSeasonId, birth_date: '2015-01-01', is_active: true, is_registered: true, tax_code: 'PLYCCC15A01D969C' }
   ]).select('id, first_name').order('first_name')
   if (pe) throw new Error(`create players: ${pe.message}`)
   ctx.players = players
@@ -233,12 +243,27 @@ async function runTests() {
     const playerB = newPlayers[1]
     check('Player B - Leva matches target (scatto leva)', playerB.team_sector === 'Esordienti 2015')
 
-    // Player C (no DOB)
+    // Player C
     const playerC = newPlayers[2]
-    check('Player C - Leva matches target (no DOB fallback)', playerC.team_sector === 'Pulcini 2015')
+    check('Player C - Leva matches destination', playerC.team_sector === 'Pulcini 2015')
 
   } catch (err) {
     check('Happy Path - unexpected error', false, err.message)
+  }
+
+  // CASE 5: Bypass di trg_validate_player_fields (US-009) scoped alla sola transazione
+  // della RPC — verifica che dopo la chiamata il bypass non resti attivo per la sessione,
+  // così un insert diretto con dati incompleti continua a essere rifiutato normalmente.
+  try {
+    const { error: errIncomplete } = await admin.from('players').insert({
+      season_id: ctx.sourceSeasonId,
+      first_name: 'TEST_WIZARD_INCOMPLETE',
+      last_name: 'Player'
+      // Manca deliberatamente tutto il resto: deve fallire per trg_validate_player_fields.
+    })
+    check('Bypass scope - direct insert with incomplete data still rejected after RPC call', !!errIncomplete, errIncomplete?.message)
+  } catch (err) {
+    check('Bypass scope - unexpected catch', false, err.message)
   }
 
   // CASE 4: Duplicate Season Name Check
