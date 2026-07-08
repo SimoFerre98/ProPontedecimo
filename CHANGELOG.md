@@ -5,6 +5,10 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-012**: Creato il modulo `src/lib/dateTime.ts` contenente le funzioni pure `combineLocalDateTime` e `splitLocalDateTime` per la gestione corretta dei datetime rispetto alla timezone locale del browser.
+- **US-012**: Integrazione degli helper di datetime in `TaskModal.tsx` e `calendarService.ts` per allineare l'inserimento/visualizzazione dei compiti del calendario ed evitare disallineamenti di fuso orario (offset UTC).
+- **US-012**: Parsing sicuro della data di scadenza delle visite mediche (`medical_expiry`) per scongiurare slittamenti di data dovuti al parsing UTC.
+- **US-012**: Nuovi script di test d'integrazione `test-datetime-helpers.mjs` (verifica round-trip e orari limite) e `test-calendar-timezone.mjs` (round-trip database end-to-end).
 - **US-011**: Nuovo filtro `registrationStatus` a livello di `athleteService.getPlayers` e tipo `FiltersState` in `Athletes.tsx` per filtrare gli atleti con matricola mancante.
 - **US-011**: Nuovo metodo `athleteService.getMissingRegistrationCount` per conteggiare gli atleti attivi senza matricola.
 - **US-011**: Banner condizionale "Matricola Mancante" in `Athletes.tsx` (stile amber, con applicazione del filtro al click).
