@@ -84,7 +84,7 @@
 |---|---|---|---|---|
 | [US-009](backlog/US-009-validazione-campi-obbligatori-atleta.md) | Validazione campi obbligatori atleta | HIGH | 3 | DONE |
 | [US-010](backlog/US-010-gestione-numero-matricola.md) | Gestione numero matricola | MEDIUM | 2 | DONE |
-| [US-011](backlog/US-011-notifica-matricola-mancante.md) | Notifica per matricola mancante | LOW | 2 | TODO |
+| [US-011](backlog/US-011-notifica-matricola-mancante.md) | Notifica per matricola mancante | LOW | 2 | REVIEW |
 
 ### EP-004: Calendario Eventi & Sincronizzazione
 
