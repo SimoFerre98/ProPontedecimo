@@ -49,8 +49,8 @@ Trattandosi di un cambio puramente di presentazione su un dato già validato e p
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Aggiungi colonna "Matricola" alla vista tabella | In `Athletes.tsx`, aggiungere `<th>` "Matricola" e la relativa `<td>` che mostra `player.figc_registration || '-'`, posizionata prima della colonna "Azioni" | Impl | - |
-| TODO | TASK-02 | Aggiungi visualizzazione matricola alla vista card | In `Athletes.tsx`, aggiungere una tile/riga nella card atleta che mostra `player.figc_registration` quando presente, con icona `FileText` coerente con il form | Impl | - |
+| DONE | TASK-01 | Aggiungi colonna "Matricola" alla vista tabella | In `Athletes.tsx`, aggiungere `<th>` "Matricola" e la relativa `<td>` che mostra `player.figc_registration || '-'`, posizionata prima della colonna "Azioni" | Impl | - |
+| DONE | TASK-02 | Aggiungi visualizzazione matricola alla vista card | In `Athletes.tsx`, aggiungere una tile/riga nella card atleta che mostra `player.figc_registration` when present, con icona `FileText` coerente con il form | Impl | - |
 | TODO | TASK-03 | Verifica manuale UI (tabella e card) | Avviare il dev server, verificare con dati reali/di test che la matricola compaia correttamente in entrambe le viste, con e senza valore, e che non ci siano regressioni visive | Test | TASK-01, TASK-02 |
 
 ---
