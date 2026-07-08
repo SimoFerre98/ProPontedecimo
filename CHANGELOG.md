@@ -5,6 +5,11 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-011**: Nuovo filtro `registrationStatus` a livello di `athleteService.getPlayers` e tipo `FiltersState` in `Athletes.tsx` per filtrare gli atleti con matricola mancante.
+- **US-011**: Nuovo metodo `athleteService.getMissingRegistrationCount` per conteggiare gli atleti attivi senza matricola.
+- **US-011**: Banner condizionale "Matricola Mancante" in `Athletes.tsx` (stile amber, con applicazione del filtro al click).
+- **US-011**: Script di test di integrazione `test-registration-missing.mjs` che valida il filtro e il conteggio con ripristino automatico.
+- **US-010**: Visualizzazione del numero di matricola FIGC nella vista tabella e vista card della pagina `Athletes.tsx`.
 - **US-009**: Trigger database PostgreSQL `validate_player_fields` e trigger `trg_validate_player_fields` BEFORE INSERT OR UPDATE per impedire il salvataggio di atleti con dati obbligatori incompleti o formati codice fiscale non validi.
 - **US-009**: Script di test di integrazione del database `test-validation-trigger.mjs` che convalida i vincoli del trigger lato server.
 - **US-009**: Validazione frontend reattiva nel modale `AddAthleteModal.tsx` con stato degli errori reattivo in italiano, validazione codice fiscale conforme al database e blocco del pulsante di salvataggio.

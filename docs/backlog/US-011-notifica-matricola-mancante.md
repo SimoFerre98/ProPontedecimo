@@ -11,10 +11,10 @@ così che nessun nuovo iscritto resti privo di matricola per dimenticanza.
 After implementing this story, the user can: vedere a colpo d'occhio quanti e quali atleti attivi non hanno ancora una matricola assegnata.
 
 **Acceptance Criteria**
-- [ ] Un indicatore visibile (badge o alert) mostra il numero di atleti attivi senza matricola (dipende da US-010)
-- [ ] Dall'indicatore è possibile raggiungere l'elenco degli atleti interessati
-- [ ] L'indicatore scompare quando tutti gli atleti attivi hanno la matricola
+- [x] Un indicatore visibile (badge o alert) mostra il numero di atleti attivi senza matricola (dipende da US-010)
+- [x] Dall'indicatore è possibile raggiungere l'elenco degli atleti interessati
+- [x] L'indicatore scompare quando tutti gli atleti attivi hanno la matricola
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [US-011-plan.md](../planning/US-011-plan.md)
 

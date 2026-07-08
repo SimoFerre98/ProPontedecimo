@@ -49,6 +49,7 @@ export const athleteService = {
       isRegistered?: 'all' | 'yes' | 'no'
       medicalStatus?: 'all' | 'expired' | 'valid' | 'missing'
       privacyStatus?: 'all' | 'accepted' | 'missing'
+      registrationStatus?: 'all' | 'missing'
       sortBy?: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
       sortDir?: 'asc' | 'desc'
     },
@@ -92,6 +93,10 @@ export const athleteService = {
 
     if (filters?.privacyStatus === 'accepted') query = query.eq('privacy_accepted', true)
     if (filters?.privacyStatus === 'missing') query = query.or('privacy_accepted.eq.false,privacy_accepted.is.null')
+
+    if (filters?.registrationStatus === 'missing') {
+      query = query.is('figc_registration', null)
+    }
 
     const { data, error, count } = await query
     if (error) throw error
@@ -173,5 +178,21 @@ export const athleteService = {
 
     if (error) throw error
     return data && data.length > 0
+  },
+
+  async getMissingRegistrationCount(seasonId?: string | null) {
+    let query = supabase
+      .from('players')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', true)
+      .is('figc_registration', null)
+
+    if (seasonId) {
+      query = query.eq('season_id', seasonId)
+    }
+
+    const { count, error } = await query
+    if (error) throw error
+    return count || 0
   }
 }

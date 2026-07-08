@@ -39,6 +39,7 @@ type FiltersState = {
   isRegistered: 'all' | 'yes' | 'no'
   medicalStatus: 'all' | 'expired' | 'valid' | 'missing'
   privacyStatus: 'all' | 'accepted' | 'missing'
+  registrationStatus: 'all' | 'missing'
   sortBy: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
   sortDir: 'asc' | 'desc'
 }
@@ -48,6 +49,7 @@ const DEFAULT_FILTERS: FiltersState = {
   isRegistered: 'all',
   medicalStatus: 'all',
   privacyStatus: 'all',
+  registrationStatus: 'all',
   sortBy: 'last_name',
   sortDir: 'asc',
 }
@@ -58,6 +60,7 @@ function activeFilterCount(f: FiltersState) {
   if (f.isRegistered !== 'all') c++
   if (f.medicalStatus !== 'all') c++
   if (f.privacyStatus !== 'all') c++
+  if (f.registrationStatus !== 'all') c++
   if (f.sortBy !== 'last_name' || f.sortDir !== 'asc') c++
   return c
 }
@@ -97,9 +100,18 @@ export default function Athletes() {
 
   const overdueCount = overduePaymentsCount || 0
 
+  const { data: missingRegistrationCountData } = useQuery({
+    queryKey: ['missingRegistrationCount', selectedSeasonId],
+    queryFn: () => athleteService.getMissingRegistrationCount(selectedSeasonId),
+    enabled: !!selectedSeasonId,
+  })
+
+  const missingRegistrationCount = missingRegistrationCountData || 0
+
   const { data: sectorsData } = useQuery({
-    queryKey: ['sectors'],
-    queryFn: () => athleteService.getUniqueSectors(),
+    queryKey: ['sectors', selectedSeasonId],
+    queryFn: () => athleteService.getUniqueSectors(selectedSeasonId || undefined),
+    enabled: !!selectedSeasonId,
   })
   
   const availableSectors = sectorsData || []
@@ -167,27 +179,70 @@ export default function Athletes() {
         </div>
       </div>
 
-      {/* Banner Pagamenti in Sospeso */}
-      {overdueCount > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          onClick={() => navigate('/pagamenti')}
-          className="cursor-pointer flex items-center gap-4 px-6 py-4 rounded-3xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/15 transition-all group"
-        >
-          <div className="w-10 h-10 pill bg-red-500/20 flex items-center justify-center shrink-0">
-            <AlertCircle className="w-5 h-5 text-red-500" />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest">
-              {overdueCount} {overdueCount === 1 ? 'atleta ha' : 'atleti hanno'} rate non pagate
-            </p>
-            <p className="text-xs text-red-500/70 font-medium mt-0.5">
-              Rata scaduta da oltre 15 giorni — clicca per gestire i pagamenti
-            </p>
-          </div>
-          <ChevronRight className="w-4 h-4 text-red-500/50 transition-transform group-hover:translate-x-1" />
-        </motion.div>
+      {/* Banners */}
+      {(overdueCount > 0 || missingRegistrationCount > 0) && (
+        <div className={cn(
+          "grid grid-cols-1 gap-4",
+          overdueCount > 0 && missingRegistrationCount > 0 && "lg:grid-cols-2"
+        )}>
+          {/* Banner Pagamenti in Sospeso */}
+          {overdueCount > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={() => navigate('/pagamenti')}
+              className="cursor-pointer flex items-center gap-4 px-6 py-4 rounded-3xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/15 transition-all group"
+            >
+              <div className="w-10 h-10 pill bg-red-500/20 flex items-center justify-center shrink-0">
+                <AlertCircle className="w-5 h-5 text-red-500" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-black text-red-600 dark:text-red-400 uppercase tracking-widest">
+                  {overdueCount} {overdueCount === 1 ? 'atleta ha' : 'atleti hanno'} rate non pagate
+                </p>
+                <p className="text-xs text-red-500/70 font-medium mt-0.5">
+                  Rata scaduta da oltre 15 giorni — clicca per gestire i pagamenti
+                </p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-red-500/50 transition-transform group-hover:translate-x-1" />
+            </motion.div>
+          )}
+
+          {/* Banner Matricola FIGC Mancante */}
+          {missingRegistrationCount > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={() => {
+                setFilters({
+                  ...DEFAULT_FILTERS,
+                  isActive: 'active',
+                  registrationStatus: 'missing'
+                })
+                setPendingFilters({
+                  ...DEFAULT_FILTERS,
+                  isActive: 'active',
+                  registrationStatus: 'missing'
+                })
+                setPage(0)
+              }}
+              className="cursor-pointer flex items-center gap-4 px-6 py-4 rounded-3xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/15 transition-all group"
+            >
+              <div className="w-10 h-10 pill bg-amber-500/20 flex items-center justify-center shrink-0">
+                <AlertCircle className="w-5 h-5 text-amber-500" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest">
+                  {missingRegistrationCount} {missingRegistrationCount === 1 ? 'atleta attivo è' : 'atleti attivi sono'} senza matricola
+                </p>
+                <p className="text-xs text-amber-500/70 font-medium mt-0.5">
+                  Nessun nuovo iscritto deve restare privo di matricola — clicca per filtrare la lista
+                </p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-amber-500/50 transition-transform group-hover:translate-x-1" />
+            </motion.div>
+          )}
+        </div>
       )}
 
       {/* Stats */}
@@ -301,7 +356,7 @@ export default function Athletes() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
                 
                 {/* Stato in Rosa */}
                 <div className="space-y-2">
@@ -404,6 +459,30 @@ export default function Athletes() {
                   </div>
                 </div>
 
+                {/* Matricola FIGC */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground pl-1">Matricola FIGC</p>
+                  <div className="flex flex-col gap-1.5">
+                    {([
+                      ['all', 'Tutti'],
+                      ['missing', '❓ Mancante'],
+                    ] as [FiltersState['registrationStatus'], string][]).map(([val, lbl]) => (
+                      <button
+                        key={val}
+                        onClick={() => setPending('registrationStatus', val)}
+                        className={cn(
+                          "px-4 py-2.5 rounded-xl text-xs font-bold text-left transition-all border",
+                          pendingFilters.registrationStatus === val
+                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/40 hover:text-foreground"
+                        )}
+                      >
+                        {lbl}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Ordinamento */}
                 <div className="space-y-2">
                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground pl-1">Ordina Per</p>
@@ -487,6 +566,12 @@ export default function Athletes() {
             <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
               Privacy: {filters.privacyStatus === 'accepted' ? 'Accettata' : 'Mancante'}
               <button onClick={() => { setFilters(f => ({ ...f, privacyStatus: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
+            </span>
+          )}
+          {filters.registrationStatus !== 'all' && (
+            <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
+              Matricola: Mancante
+              <button onClick={() => { setFilters(f => ({ ...f, registrationStatus: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
             </span>
           )}
           {(filters.sortBy !== 'last_name' || filters.sortDir !== 'asc') && (
@@ -804,6 +889,7 @@ export default function Athletes() {
           setIsModalOpen(false)
           setSelectedPlayer(null)
           queryClient.invalidateQueries({ queryKey: ['players'] })
+          queryClient.invalidateQueries({ queryKey: ['missingRegistrationCount'] })
         }}
       />
 
@@ -814,6 +900,7 @@ export default function Athletes() {
         onSuccess={() => {
           setAthleteToDelete(null)
           queryClient.invalidateQueries({ queryKey: ['players'] })
+          queryClient.invalidateQueries({ queryKey: ['missingRegistrationCount'] })
         }}
       />
     </div>
