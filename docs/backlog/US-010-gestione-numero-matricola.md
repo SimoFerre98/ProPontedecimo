@@ -16,6 +16,6 @@ After implementing this story, the user can: inserire o aggiornare la matricola 
 - [ ] La matricola è visibile nella scheda/lista atleti
 - [ ] Il campo è facoltativo al salvataggio (i nuovi iscritti possono non averla ancora)
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [US-010-plan.md](../planning/US-010-plan.md)
 
