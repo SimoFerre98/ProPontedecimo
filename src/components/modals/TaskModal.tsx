@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { staffService, type StaffTask, type TaskStatus } from '@/services/staffService'
 import { supabase } from '@/lib/supabase'
 import { useQueryClient, useQuery } from '@tanstack/react-query'
+import { combineLocalDateTime, splitLocalDateTime } from '@/lib/dateTime'
 
 interface TaskModalProps {
   isOpen: boolean
@@ -32,25 +33,15 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
     description: '',
     assigned_to: '',
     status: 'created' as TaskStatus,
-    start_date: new Date().toISOString().split('T')[0],
+    start_date: splitLocalDateTime(new Date().toISOString()).date,
     start_time: '09:00',
     end_date: '',
     end_time: '10:00',
   })
 
   // Helpers to handle ISO to Local Data
-  const parseDateTime = (isoString: string | null) => {
-    if (!isoString) return { date: '', time: '' }
-    const [date, rest] = isoString.split('T')
-    const time = rest ? rest.substring(0, 5) : ''
-    return { date, time }
-  }
-
-  const combineDateTime = (date: string, time: string) => {
-    if (!date) return null
-    if (!time) return `${date}T00:00:00`
-    return `${date}T${time}:00`
-  }
+  const parseDateTime = splitLocalDateTime
+  const combineDateTime = combineLocalDateTime
 
   useEffect(() => {
     if (isOpen) {
@@ -63,7 +54,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
           description: task.description || '',
           assigned_to: task.assigned_to || '',
           status: task.status || 'created',
-          start_date: start.date || new Date().toISOString().split('T')[0],
+          start_date: start.date || splitLocalDateTime(new Date().toISOString()).date,
           start_time: start.time || '09:00',
           end_date: end.date || '',
           end_time: end.time || '10:00',
@@ -75,7 +66,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
           description: '',
           assigned_to: '',
           status: defaultStatus || 'created',
-          start_date: new Date().toISOString().split('T')[0],
+          start_date: splitLocalDateTime(new Date().toISOString()).date,
           start_time: '09:00',
           end_date: '',
           end_time: '10:00',

@@ -93,7 +93,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-012](backlog/US-012-stabilita-calendario-correzione-fusi.md) | Stabilità calendario e correzione fusi orari | HIGH | 3 | TODO |
+| [US-012](backlog/US-012-stabilita-calendario-correzione-fusi.md) | Stabilità calendario e correzione fusi orari | HIGH | 3 | REVIEW |
 | [US-013](backlog/US-013-tipologie-evento-calcistiche-doppio.md) | Tipologie evento calcistiche con doppio orario | MEDIUM | 3 | TODO |
 | [US-014](backlog/US-014-feed-ical-personalizzato-sincronizzazione.md) | Feed iCal personalizzato per la sincronizzazione esterna | MEDIUM | 5 | TODO |
 

@@ -15,6 +15,6 @@ After implementing this story, the user can: creare un evento alle 18:00 e veder
 - [ ] Gli eventi multi-giorno sono visualizzati correttamente su tutti i giorni coperti
 - [ ] Il rendering del calendario è stabile (nessun salto o scomparsa di eventi) al cambio di mese o vista
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [US-012-plan.md](../planning/US-012-plan.md)
 
