@@ -11,11 +11,11 @@ così che il tesseramento federale sia tracciato nel gestionale.
 After implementing this story, the user can: inserire o aggiornare la matricola di un atleta e vederla nella sua scheda.
 
 **Acceptance Criteria**
-- [ ] Il campo `registration_number` è aggiunto alla tabella `players` via migrazione
-- [ ] Il campo matricola è presente nei form di inserimento e modifica atleta e viene salvato correttamente
-- [ ] La matricola è visibile nella scheda/lista atleti
-- [ ] Il campo è facoltativo al salvataggio (i nuovi iscritti possono non averla ancora)
+- [x] Il campo matricola è tracciato a livello database (riuso della colonna `figc_registration` già esistente, vedi piano)
+- [x] Il campo matricola è presente nei form di inserimento e modifica atleta e viene salvato correttamente
+- [x] La matricola è visibile nella scheda/lista atleti
+- [x] Il campo è facoltativo al salvataggio (i nuovi iscritti possono non averla ancora)
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE
+**Plan:** [US-010-plan.md](../planning/US-010-plan.md)
 
