@@ -17,8 +17,12 @@ async function runTests() {
   try {
     // 1. Crea una stagione di test temporanea (es. TEST_REG_SEASON)
     console.log('Creazione delle stagioni di test...')
+    // is_active: false — i test filtrano sempre per season_id esplicito, non serve
+    // che la stagione di test sia quella attiva. Evita il conflitto con l'indice
+    // parziale univoco su seasons.is_active se un'altra stagione è già attiva
+    // (vedi CLAUDE.md, sezione "Superfici condivise" su seasons.is_active).
     const { data: newSeason, error: seErr } = await admin.from('seasons')
-      .insert({ name: 'TEST_REG_SEASON', start_date: '2026-07-01', end_date: '2027-06-30', is_active: true })
+      .insert({ name: 'TEST_REG_SEASON', start_date: '2026-07-01', end_date: '2027-06-30', is_active: false })
       .select('id').single()
     if (seErr) {
       throw new Error(`Errore creando stagione TEST_REG_SEASON: ${seErr.message}`)
