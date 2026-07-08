@@ -19,7 +19,8 @@ import {
   ClipboardCheck,
   Clock,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  FileText
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -555,6 +556,7 @@ export default function Athletes() {
                     {filters.sortBy === 'is_registered' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
                   </div>
                 </th>
+                <th className="p-6">Matricola</th>
                 <th className="p-6 text-right">Azioni</th>
               </tr>
             </thead>
@@ -618,6 +620,9 @@ export default function Athletes() {
                             {player.is_registered ? 'Tesserato' : 'Non Tess.'}
                           </span>
                         </div>
+                      </td>
+                      <td className="p-6">
+                        <span className="text-xs font-bold tabular-nums">{player.figc_registration || '-'}</span>
                       </td>
                       <td className="p-6 text-right">
                         <button 
@@ -715,6 +720,13 @@ export default function Athletes() {
                     )}>
                       <Clock className="w-3 h-3 shrink-0" />
                       <span>Medica: {player.medical_expiry}{isExpired ? ' — SCADUTA' : ''}</span>
+                    </div>
+                  )}
+
+                  {player.figc_registration && (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] font-bold border bg-muted/30 text-muted-foreground border-white/5">
+                      <FileText className="w-3 h-3 shrink-0" />
+                      <span>Matricola: {player.figc_registration}</span>
                     </div>
                   )}
 
