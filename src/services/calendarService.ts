@@ -1,6 +1,7 @@
 import { medicalService, type MedicalVisitRecord } from './medicalService'
 import { staffService, type StaffTask } from './staffService'
 import { eachDayOfInterval, parseISO, isValid } from 'date-fns'
+import { splitLocalDateTime } from '@/lib/dateTime'
 
 export type CalendarEventType = 'task' | 'medical'
 
@@ -37,7 +38,7 @@ export const calendarService = {
       const end = task.end_date || task.due_date ? parseISO(task.end_date || task.due_date!) : null
       
       const timeStr = task.start_date.includes('T') 
-        ? task.start_date.split('T')[1].substring(0, 5)
+        ? splitLocalDateTime(task.start_date).time
         : null
 
       const displayTitle = timeStr ? `${timeStr} - ${task.title}` : task.title
@@ -85,14 +86,18 @@ export const calendarService = {
 
     athletes.forEach(athlete => {
       if (athlete.medical_expiry) {
-        events.push({
-          id: `med-${athlete.id}`,
-          title: `Scadenza Visita: ${athlete.last_name}`,
-          description: `Visita medica di ${athlete.first_name} ${athlete.last_name} in scadenza`,
-          date: athlete.medical_expiry,
-          type: 'medical',
-          originalData: athlete
-        })
+        const parts = athlete.medical_expiry.split('-').map(Number)
+        const localDate = new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0)
+        if (!isNaN(localDate.getTime())) {
+          events.push({
+            id: `med-${athlete.id}`,
+            title: `Scadenza Visita: ${athlete.last_name}`,
+            description: `Visita medica di ${athlete.first_name} ${athlete.last_name} in scadenza`,
+            date: localDate.toISOString(),
+            type: 'medical',
+            originalData: athlete
+          })
+        }
       }
     })
 
