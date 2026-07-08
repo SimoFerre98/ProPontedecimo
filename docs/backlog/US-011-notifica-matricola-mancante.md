@@ -15,6 +15,6 @@ After implementing this story, the user can: vedere a colpo d'occhio quanti e qu
 - [ ] Dall'indicatore è possibile raggiungere l'elenco degli atleti interessati
 - [ ] L'indicatore scompare quando tutti gli atleti attivi hanno la matricola
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [US-011-plan.md](../planning/US-011-plan.md)
 
