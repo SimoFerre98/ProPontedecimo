@@ -1,9 +1,10 @@
 import { medicalService, type MedicalVisitRecord } from './medicalService'
 import { staffService, type StaffTask } from './staffService'
+import { eventService, type FootballEvent } from './eventService'
 import { eachDayOfInterval, parseISO, isValid } from 'date-fns'
 import { splitLocalDateTime } from '@/lib/dateTime'
 
-export type CalendarEventType = 'task' | 'medical'
+export type CalendarEventType = 'task' | 'medical' | 'event'
 
 // Unione discriminata su `type`: chi consuma l'evento ottiene il tipo
 // corretto di originalData semplicemente controllando event.type.
@@ -16,6 +17,7 @@ export type CalendarEvent = {
 } & (
   | { type: 'task'; originalData: StaffTask }
   | { type: 'medical'; originalData: MedicalVisitRecord }
+  | { type: 'event'; originalData: FootballEvent }
 )
 
 export const calendarService = {
@@ -25,6 +27,9 @@ export const calendarService = {
     
     // 2. Get Medical Expiries
     const { data: athletes } = await medicalService.getMedicalVisits('', 'all', 0, 1000)
+
+    // 3. Get Football Events
+    const fEvents = await eventService.getEvents()
 
     const events: CalendarEvent[] = []
 
@@ -99,6 +104,28 @@ export const calendarService = {
           })
         }
       }
+    })
+
+    fEvents.forEach(event => {
+      if (!event.start_date) return
+      const startStr = splitLocalDateTime(event.start_date).time
+      let displayTitle = ''
+      if (event.event_type === 'home_match' || event.event_type === 'away_match') {
+        const typeLabel = event.event_type === 'home_match' ? 'Partita in Casa' : 'Trasferta'
+        const meetupStr = event.meetup_time ? splitLocalDateTime(event.meetup_time).time : ''
+        displayTitle = meetupStr ? `${meetupStr} → ${startStr} - ${typeLabel}: ${event.title}` : `${startStr} - ${event.title}`
+      } else {
+        displayTitle = `${startStr} - ${event.title}`
+      }
+
+      events.push({
+        id: "event-" + event.id,
+        title: displayTitle,
+        description: event.description ?? undefined,
+        date: event.start_date,
+        type: 'event',
+        originalData: event
+      })
     })
 
     return events

@@ -27,8 +27,11 @@ import { useQuery } from '@tanstack/react-query'
 import { calendarService, type CalendarEvent } from '@/services/calendarService'
 import TaskModal from './TaskModal'
 import MedicalVisitModal from './MedicalVisitModal'
+import EventModal from './EventModal'
+import { EVENT_TYPES_CONFIG } from '@/lib/eventTypes'
 import type { StaffTask } from '@/services/staffService'
 import type { MedicalVisitRecord } from '@/services/medicalService'
+import type { FootballEvent } from '@/services/eventService'
 
 interface CalendarModalProps {
   isOpen: boolean
@@ -39,8 +42,10 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedTask, setSelectedTask] = useState<StaffTask | null>(null)
   const [selectedMedical, setSelectedMedical] = useState<MedicalVisitRecord | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<FootballEvent | null>(null)
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
   const [isMedicalModalOpen, setIsMedicalModalOpen] = useState(false)
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false)
 
   const { data: events = [] } = useQuery({
     queryKey: ['calendar-events', format(currentDate, 'yyyy-MM')],
@@ -65,6 +70,9 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
     } else if (event.type === 'medical') {
       setSelectedMedical(event.originalData)
       setIsMedicalModalOpen(true)
+    } else if (event.type === 'event') {
+      setSelectedEvent(event.originalData)
+      setIsEventModalOpen(true)
     }
   }
 
@@ -97,12 +105,22 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
                 Calendario <span className="text-primary not-italic">Eventi</span>
               </h2>
               <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
-                Monitoraggio Task e Visite Mediche
+                Monitoraggio Task, Visite Mediche e Eventi
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-6">
+            <button
+              onClick={() => {
+                setSelectedEvent(null)
+                setIsEventModalOpen(true)
+              }}
+              className="h-10 px-5 pill bg-sky-500 hover:bg-sky-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-sky-500/20 active:scale-95 transition-all"
+            >
+              + Nuovo Evento
+            </button>
+
             <div className="flex items-center bg-black/20 p-1.5 pill border border-white/5">
               <button onClick={prevMonth} className="p-2 hover:bg-white/10 rounded-full transition-colors">
                 <ChevronLeft className="w-5 h-5 text-muted-foreground" />
@@ -163,26 +181,46 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
                       <div className="flex gap-1">
                         {dayEvents.some(e => e.type === 'medical') && <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.6)]" />}
                         {dayEvents.some(e => e.type === 'task') && <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_rgba(var(--primary),0.6)]" />}
+                        {dayEvents.some(e => e.type === 'event') && <div className="w-1.5 h-1.5 rounded-full bg-sky-500 shadow-[0_0_6px_rgba(56,189,248,0.6)]" />}
                       </div>
                     )}
                   </div>
 
                   <div className="space-y-1.5 max-h-[80px] overflow-y-auto no-scrollbar pr-1">
-                    {dayEvents.map((event) => (
-                      <button
-                        key={event.id}
-                        onClick={() => handleEventClick(event)}
-                        className={cn(
-                          "w-full text-left px-2 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-tighter truncate transition-all flex items-center gap-1.5 border shrink-0",
-                          event.type === 'task' 
-                            ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20" 
-                            : "bg-rose-500/10 text-rose-500 border-rose-500/20 hover:bg-rose-500/20"
-                        )}
-                      >
-                        {event.type === 'task' ? <ClipboardList className="w-2.5 h-2.5" /> : <AlertCircle className="w-2.5 h-2.5" />}
-                        {event.title.replace('Task: ', '').replace('Scadenza Visita: ', '')}
-                      </button>
-                    ))}
+                    {dayEvents.map((event) => {
+                      const isEvent = event.type === 'event'
+                      const isTask = event.type === 'task'
+                      const isMedical = event.type === 'medical'
+                      
+                      let btnClass = ""
+                      let Icon = AlertCircle
+                      
+                      if (isTask) {
+                        btnClass = "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+                        Icon = ClipboardList
+                      } else if (isMedical) {
+                        btnClass = "bg-rose-500/10 text-rose-500 border-rose-500/20 hover:bg-rose-500/20"
+                        Icon = AlertCircle
+                      } else if (isEvent) {
+                        const config = EVENT_TYPES_CONFIG[event.originalData.event_type]
+                        btnClass = cn(config?.color, "hover:opacity-80")
+                        Icon = config?.icon || CalendarIcon
+                      }
+                      
+                      return (
+                        <button
+                          key={event.id}
+                          onClick={() => handleEventClick(event)}
+                          className={cn(
+                            "w-full text-left px-2 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-tighter truncate transition-all flex items-center gap-1.5 border shrink-0",
+                            btnClass
+                          )}
+                        >
+                          <Icon className="w-2.5 h-2.5" />
+                          {event.title.replace('Task: ', '').replace('Scadenza Visita: ', '')}
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
               )
@@ -200,6 +238,10 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
             <div className="w-3 h-3 rounded-full bg-rose-500" />
             <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Scadenze Mediche</span>
           </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-sky-500" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Eventi Calcio</span>
+          </div>
         </div>
       </motion.div>
 
@@ -216,6 +258,12 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
           setIsMedicalModalOpen(false)
         }}
         record={selectedMedical}
+      />
+
+      <EventModal
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        event={selectedEvent}
       />
     </div>
   )
