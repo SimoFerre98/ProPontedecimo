@@ -1,0 +1,273 @@
+/* ============================================================
+   US-005 — Premium Glass Modal System · shared.css
+   Fonte unica dei token visivi. Replica fedele di src/index.css
+   (tema scuro) + convenzioni di CalendarModal.tsx / TaskModal.tsx.
+   Framework target: React + Tailwind CSS v4.
+   ============================================================ */
+
+/* ---------- Design tokens ---------- */
+:root {
+  /* Palette (da src/index.css, tema scuro + bordeaux di brand) */
+  --background: oklch(0.145 0.006 15);          /* bg-background        */
+  --foreground: oklch(0.985 0 0);               /* text-foreground      */
+  --card: oklch(0.205 0 0);                     /* bg-card              */
+  --primary: oklch(0.33 0.13 15);               /* bordeaux #800020     */
+  --primary-soft: oklch(0.62 0.19 12);          /* bordeaux leggibile su scuro (accenti testuali) */
+  --gold: oklch(0.84 0.115 85);                 /* accento oro          */
+  --muted-foreground: oklch(0.708 0 0);         /* text-muted-foreground*/
+  --rose: oklch(0.645 0.246 16.44);             /* rose-500 (hover distruttivi) */
+  --emerald: oklch(0.696 0.17 162.48);          /* stati success        */
+
+  /* Bordi e superfici vetro */
+  --border-soft: oklch(1 0 0 / 0.10);           /* border-white/10      */
+  --border-strong: oklch(1 0 0 / 0.20);         /* border-white/20      */
+  --surface-05: oklch(1 0 0 / 0.05);            /* bg-white/5           */
+  --surface-10: oklch(1 0 0 / 0.10);            /* bg-white/10          */
+  --ink-20: oklch(0 0 0 / 0.20);                /* bg-black/20          */
+
+  /* Scala raggi (convenzione modali Premium Glass) */
+  --radius-xl: 0.75rem;                          /* rounded-xl  — event chip   */
+  --radius-2xl: 1rem;                            /* rounded-2xl — box icona    */
+  --radius-32: 2rem;                             /* rounded-[2rem] — celle/aree*/
+  --radius-48: 3rem;                             /* rounded-[3rem] — contenitore modale */
+  --radius-pill: 9999px;                         /* .pill — bottoni, righe, badge */
+
+  /* Tipografia */
+  --font-sans: 'Geist', 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'Cascadia Code', monospace;
+}
+
+/* ---------- Base ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { font-family: var(--font-sans); }
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Atmosfera: alone bordeaux + grana, come lo sfondo soft dell'app */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -2;
+  background:
+    radial-gradient(ellipse 80% 55% at 15% -10%, oklch(0.33 0.13 15 / 0.28), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 95% 100%, oklch(0.33 0.13 15 / 0.18), transparent 60%),
+    radial-gradient(ellipse 40% 35% at 70% 20%, oklch(0.84 0.115 85 / 0.05), transparent 70%);
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: -1; opacity: .35; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Utility di sistema (specchio di index.css) ---------- */
+.glass-card {
+  background: oklch(0.205 0 0 / 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.05);
+}
+.glass-morphism {
+  background: oklch(1 0 0 / 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid oklch(1 0 0 / 0.05);
+}
+.pill { border-radius: var(--radius-pill); }
+
+/* ---------- Tipografia modali ---------- */
+/* h2: text-2xl font-black italic tracking-tighter uppercase */
+.modal-title {
+  font-size: 1.5rem; line-height: 1.05;
+  font-weight: 900; font-style: italic;
+  text-transform: uppercase; letter-spacing: -0.05em;
+  color: var(--foreground);
+}
+.modal-title .accent { color: var(--primary-soft); font-style: normal; } /* intento: not-italic + text-primary */
+
+/* p: text-xs font-bold uppercase tracking-widest text-muted-foreground */
+.modal-subtitle {
+  font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted-foreground); margin-top: 0.125rem;
+}
+
+/* label: text-[10px] font-black uppercase tracking-widest muted/70 */
+.field-label {
+  font-size: 10px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: oklch(0.708 0 0 / 0.7);
+}
+
+.eyebrow {
+  font-size: 10px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.22em;
+  color: oklch(0.708 0 0 / 0.6);
+}
+
+/* ---------- Anatomia modale ---------- */
+.modal-card {
+  position: relative;
+  background: oklch(0.205 0 0 / 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-strong);         /* border-white/20 */
+  border-radius: var(--radius-48);                /* rounded-[3rem]  */
+  box-shadow: 0 25px 50px -12px oklch(0 0 0 / 0.55); /* shadow-2xl   */
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* Header: p-8 border-b border-white/10 bg-white/5 */
+.modal-header {
+  padding: 2rem;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--surface-05);
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  flex-shrink: 0;
+}
+.modal-header-id { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+
+/* Box icona: w-12 h-12 rounded-2xl bg-primary/20 border-primary/30 */
+.icon-box {
+  width: 3rem; height: 3rem; flex-shrink: 0;
+  border-radius: var(--radius-2xl);
+  background: oklch(0.33 0.13 15 / 0.2);
+  border: 1px solid oklch(0.33 0.13 15 / 0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--primary-soft);
+}
+.icon-box svg { width: 1.5rem; height: 1.5rem; }
+
+/* Pulsante chiusura: w-10 h-10 pill border-white/10, hover rosso + rotazione */
+.close-btn {
+  width: 2.5rem; height: 2.5rem; flex-shrink: 0;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-soft);
+  background: transparent; color: var(--foreground);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .2s ease;
+}
+.close-btn svg { width: 1.25rem; height: 1.25rem; transition: transform .25s ease; }
+.close-btn:hover { background: var(--rose); border-color: var(--rose); color: #fff; }
+.close-btn:hover svg { transform: rotate(90deg); }
+
+/* ---------- Pulsanti a pillola ---------- */
+/* base: h-14 pill font-black uppercase tracking-widest text-[10px] */
+.btn {
+  height: 3.5rem; padding: 0 2rem;
+  border-radius: var(--radius-pill);
+  border: none; cursor: pointer;
+  font-family: inherit; font-size: 10px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+  transition: all .2s ease; color: var(--foreground);
+  background: transparent;
+}
+.btn svg { width: 1.125rem; height: 1.125rem; }
+.btn:active { transform: scale(0.95); }
+
+/* bg-primary text-white shadow-2xl shadow-primary/40 */
+.btn-primary {
+  background: var(--primary); color: #fff;
+  box-shadow: 0 25px 50px -12px oklch(0.33 0.13 15 / 0.4);
+}
+.btn-primary:hover { background: oklch(0.38 0.14 15); }
+
+/* variant ghost: hover:bg-white/5 */
+.btn-ghost:hover { background: var(--surface-05); }
+
+/* variant destructive ghost: text-red-500 hover:bg-red-500/10 */
+.btn-danger { color: var(--rose); }
+.btn-danger:hover { background: oklch(0.645 0.246 16.44 / 0.1); }
+
+/* disabled: opacity-50 cursor-not-allowed */
+.btn:disabled, .btn[aria-disabled="true"] {
+  opacity: 0.45; cursor: not-allowed; transform: none !important;
+  box-shadow: none;
+}
+
+/* ---------- Badge ruolo (pill) ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  height: 2rem; padding: 0 1rem;
+  border-radius: var(--radius-pill);
+  font-size: 10px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  border: 1px solid transparent; white-space: nowrap;
+}
+.badge svg { width: 0.85rem; height: 0.85rem; }
+.badge-president { color: var(--gold); background: oklch(0.84 0.115 85 / 0.1); border-color: oklch(0.84 0.115 85 / 0.3); }
+.badge-director  { color: var(--primary-soft); background: oklch(0.33 0.13 15 / 0.22); border-color: oklch(0.62 0.19 12 / 0.35); }
+.badge-coach     { color: var(--foreground); background: var(--surface-10); border-color: var(--border-strong); }
+.badge-player    { color: var(--rose); background: oklch(0.645 0.246 16.44 / 0.1); border-color: oklch(0.645 0.246 16.44 / 0.25); }
+.badge-parent    { color: var(--muted-foreground); background: var(--surface-05); border-color: var(--border-soft); }
+
+/* ---------- Riga dato in sola lettura ---------- */
+.info-row {
+  display: flex; align-items: center; gap: 1rem;
+  min-height: 3.5rem; padding: 0.5rem 1.375rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-05);
+  border: 1px solid var(--border-soft);
+  transition: border-color .2s ease;
+}
+.info-row:hover { border-color: oklch(0.33 0.13 15 / 0.3); }
+.info-row-icon { color: oklch(0.708 0 0 / 0.4); flex-shrink: 0; }
+.info-row-icon svg { width: 1.125rem; height: 1.125rem; display: block; }
+.info-row-body { min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+.info-row-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.18em; color: oklch(0.708 0 0 / 0.5); }
+.info-row-value { font-size: 0.875rem; font-weight: 700; color: var(--foreground); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- Navigazione fra i mockup ---------- */
+.mock-nav {
+  position: fixed; top: 1.25rem; left: 1.25rem; z-index: 200;
+  display: flex; align-items: center; gap: 0.375rem;
+  padding: 0.375rem;
+  border-radius: var(--radius-pill);
+  background: oklch(0.145 0 0 / 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-soft);
+}
+.mock-nav a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  height: 2.25rem; padding: 0 1rem;
+  border-radius: var(--radius-pill);
+  font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted-foreground); text-decoration: none; transition: all .2s ease;
+}
+.mock-nav a:hover { color: var(--foreground); background: var(--surface-05); }
+.mock-nav a.active { background: oklch(0.33 0.13 15 / 0.35); color: #fff; border: 1px solid oklch(0.33 0.13 15 / 0.5); }
+.mock-nav .nav-tag {
+  padding: 0 0.75rem; font-size: 9px; font-weight: 900; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--gold);
+}
+
+/* ---------- Chip di classi (documentazione) ---------- */
+.chip {
+  display: inline-block;
+  font-family: var(--font-mono); font-size: 10.5px; line-height: 1.7;
+  color: var(--gold);
+  background: var(--ink-20);
+  border: 1px solid var(--border-soft);
+  border-radius: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+
+/* Scrollbar discreta */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Reveal in ingresso */
+@keyframes rise { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
