@@ -16,6 +16,6 @@ After implementing this story, the user can: creare una "Partita in Trasferta" c
 - [ ] Le tipologie sono distinguibili visivamente nel calendario (colore/icona coerenti col design system)
 - [ ] Un evento non-Partita non mostra campi orario doppi superflui
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [US-013-plan.md](../planning/US-013-plan.md)
 
