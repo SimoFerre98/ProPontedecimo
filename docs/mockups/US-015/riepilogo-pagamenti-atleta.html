@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-015 · Riepilogo Pagamenti Atleta — Premium Glass Modal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* ============================================================
+     US-015 — Riepilogo Pagamenti Atleta (PlayerPaymentSummaryModal)
+     Apribile dalla pagina Atleti: quota totale, rate saldate,
+     residuo, dettaglio rate con evidenza scaduti non pagati (AC5).
+     Stile Premium Glass (token condivisi US-005).
+     ============================================================ */
+
+  :root { --amber: oklch(0.769 0.188 70.08); }
+
+  /* ============ Scena dimostrativa (pagina Atleti dietro il modale) ============ */
+  .stage { position: fixed; inset: 0; }
+  .backdrop-app { position: absolute; inset: 0; overflow: hidden; }
+  .fake-sidebar {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 260px;
+    background: oklch(0.22 0.06 15 / 0.85);
+    border-right: 1px solid oklch(0.30 0.08 15 / 0.3);
+    padding: 2rem 1.5rem;
+  }
+  .fake-logo { display: flex; align-items: center; gap: .75rem; margin-bottom: 2.5rem; }
+  .fake-logo-mark {
+    width: 2.5rem; height: 2.5rem; border-radius: var(--radius-2xl);
+    background: linear-gradient(135deg, oklch(0.45 0.16 15), oklch(0.28 0.11 15));
+    border: 1px solid oklch(0.84 0.115 85 / 0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-style: italic; font-size: .8rem; color: var(--gold);
+  }
+  .fake-logo span { font-size: .8rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; }
+  .fake-navitem { height: 2.75rem; border-radius: var(--radius-pill); background: oklch(1 0 0 / 0.06); margin-bottom: .75rem; }
+  .fake-navitem.hot { background: oklch(1 0 0 / 0.14); }
+  .fake-main { position: absolute; top: 0; right: 0; bottom: 0; left: 260px; padding: 2.75rem 3rem; }
+  .fake-eyebrow { width: 7rem; height: .75rem; border-radius: var(--radius-pill); background: oklch(0.33 0.13 15 / 0.4); margin-bottom: 1rem; }
+  .fake-title { width: 40%; height: 2.4rem; border-radius: var(--radius-xl); background: oklch(1 0 0 / 0.1); margin-bottom: 2rem; }
+  .fake-table { border-radius: var(--radius-32); background: oklch(0.205 0 0 / 0.5); border: 1px solid var(--border-soft); overflow: hidden; }
+  .fake-row { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-soft); }
+  .fake-row:last-child { border-bottom: none; }
+  .fake-row .fake-avatar { width: 2.2rem; height: 2.2rem; border-radius: var(--radius-xl); background: oklch(0.33 0.13 15 / 0.25); flex-shrink: 0; }
+  .fake-row .fake-line { height: .6rem; border-radius: var(--radius-pill); background: oklch(1 0 0 / 0.08); }
+  .fake-row .fake-line.w40 { width: 40%; }
+  .fake-row .fake-line.w20 { width: 20%; margin-left: auto; }
+  .fake-row.hot .fake-avatar { background: oklch(0.33 0.13 15 / 0.45); box-shadow: 0 0 0 2px oklch(0.62 0.19 12 / 0.4); }
+
+  .modal-overlay {
+    position: absolute; inset: 0; z-index: 5;
+    background: oklch(0.145 0.006 15 / 0.6);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    animation: fade .3s ease both;
+  }
+
+  /* ============ Il modale ============ */
+  .modal-viewport {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.25rem; pointer-events: none;
+  }
+  .summary-modal {
+    width: 100%; max-width: 38rem;
+    max-height: 92vh;
+    pointer-events: auto;
+    animation: rise .35s cubic-bezier(.2,.9,.3,1.2) both;
+  }
+  .summary-body { overflow-y: auto; padding: 1.75rem 2rem 2rem; display: flex; flex-direction: column; gap: 1.75rem; }
+
+  /* Stat cards riepilogo */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .stat-card {
+    border-radius: var(--radius-32);
+    background: var(--surface-05); border: 1px solid var(--border-soft);
+    padding: 1.1rem 1.25rem;
+    display: flex; flex-direction: column; gap: .6rem;
+    transition: border-color .2s ease;
+  }
+  .stat-card:hover { border-color: oklch(0.33 0.13 15 / 0.3); }
+  .stat-icon {
+    width: 2.5rem; height: 2.5rem; border-radius: var(--radius-2xl);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .stat-icon svg { width: 1.2rem; height: 1.2rem; }
+  .stat-icon.primary { background: oklch(0.33 0.13 15 / 0.2); color: var(--primary-soft); }
+  .stat-icon.emerald { background: oklch(0.696 0.17 162.48 / 0.15); color: var(--emerald); }
+  .stat-icon.rose { background: oklch(0.645 0.246 16.44 / 0.15); color: var(--rose); }
+  .stat-card p.stat-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; color: var(--muted-foreground); }
+  .stat-card p.stat-value { font-size: 1.5rem; font-weight: 900; color: var(--foreground); font-variant-numeric: tabular-nums; line-height: 1; }
+  .stat-card p.stat-sub { font-size: 10.5px; font-weight: 700; color: oklch(0.708 0 0 / 0.6); }
+
+  /* Lista rate */
+  .section-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0 .25rem; }
+  .section-head .field-label { padding-left: 0; }
+  .legend { display: flex; align-items: center; gap: .4rem; font-size: 9.5px; font-weight: 700; color: oklch(0.708 0 0 / 0.55); }
+  .legend .dot { width: .5rem; height: .5rem; border-radius: 50%; background: var(--rose); box-shadow: 0 0 0 3px oklch(0.645 0.246 16.44 / 0.2); }
+
+  .installment-list { display: flex; flex-direction: column; gap: .65rem; }
+  .installment-list-row {
+    display: grid; grid-template-columns: 3rem 1fr auto auto;
+    align-items: center; gap: 1rem;
+    padding: .85rem 1.1rem;
+    border-radius: var(--radius-2xl);
+    background: var(--surface-05);
+    border: 1px solid var(--border-soft);
+    border-left: 3px solid transparent;
+    transition: all .2s ease;
+  }
+  .installment-list-row:hover { border-color: oklch(0.33 0.13 15 / 0.25); }
+  .installment-list-row.overdue-unpaid {
+    border-left-color: var(--rose);
+    background: oklch(0.645 0.246 16.44 / 0.08);
+    border-top-color: oklch(0.645 0.246 16.44 / 0.25);
+    border-right-color: oklch(0.645 0.246 16.44 / 0.25);
+    border-bottom-color: oklch(0.645 0.246 16.44 / 0.25);
+  }
+  .rn-badge {
+    width: 3rem; height: 3rem; border-radius: var(--radius-xl); flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: oklch(1 0 0 / 0.06); border: 1px solid var(--border-soft);
+  }
+  .rn-badge b { font-size: .95rem; font-weight: 900; color: var(--foreground); line-height: 1; }
+  .rn-badge span { font-size: 6.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em; color: oklch(0.708 0 0 / 0.5); }
+  .installment-list-row.overdue-unpaid .rn-badge { background: oklch(0.645 0.246 16.44 / 0.15); border-color: oklch(0.645 0.246 16.44 / 0.3); }
+  .installment-list-row.overdue-unpaid .rn-badge b { color: var(--rose); }
+
+  .row-main { min-width: 0; display: flex; flex-direction: column; gap: .2rem; }
+  .row-main .due { font-size: .85rem; font-weight: 700; color: var(--foreground); display: flex; align-items: center; gap: .4rem; }
+  .row-main .due svg { width: .85rem; height: .85rem; color: oklch(0.708 0 0 / 0.4); flex-shrink: 0; }
+  .installment-list-row.overdue-unpaid .row-main .due { color: var(--rose); }
+  .installment-list-row.overdue-unpaid .row-main .due svg { color: var(--rose); }
+  .row-main .overdue-tag { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em; color: var(--rose); }
+  .row-main .method { font-size: .72rem; font-weight: 700; color: oklch(0.708 0 0 / 0.6); display: flex; align-items: center; gap: .35rem; }
+  .row-main .method svg { width: .8rem; height: .8rem; flex-shrink: 0; }
+
+  .row-amount { text-align: right; font-size: 1rem; font-weight: 900; color: var(--foreground); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .installment-list-row.overdue-unpaid .row-amount { color: var(--rose); }
+
+  /* Badge stato (mirror di StatusBadge in Payments.tsx) */
+  .status-badge {
+    display: inline-flex; align-items: center; gap: .4rem;
+    height: 1.9rem; padding: 0 .85rem;
+    border-radius: var(--radius-pill);
+    font-size: 9.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em;
+    border: 1px solid transparent; white-space: nowrap;
+  }
+  .status-badge svg { width: .8rem; height: .8rem; }
+  .status-badge.paid { color: var(--emerald); background: oklch(0.696 0.17 162.48 / 0.12); border-color: oklch(0.696 0.17 162.48 / 0.25); }
+  .status-badge.pending { color: var(--amber); background: oklch(0.769 0.188 70.08 / 0.12); border-color: oklch(0.769 0.188 70.08 / 0.25); }
+  .status-badge.overdue { color: var(--rose); background: oklch(0.645 0.246 16.44 / 0.12); border-color: oklch(0.645 0.246 16.44 / 0.25); }
+
+  .modal-footer .btn-ghost { flex: 1; border: 1px solid var(--border-soft); }
+
+  @media (max-width: 640px) {
+    .fake-sidebar { display: none; }
+    .fake-main { left: 0; padding: 1.5rem; }
+    .modal-header { padding: 1.5rem 1.25rem; }
+    .modal-title { font-size: 1.25rem; }
+    .summary-body { padding: 1.25rem 1.25rem 1.5rem; gap: 1.4rem; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .installment-list-row { grid-template-columns: 2.4rem 1fr; grid-template-rows: auto auto; row-gap: .5rem; }
+    .rn-badge { width: 2.4rem; height: 2.4rem; }
+    .row-amount { grid-column: 2; text-align: left; }
+    .status-badge { grid-column: 1 / 3; justify-self: start; }
+    .modal-footer { padding: 1.25rem; }
+    .modal-footer .btn-ghost { width: 100%; }
+    .mock-nav .nav-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="mock-nav">
+  <span class="nav-tag">US-015</span>
+  <a href="piano-rate-editor.html">Piano Rate</a>
+  <a href="riepilogo-pagamenti-atleta.html" class="active">Riepilogo Atleta</a>
+</nav>
+
+<div class="stage">
+
+  <!-- Finta pagina Atleti dietro il modale -->
+  <div class="backdrop-app" aria-hidden="true">
+    <div class="fake-sidebar">
+      <div class="fake-logo">
+        <div class="fake-logo-mark">PP</div>
+        <span>Pro Pontedecimo</span>
+      </div>
+      <div class="fake-navitem hot"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+    </div>
+    <div class="fake-main">
+      <div class="fake-eyebrow"></div>
+      <div class="fake-title"></div>
+      <div class="fake-table">
+        <div class="fake-row hot"><div class="fake-avatar"></div><div class="fake-line w40"></div><div class="fake-line w20"></div></div>
+        <div class="fake-row"><div class="fake-avatar"></div><div class="fake-line w40"></div><div class="fake-line w20"></div></div>
+        <div class="fake-row"><div class="fake-avatar"></div><div class="fake-line w40"></div><div class="fake-line w20"></div></div>
+        <div class="fake-row"><div class="fake-avatar"></div><div class="fake-line w40"></div><div class="fake-line w20"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay"></div>
+
+  <div class="modal-viewport">
+    <div class="modal-card summary-modal" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
+
+      <header class="modal-header">
+        <div class="modal-header-id">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <h2 class="modal-title" id="summaryTitle">Riepilogo <span class="accent">Pagamenti</span></h2>
+            <p class="modal-subtitle">Bianchi Marco — Under 15 · Stagione 2025/26</p>
+          </div>
+        </div>
+        <button type="button" class="close-btn" aria-label="Chiudi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </header>
+
+      <div class="summary-body no-scrollbar">
+
+        <!-- Stat cards -->
+        <section class="stats-grid" aria-label="Riepilogo finanziario">
+          <div class="stat-card">
+            <div class="stat-icon primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12a7.9 7.9 0 0 0 7.8 8 7.7 7.7 0 0 0 5.2-2"/></svg>
+            </div>
+            <p class="stat-label">Quota Totale</p>
+            <p class="stat-value">€ 300,00</p>
+            <p class="stat-sub">4 rate pianificate</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon emerald">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+            </div>
+            <p class="stat-label">Rate Saldate</p>
+            <p class="stat-value">€ 180,00</p>
+            <p class="stat-sub">2 di 4 rate pagate</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon rose">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <p class="stat-label">Residuo</p>
+            <p class="stat-value">€ 120,00</p>
+            <p class="stat-sub">di cui € 70,00 scaduti</p>
+          </div>
+        </section>
+
+        <!-- Dettaglio rate -->
+        <section aria-label="Dettaglio rate">
+          <div class="section-head">
+            <p class="field-label">Dettaglio Rate</p>
+            <div class="legend"><span class="dot"></span> Scaduta e non pagata</div>
+          </div>
+
+          <div class="installment-list" style="margin-top:.85rem">
+
+            <!-- Rata 1 — pagata -->
+            <div class="installment-list-row">
+              <div class="rn-badge"><b>1</b><span>Rata</span></div>
+              <div class="row-main">
+                <span class="due">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  15 Set 2025
+                </span>
+                <span class="method">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  POS · Ricevuta n. 042
+                </span>
+              </div>
+              <div class="row-amount">€ 100,00</div>
+              <div class="status-badge paid">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                Pagata
+              </div>
+            </div>
+
+            <!-- Rata 2 — pagata -->
+            <div class="installment-list-row">
+              <div class="rn-badge"><b>2</b><span>Rata</span></div>
+              <div class="row-main">
+                <span class="due">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  15 Nov 2025
+                </span>
+                <span class="method">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14v3"/><path d="M12 14v3"/><path d="M16 14v3"/></svg>
+                  Bonifico IBAN · Ricevuta n. 043
+                </span>
+              </div>
+              <div class="row-amount">€ 80,00</div>
+              <div class="status-badge paid">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                Pagata
+              </div>
+            </div>
+
+            <!-- Rata 3 — SCADUTA e non pagata: evidenziata (AC5) -->
+            <div class="installment-list-row overdue-unpaid">
+              <div class="rn-badge"><b>3</b><span>Rata</span></div>
+              <div class="row-main">
+                <span class="due">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  15 Gen 2026
+                </span>
+                <span class="overdue-tag">Scaduta da 25 giorni</span>
+              </div>
+              <div class="row-amount">€ 70,00</div>
+              <div class="status-badge overdue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Scaduta
+              </div>
+            </div>
+
+            <!-- Rata 4 — in attesa (non ancora scaduta) -->
+            <div class="installment-list-row">
+              <div class="rn-badge"><b>4</b><span>Rata</span></div>
+              <div class="row-main">
+                <span class="due">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  15 Mar 2026
+                </span>
+              </div>
+              <div class="row-amount">€ 50,00</div>
+              <div class="status-badge pending">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                In Attesa
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-ghost">Chiudi</button>
+      </footer>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

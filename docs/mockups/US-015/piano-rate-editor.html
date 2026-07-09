@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-015 · Piano Rate — Premium Glass Modal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* ============================================================
+     US-015 — Piano Rate personalizzato (editor "Nuova Quota")
+     Rework di NewPaymentModal.tsx: da 2 scelte fisse a N rate
+     con importi/scadenze editabili + validazione somma live.
+     Stile Premium Glass (token condivisi US-005).
+     ============================================================ */
+
+  :root { --amber: oklch(0.769 0.188 70.08); }
+
+  /* ============ Scena dimostrativa (dashboard Pagamenti dietro il modale) ============ */
+  .stage { position: fixed; inset: 0; }
+  .backdrop-app { position: absolute; inset: 0; overflow: hidden; }
+  .fake-sidebar {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 260px;
+    background: oklch(0.22 0.06 15 / 0.85);
+    border-right: 1px solid oklch(0.30 0.08 15 / 0.3);
+    padding: 2rem 1.5rem;
+  }
+  .fake-logo { display: flex; align-items: center; gap: .75rem; margin-bottom: 2.5rem; }
+  .fake-logo-mark {
+    width: 2.5rem; height: 2.5rem; border-radius: var(--radius-2xl);
+    background: linear-gradient(135deg, oklch(0.45 0.16 15), oklch(0.28 0.11 15));
+    border: 1px solid oklch(0.84 0.115 85 / 0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-style: italic; font-size: .8rem; color: var(--gold);
+  }
+  .fake-logo span { font-size: .8rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; }
+  .fake-navitem { height: 2.75rem; border-radius: var(--radius-pill); background: oklch(1 0 0 / 0.06); margin-bottom: .75rem; }
+  .fake-navitem.hot { background: oklch(1 0 0 / 0.14); }
+  .fake-main { position: absolute; top: 0; right: 0; bottom: 0; left: 260px; padding: 2.75rem 3rem; }
+  .fake-eyebrow { width: 9rem; height: .75rem; border-radius: var(--radius-pill); background: oklch(0.33 0.13 15 / 0.4); margin-bottom: 1rem; }
+  .fake-title { width: 45%; height: 2.4rem; border-radius: var(--radius-xl); background: oklch(1 0 0 / 0.1); margin-bottom: 2rem; }
+  .fake-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .fake-card {
+    height: 6.5rem; border-radius: var(--radius-32);
+    background: oklch(0.205 0 0 / 0.5); border: 1px solid var(--border-soft);
+    padding: 1.25rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .fake-card b { font-size: 1.5rem; font-weight: 900; color: oklch(1 0 0 / 0.14); }
+  .fake-card span { width: 60%; height: .55rem; border-radius: var(--radius-pill); background: oklch(1 0 0 / 0.08); }
+  .fake-wide { margin-top: 1.5rem; height: 16rem; border-radius: var(--radius-32); background: oklch(0.205 0 0 / 0.5); border: 1px solid var(--border-soft); }
+
+  .modal-overlay {
+    position: absolute; inset: 0; z-index: 5;
+    background: oklch(0.145 0.006 15 / 0.6);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    animation: fade .3s ease both;
+  }
+
+  /* ============ Il modale ============ */
+  .modal-viewport {
+    position: absolute; inset: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.25rem; pointer-events: none;
+  }
+  .rate-modal {
+    width: 100%; max-width: 40rem;
+    max-height: 92vh;
+    pointer-events: auto;
+    animation: rise .35s cubic-bezier(.2,.9,.3,1.2) both;
+  }
+  .rate-body { overflow-y: auto; padding: 1.75rem 2rem 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .field-group { display: flex; flex-direction: column; gap: .5rem; }
+  .field-label { padding-left: .75rem; display: flex; align-items: center; gap: .3rem; }
+  .req { color: oklch(0.645 0.246 16.44); }
+
+  /* Chip atleta selezionato */
+  .player-chip {
+    display: flex; align-items: center; gap: .85rem;
+    padding: .7rem 1rem; border-radius: var(--radius-2xl);
+    border: 1px solid oklch(0.33 0.13 15 / 0.3);
+    background: oklch(0.33 0.13 15 / 0.08);
+  }
+  .player-avatar {
+    width: 2.25rem; height: 2.25rem; border-radius: var(--radius-xl); flex-shrink: 0;
+    background: oklch(0.33 0.13 15 / 0.2);
+    display: flex; align-items: center; justify-content: center; color: var(--primary-soft);
+  }
+  .player-avatar svg { width: 1.05rem; height: 1.05rem; }
+  .player-info { flex: 1; min-width: 0; }
+  .player-info p { font-size: .85rem; font-weight: 900; color: var(--foreground); }
+  .player-info span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted-foreground); }
+  .player-change { font-size: .7rem; font-weight: 700; color: var(--muted-foreground); background: none; border: none; cursor: pointer; font-family: inherit; transition: color .2s ease; }
+  .player-change:hover { color: var(--foreground); }
+
+  /* Input importo totale */
+  .input-euro { position: relative; }
+  .input-euro svg {
+    position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%);
+    width: 1.15rem; height: 1.15rem; color: oklch(0.708 0 0 / 0.4); pointer-events: none;
+  }
+  .input-euro input {
+    width: 100%; height: 3.5rem;
+    border-radius: var(--radius-pill);
+    background: oklch(0.205 0 0 / 0.4);
+    border: 1px solid var(--border-soft);
+    color: var(--foreground);
+    font-family: inherit; font-size: 1rem; font-weight: 700;
+    padding: 0 1.25rem 0 3.3rem;
+    outline: none; transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .input-euro input:focus { border-color: oklch(0.33 0.13 15 / 0.6); box-shadow: 0 0 0 3px oklch(0.33 0.13 15 / 0.18); }
+
+  /* Stepper numero rate */
+  .rate-stepper {
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  .stepper-control {
+    display: inline-flex; align-items: center; gap: .1rem;
+    padding: .3rem; border-radius: var(--radius-pill);
+    background: var(--surface-05); border: 1px solid var(--border-soft);
+  }
+  .stepper-btn {
+    width: 2.5rem; height: 2.5rem; border-radius: var(--radius-pill);
+    border: none; background: transparent; color: var(--foreground);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    font-size: 1.1rem; font-weight: 900; transition: all .15s ease;
+  }
+  .stepper-btn:hover:not(:disabled) { background: oklch(0.33 0.13 15 / 0.3); color: #fff; }
+  .stepper-btn:disabled { opacity: .3; cursor: not-allowed; }
+  .stepper-btn svg { width: 1rem; height: 1rem; }
+  .stepper-value {
+    min-width: 4.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
+    padding: 0 .5rem;
+  }
+  .stepper-value b { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700; color: var(--foreground); line-height: 1; }
+  .stepper-value span { font-size: 8.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .16em; color: oklch(0.708 0 0 / 0.55); }
+  .split-even-btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    height: 2.75rem; padding: 0 1.1rem;
+    border-radius: var(--radius-pill);
+    background: transparent; border: 1px dashed var(--border-strong);
+    color: var(--muted-foreground);
+    font-family: inherit; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em;
+    cursor: pointer; transition: all .2s ease;
+  }
+  .split-even-btn svg { width: .95rem; height: .95rem; }
+  .split-even-btn:hover { color: var(--foreground); border-color: var(--primary-soft); background: oklch(0.33 0.13 15 / 0.1); }
+
+  /* Header righe + indicatore somma */
+  .rows-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .sum-indicator {
+    display: inline-flex; align-items: center; gap: .5rem;
+    height: 2.25rem; padding: 0 1rem;
+    border-radius: var(--radius-pill);
+    font-size: 11px; font-weight: 700;
+    border: 1px solid transparent; transition: all .25s ease;
+    color: var(--muted-foreground); background: var(--surface-05);
+  }
+  .sum-indicator svg { width: .95rem; height: .95rem; flex-shrink: 0; }
+  .sum-indicator b { font-family: var(--font-mono); font-weight: 700; }
+  .sum-indicator.ok {
+    color: var(--emerald); background: oklch(0.696 0.17 162.48 / 0.12); border-color: oklch(0.696 0.17 162.48 / 0.3);
+  }
+  .sum-indicator.bad {
+    color: var(--rose); background: oklch(0.645 0.246 16.44 / 0.12); border-color: oklch(0.645 0.246 16.44 / 0.3);
+    animation: shake .35s ease;
+  }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+
+  /* Righe rata dinamiche */
+  .installments { display: flex; flex-direction: column; gap: .65rem; }
+  .installment-row {
+    display: grid; grid-template-columns: 3.4rem 1fr 1fr;
+    align-items: center; gap: .85rem;
+    padding: .6rem .7rem .6rem 1rem;
+    border-radius: var(--radius-2xl);
+    background: var(--surface-05); border: 1px solid var(--border-soft);
+    transition: border-color .2s ease;
+  }
+  .installment-row:focus-within { border-color: oklch(0.33 0.13 15 / 0.4); }
+  .rata-badge {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 3.4rem; height: 3.4rem; border-radius: var(--radius-xl); flex-shrink: 0;
+    background: oklch(0.33 0.13 15 / 0.18); border: 1px solid oklch(0.33 0.13 15 / 0.3);
+  }
+  .rata-badge b { font-size: 1rem; font-weight: 900; color: var(--primary-soft); line-height: 1; }
+  .rata-badge span { font-size: 7px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em; color: oklch(0.708 0 0 / 0.6); }
+  .row-field { position: relative; display: flex; flex-direction: column; }
+  .row-field label { font-size: 8.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; color: oklch(0.708 0 0 / 0.5); margin-bottom: .3rem; padding-left: .2rem; }
+  .row-field .field-wrap { position: relative; }
+  .row-field svg {
+    position: absolute; left: .7rem; top: 50%; transform: translateY(-50%);
+    width: .95rem; height: .95rem; color: oklch(0.708 0 0 / 0.4); pointer-events: none;
+  }
+  .row-field input {
+    width: 100%; height: 2.5rem;
+    border-radius: var(--radius-xl);
+    background: oklch(0.145 0 0 / 0.4);
+    border: 1px solid var(--border-soft);
+    color: var(--foreground);
+    font-family: inherit; font-size: .82rem; font-weight: 700;
+    padding: 0 .6rem 0 1.9rem;
+    outline: none; transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .row-field input:focus { border-color: oklch(0.33 0.13 15 / 0.55); box-shadow: 0 0 0 3px oklch(0.33 0.13 15 / 0.15); }
+  .row-field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; }
+
+  .hint-text { font-size: .7rem; font-weight: 500; color: oklch(0.708 0 0 / 0.55); padding-left: .75rem; }
+
+  /* Footer */
+  .modal-footer .btn-ghost { flex: 1; border: 1px solid var(--border-soft); }
+  .modal-footer .btn-primary { flex: 2; }
+
+  @media (max-width: 640px) {
+    .fake-sidebar { display: none; }
+    .fake-main { left: 0; padding: 1.5rem; }
+    .fake-cards { grid-template-columns: 1fr; }
+    .modal-header { padding: 1.5rem 1.25rem; }
+    .modal-title { font-size: 1.25rem; }
+    .rate-body { padding: 1.25rem 1.25rem 1.5rem; gap: 1.25rem; }
+    .installment-row { grid-template-columns: 2.6rem 1fr; grid-template-rows: auto auto; }
+    .rata-badge { width: 2.6rem; height: 2.6rem; grid-row: 1 / 3; }
+    .rows-head { flex-direction: column; align-items: flex-start; }
+    .modal-footer { flex-direction: column-reverse; padding: 1.25rem; gap: .75rem; }
+    .modal-footer .btn-ghost, .modal-footer .btn-primary { flex: none; width: 100%; }
+    .mock-nav .nav-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="mock-nav">
+  <span class="nav-tag">US-015</span>
+  <a href="piano-rate-editor.html" class="active">Piano Rate</a>
+  <a href="riepilogo-pagamenti-atleta.html">Riepilogo Atleta</a>
+</nav>
+
+<div class="stage">
+
+  <!-- Finta pagina Pagamenti dietro il modale -->
+  <div class="backdrop-app" aria-hidden="true">
+    <div class="fake-sidebar">
+      <div class="fake-logo">
+        <div class="fake-logo-mark">PP</div>
+        <span>Pro Pontedecimo</span>
+      </div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem"></div>
+      <div class="fake-navitem hot"></div>
+      <div class="fake-navitem"></div>
+    </div>
+    <div class="fake-main">
+      <div class="fake-eyebrow"></div>
+      <div class="fake-title"></div>
+      <div class="fake-cards">
+        <div class="fake-card"><b>€</b><span></span></div>
+        <div class="fake-card"><b>€</b><span></span></div>
+        <div class="fake-card"><b>!</b><span></span></div>
+      </div>
+      <div class="fake-wide"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay"></div>
+
+  <div class="modal-viewport">
+    <div class="modal-card rate-modal" role="dialog" aria-modal="true" aria-labelledby="rateTitle">
+
+      <header class="modal-header">
+        <div class="modal-header-id">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12a7.9 7.9 0 0 0 7.8 8 7.7 7.7 0 0 0 5.2-2"/></svg>
+          </div>
+          <div>
+            <h2 class="modal-title" id="rateTitle">Nuova <span class="accent">Quota</span></h2>
+            <p class="modal-subtitle">Piano rate personalizzato per atleta</p>
+          </div>
+        </div>
+        <button type="button" class="close-btn" aria-label="Chiudi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </header>
+
+      <div class="rate-body no-scrollbar">
+
+        <!-- Atleta -->
+        <section class="field-group">
+          <p class="field-label">Atleta <span class="req">*</span></p>
+          <div class="player-chip">
+            <div class="player-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="player-info">
+              <p>Bianchi Marco</p>
+              <span>Under 15</span>
+            </div>
+            <button type="button" class="player-change">Cambia</button>
+          </div>
+        </section>
+
+        <!-- Importo totale -->
+        <section class="field-group">
+          <p class="field-label">Importo Totale <span class="req">*</span></p>
+          <div class="input-euro">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12a7.9 7.9 0 0 0 7.8 8 7.7 7.7 0 0 0 5.2-2"/></svg>
+            <input type="number" step="0.01" min="0" id="totalAmount" value="300.00">
+          </div>
+        </section>
+
+        <!-- Numero di rate -->
+        <section class="field-group">
+          <p class="field-label">Numero di Rate</p>
+          <div class="rate-stepper">
+            <div class="stepper-control">
+              <button type="button" class="stepper-btn" id="decRate" aria-label="Meno rate">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg>
+              </button>
+              <div class="stepper-value">
+                <b id="rateCount">3</b>
+                <span id="rateUnit">rate</span>
+              </div>
+              <button type="button" class="stepper-btn" id="incRate" aria-label="Più rate">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </div>
+            <button type="button" class="split-even-btn" id="splitEven">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+              Dividi equamente
+            </button>
+          </div>
+        </section>
+
+        <!-- Righe piano rate -->
+        <section class="field-group">
+          <div class="rows-head">
+            <p class="field-label" style="padding-left:0">Piano Rate</p>
+            <div class="sum-indicator ok" id="sumIndicator">
+              <svg id="sumIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              Somma rate: <b id="sumValue">€ 300,00</b>&nbsp;/&nbsp;€&nbsp;<span id="targetValue">300,00</span>
+            </div>
+          </div>
+
+          <div class="installments" id="installmentsList">
+            <!-- righe generate via JS -->
+          </div>
+          <p class="hint-text" id="hintText">Tolleranza consentita: ± € 0,01 rispetto all'importo totale.</p>
+        </section>
+
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-ghost">Annulla</button>
+        <button type="button" class="btn btn-primary" id="submitBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7H7v7M7 3v4h8"/></svg>
+          Crea Piano Rate
+        </button>
+      </footer>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const MONTHS_STEP_DAYS = 60; // scadenza successiva = +60gg dalla precedente, punto di partenza demo
+
+  // Stato iniziale demo: 3 rate importi disomogenei che sommano esattamente al totale
+  let installments = [
+    { amount: 100.00, date: '2026-09-15' },
+    { amount: 120.00, date: '2026-11-15' },
+    { amount: 80.00,  date: '2027-01-15' },
+  ];
+
+  const $ = (sel) => document.querySelector(sel);
+  const totalAmountEl = $('#totalAmount');
+  const rateCountEl = $('#rateCount');
+  const rateUnitEl = $('#rateUnit');
+  const listEl = $('#installmentsList');
+  const sumIndicator = $('#sumIndicator');
+  const sumIcon = $('#sumIcon');
+  const sumValueEl = $('#sumValue');
+  const targetValueEl = $('#targetValue');
+  const submitBtn = $('#submitBtn');
+  const decBtn = $('#decRate');
+  const incBtn = $('#incRate');
+
+  const fmt = (n) => n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  function addDays(dateStr, days) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + days);
+    return d.toISOString().split('T')[0];
+  }
+
+  function renderRows() {
+    listEl.innerHTML = '';
+    installments.forEach((inst, i) => {
+      const row = document.createElement('div');
+      row.className = 'installment-row';
+      row.innerHTML = `
+        <div class="rata-badge"><b>${i + 1}</b><span>Rata</span></div>
+        <div class="row-field">
+          <label>Importo</label>
+          <div class="field-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12a7.9 7.9 0 0 0 7.8 8 7.7 7.7 0 0 0 5.2-2"/></svg>
+            <input type="number" step="0.01" min="0" data-idx="${i}" data-field="amount" value="${inst.amount.toFixed(2)}">
+          </div>
+        </div>
+        <div class="row-field">
+          <label>Scadenza</label>
+          <div class="field-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <input type="date" data-idx="${i}" data-field="date" value="${inst.date}">
+          </div>
+        </div>
+      `;
+      listEl.appendChild(row);
+    });
+
+    listEl.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', onRowChange);
+    });
+  }
+
+  function onRowChange(e) {
+    const idx = Number(e.target.dataset.idx);
+    const field = e.target.dataset.field;
+    if (field === 'amount') {
+      installments[idx].amount = parseFloat(e.target.value) || 0;
+    } else {
+      installments[idx].date = e.target.value;
+    }
+    updateSum();
+  }
+
+  function updateSum() {
+    const target = parseFloat(totalAmountEl.value) || 0;
+    const sum = installments.reduce((a, r) => a + (r.amount || 0), 0);
+    const diff = Math.abs(sum - target);
+    const ok = diff <= 0.01;
+
+    sumValueEl.textContent = `€ ${fmt(sum)}`;
+    targetValueEl.textContent = fmt(target);
+    sumIndicator.classList.toggle('ok', ok);
+    sumIndicator.classList.toggle('bad', !ok);
+    sumIcon.innerHTML = ok
+      ? '<path d="M20 6 9 17l-5-5"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+
+    submitBtn.disabled = !ok;
+    submitBtn.setAttribute('aria-disabled', String(!ok));
+  }
+
+  function setRateCount(n) {
+    n = Math.max(1, Math.min(12, n));
+    const target = parseFloat(totalAmountEl.value) || 0;
+    const current = installments.length;
+
+    if (n > current) {
+      const lastDate = installments.length ? installments[installments.length - 1].date : new Date().toISOString().split('T')[0];
+      for (let i = current; i < n; i++) {
+        installments.push({ amount: 0, date: addDays(lastDate, MONTHS_STEP_DAYS * (i - current + 1)) });
+      }
+    } else if (n < current) {
+      installments = installments.slice(0, n);
+    }
+
+    rateCountEl.textContent = n;
+    rateUnitEl.textContent = n === 1 ? 'rata' : 'rate';
+    decBtn.disabled = n <= 1;
+    incBtn.disabled = n >= 12;
+    renderRows();
+    updateSum();
+  }
+
+  function splitEvenly() {
+    const target = parseFloat(totalAmountEl.value) || 0;
+    const n = installments.length;
+    if (n === 0) return;
+    const base = Math.floor((target / n) * 100) / 100;
+    let allocated = 0;
+    installments.forEach((row, i) => {
+      if (i === n - 1) {
+        row.amount = Math.round((target - allocated) * 100) / 100;
+      } else {
+        row.amount = base;
+        allocated += base;
+      }
+    });
+    renderRows();
+    updateSum();
+  }
+
+  decBtn.addEventListener('click', () => setRateCount(installments.length - 1));
+  incBtn.addEventListener('click', () => setRateCount(installments.length + 1));
+  $('#splitEven').addEventListener('click', splitEvenly);
+  totalAmountEl.addEventListener('input', updateSum);
+
+  // Init
+  decBtn.disabled = installments.length <= 1;
+  incBtn.disabled = installments.length >= 12;
+  renderRows();
+  updateSum();
+})();
+</script>
+
+</body>
+</html>

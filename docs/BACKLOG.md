@@ -95,7 +95,7 @@
 |---|---|---|---|---|
 | [US-012](backlog/US-012-stabilita-calendario-correzione-fusi.md) | Stabilità calendario e correzione fusi orari | HIGH | 3 | DONE |
 | [US-013](backlog/US-013-tipologie-evento-calcistiche-doppio.md) | Tipologie evento calcistiche con doppio orario | MEDIUM | 3 | DONE |
-| [US-014](backlog/US-014-feed-ical-personalizzato-sincronizzazione.md) | Feed iCal personalizzato per la sincronizzazione esterna | MEDIUM | 5 | TODO |
+| [US-014](backlog/US-014-feed-ical-personalizzato-sincronizzazione.md) | Feed iCal personalizzato per la sincronizzazione esterna | MEDIUM | 5 | DONE |
 
 ### EP-005: Gestione Finanziaria e Quote
 
@@ -104,7 +104,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-015](backlog/US-015-supporto-pagamenti-multi-rata.md) | Supporto pagamenti multi-rata | HIGH | 5 | TODO |
+| [US-015](backlog/US-015-supporto-pagamenti-multi-rata.md) | Supporto pagamenti multi-rata | HIGH | 5 | DONE |
 | [US-016](backlog/US-016-trascinamento-insoluti-precedente.md) | Trascinamento insoluti anno precedente | MEDIUM | 3 | TODO |
 
 ### EP-006: Registro Presenze

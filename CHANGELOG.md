@@ -5,6 +5,18 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-015**: Aggiunto supporto completo ai pagamenti rateizzati multi-rata personalizzabili, consentendo all'amministrazione di definire importi e scadenze arbitrarie.
+- **US-015**: Creata la RPC database `create_payment_plan` in transazione atomica per salvare o sovrascrivere un piano rate per atleta+stagione, validando la somma ed evitando modifiche se esistono già rate pagate.
+- **US-015**: Riscritto `NewPaymentModal.tsx` come editor dinamico per piani rate (stepper 1-12 rate, divisione equa automatica/manuale, e indicatore visivo di bilanciamento live della quota).
+- **US-015**: Creato il nuovo componente `PlayerPaymentSummaryModal.tsx` per visualizzare il riepilogo finanziario dell'atleta (quota totale, pagato, residuo) e l'elenco rate evidenziando quelle scadute e non pagate.
+- **US-015**: Integrato il trigger per il riepilogo pagamenti in `Athletes.tsx` (in vista griglia e tabella).
+- **US-015**: Creato lo script di test di integrazione database `test-payment-plan.mjs` che valida l'autorizzazione, la somma e il blocco delle sovrascritture su rate già saldate.
+- **US-014**: Aggiunto feed iCal (.ics) personale e revocabile per sincronizzare gli eventi societari e le partite su Google Calendar, Apple Calendar o Outlook.
+- **US-014**: Creata la migrazione SQL per aggiungere `ics_token` alla tabella `profiles` e la funzione `regenerate_ics_token` in modalità SECURITY INVOKER per rigenerare/revocare in modo sicuro il token personale.
+- **US-014**: Sviluppato un serializzatore iCal RFC 5545 puro in TypeScript (`_shared/ics.ts`) che gestisce il folding delle righe a 75 caratteri, l'escape dei caratteri e la formattazione dei dettagli partita (ritrovo + inizio gara).
+- **US-014**: Creata l'Edge Function pubblica `ics-feed` che risolve il token via service role, recupera gli eventi e risponde con `text/calendar`, protetta da validazione del token UUID e con intestazioni CORS e Cache-Control per evitare memorizzazioni locali.
+- **US-014**: Integrazione dell'UI nel `ProfileModal.tsx` con la sezione "Sincronizza Calendario" che consente l'attivazione della sincronizzazione, la copia rapida del link negli appunti, la rigenerazione immediata (revoca) e lo stato di caricamento.
+- **US-014**: Creato lo script di test di integrazione end-to-end `test-ics-feed.mjs` che valida il ciclo di vita del token (generazione, invalidazione, 404 per token errati) e la conformità del feed iCal generato.
 - **US-012**: Creato il modulo `src/lib/dateTime.ts` contenente le funzioni pure `combineLocalDateTime` e `splitLocalDateTime` per la gestione corretta dei datetime rispetto alla timezone locale del browser.
 - **US-012**: Integrazione degli helper di datetime in `TaskModal.tsx` e `calendarService.ts` per allineare l'inserimento/visualizzazione dei compiti del calendario ed evitare disallineamenti di fuso orario (offset UTC).
 - **US-012**: Parsing sicuro della data di scadenza delle visite mediche (`medical_expiry`) per scongiurare slittamenti di data dovuti al parsing UTC.

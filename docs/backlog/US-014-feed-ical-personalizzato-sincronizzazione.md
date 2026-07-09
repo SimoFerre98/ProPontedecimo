@@ -11,12 +11,12 @@ così che allenamenti e partite compaiano automaticamente e in tempo reale su Go
 After implementing this story, the user can: copiare il proprio link iCal, aggiungerlo a Google Calendar e vedere gli eventi societari sincronizzati.
 
 **Acceptance Criteria**
-- [ ] Un endpoint (Supabase Edge Function) espone un feed `.ics` dinamico e valido per i principali client (Google, Apple, Outlook)
-- [ ] Il link è personalizzato per utente tramite token non indovinabile e mostra solo gli eventi di sua competenza
-- [ ] Gli eventi di tipo Partita includono l'orario di ritrovo nel dettaglio dell'evento esportato (dipende da US-013)
-- [ ] Le modifiche agli eventi si riflettono nel feed al successivo refresh del client
-- [ ] L'utente può rigenerare il proprio link, invalidando il precedente
+- [x] Un endpoint (Supabase Edge Function) espone un feed `.ics` dinamico e valido per i principali client (Google, Apple, Outlook)
+- [x] Il link è personalizzato per utente tramite token non indovinabile e mostra solo gli eventi di sua competenza
+- [x] Gli eventi di tipo Partita includono l'orario di ritrovo nel dettaglio dell'evento esportato (dipende da US-013)
+- [x] Le modifiche agli eventi si riflettono nel feed al successivo refresh del client
+- [x] L'utente può rigenerare il proprio link, invalidando il precedente
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE
+**Plan:** [US-014-plan.md](../planning/US-014-plan.md)
 
