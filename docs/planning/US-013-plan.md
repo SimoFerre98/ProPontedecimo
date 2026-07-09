@@ -57,10 +57,10 @@ La logica critica (vincolo doppio-orario, RLS, rendering condizionale) è verifi
 | DONE | TASK-02 | Test integrazione vincolo CHECK e RLS | `scripts/test-events.mjs`: insert validi/invalidi per il vincolo doppio-orario, matrice di accesso RLS per i 3 ruoli autorizzati | Test | TASK-01 |
 | DONE | TASK-03 | Crea `src/services/eventService.ts` | CRUD su `events`, stesso pattern di `staffService.ts` | Impl | TASK-01 |
 | DONE | TASK-04 | Crea `src/lib/eventTypes.ts` | Mappa `event_type → {label, icon, color}` condivisa tra form e calendario | Impl | - |
-| TODO | TASK-05 | Crea `src/components/modals/EventModal.tsx` | Form nuovo/modifica evento: selettore tipo, orario unico o doppio condizionale, uso di `combineLocalDateTime`/`splitLocalDateTime` | Impl | TASK-03, TASK-04 |
-| TODO | TASK-06 | Estendi `calendarService.ts` con la terza fonte `events` | Merge di `eventService.getEvents()` nell'union `CalendarEvent`, `displayTitle` con doppio orario per le Partite | Impl | TASK-03, TASK-04 |
-| TODO | TASK-07 | Integra `EventModal` in `CalendarModal.tsx` | Pulsante "Nuovo Evento", click su evento esistente apre la modifica, badge giorno con icona/colore da `eventTypes.ts` | Impl | TASK-05, TASK-06 |
-| TODO | TASK-08 | Verifica manuale UI (tipi, doppio orario, distinzione visiva) | Avviare il dev server: creare un evento per ciascuna delle 5 tipologie, verificare campi condizionali e badge distinti nel calendario | Test | TASK-07 |
+| DONE | TASK-05 | Crea `src/components/modals/EventModal.tsx` | Form nuovo/modifica evento: selettore tipo, orario unico o doppio condizionale, uso di `combineLocalDateTime`/`splitLocalDateTime` | Impl | TASK-03, TASK-04 |
+| DONE | TASK-06 | Estendi `calendarService.ts` con la terza fonte `events` | Merge di `eventService.getEvents()` nell'union `CalendarEvent`, `displayTitle` con doppio orario per le Partite | Impl | TASK-03, TASK-04 |
+| DONE | TASK-07 | Integra `EventModal` in `CalendarModal.tsx` | Pulsante "Nuovo Evento", click su evento esistente apre la modifica, badge giorno con icona/colore da `eventTypes.ts` | Impl | TASK-05, TASK-06 |
+| DONE | TASK-08 | Verifica manuale UI (tipi, doppio orario, distinzione visiva) | Avviare il dev server: creare un evento per ciascuna delle 5 tipologie, verificare campi condizionali e badge distinti nel calendario | Test | TASK-07 |
 
 ---
 
