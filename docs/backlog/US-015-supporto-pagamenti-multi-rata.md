@@ -11,12 +11,12 @@ così che le famiglie possano pagare in modo dilazionato e l'amministrazione sap
 After implementing this story, the user can: configurare una quota da 300€ in 3 rate con scadenze diverse, segnare la prima come pagata e vedere lo stato aggiornato nel riepilogo dell'atleta.
 
 **Acceptance Criteria**
-- [ ] L'admin può creare un piano rate con numero di rate, importi e scadenze personalizzati per atleta
-- [ ] Ogni rata ha uno stato tracciato (da pagare, pagata, scaduta) aggiornabile dall'amministrazione
-- [ ] La somma delle rate è validata rispetto alla quota totale
-- [ ] Il riepilogo finanziario dell'atleta mostra quota totale, rate saldate e residuo
-- [ ] Le rate scadute e non pagate sono evidenziate nelle liste pagamenti
+- [x] L'admin può creare un piano rate con numero di rate, importi e scadenze personalizzati per atleta
+- [x] Ogni rata ha uno stato tracciato (da pagare, pagata, scaduta) aggiornabile dall'amministrazione
+- [x] La somma delle rate è validata rispetto alla quota totale
+- [x] Il riepilogo finanziario dell'atleta mostra quota totale, rate saldate e residuo
+- [x] Le rate scadute e non pagate sono evidenziate nelle liste pagamenti
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE
+**Plan:** [docs/planning/US-015-plan.md](../planning/US-015-plan.md)
 

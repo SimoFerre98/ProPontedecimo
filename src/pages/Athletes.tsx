@@ -20,7 +20,8 @@ import {
   Clock,
   Trash2,
   AlertCircle,
-  FileText
+  FileText,
+  Euro
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,7 @@ import { paymentService } from '@/services/paymentService'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
 import AddAthleteModal from '@/components/modals/AddAthleteModal'
 import DeleteAthleteModal from '@/components/modals/DeleteAthleteModal'
+import PlayerPaymentSummaryModal from '@/components/modals/PlayerPaymentSummaryModal'
 import { Pagination } from '@/components/ui/Pagination'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppStore } from '@/store/useAppStore'
@@ -78,6 +80,8 @@ export default function Athletes() {
   const [filters, setFilters] = useState<FiltersState>(DEFAULT_FILTERS)
   const [pendingFilters, setPendingFilters] = useState<FiltersState>(DEFAULT_FILTERS)
   const [athleteToDelete, setAthleteToDelete] = useState<Player | null>(null)
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false)
+  const [summaryPlayer, setSummaryPlayer] = useState<Player | null>(null)
   const { role } = useAuth()
   const queryClient = useQueryClient()
   const { selectedSeasonId } = useAppStore()
@@ -710,28 +714,40 @@ export default function Athletes() {
                         <span className="text-xs font-bold tabular-nums">{player.figc_registration || '-'}</span>
                       </td>
                       <td className="p-6 text-right">
-                        <button 
-                          onClick={() => {
-                            setSelectedPlayer(player)
-                            setIsModalOpen(true)
-                          }}
-                          className="text-primary hover:text-primary/80 transition-colors flex items-center justify-end gap-1.5 group/btn"
-                        >
-                          <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
-                          <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
-                        </button>
-                        {isAdmin && (
+                        <div className="flex items-center justify-end gap-3.5">
                           <button 
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setAthleteToDelete(player)
+                            onClick={() => {
+                              setSummaryPlayer(player)
+                              setIsSummaryOpen(true)
                             }}
-                            className="p-2 pill text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
-                            title="Elimina"
+                            className="text-foreground/75 hover:text-primary transition-colors flex items-center gap-1 group/btn"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Euro className="w-3.5 h-3.5" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Pagamenti</span>
                           </button>
-                        )}
+                          <button 
+                            onClick={() => {
+                              setSelectedPlayer(player)
+                              setIsModalOpen(true)
+                            }}
+                            className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1 group/btn"
+                          >
+                            <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
+                            <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                          </button>
+                          {isAdmin && (
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setAthleteToDelete(player)
+                              }}
+                              className="p-2 pill text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
+                              title="Elimina"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </motion.tr>
                   )
@@ -838,16 +854,28 @@ export default function Athletes() {
                         <span>{player.is_registered ? 'Tesserato' : 'Non Tess.'}</span>
                       </div>
                     </div>
-                    <button 
-                      onClick={() => {
-                        setSelectedPlayer(player)
-                        setIsModalOpen(true)
-                      }}
-                      className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5 group/btn"
-                    >
-                      <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
-                      <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button 
+                        onClick={() => {
+                          setSummaryPlayer(player)
+                          setIsSummaryOpen(true)
+                        }}
+                        className="text-foreground/75 hover:text-primary transition-colors flex items-center gap-1 group/btn"
+                      >
+                        <Euro className="w-3.5 h-3.5" />
+                        <span className="text-[10px] font-black uppercase tracking-widest">Pagamenti</span>
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setSelectedPlayer(player)
+                          setIsModalOpen(true)
+                        }}
+                        className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1 group/btn ml-auto"
+                      >
+                        <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
+                        <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                      </button>
+                    </div>
                   </div>
 
                   {isAdmin && (
@@ -902,6 +930,17 @@ export default function Athletes() {
           queryClient.invalidateQueries({ queryKey: ['players'] })
           queryClient.invalidateQueries({ queryKey: ['missingRegistrationCount'] })
         }}
+      />
+
+      <PlayerPaymentSummaryModal
+        isOpen={isSummaryOpen}
+        onClose={() => {
+          setIsSummaryOpen(false)
+          setSummaryPlayer(null)
+        }}
+        playerId={summaryPlayer?.id || null}
+        playerName={summaryPlayer ? `${summaryPlayer.last_name} ${summaryPlayer.first_name}` : ''}
+        playerTeamSector={summaryPlayer?.team_sector || null}
       />
     </div>
   )

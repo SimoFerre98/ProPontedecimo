@@ -78,7 +78,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
                   Registra <span className="text-primary not-italic">Pagamento</span>
                 </h2>
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mt-1">
-                  {payment.player.last_name} {payment.player.first_name} — {payment.installment_no === 1 ? '1ª Rata' : '2ª Rata'}
+                  {payment.player.last_name} {payment.player.first_name} — {`${payment.installment_no}ª Rata`}
                 </p>
               </div>
               <button onClick={onClose} className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0">

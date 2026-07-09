@@ -104,7 +104,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-015](backlog/US-015-supporto-pagamenti-multi-rata.md) | Supporto pagamenti multi-rata | HIGH | 5 | TODO |
+| [US-015](backlog/US-015-supporto-pagamenti-multi-rata.md) | Supporto pagamenti multi-rata | HIGH | 5 | DONE |
 | [US-016](backlog/US-016-trascinamento-insoluti-precedente.md) | Trascinamento insoluti anno precedente | MEDIUM | 3 | TODO |
 
 ### EP-006: Registro Presenze

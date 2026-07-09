@@ -54,6 +54,8 @@ Aggiornare questa lista quando una nuova story tocca una di queste tabelle o ne 
 | `players` | US-002 (RLS), US-003 (indici), US-007/US-008 (season copy via `create_season_from_wizard`), US-009 (trigger validazione), `sync_medical_expiry` trigger (baseline) | Wizard di stagione (copia storica), sync visite mediche, `scripts/test-rls.mjs`, `scripts/test-rpc-wizard.mjs` |
 | `seasons` | US-007 (selettore), US-008 (wizard), US-009 (fixture di test) | `is_active` è univoco (indice parziale): ogni INSERT/UPDATE che tocca `is_active` deve gestire il flag sulla riga precedente |
 | `create_season_from_wizard` (RPC) | US-008, US-009 (bypass validazione) | Qualunque nuova validazione su `players` deve prevedere esplicitamente il caso "copia da stagione precedente" |
+| `payments` | US-003 (indici), US-015 (piano rate multi-installment via `create_payment_plan`) | US-015 riscrive per intero le rate `pending` di un player+season a ogni salvataggio piano — qualunque nuova story che scriva su `payments` (es. US-016 insoluti, US-021 export, US-029 pagamenti online) deve considerare questo comportamento "delete + reinsert" e il blocco se esistono rate già `paid` |
+| `create_payment_plan` (RPC) | US-015 | SECURITY DEFINER con controllo ruolo manuale (solo `president`/`director`); valida che la somma delle rate coincida con l'importo totale (tolleranza 1 centesimo) e blocca la sovrascrittura se esistono rate `paid` per quel player+season |
 
 ---
 

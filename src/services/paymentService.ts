@@ -75,7 +75,15 @@ export const paymentService = {
       .range(from, to)
 
     if (status && status !== 'all') {
-      query = query.eq('status', status)
+      if (status === 'overdue') {
+        const todayStr = new Date().toISOString().split('T')[0]
+        query = query.eq('status', 'pending').lt('due_date', todayStr)
+      } else if (status === 'pending') {
+        const todayStr = new Date().toISOString().split('T')[0]
+        query = query.eq('status', 'pending').or(`due_date.gte.${todayStr},due_date.is.null`)
+      } else {
+        query = query.eq('status', status)
+      }
     }
 
     if (seasonId) {
@@ -97,18 +105,41 @@ export const paymentService = {
 
     const { data, error, count } = await query
     if (error) throw error
-    return { data: data as unknown as PaymentReference[], count: count || 0 }
+
+    const todayStr = new Date().toISOString().split('T')[0]
+    const mapped = (data || []).map((p: any) => {
+      if (p.status === 'pending' && p.due_date && p.due_date < todayStr) {
+        return { ...p, status: 'overdue' as PaymentStatus }
+      }
+      return p
+    })
+
+    return { data: mapped as unknown as PaymentReference[], count: count || 0 }
   },
 
   // Recupera tutti i pagamenti di un singolo atleta
-  async getPaymentsByPlayer(playerId: string) {
-    const { data, error } = await supabase
+  async getPaymentsByPlayer(playerId: string, seasonId?: string | null) {
+    let query = supabase
       .from('payments')
       .select('*')
       .eq('player_id', playerId)
-      .order('installment_no', { ascending: true })
+
+    if (seasonId) {
+      query = query.eq('season_id', seasonId)
+    }
+
+    const { data, error } = await query.order('installment_no', { ascending: true })
     if (error) throw error
-    return data as PaymentReference[]
+
+    const todayStr = new Date().toISOString().split('T')[0]
+    const mapped = (data || []).map((p: any) => {
+      if (p.status === 'pending' && p.due_date && p.due_date < todayStr) {
+        return { ...p, status: 'overdue' as PaymentStatus }
+      }
+      return p
+    })
+
+    return mapped as PaymentReference[]
   },
 
   // Conta atleti con pagamenti in sospeso/scaduti (per banner Athletes)
@@ -209,6 +240,26 @@ export const paymentService = {
       .lt('due_date', dateStr)
 
     if (error) throw error
-    return data as unknown as Pick<PaymentReference, 'id' | 'installment_no' | 'due_date' | 'amount_eur' | 'status' | 'player'>[]
+
+    const todayStr = new Date().toISOString().split('T')[0]
+    const mapped = (data || []).map((p: any) => {
+      if (p.status === 'pending' && p.due_date && p.due_date < todayStr) {
+        return { ...p, status: 'overdue' as PaymentStatus }
+      }
+      return p
+    })
+
+    return mapped as unknown as Pick<PaymentReference, 'id' | 'installment_no' | 'due_date' | 'amount_eur' | 'status' | 'player'>[]
+  },
+
+  // Salva o sovrascrive un piano rate per un atleta (tramite RPC create_payment_plan)
+  async createPaymentPlan(playerId: string, seasonId: string, totalAmount: number, installments: { amount_eur: number; due_date: string }[]) {
+    const { error } = await supabase.rpc('create_payment_plan', {
+      p_player_id: playerId,
+      p_season_id: seasonId,
+      p_total_amount: totalAmount,
+      p_installments: installments
+    })
+    if (error) throw error
   }
 }
