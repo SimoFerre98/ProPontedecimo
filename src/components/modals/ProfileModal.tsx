@@ -1,4 +1,4 @@
-import { useEffect, type ComponentType } from 'react'
+import { useEffect, useState, type ComponentType } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X,
@@ -9,13 +9,17 @@ import {
   Mail,
   Calendar,
   Lock,
-  Clock
+  Clock,
+  Copy,
+  Check,
+  RefreshCw
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { it } from 'date-fns/locale'
 import { useAuth } from '@/hooks/useAuth'
 import type { UserRole } from '@/contexts/auth-context'
 import { cn } from '@/lib/utils'
+import { icsFeedService } from '@/services/icsFeedService'
 
 interface ProfileModalProps {
   isOpen: boolean
@@ -89,6 +93,67 @@ function getInitials(fullName: string | null, email: string): string {
 
 export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalProps>) {
   const { profile, user } = useAuth()
+
+  const [icsToken, setIcsToken] = useState<string | null>(null)
+  const [isLoadingToken, setIsLoadingToken] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!isOpen || !user) return
+
+    let isMounted = true
+    async function loadToken() {
+      setIsLoadingToken(true)
+      setErrorMsg(null)
+      try {
+        const token = await icsFeedService.getIcsToken()
+        if (isMounted) {
+          setIcsToken(token)
+        }
+      } catch (err) {
+        if (isMounted) {
+          setErrorMsg('Impossibile caricare il feed calendar')
+          console.error(err)
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingToken(false)
+        }
+      }
+    }
+
+    loadToken()
+    return () => {
+      isMounted = false
+    }
+  }, [isOpen, user])
+
+  const handleCopyLink = async () => {
+    if (!icsToken) return
+    const url = icsFeedService.buildIcsUrl(icsToken)
+    try {
+      await navigator.clipboard.writeText(url)
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
+    } catch (err) {
+      console.error('Copy failed', err)
+    }
+  }
+
+  const handleRegenerateToken = async () => {
+    setIsLoadingToken(true)
+    setErrorMsg(null)
+    try {
+      const newToken = await icsFeedService.regenerateIcsToken()
+      setIcsToken(newToken)
+    } catch (err) {
+      setErrorMsg('Impossibile rigenerare il link')
+      console.error(err)
+    } finally {
+      setIsLoadingToken(false)
+    }
+  }
 
   useEffect(() => {
     if (!isOpen) return
@@ -219,6 +284,93 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                 </span>
               </div>
             ))}
+          </section>
+
+          {/* Sincronizza Calendario */}
+          <section className="flex flex-col gap-3" aria-label="Sincronizzazione Calendario">
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 -mb-[0.1rem]">
+              Sincronizza Calendario
+            </p>
+            <div className="flex flex-col gap-3 p-5 rounded-[2rem] bg-white/5 border border-white/10 hover:border-primary/20 transition-all duration-300">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+                  <Calendar className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-bold text-foreground">Sincronizzazione Esterna (iCal)</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                    Importa gli eventi societari e le partite direttamente sul tuo Google Calendar, Apple Calendar o Outlook in tempo reale.
+                  </p>
+                </div>
+              </div>
+
+              {errorMsg && (
+                <div className="text-xs text-rose-500 bg-rose-500/10 border border-rose-500/20 px-4 py-2.5 rounded-xl font-medium">
+                  {errorMsg}
+                </div>
+              )}
+
+              {icsToken ? (
+                <div className="flex flex-col gap-2 mt-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 min-w-0 h-11 px-4 rounded-xl bg-black/30 border border-white/5 flex items-center">
+                      <span className="text-xs text-muted-foreground font-mono truncate select-all">
+                        {icsFeedService.buildIcsUrl(icsToken)}
+                      </span>
+                    </div>
+                    <button
+                      onClick={handleCopyLink}
+                      type="button"
+                      className={cn(
+                        "h-11 px-4 rounded-xl text-xs font-black uppercase tracking-widest border transition-all duration-200 flex items-center justify-center gap-2 active:scale-95 shrink-0",
+                        isCopied
+                          ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400"
+                          : "bg-white/5 border-white/10 text-foreground hover:bg-white/10"
+                      )}
+                    >
+                      {isCopied ? (
+                        <>
+                          <Check className="w-4.5 h-4.5" />
+                          Copiato
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4.5 h-4.5" />
+                          Copia
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between mt-1 pl-1">
+                    <span className="text-[10px] text-muted-foreground flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Link pronto e attivo
+                    </span>
+                    <button
+                      onClick={handleRegenerateToken}
+                      disabled={isLoadingToken}
+                      type="button"
+                      className="text-[10px] font-bold text-muted-foreground hover:text-rose-400 transition-colors flex items-center gap-1 uppercase tracking-wider"
+                    >
+                      <RefreshCw className={cn("w-3 h-3", isLoadingToken && "animate-spin")} />
+                      Rigenera Link
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-2">
+                  <button
+                    onClick={handleRegenerateToken}
+                    disabled={isLoadingToken}
+                    type="button"
+                    className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98"
+                  >
+                    <RefreshCw className={cn("w-4 h-4", isLoadingToken && "animate-spin")} />
+                    {isLoadingToken ? 'Generazione...' : 'Attiva Sincronizzazione'}
+                  </button>
+                </div>
+              )}
+            </div>
           </section>
         </div>
 
