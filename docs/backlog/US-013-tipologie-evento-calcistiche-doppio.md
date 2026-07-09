@@ -11,11 +11,11 @@ così che squadra e famiglie sappiano con precisione quando presentarsi e quando
 After implementing this story, the user can: creare una "Partita in Trasferta" con ritrovo alle 8:30 e inizio gara alle 10:00 e vedere entrambi gli orari sull'evento.
 
 **Acceptance Criteria**
-- [ ] L'evento supporta le tipologie: Allenamento, Partita in Casa, Trasferta, Riunione, Evento generico
-- [ ] Gli eventi di tipo Partita richiedono e mostrano sia l'Orario di Ritrovo che l'Orario di Inizio Gara
-- [ ] Le tipologie sono distinguibili visivamente nel calendario (colore/icona coerenti col design system)
-- [ ] Un evento non-Partita non mostra campi orario doppi superflui
+- [x] L'evento supporta le tipologie: Allenamento, Partita in Casa, Trasferta, Riunione, Evento generico
+- [x] Gli eventi di tipo Partita richiedono e mostrano sia l'Orario di Ritrovo che l'Orario di Inizio Gara
+- [x] Le tipologie sono distinguibili visivamente nel calendario (colore/icona coerenti col design system)
+- [x] Un evento non-Partita non mostra campi orario doppi superflui
 
-**Status:** REVIEW
+**Status:** DONE
 **Plan:** [US-013-plan.md](../planning/US-013-plan.md)
 
