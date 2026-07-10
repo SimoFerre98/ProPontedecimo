@@ -45,7 +45,7 @@ interface DeleteConfirmState {
 }
 
 export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModalProps>) {
-  const { user } = useAuth()
+  const { user, role: currentUserRole } = useAuth()
   const queryClient = useQueryClient()
   const [searchTerm, setSearchTerm] = useState('')
   const [roleFilter, setRoleFilter] = useState<UserRole | 'all'>('all')
@@ -99,7 +99,9 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
       .eq('id', profileId)
 
     if (error) {
-      setErrorMsg("Errore durante l'aggiornamento del ruolo.")
+      // TASK-03: propaga il messaggio del trigger DB invece del testo generico,
+      // così l'utente capisce perché il cambio ruolo è stato rifiutato.
+      setErrorMsg(error.message || "Errore durante l'aggiornamento del ruolo.")
     } else {
       queryClient.setQueryData<Profile[]>(['settings-profiles'], prev =>
         (prev ?? []).map(p => p.id === profileId ? { ...p, role: newRole } : p))
@@ -327,25 +329,39 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
 
                       {/* Role badge + selector */}
                       <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
-                        <span className={cn("text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border hidden sm:block", ROLE_COLORS[profile.role])}>
-                          {ROLE_LABELS[profile.role]}
-                        </span>
-
-                        {updatingId === profile.id ? (
-                          <div className="px-3 py-2"><Loader2 className="w-4 h-4 text-primary animate-spin" /></div>
+                        {/* TASK-01: il selettore interattivo è visibile solo per il Presidente.
+                             Per tutti gli altri ruoli (es. Dirigente) si mostra solo il badge statico,
+                             allineando la UI al vincolo già imposto da trg_enforce_role_change. */}
+                        {currentUserRole === 'president' ? (
+                          // Presidente: selettore interattivo, disabilitato solo sulla propria riga (AC3)
+                          updatingId === profile.id ? (
+                            <div className="px-3 py-2"><Loader2 className="w-4 h-4 text-primary animate-spin" /></div>
+                          ) : (
+                            // TASK-02: tooltip esplicativo sul self-lock, così il Presidente capisce
+                            // perché il proprio ruolo non è modificabile (invece di sembrare un bug).
+                            <select
+                              value={profile.role}
+                              onChange={e => handleRoleChange(profile.id, e.target.value as UserRole)}
+                              disabled={profile.id === user?.id || updatingId !== null}
+                              title={profile.id === user?.id ? 'Non puoi modificare il tuo stesso ruolo' : undefined}
+                              className="bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 text-foreground text-xs font-bold rounded-xl px-3 py-2.5 outline-none focus:border-primary disabled:opacity-50 cursor-pointer transition-colors hover:border-primary/50 appearance-none"
+                            >
+                              {(Object.entries(ROLE_LABELS) as [UserRole, string][]).map(([value, label]) => (
+                                <option key={value} value={value} className="bg-background text-foreground">
+                                  {label}
+                                </option>
+                              ))}
+                            </select>
+                          )
                         ) : (
-                          <select
-                            value={profile.role}
-                            onChange={e => handleRoleChange(profile.id, e.target.value as UserRole)}
-                            disabled={profile.id === user?.id || updatingId !== null}
-                            className="bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 text-foreground text-xs font-bold rounded-xl px-3 py-2.5 outline-none focus:border-primary disabled:opacity-50 cursor-pointer transition-colors hover:border-primary/50 appearance-none"
-                          >
-                            {(Object.entries(ROLE_LABELS) as [UserRole, string][]).map(([value, label]) => (
-                              <option key={value} value={value} className="bg-background text-foreground">
-                                {label}
-                              </option>
-                            ))}
-                          </select>
+                          // Non-Presidente (es. Dirigente): badge statico — nessun controllo editabile.
+                          // Il badge con ROLE_COLORS/ROLE_LABELS è già definito nel progetto.
+                          <span className={cn(
+                            "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border",
+                            ROLE_COLORS[profile.role]
+                          )}>
+                            {ROLE_LABELS[profile.role]}
+                          </span>
                         )}
 
                         {/* Reset Password button */}

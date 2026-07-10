@@ -5,6 +5,10 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-020**: Allineato il frontend `SettingsModal.tsx` al vincolo di cambio ruolo a livello database, rendendo il selettore interattivo solo per gli utenti con ruolo `president` (Presidente).
+- **US-020**: Mostrato il badge di ruolo statico in `SettingsModal.tsx` per tutti gli utenti con ruoli diversi da `president` (es. Dirigente), inibendo modifiche non autorizzate in UI.
+- **US-020**: Introdotto un tooltip informativo sulla riga del proprio profilo (`"Non puoi modificare il tuo stesso ruolo"`) per spiegare visivamente il blocco del self-lock.
+- **US-020**: Aggiornato `handleRoleChange` per visualizzare in modo trasparente l'errore effettivo restituito dal trigger DB (`error.message`) in caso di fallimento della query.
 - **US-017**: Riscritto `Attendance.tsx` per implementare un registro presenze completo e mobile-first, comprensivo di selettore date, indicatori progressivi di stato e contatori di riepilogo.
 - **US-017**: Creata la migrazione SQL per l'enum `attendance_status` ('present', 'absent', 'justified') e la colonna `status` associata, con backfill sicuro e vincolo di unicità `(player_id, session_date, type)`.
 - **US-017**: Creato `attendanceService.ts` per gestire il caricamento della rosa di atleti attivi, il recupero dello stato presenze storico per data e l'upsert atomico con mutation ottimistica via React Query.

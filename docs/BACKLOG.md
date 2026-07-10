@@ -125,7 +125,7 @@
 |---|---|---|---|---|
 | [US-018](backlog/US-018-impostazioni-profilo-utente-base.md) | Impostazioni profilo utente base | MEDIUM | 3 | DONE |
 | [US-019](backlog/US-019-recupero-password-assistito-admin.md) | Recupero password assistito da admin | MEDIUM | 3 | DONE |
-| [US-020](backlog/US-020-assegnazione-ruoli-pannello-impostazioni.md) | Assegnazione ruoli dal pannello impostazioni | MEDIUM | 2 | TODO |
+| [US-020](backlog/US-020-assegnazione-ruoli-pannello-impostazioni.md) | Assegnazione ruoli dal pannello impostazioni | MEDIUM | 2 | DONE |
 
 ### EP-008: Reportistica & Esportazione
 
@@ -134,7 +134,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-021](backlog/US-021-esportazione-excel-atleti-pagamenti.md) | Esportazione Excel di atleti e pagamenti | MEDIUM | 3 | TODO |
+| [US-021](backlog/US-021-esportazione-excel-atleti-pagamenti.md) | Esportazione Excel di atleti e pagamenti | MEDIUM | 3 | PLANNED |
 | [US-022](backlog/US-022-grafici-andamento-finanziario.md) | Grafici andamento finanziario | MEDIUM | 3 | TODO |
 
 ### EP-009: Deploy VPS, Migrazione & Backup
