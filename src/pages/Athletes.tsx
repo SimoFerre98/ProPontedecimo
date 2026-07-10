@@ -21,13 +21,16 @@ import {
   Trash2,
   AlertCircle,
   FileText,
-  Euro
+  Euro,
+  Download,
+  Loader2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import { athleteService, type Player } from '@/services/athleteService'
 import { paymentService } from '@/services/paymentService'
+import { exportToXlsx } from '@/lib/xlsxExport'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
 import AddAthleteModal from '@/components/modals/AddAthleteModal'
 import DeleteAthleteModal from '@/components/modals/DeleteAthleteModal'
@@ -79,10 +82,53 @@ export default function Athletes() {
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState<FiltersState>(DEFAULT_FILTERS)
   const [pendingFilters, setPendingFilters] = useState<FiltersState>(DEFAULT_FILTERS)
+  const [isExporting, setIsExporting] = useState(false)
   const [athleteToDelete, setAthleteToDelete] = useState<Player | null>(null)
   const [isSummaryOpen, setIsSummaryOpen] = useState(false)
   const [summaryPlayer, setSummaryPlayer] = useState<Player | null>(null)
   const { role } = useAuth()
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true)
+      const dataToExport = await athleteService.getPlayersForExport(
+        search,
+        sectorFilter,
+        filters,
+        selectedSeasonId
+      )
+      
+      const mappedRows = dataToExport.map(p => ({
+        'Cognome': p.last_name || '',
+        'Nome': p.first_name || '',
+        'Data di Nascita': p.birth_date || '',
+        'Luogo di Nascita': p.birth_place || '',
+        'Codice Fiscale': p.tax_code || '',
+        'Indirizzo': p.address_street || '',
+        'Città': p.address_city || '',
+        'CAP': p.address_zip || '',
+        'Telefono': p.phone_player || p.phone_home || '',
+        'Email': p.email || '',
+        'Genitore 1 (Nome)': p.parent1_name || '',
+        'Genitore 1 (Telefono)': p.parent1_phone || '',
+        'Genitore 1 (CF)': p.parent1_tax_code || '',
+        'Genitore 2 (Nome)': p.parent2_name || '',
+        'Genitore 2 (Telefono)': p.parent2_phone || '',
+        'Genitore 2 (CF)': p.parent2_tax_code || '',
+        'Settore': p.team_sector || '',
+        'Matricola FIGC': p.figc_registration || '',
+        'Tesserato': p.is_registered ? 'Sì' : 'No',
+        'Scadenza Visita Medica': p.medical_expiry || '',
+        'Stato': p.is_active ? 'Attivo' : 'Non Attivo'
+      }))
+
+      exportToXlsx(mappedRows, 'esportazione_atleti.xlsx', 'Atleti')
+    } catch (err) {
+      console.error("Errore durante l'esportazione degli atleti:", err)
+    } finally {
+      setIsExporting(false)
+    }
+  }
   const queryClient = useQueryClient()
   const { selectedSeasonId } = useAppStore()
 
@@ -336,6 +382,19 @@ export default function Athletes() {
               {filterCount}
             </span>
           )}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleExport}
+          disabled={totalCount === 0 || isExporting}
+          className="pill h-14 px-5 shrink-0 gap-2 border border-black/10 dark:border-white/10 hover:border-primary transition-all font-black uppercase tracking-widest text-[10px] w-full lg:w-auto justify-center disabled:opacity-50"
+        >
+          {isExporting ? (
+            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+          ) : (
+            <Download className="w-4 h-4" />
+          )}
+          {isExporting ? 'Esportazione...' : 'Esporta Excel'}
         </Button>
       </div>
 
