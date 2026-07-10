@@ -38,6 +38,63 @@ export type Player = {
   updated_at?: string
 }
 
+function buildPlayersQuery(
+  search?: string,
+  sector?: string,
+  filters?: {
+    isActive?: 'all' | 'active' | 'inactive'
+    isRegistered?: 'all' | 'yes' | 'no'
+    medicalStatus?: 'all' | 'expired' | 'valid' | 'missing'
+    privacyStatus?: 'all' | 'accepted' | 'missing'
+    registrationStatus?: 'all' | 'missing'
+    sortBy?: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
+    sortDir?: 'asc' | 'desc'
+  },
+  seasonId?: string | null,
+  selectOptions?: { count: 'exact' }
+) {
+  const sortField = filters?.sortBy ?? 'last_name'
+  const sortAsc = (filters?.sortDir ?? 'asc') === 'asc'
+
+  let query = supabase
+    .from('players')
+    .select('*', selectOptions)
+    .order(sortField, { ascending: sortAsc })
+
+  if (search) {
+    query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,tax_code.ilike.%${search}%`)
+  }
+  
+  if (sector && sector !== 'all') {
+    query = query.eq('team_sector', sector)
+  }
+
+  if (seasonId) {
+    query = query.eq('season_id', seasonId)
+  }
+
+  if (filters?.isActive === 'active') query = query.eq('is_active', true)
+  if (filters?.isActive === 'inactive') query = query.eq('is_active', false)
+  if (filters?.isRegistered === 'yes') query = query.eq('is_registered', true)
+  if (filters?.isRegistered === 'no') query = query.eq('is_registered', false)
+  if (filters?.medicalStatus === 'expired') {
+    query = query.not('medical_expiry', 'is', null).lt('medical_expiry', new Date().toISOString().split('T')[0])
+  } else if (filters?.medicalStatus === 'valid') {
+    query = query.not('medical_expiry', 'is', null).gte('medical_expiry', new Date().toISOString().split('T')[0])
+  } else if (filters?.medicalStatus === 'missing') {
+    query = query.is('medical_expiry', null)
+  }
+
+  if (filters?.privacyStatus === 'accepted') query = query.eq('privacy_accepted', true)
+  if (filters?.privacyStatus === 'missing') query = query.or('privacy_accepted.eq.false,privacy_accepted.is.null')
+
+  if (filters?.registrationStatus === 'missing') {
+    query = query.is('figc_registration', null)
+  }
+
+  return query
+}
+
 export const athleteService = {
   async getPlayers(
     search?: string,
@@ -58,49 +115,32 @@ export const athleteService = {
     const from = page * pageSize
     const to = from + pageSize - 1
 
-    const sortField = filters?.sortBy ?? 'last_name'
-    const sortAsc = (filters?.sortDir ?? 'asc') === 'asc'
-
-    let query = supabase
-      .from('players')
-      .select('*', { count: 'exact' })
-      .order(sortField, { ascending: sortAsc })
+    const query = buildPlayersQuery(search, sector, filters, seasonId, { count: 'exact' })
       .range(from, to)
-
-    if (search) {
-      query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,tax_code.ilike.%${search}%`)
-    }
-    
-    if (sector && sector !== 'all') {
-      query = query.eq('team_sector', sector)
-    }
-
-    if (seasonId) {
-      query = query.eq('season_id', seasonId)
-    }
-
-    if (filters?.isActive === 'active') query = query.eq('is_active', true)
-    if (filters?.isActive === 'inactive') query = query.eq('is_active', false)
-    if (filters?.isRegistered === 'yes') query = query.eq('is_registered', true)
-    if (filters?.isRegistered === 'no') query = query.eq('is_registered', false)
-    if (filters?.medicalStatus === 'expired') {
-      query = query.not('medical_expiry', 'is', null).lt('medical_expiry', new Date().toISOString().split('T')[0])
-    } else if (filters?.medicalStatus === 'valid') {
-      query = query.not('medical_expiry', 'is', null).gte('medical_expiry', new Date().toISOString().split('T')[0])
-    } else if (filters?.medicalStatus === 'missing') {
-      query = query.is('medical_expiry', null)
-    }
-
-    if (filters?.privacyStatus === 'accepted') query = query.eq('privacy_accepted', true)
-    if (filters?.privacyStatus === 'missing') query = query.or('privacy_accepted.eq.false,privacy_accepted.is.null')
-
-    if (filters?.registrationStatus === 'missing') {
-      query = query.is('figc_registration', null)
-    }
 
     const { data, error, count } = await query
     if (error) throw error
     return { data: data as Player[], count: count || 0 }
+  },
+
+  async getPlayersForExport(
+    search?: string,
+    sector?: string,
+    filters?: {
+      isActive?: 'all' | 'active' | 'inactive'
+      isRegistered?: 'all' | 'yes' | 'no'
+      medicalStatus?: 'all' | 'expired' | 'valid' | 'missing'
+      privacyStatus?: 'all' | 'accepted' | 'missing'
+      registrationStatus?: 'all' | 'missing'
+      sortBy?: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
+      sortDir?: 'asc' | 'desc'
+    },
+    seasonId?: string | null
+  ) {
+    const query = buildPlayersQuery(search, sector, filters, seasonId)
+    const { data, error } = await query
+    if (error) throw error
+    return data as Player[]
   },
 
   async getUniqueSectors(seasonId?: string) {

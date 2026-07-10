@@ -11,11 +11,11 @@ così che i dati possano essere condivisi e lavorati fuori dal gestionale (comme
 After implementing this story, the user can: filtrare gli atleti di una leva ed esportare un file Excel che contiene esattamente le righe visualizzate.
 
 **Acceptance Criteria**
-- [ ] Le liste atleti e pagamenti hanno un pulsante di esportazione `.xlsx` (SheetJS)
-- [ ] L'export rispetta i filtri e l'ordinamento attivi al momento dell'esportazione
-- [ ] Il file esportato ha intestazioni di colonna leggibili in italiano e si apre correttamente in Excel
-- [ ] L'esportazione è disponibile solo ai ruoli autorizzati a vedere quei dati
+- [x] Le liste atleti e pagamenti hanno un pulsante di esportazione `.xlsx` (SheetJS)
+- [x] L'export rispetta i filtri e l'ordinamento attivi al momento dell'esportazione
+- [x] Il file esportato ha intestazioni di colonna leggibili in italiano e si apre correttamente in Excel
+- [x] L'esportazione è disponibile solo ai ruoli autorizzati a vedere quei dati
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE (10 Luglio 2026)
+**Plan:** [docs/planning/US-021-plan.md](../planning/US-021-plan.md)
 

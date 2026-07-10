@@ -5,6 +5,10 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-021**: Creata l'utility condivisa `xlsxExport.ts` per centralizzare la logica di generazione e download di fogli di calcolo `.xlsx` tramite la libreria SheetJS.
+- **US-021**: Implementati i metodi `getPlayersForExport` in `athleteService.ts` e `getPaymentsForExport` in `paymentService.ts` per recuperare tutti i dati corrispondenti ai filtri attivi (senza paginazione lato server).
+- **US-021**: Aggiunto il pulsante "Esporta Excel" nella toolbar di `Athletes.tsx` per scaricare l'anagrafica completa degli atleti (con codice fiscale, residenza, contatti dei genitori) mappata in lingua italiana.
+- **US-021**: Aggiunto il pulsante "Esporta Excel" nella toolbar di `Payments.tsx`, visibile e utilizzabile solo per i ruoli `president` e `director` (gating tramite `useAuth`), per esportare la tabella finanziaria con filtri e ordinamento applicati.
 - **US-020**: Allineato il frontend `SettingsModal.tsx` al vincolo di cambio ruolo a livello database, rendendo il selettore interattivo solo per gli utenti con ruolo `president` (Presidente).
 - **US-020**: Mostrato il badge di ruolo statico in `SettingsModal.tsx` per tutti gli utenti con ruoli diversi da `president` (es. Dirigente), inibendo modifiche non autorizzate in UI.
 - **US-020**: Introdotto un tooltip informativo sulla riga del proprio profilo (`"Non puoi modificare il tuo stesso ruolo"`) per spiegare visivamente il blocco del self-lock.

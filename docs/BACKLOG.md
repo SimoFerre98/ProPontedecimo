@@ -134,7 +134,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-021](backlog/US-021-esportazione-excel-atleti-pagamenti.md) | Esportazione Excel di atleti e pagamenti | MEDIUM | 3 | PLANNED |
+| [US-021](backlog/US-021-esportazione-excel-atleti-pagamenti.md) | Esportazione Excel di atleti e pagamenti | MEDIUM | 3 | DONE |
 | [US-022](backlog/US-022-grafici-andamento-finanziario.md) | Grafici andamento finanziario | MEDIUM | 3 | TODO |
 
 ### EP-009: Deploy VPS, Migrazione & Backup
