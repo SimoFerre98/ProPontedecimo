@@ -11,10 +11,10 @@ così che i permessi dello staff riflettano sempre l'organizzazione reale della 
 After implementing this story, the user can: promuovere un utente a Dirigente e vedere che al suo login successivo ha i permessi corrispondenti.
 
 **Acceptance Criteria**
-- [ ] Solo il Presidente può assegnare o modificare i ruoli
-- [ ] Il cambio ruolo ha effetto sui permessi dell'utente (RLS di US-002) senza interventi manuali sul database
-- [ ] L'interfaccia impedisce al Presidente di rimuovere il proprio ruolo di super admin lasciando il sistema senza amministratori
+- [x] Solo il Presidente può assegnare o modificare i ruoli
+- [x] Il cambio ruolo ha effetto sui permessi dell'utente (RLS di US-002) senza interventi manuali sul database
+- [x] L'interfaccia impedisce al Presidente di rimuovere il proprio ruolo di super admin lasciando il sistema senza amministratori
 
-**Status:** REVIEW
+**Status:** DONE (10 Luglio 2026)
 **Plan:** [docs/planning/US-020-plan.md](../planning/US-020-plan.md)
 
