@@ -205,7 +205,7 @@ export default function PlayerPaymentSummaryModal({
                     </div>
 
                     <div className="space-y-2 max-h-[35vh] overflow-y-auto pr-1 no-scrollbar">
-                      {payments.map((p, i) => {
+                      {payments.map((p) => {
                         const isOverdueUnpaid = p.status === 'overdue'
                         return (
                           <div
