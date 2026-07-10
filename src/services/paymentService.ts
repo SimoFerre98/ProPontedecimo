@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase'
 
 export type PaymentStatus = 'pending' | 'paid' | 'overdue'
-export type PaymentPlan = 'annual' | 'installments'
+export type PaymentPlan = 'annual' | 'installments' | 'carried_over'
 export type PaymentMethod = 'satispay' | 'contanti' | 'pos' | 'iban'
 
 export interface PaymentReference {

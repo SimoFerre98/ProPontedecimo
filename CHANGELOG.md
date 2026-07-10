@@ -5,6 +5,12 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-016**: Aggiunto supporto al trascinamento degli insoluti della stagione precedente come "debito pregresso" all'avvio della nuova stagione.
+- **US-016**: Estesa la RPC `create_season_from_wizard` per collegare gli atleti importati tramite `previous_player_id` e calcolare/inserire automaticamente il debito pregresso (riga `payments` con `plan = 'carried_over'`) per gli atleti con rate `pending` residue.
+- **US-016**: Corretta la RPC `create_payment_plan` per escludere le righe `carried_over` dalla sovrascrittura/cancellazione del piano, dal blocco delle modifiche se già pagate, e dalla numerazione `installment_no` (che riparte dopo il debito pregresso).
+- **US-016**: Estesi gli script di test `test-rpc-wizard.mjs` e `test-payment-plan.mjs` per validare l'integrazione e la coesistenza del debito pregresso.
+- **US-016**: Aggiornati i tipi TS in `src/types/database.ts` e `paymentService.ts` per includere `previous_player_id` e il valore `'carried_over'` per `PaymentPlan`.
+- **US-016**: Aggiunta la card statistica "Debito Pregresso" in `PlayerPaymentSummaryModal.tsx` ed etichetta dedicata sia in `PlayerPaymentSummaryModal` che in `Payments.tsx`.
 - **US-015**: Aggiunto supporto completo ai pagamenti rateizzati multi-rata personalizzabili, consentendo all'amministrazione di definire importi e scadenze arbitrarie.
 - **US-015**: Creata la RPC database `create_payment_plan` in transazione atomica per salvare o sovrascrivere un piano rate per atleta+stagione, validando la somma ed evitando modifiche se esistono già rate pagate.
 - **US-015**: Riscritto `NewPaymentModal.tsx` come editor dinamico per piani rate (stepper 1-12 rate, divisione equa automatica/manuale, e indicatore visivo di bilanciamento live della quota).

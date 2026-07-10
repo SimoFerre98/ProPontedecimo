@@ -217,6 +217,7 @@ export type Database = {
           tax_code: string | null
           team_sector: string | null
           updated_at: string | null
+          previous_player_id: string | null
         }
         Insert: {
           address_city?: string | null
@@ -250,6 +251,7 @@ export type Database = {
           tax_code?: string | null
           team_sector?: string | null
           updated_at?: string | null
+          previous_player_id?: string | null
         }
         Update: {
           address_city?: string | null
@@ -283,6 +285,7 @@ export type Database = {
           tax_code?: string | null
           team_sector?: string | null
           updated_at?: string | null
+          previous_player_id?: string | null
         }
         Relationships: [
           {
@@ -297,6 +300,13 @@ export type Database = {
             columns: ["season_id"]
             isOneToOne: false
             referencedRelation: "seasons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "players_previous_player_id_fkey"
+            columns: ["previous_player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
             referencedColumns: ["id"]
           },
         ]

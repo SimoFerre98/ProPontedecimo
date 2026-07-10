@@ -16,6 +16,6 @@ After implementing this story, the user can: aprire il riepilogo finanziario di 
 - [ ] Un atleta senza insoluti non mostra alcuna voce di debito pregresso
 - [ ] Il pagamento del debito pregresso è tracciabile come le altre rate
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [docs/planning/US-016-plan.md](../planning/US-016-plan.md)
 
