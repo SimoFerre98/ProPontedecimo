@@ -11,11 +11,11 @@ così che genitori e ragazzi poco pratici possano rientrare nel portale senza pr
 After implementing this story, the user can: selezionare un utente dal pannello admin e inviargli l'email di reset password di Supabase.
 
 **Acceptance Criteria**
-- [ ] Presidente e Dirigenti possono innescare l'invio dell'email di reset password per qualsiasi utente
-- [ ] L'azione è accessibile solo ai ruoli autorizzati (coerente con US-002)
-- [ ] L'esito dell'invio (successo o errore) è mostrato all'amministratore
-- [ ] L'operazione non rivela né modifica la password attuale dell'utente
+- [x] Presidente e Dirigenti possono innescare l'invio dell'email di reset password per qualsiasi utente
+- [x] L'azione è accessibile solo ai ruoli autorizzati (coerente con US-002)
+- [x] L'esito dell'invio (successo o errore) è mostrato all'amministratore
+- [x] L'operazione non rivela né modifica la password attuale dell'utente
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE (10 Luglio 2026)
+**Plan:** [docs/planning/US-019-plan.md](../planning/US-019-plan.md)
 
