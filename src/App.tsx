@@ -22,6 +22,7 @@ import PortalDashboard from '@/pages/PortalDashboard'
 // Auth Pages
 import LoginPage from '@/pages/LoginPage'
 import RegisterPage from '@/pages/RegisterPage'
+import RecoveryPage from '@/pages/RecoveryPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +43,7 @@ function App() {
             {/* Rotte pubbliche */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/recovery" element={<RecoveryPage />} />
 
             {/* Rotte Protette - Divise per Ruolo */}
             

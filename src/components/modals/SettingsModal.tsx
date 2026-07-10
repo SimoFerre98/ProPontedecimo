@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, UserCog, Mail, ShieldAlert, Loader2, Trash2, X, Users, AlertTriangle } from 'lucide-react'
+import { Search, UserCog, Mail, ShieldAlert, Loader2, Trash2, X, Users, AlertTriangle, KeyRound, Check } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import type { Database } from '@/types/database'
 import { useAuth } from '@/hooks/useAuth'
@@ -53,6 +53,8 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState | null>(null)
+  const [sendingResetId, setSendingResetId] = useState<string | null>(null)
+  const [resetSuccessId, setResetSuccessId] = useState<string | null>(null)
 
   // Fetch via TanStack Query (idioma del progetto): niente setState negli effect.
   const { data: profilesData, isLoading: loading, isError: loadError } = useQuery({
@@ -103,6 +105,35 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
         (prev ?? []).map(p => p.id === profileId ? { ...p, role: newRole } : p))
     }
     setUpdatingId(null)
+  }
+
+  const handleResetPassword = async (profile: Profile) => {
+    setSendingResetId(profile.id)
+    setResetSuccessId(null)
+    setErrorMsg(null)
+
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-reset-password', {
+        body: {
+          email: profile.email,
+          redirectTo: `${window.location.origin}/recovery`
+        }
+      })
+
+      if (error) throw error
+      if (data?.error) throw new Error(data.error)
+
+      setResetSuccessId(profile.id)
+      setTimeout(() => {
+        setResetSuccessId(null)
+      }, 3000)
+    } catch (err: unknown) {
+      console.error(err)
+      const message = err instanceof Error ? err.message : "Errore durante l'invio del reset password."
+      setErrorMsg(message)
+    } finally {
+      setSendingResetId(null)
+    }
   }
 
   const handleDeleteConfirmed = async () => {
@@ -316,6 +347,27 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                             ))}
                           </select>
                         )}
+
+                        {/* Reset Password button */}
+                        <button
+                          onClick={() => void handleResetPassword(profile)}
+                          disabled={sendingResetId !== null || updatingId !== null || deletingId !== null}
+                          className={cn(
+                            "p-2.5 rounded-xl transition-all border border-transparent shrink-0",
+                            resetSuccessId === profile.id
+                              ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20"
+                              : "text-muted-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/20"
+                          )}
+                          title="Invia email di reset password"
+                        >
+                          {sendingResetId === profile.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : resetSuccessId === profile.id ? (
+                            <Check className="w-4 h-4" />
+                          ) : (
+                            <KeyRound className="w-4 h-4" />
+                          )}
+                        </button>
 
                         {/* Delete button */}
                         {profile.id !== user?.id && (
