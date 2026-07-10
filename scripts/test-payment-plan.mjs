@@ -269,6 +269,79 @@ async function runTests() {
     check('Block - paid check error catch', false, err.message)
   }
 
+  // CASE 8: Co-existence with carried_over payments
+  try {
+    const presClient = await loginAs('president')
+
+    // 1. Reset payments first: delete all payments for this player+season
+    await admin.from('payments').delete().eq('player_id', player.id).eq('season_id', seasonId)
+
+    // 2. Insert a carried_over payment (pending, installment_no = 1)
+    const { error: insErr } = await admin.from('payments').insert({
+      player_id: player.id,
+      season_id: seasonId,
+      installment_no: 1,
+      amount_eur: 50.00,
+      plan: 'carried_over',
+      status: 'pending',
+      due_date: '2025-07-01'
+    })
+    if (insErr) throw new Error(`Insert carried_over setup failed: ${insErr.message}`)
+
+    // 3. Create a 2-installment plan (sum = 200)
+    const { error: rpcErr } = await presClient.rpc('create_payment_plan', {
+      p_player_id: player.id,
+      p_season_id: seasonId,
+      p_total_amount: 200,
+      p_installments: [
+        { amount_eur: 100, due_date: '2026-09-15' },
+        { amount_eur: 100, due_date: '2026-11-15' }
+      ]
+    })
+    check('Coexistence - Create plan with pending carried_over', !rpcErr, rpcErr?.message)
+
+    // Verify both carried_over and new installments exist
+    let { data: payRows } = await admin.from('payments')
+      .select('*')
+      .eq('player_id', player.id)
+      .eq('season_id', seasonId)
+      .order('installment_no')
+
+    check('Coexistence - Found exactly 3 payments total', payRows?.length === 3)
+    check('Coexistence - Carried over survives', payRows?.some(p => p.plan === 'carried_over' && p.installment_no === 1 && parseFloat(p.amount_eur) === 50))
+    check('Coexistence - Installment 2 generated', payRows?.some(p => p.plan === 'installments' && p.installment_no === 2 && parseFloat(p.amount_eur) === 100))
+    check('Coexistence - Installment 3 generated', payRows?.some(p => p.plan === 'installments' && p.installment_no === 3 && parseFloat(p.amount_eur) === 100))
+
+    // 4. Mark carried_over as paid
+    const carriedOverRow = payRows.find(p => p.plan === 'carried_over')
+    await admin.from('payments').update({ status: 'paid', paid_amount_eur: 50 }).eq('id', carriedOverRow.id)
+
+    // 5. Overwrite the plan to a single installment (annual, sum = 200)
+    const { error: rpcErr2 } = await presClient.rpc('create_payment_plan', {
+      p_player_id: player.id,
+      p_season_id: seasonId,
+      p_total_amount: 200,
+      p_installments: [
+        { amount_eur: 200, due_date: '2026-09-15' }
+      ]
+    })
+    check('Coexistence - Create plan with paid carried_over does not block', !rpcErr2, rpcErr2?.message)
+
+    // Verify both carried_over and new annual installment exist
+    let { data: payRows2 } = await admin.from('payments')
+      .select('*')
+      .eq('player_id', player.id)
+      .eq('season_id', seasonId)
+      .order('installment_no')
+
+    check('Coexistence - Found exactly 2 payments total', payRows2?.length === 2)
+    check('Coexistence - Carried over survives as paid', payRows2?.some(p => p.plan === 'carried_over' && p.installment_no === 1 && parseFloat(p.amount_eur) === 50 && p.status === 'paid'))
+    check('Coexistence - Annual installment 2 generated', payRows2?.some(p => p.plan === 'annual' && p.installment_no === 2 && parseFloat(p.amount_eur) === 200))
+
+  } catch (err) {
+    check('Coexistence - unexpected error', false, err.message)
+  }
+
   // Print results
   console.log('\n--- TEST RESULTS ---')
   for (const r of results) {

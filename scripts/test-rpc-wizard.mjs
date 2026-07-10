@@ -113,6 +113,15 @@ async function setup() {
   ]).select('id, first_name').order('first_name')
   if (pe) throw new Error(`create players: ${pe.message}`)
   ctx.players = players
+
+  // 5. Create source payments
+  const { error: payErr } = await admin.from('payments').insert([
+    { player_id: ctx.players[0].id, season_id: ctx.sourceSeasonId, installment_no: 1, amount_eur: 150.00, plan: 'installments', status: 'pending', due_date: '2025-10-01' },
+    { player_id: ctx.players[0].id, season_id: ctx.sourceSeasonId, installment_no: 2, amount_eur: 150.00, plan: 'installments', status: 'pending', due_date: '2026-02-01' },
+    { player_id: ctx.players[1].id, season_id: ctx.sourceSeasonId, installment_no: 1, amount_eur: 150.00, plan: 'installments', status: 'paid', paid_amount_eur: 150.00, due_date: '2025-10-01' },
+    { player_id: ctx.players[1].id, season_id: ctx.sourceSeasonId, installment_no: 2, amount_eur: 150.00, plan: 'installments', status: 'paid', paid_amount_eur: 150.00, due_date: '2026-02-01' }
+  ])
+  if (payErr) throw new Error(`create source payments: ${payErr.message}`)
 }
 
 async function runTests() {
@@ -246,6 +255,29 @@ async function runTests() {
     // Player C
     const playerC = newPlayers[2]
     check('Player C - Leva matches destination', playerC.team_sector === 'Pulcini 2015')
+
+    // Verify carried_over payments
+    const { data: newPayments, error: getNewPaymentsErr } = await admin.from('payments')
+      .select('*')
+      .eq('season_id', newSeasonId)
+    if (getNewPaymentsErr) throw new Error(getNewPaymentsErr.message)
+
+    // Check Player A payments: should have exactly one carried_over payment with amount 300.00
+    const playerAPayments = newPayments.filter(p => p.player_id === playerA.id)
+    check('Player A - has carried_over payment', playerAPayments.length === 1 && playerAPayments[0].plan === 'carried_over')
+    check('Player A - carried_over amount matches', playerAPayments[0]?.amount_eur === 300.00 || parseFloat(playerAPayments[0]?.amount_eur) === 300.00)
+    check('Player A - carried_over is pending', playerAPayments[0]?.status === 'pending')
+    check('Player A - previous_player_id points to source', playerA.previous_player_id === ctx.players[0].id)
+
+    // Check Player B payments: should have NO payments (all source were paid, so no carry over)
+    const playerBPayments = newPayments.filter(p => p.player_id === playerB.id)
+    check('Player B - has no carried_over payment', playerBPayments.length === 0)
+    check('Player B - previous_player_id points to source', playerB.previous_player_id === ctx.players[1].id)
+
+    // Check Player C payments: should have NO payments (no source payments existed, so no carry over)
+    const playerCPayments = newPayments.filter(p => p.player_id === playerC.id)
+    check('Player C - has no carried_over payment', playerCPayments.length === 0)
+    check('Player C - previous_player_id points to source', playerC.previous_player_id === ctx.players[2].id)
 
   } catch (err) {
     check('Happy Path - unexpected error', false, err.message)

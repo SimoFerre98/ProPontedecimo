@@ -179,8 +179,14 @@ export default function Payments() {
                         </td>
                         <td className="px-6 py-5">
                           <div className="pill bg-white/5 border border-white/10 px-3 py-1 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                            {`${p.installment_no}ª Rata`}
-                            {p.plan === 'annual' && <span className="text-primary/60">· Unica</span>}
+                            {p.plan === 'carried_over' ? (
+                              <span className="text-amber-500 font-black uppercase">Debito Pregresso</span>
+                            ) : (
+                              <>
+                                {`${p.installment_no}ª Rata`}
+                                {p.plan === 'annual' && <span className="text-primary/60">· Unica</span>}
+                              </>
+                            )}
                           </div>
                         </td>
                         <td className="px-6 py-5">

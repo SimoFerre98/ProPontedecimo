@@ -11,11 +11,11 @@ così che nessun credito della società vada perso nel passaggio di stagione.
 After implementing this story, the user can: aprire il riepilogo finanziario di un atleta nella nuova stagione e vedere il debito residuo della stagione precedente sommato al dovuto corrente.
 
 **Acceptance Criteria**
-- [ ] Alla creazione della nuova stagione (via wizard, US-008) il residuo non saldato di ogni atleta importato è calcolato dalle rate non pagate (dipende da US-015)
-- [ ] Il debito pregresso è visibile come voce distinta nel profilo finanziario corrente dell'atleta
-- [ ] Un atleta senza insoluti non mostra alcuna voce di debito pregresso
-- [ ] Il pagamento del debito pregresso è tracciabile come le altre rate
+- [x] Alla creazione della nuova stagione (via wizard, US-008) il residuo non saldato di ogni atleta importato è calcolato dalle rate non pagate (dipende da US-015)
+- [x] Il debito pregresso è visibile come voce distinta nel profilo finanziario corrente dell'atleta
+- [x] Un atleta senza insoluti non mostra alcuna voce di debito pregresso
+- [x] Il pagamento del debito pregresso è tracciabile come le altre rate
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE
+**Plan:** [docs/planning/US-016-plan.md](../planning/US-016-plan.md)
 

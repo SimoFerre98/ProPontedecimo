@@ -37,12 +37,21 @@ export default function PlayerPaymentSummaryModal({
 
   // Calcolo statistiche
   const stats = useMemo(() => {
-    const totalAmount = payments.reduce((sum, p) => sum + (p.amount_eur || 0), 0)
-    const paidAmount = payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + (p.paid_amount_eur ?? p.amount_eur ?? 0), 0)
-    const paidCount = payments.filter(p => p.status === 'paid').length
-    const totalCount = payments.length
+    const currentPayments = payments.filter(p => p.plan !== 'carried_over')
+    const carriedOverPayments = payments.filter(p => p.plan === 'carried_over')
+
+    const totalAmount = currentPayments.reduce((sum, p) => sum + (p.amount_eur || 0), 0)
+    const paidAmount = currentPayments.filter(p => p.status === 'paid').reduce((sum, p) => sum + (p.paid_amount_eur ?? p.amount_eur ?? 0), 0)
+    const paidCount = currentPayments.filter(p => p.status === 'paid').length
+    const totalCount = currentPayments.length
     const remainingAmount = totalAmount - paidAmount
-    const overdueAmount = payments.filter(p => p.status === 'overdue').reduce((sum, p) => sum + (p.amount_eur || 0), 0)
+    const overdueAmount = currentPayments.filter(p => p.status === 'overdue').reduce((sum, p) => sum + (p.amount_eur || 0), 0)
+
+    const hasCarriedOver = carriedOverPayments.length > 0
+    const carriedOverAmount = carriedOverPayments.reduce((sum, p) => sum + (p.amount_eur || 0), 0)
+    const carriedOverPaid = carriedOverPayments.filter(p => p.status === 'paid').reduce((sum, p) => sum + (p.paid_amount_eur ?? p.amount_eur ?? 0), 0)
+    const carriedOverRemaining = carriedOverAmount - carriedOverPaid
+    const carriedOverStatus = carriedOverPayments[0]?.status
 
     return {
       totalAmount,
@@ -51,6 +60,10 @@ export default function PlayerPaymentSummaryModal({
       totalCount,
       remainingAmount,
       overdueAmount,
+      hasCarriedOver,
+      carriedOverAmount,
+      carriedOverRemaining,
+      carriedOverStatus,
     }
   }, [payments])
 
@@ -118,7 +131,7 @@ export default function PlayerPaymentSummaryModal({
               ) : (
                 <>
                   {/* Stat Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className={cn("grid gap-3", stats.hasCarriedOver ? "grid-cols-2 md:grid-cols-4" : "grid-cols-1 md:grid-cols-3")}>
                     <div className="p-4 rounded-3xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
                       <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-3">
                         <Euro className="w-4 h-4" />
@@ -159,6 +172,27 @@ export default function PlayerPaymentSummaryModal({
                         ) : 'in regola'}
                       </p>
                     </div>
+
+                    {stats.hasCarriedOver && (
+                      <div className="p-4 rounded-3xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex flex-col justify-between">
+                        <div>
+                          <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 mb-3">
+                            <Clock className="w-4 h-4" />
+                          </div>
+                          <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Debito Pregresso</p>
+                          <p className="text-lg font-black text-foreground tabular-nums mt-0.5">
+                            € {stats.carriedOverAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                        <p className="text-[9px] font-bold mt-2">
+                          {stats.carriedOverStatus === 'paid' ? (
+                            <span className="text-emerald-500 uppercase tracking-widest">Saldato</span>
+                          ) : (
+                            <span className="text-amber-500 uppercase tracking-widest">In attesa</span>
+                          )}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   {/* Dettaglio rate */}
@@ -189,8 +223,17 @@ export default function PlayerPaymentSummaryModal({
                                 ? 'bg-rose-500/10 border-rose-500/20 text-rose-500'
                                 : 'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 text-foreground'
                             )}>
-                              <span className="text-sm font-black leading-none">{p.installment_no}</span>
-                              <span className="text-[7px] font-black uppercase tracking-wider mt-0.5">Rata</span>
+                              {p.plan === 'carried_over' ? (
+                                <>
+                                  <AlertCircle className="w-4.5 h-4.5 text-amber-500" />
+                                  <span className="text-[6px] font-black uppercase tracking-wider mt-0.5">Debito</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="text-sm font-black leading-none">{p.installment_no}</span>
+                                  <span className="text-[7px] font-black uppercase tracking-wider mt-0.5">Rata</span>
+                                </>
+                              )}
                             </div>
 
                             <div className="min-w-0 flex flex-col justify-center">
@@ -198,6 +241,11 @@ export default function PlayerPaymentSummaryModal({
                                 <Calendar className="w-3.5 h-3.5 text-muted-foreground/45 shrink-0" />
                                 {p.due_date ? format(new Date(p.due_date), 'dd MMM yyyy', { locale: it }) : '—'}
                               </span>
+                              {p.plan === 'carried_over' && (
+                                <span className="text-[8px] font-black uppercase tracking-widest text-amber-500 mt-0.5">
+                                  Debito Pregresso
+                                </span>
+                              )}
                               {isOverdueUnpaid && (
                                 <span className="text-[8px] font-black uppercase tracking-widest text-rose-500 mt-0.5">
                                   {getDaysOverdueText(p.due_date)}
