@@ -6,22 +6,12 @@
 // Richiede in .env: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
 
 import { createClient } from '@supabase/supabase-js'
-import { readFileSync } from 'node:fs'
 import { randomBytes } from 'node:crypto'
 
-// --- caricamento .env (la CLI/node non lo leggono in automatico) ---
-const env = {}
-for (const line of readFileSync(new URL('../.env', import.meta.url), 'utf8').split('\n')) {
-  const m = line.match(/^([A-Z_]+)=(.*)$/)
-  if (m) env[m[1]] = m[2].trim()
-}
-const URL_ = env.VITE_SUPABASE_URL
-const ANON = env.VITE_SUPABASE_ANON_KEY
-const SERVICE = env.SUPABASE_SERVICE_ROLE_KEY
-if (!URL_ || !ANON || !SERVICE) {
-  console.error('Variabili mancanti in .env (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY)')
-  process.exit(1)
-}
+// --- Gira sempre contro lo stack Supabase locale (vedi CLAUDE.md) ---
+const URL_ = 'http://127.0.0.1:54321'
+const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0'
+const SERVICE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU'
 
 const admin = createClient(URL_, SERVICE, { auth: { persistSession: false } })
 
@@ -84,10 +74,19 @@ async function setup() {
     if (e2) throw new Error(`profilo ${role}: ${e2.message}`)
   }
 
-  // stagione esistente per le FK
-  const { data: seasons, error: es } = await admin.from('seasons').select('id').limit(1)
-  if (es || !seasons?.length) throw new Error(`nessuna stagione disponibile: ${es?.message}`)
-  ctx.seasonId = seasons[0].id
+  // stagione esistente per le FK (se manca, la creiamo)
+  let { data: seasons, error: es } = await admin.from('seasons').select('id').eq('is_active', true).limit(1)
+  if (es) throw new Error(`errore query stagioni: ${es.message}`)
+  if (!seasons || seasons.length === 0) {
+    const { data: newSeason, error: seErr } = await admin.from('seasons')
+      .insert({ name: 'TEST_RLS_SEASON', start_date: '2026-07-01', end_date: '2027-06-30', is_active: true })
+      .select('id').single()
+    if (seErr) throw new Error(`errore creazione stagione di test: ${seErr.message}`)
+    ctx.seasonId = newSeason.id
+    ctx.createdSeasonId = newSeason.id
+  } else {
+    ctx.seasonId = seasons[0].id
+  }
 
   // atleti: A nella leva del coach (e collegato all'utente player), B in un'altra leva
   // NB: dall'introduzione di US-009 (trg_validate_player_fields) un insert diretto sui
@@ -167,10 +166,10 @@ async function runMatrix() {
     const { data: pay } = await testPayments(c)
     check('coach NON vede alcun pagamento', (pay ?? []).length === 0, `visti ${pay?.length}`)
     const { error: eIn } = await c.from('attendance')
-      .insert({ player_id: ctx.players.A, session_date: '2026-07-05', present: true, created_by: ctx.users.coach })
+      .insert({ player_id: ctx.players.A, session_date: '2026-07-05', status: 'present', created_by: ctx.users.coach })
     check('coach registra presenze per la propria leva', !eIn, eIn?.message)
     const { error: eOut } = await c.from('attendance')
-      .insert({ player_id: ctx.players.B, session_date: '2026-07-05', present: true, created_by: ctx.users.coach })
+      .insert({ player_id: ctx.players.B, session_date: '2026-07-05', status: 'present', created_by: ctx.users.coach })
     check('coach NON registra presenze per altre leve', !!eOut, eOut ? 'bloccato' : 'INSERITO FUORI LEVA!')
     const { error: er } = await c.from('profiles').update({ role: 'president' }).eq('id', ctx.users.coach)
     check('coach NON può auto-promuoversi', !!er, er ? 'bloccato dal trigger' : 'ESCALATION RIUSCITA!')
@@ -224,6 +223,9 @@ async function cleanup() {
   for (const id of Object.values(ctx.users)) {
     await admin.from('profiles').delete().eq('id', id)
     await admin.auth.admin.deleteUser(id)
+  }
+  if (ctx.createdSeasonId) {
+    await admin.from('seasons').delete().eq('id', ctx.createdSeasonId)
   }
 }
 
