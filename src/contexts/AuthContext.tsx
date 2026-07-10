@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { AuthContext, type AuthContextValue, type Profile } from '@/contexts/auth-context'
@@ -11,7 +11,7 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
   const [fetchingProfile, setFetchingProfile] = useState(false)
   const { setProfile: setStoreProfile } = useAppStore()
 
-  async function fetchProfile(userId: string) {
+  const fetchProfile = useCallback(async (userId: string) => {
     setFetchingProfile(true)
     const { data } = await supabase
       .from('profiles')
@@ -27,7 +27,7 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       setStoreProfile(null)
     }
     setFetchingProfile(false)
-  }
+  }, [setStoreProfile])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       }
     })
     return () => subscription.unsubscribe()
-  }, [])
+  }, [fetchProfile, setStoreProfile])
 
   const value = useMemo<AuthContextValue>(() => ({
     session,
@@ -60,7 +60,12 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
     role: profile?.role ?? null,
     loading: loading || fetchingProfile,
     signOut: async () => { await supabase.auth.signOut() },
-  }), [session, profile, loading, fetchingProfile])
+    refreshProfile: async () => {
+      if (session?.user) {
+        await fetchProfile(session.user.id)
+      }
+    },
+  }), [session, profile, loading, fetchingProfile, fetchProfile])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
