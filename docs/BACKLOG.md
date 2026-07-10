@@ -114,7 +114,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-017](backlog/US-017-registro-presenze-mobile-first.md) | Registro presenze mobile-first | HIGH | 5 | TODO |
+| [US-017](backlog/US-017-registro-presenze-mobile-first.md) | Registro presenze mobile-first | HIGH | 5 | DONE |
 
 ### EP-007: Profilo Utente & Gestione Account
 

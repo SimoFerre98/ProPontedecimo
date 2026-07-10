@@ -21,8 +21,8 @@ export type Database = {
           id: string
           notes: string | null
           player_id: string
-          present: boolean | null
           session_date: string
+          status: Database["public"]["Enums"]["attendance_status"]
           type: Database["public"]["Enums"]["training_type"] | null
         }
         Insert: {
@@ -31,8 +31,8 @@ export type Database = {
           id?: string
           notes?: string | null
           player_id: string
-          present?: boolean | null
           session_date: string
+          status?: Database["public"]["Enums"]["attendance_status"]
           type?: Database["public"]["Enums"]["training_type"] | null
         }
         Update: {
@@ -41,8 +41,8 @@ export type Database = {
           id?: string
           notes?: string | null
           player_id?: string
-          present?: boolean | null
           session_date?: string
+          status?: Database["public"]["Enums"]["attendance_status"]
           type?: Database["public"]["Enums"]["training_type"] | null
         }
         Relationships: [
@@ -430,6 +430,7 @@ export type Database = {
       }
     }
     Enums: {
+      attendance_status: "present" | "absent" | "justified"
       inventory_category: "kit" | "equipment" | "trophy" | "other"
       payment_status: "pending" | "paid" | "overdue"
       task_status: "todo" | "in_progress" | "done"
@@ -562,6 +563,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      attendance_status: ["present", "absent", "justified"],
       inventory_category: ["kit", "equipment", "trophy", "other"],
       payment_status: ["pending", "paid", "overdue"],
       task_status: ["todo", "in_progress", "done"],

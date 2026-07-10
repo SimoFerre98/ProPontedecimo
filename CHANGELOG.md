@@ -5,6 +5,11 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-017**: Riscritto `Attendance.tsx` per implementare un registro presenze completo e mobile-first, comprensivo di selettore date, indicatori progressivi di stato e contatori di riepilogo.
+- **US-017**: Creata la migrazione SQL per l'enum `attendance_status` ('present', 'absent', 'justified') e la colonna `status` associata, con backfill sicuro e vincolo di unicità `(player_id, session_date, type)`.
+- **US-017**: Creato `attendanceService.ts` per gestire il caricamento della rosa di atleti attivi, il recupero dello stato presenze storico per data e l'upsert atomico con mutation ottimistica via React Query.
+- **US-017**: Creato lo script di test di integrazione database `test-attendance.mjs` per validare l'RLS di coach, unicità, modificabilità ed isolamento delle stagioni.
+- **Vercel Speed Insights**: Installato il pacchetto `@vercel/speed-insights` e integrato il componente `<SpeedInsights />` in `App.tsx` per il tracciamento delle metriche di performance.
 - **US-016**: Aggiunto supporto al trascinamento degli insoluti della stagione precedente come "debito pregresso" all'avvio della nuova stagione.
 - **US-016**: Estesa la RPC `create_season_from_wizard` per collegare gli atleti importati tramite `previous_player_id` e calcolare/inserire automaticamente il debito pregresso (riga `payments` con `plan = 'carried_over'`) per gli atleti con rate `pending` residue.
 - **US-016**: Corretta la RPC `create_payment_plan` per escludere le righe `carried_over` dalla sovrascrittura/cancellazione del piano, dal blocco delle modifiche se già pagate, e dalla numerazione `installment_no` (che riparte dopo il debito pregresso).
