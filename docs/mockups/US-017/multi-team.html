@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-017 · Registro Presenze — Multi-leva, Caricamento &amp; Stato Vuoto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* ============================================================
+     US-017 — Attendance.tsx, caso Presidente/Direttore o coach
+     multi-leva: il chip selettore squadra è visibile. Cambiando
+     leva si osservano: skeleton di caricamento (transizione),
+     roster parzialmente segnato, e leva senza atleti (stato vuoto).
+     ============================================================ */
+</style>
+</head>
+<body>
+
+<div class="pitch-stage" aria-hidden="true"></div>
+<div class="pitch-centre" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="mock-nav">
+  <span class="nav-tag">US-017</span>
+  <a href="index.html">Vista Principale</a>
+  <a href="multi-team.html" class="active">Multi-leva &amp; Stati</a>
+</nav>
+
+<div class="scene">
+
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <div class="app-bg" aria-hidden="true"></div>
+
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v3H2zM6 13h2v7H6zm4-4h2v11h-2zm4-3h2v14h-2zm4 6h2v8h-2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/></svg>
+        </div>
+      </div>
+
+      <header class="app-header">
+        <div class="app-brand">
+          <img src="../../../public/Logo ASD Pro Pontedecimo.png" onerror="this.style.display='none'" alt="">
+          <span>Pontedecimo</span>
+        </div>
+        <div class="app-header-actions">
+          <button class="icon-btn" aria-label="Calendario">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </button>
+          <button class="icon-btn" aria-label="Notifiche">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <div class="app-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-main">
+
+        <div class="page-eyebrow">
+          <h2><span class="page-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>Presenze</h2>
+          <span class="leva-static" id="roleTag">Direttore · tutte le leve</span>
+        </div>
+
+        <!-- Chip selettore leva: visibile perché il ruolo vede più di una squadra -->
+        <div class="leva-chip-row" id="levaChips">
+          <!-- generata via JS -->
+        </div>
+
+        <!-- Selettore data -->
+        <div class="date-stepper">
+          <button class="step-arrow" aria-label="Giorno precedente">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <button class="date-main">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span class="date-text"><b>Ven 10 Luglio</b><span>Oggi · allenamento</span></span>
+          </button>
+          <button class="step-arrow" aria-label="Giorno successivo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+
+        <!-- Contatore: si nasconde nello stato vuoto -->
+        <div class="counter-card" id="counterCard">
+          <div class="counter-stats">
+            <div class="counter-stat present"><b id="cPresent">0</b><span>Presenti</span></div>
+            <div class="counter-stat absent"><b id="cAbsent">0</b><span>Assenti</span></div>
+            <div class="counter-stat justified"><b id="cJustified">0</b><span>Giustif.</span></div>
+            <div class="counter-stat total"><b id="cTotal">0</b><span>Totale</span></div>
+          </div>
+          <div class="segbar" id="segbar"><i class="seg-present"></i><i class="seg-absent"></i><i class="seg-justified"></i><i class="seg-unmarked"></i></div>
+          <p class="counter-summary-line" id="summaryLine"></p>
+        </div>
+
+        <div class="section-label-row" id="sectionLabelRow">
+          <span class="field-label" id="rosterTitle">Rosa</span>
+          <div class="legend-dot">
+            <span class="legend-item"><span class="dot present"></span>P</span>
+            <span class="legend-item"><span class="dot absent"></span>A</span>
+            <span class="legend-item"><span class="dot justified"></span>G</span>
+          </div>
+        </div>
+
+        <!-- Corpo dinamico: skeleton / lista / stato vuoto -->
+        <div id="bodyWrap"></div>
+
+      </main>
+
+      <div class="save-toast" id="saveToast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Presenza aggiornata
+      </div>
+
+      <div class="floating-nav-fake">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        Menu
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-panel">
+    <div class="demo-label eyebrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2"/><path d="m5.6 5.6 1.4 1.4"/><path d="M3 12h2"/><path d="M19 12h2"/><path d="m17 7 1.4-1.4"/><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 7a5 5 0 0 1 3.5 8.5c-.6.6-1 1.4-1.2 2.5h-4.6c-.2-1.1-.6-1.9-1.2-2.5A5 5 0 0 1 12 7z"/></svg>
+      Guida al mockup
+    </div>
+    <p>Il chip selettore leva è visibile solo perché questo profilo (Direttore) vede più squadre. Tocca un chip per esplorare i tre casi limite previsti dalla story:</p>
+    <ul class="demo-list">
+      <li><b>01</b><span>Under 15 — roster con stati misti, incluse righe non ancora segnate (grigie).</span></li>
+      <li><b>02</b><span>Under 13 — cambio leva mostra lo skeleton di caricamento per ~600ms.</span></li>
+      <li><b>03</b><span>Under 11 — leva senza atleti nella stagione selezionata: stato vuoto.</span></li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+const ICONS = {
+  present: '<path d="M20 6 9 17l-5-5"/>',
+  absent: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  justified: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 11h1"/>'
+};
+
+const TEAMS = {
+  u15: {
+    label: 'Under 15', sub: 'Allenamento · campo A',
+    players: [
+      ['Christian Musso', 7, 'present'], ['Fabio Ratto', 4, 'present'], ['Stefano Ghiglione', 9, 'absent'],
+      ['Emanuele Priano', 11, 'present'], ['Diego Balbi', 2, null], ['Marco Dagnino', 5, 'justified'],
+      ['Simone Carbone', 8, null]
+    ]
+  },
+  u13: {
+    label: 'Under 13', sub: 'Allenamento · campo B',
+    players: [
+      ['Andrea Repetto', 13, 'present'], ['Filippo Grondona', 17, 'present'], ['Luca Pittaluga', 6, null],
+      ['Jacopo Firpo', 3, 'present'], ['Nicolò Barabino', 1, 'absent'], ['Giulio Cambiaso', 15, null]
+    ]
+  },
+  u11: {
+    label: 'Under 11', sub: null,
+    players: []
+  }
+};
+
+let current = 'u15';
+let loading = false;
+const chipsWrap = document.getElementById('levaChips');
+
+function renderChips() {
+  chipsWrap.innerHTML = '';
+  Object.entries(TEAMS).forEach(([key, t]) => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'leva-chip' + (key === current ? ' active' : '') + (t.players.length === 0 ? ' empty-src' : '');
+    chip.innerHTML = t.label + '<span class="lc-count">' + t.players.length + '</span>';
+    chip.addEventListener('click', () => selectTeam(key));
+    chipsWrap.appendChild(chip);
+  });
+}
+
+function selectTeam(key) {
+  if (key === current || loading) return;
+  current = key;
+  renderChips();
+  document.getElementById('rosterTitle').textContent = 'Rosa ' + TEAMS[key].label;
+  showSkeleton();
+  loading = true;
+  setTimeout(() => {
+    loading = false;
+    renderBody();
+  }, 620);
+}
+
+function showSkeleton() {
+  document.getElementById('counterCard').style.opacity = '.35';
+  document.getElementById('sectionLabelRow').style.opacity = '.35';
+  const wrap = document.getElementById('bodyWrap');
+  wrap.innerHTML = '<div class="roster-list">' + Array.from({ length: 5 }).map(() =>
+    '<div class="skeleton-row"><div class="sk-block sk-avatar"></div><div class="sk-lines"><div class="sk-block sk-line w60"></div><div class="sk-block sk-line w35"></div></div><div class="sk-dots"><div class="sk-block sk-dot"></div><div class="sk-block sk-dot"></div><div class="sk-block sk-dot"></div></div></div>'
+  ).join('') + '</div>';
+}
+
+function renderBody() {
+  document.getElementById('counterCard').style.opacity = '1';
+  document.getElementById('sectionLabelRow').style.opacity = '1';
+  const team = TEAMS[current];
+  const wrap = document.getElementById('bodyWrap');
+
+  if (team.players.length === 0) {
+    document.getElementById('counterCard').style.display = 'none';
+    document.getElementById('sectionLabelRow').style.display = 'none';
+    wrap.innerHTML =
+      '<div class="empty-state">' +
+        '<div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>' +
+        '<h4>Nessun atleta in questa leva</h4>' +
+        '<p>Under 11 non ha atleti nella stagione selezionata. Cambia stagione dall\'header o scegli un\'altra leva per registrare le presenze.</p>' +
+      '</div>';
+    return;
+  }
+
+  document.getElementById('counterCard').style.display = 'flex';
+  document.getElementById('sectionLabelRow').style.display = 'flex';
+  wrap.innerHTML = '<div class="roster-list" id="rosterList"></div>';
+  paintRoster();
+  refreshCounters();
+}
+
+function paintRoster() {
+  const team = TEAMS[current];
+  const list = document.getElementById('rosterList');
+  if (!list) return;
+  list.innerHTML = '';
+  team.players.forEach((p, idx) => {
+    const row = document.createElement('div');
+    row.className = 'roster-row' + (p[2] ? ' touched' : '');
+    row.innerHTML =
+      '<div class="jersey-badge">' + p[1] + '</div>' +
+      '<div class="roster-name"><b>' + p[0] + '</b><span class="roster-sub">' + team.sub + '</span></div>' +
+      '<div class="status-toggle-group">' + btn('present', idx) + btn('absent', idx) + btn('justified', idx) + '</div>';
+    list.appendChild(row);
+  });
+  list.querySelectorAll('.status-btn').forEach(b => b.addEventListener('click', onToggle));
+}
+
+function btn(type, idx) {
+  const active = TEAMS[current].players[idx][2] === type ? ' active' : '';
+  return '<button type="button" class="status-btn ' + type + active + '" data-idx="' + idx + '" data-type="' + type + '" aria-label="' + type + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' + ICONS[type] + '</svg></button>';
+}
+
+function onToggle(e) {
+  const el = e.currentTarget;
+  const idx = +el.dataset.idx;
+  const type = el.dataset.type;
+  TEAMS[current].players[idx][2] = type;
+  paintRoster();
+  refreshCounters();
+  const row = document.querySelectorAll('#rosterList .roster-row')[idx];
+  const fresh = row.querySelector('.status-btn.' + type);
+  fresh.classList.add('just-set');
+  setTimeout(() => fresh.classList.remove('just-set'), 320);
+  showToast();
+}
+
+function refreshCounters() {
+  const players = TEAMS[current].players;
+  const total = players.length;
+  const present = players.filter(p => p[2] === 'present').length;
+  const absent = players.filter(p => p[2] === 'absent').length;
+  const justified = players.filter(p => p[2] === 'justified').length;
+  const unmarked = total - present - absent - justified;
+  document.getElementById('cPresent').textContent = present;
+  document.getElementById('cAbsent').textContent = absent;
+  document.getElementById('cJustified').textContent = justified;
+  document.getElementById('cTotal').textContent = total;
+  document.getElementById('summaryLine').innerHTML =
+    '<b>' + present + '</b> presenti · <b>' + absent + '</b> assenti · <b>' + justified + '</b> giustificat' + (justified === 1 ? 'o' : 'i') +
+    (unmarked > 0 ? ' · <b>' + unmarked + '</b> da segnare' : '') + ' su <b>' + total + '</b>';
+  const seg = document.getElementById('segbar').children;
+  seg[0].style.width = (present / total * 100) + '%';
+  seg[1].style.width = (absent / total * 100) + '%';
+  seg[2].style.width = (justified / total * 100) + '%';
+  seg[3].style.width = (unmarked / total * 100) + '%';
+}
+
+let toastTimer;
+function showToast() {
+  const t = document.getElementById('saveToast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+}
+
+renderChips();
+renderBody();
+</script>
+
+</body>
+</html>

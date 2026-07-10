@@ -17,6 +17,6 @@ After implementing this story, the user can: aprire il registro dal telefono, se
 - [ ] Le presenze già registrate sono modificabili
 - [ ] Le presenze registrate rispettano la stagione attiva selezionata
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE
+**Plan:** [docs/planning/US-017-plan.md](../planning/US-017-plan.md)
 
