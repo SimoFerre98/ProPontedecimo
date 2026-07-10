@@ -3,7 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, CheckCircle2, Clock, AlertCircle, Plus,
-  User, Euro, FileText, CreditCard, Smartphone, Banknote, Building2, Pencil
+  User, Euro, FileText, CreditCard, Smartphone, Banknote, Building2, Pencil,
+  Download, Loader2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns/format'
@@ -11,6 +12,8 @@ import { it } from 'date-fns/locale/it'
 import { paymentService, PAYMENT_METHODS, type PaymentStatus, type PaymentReference } from '@/services/paymentService'
 import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/useAuth'
+import { exportToXlsx } from '@/lib/xlsxExport'
 import PaymentModal from '@/components/modals/PaymentModal'
 import NewPaymentModal from '@/components/modals/NewPaymentModal'
 import { useAppStore } from '@/store/useAppStore'
@@ -29,8 +32,45 @@ export default function Payments() {
   const pageSize = 15
   const [selectedPayment, setSelectedPayment] = useState<PaymentReference | null>(null)
   const [showNewModal, setShowNewModal] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
 
   const { selectedSeasonId } = useAppStore()
+  const { role } = useAuth()
+  const isAdmin = role === 'president' || role === 'director'
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true)
+      const dataToExport = await paymentService.getPaymentsForExport(
+        search,
+        statusFilter,
+        'due_date',
+        'asc',
+        selectedSeasonId
+      )
+
+      const mappedRows = dataToExport.map(p => ({
+        'Cognome': p.player?.last_name || '',
+        'Nome': p.player?.first_name || '',
+        'Settore': p.player?.team_sector || '',
+        'Rata': p.plan === 'carried_over' ? 'Debito Pregresso' : `${p.installment_no}ª Rata`,
+        'Piano': p.plan === 'carried_over' ? 'Debito Pregresso' : p.plan === 'annual' ? 'Unica' : 'Rateale',
+        'Scadenza': p.due_date || '',
+        'Importo Previsto': p.amount_eur ?? 0,
+        'Importo Pagato': p.paid_amount_eur ?? 0,
+        'Metodo': p.payment_method ? (PAYMENT_METHODS.find(m => m.value === p.payment_method)?.label || p.payment_method) : '',
+        'N. Ricevuta': p.receipt_number || '',
+        'Data Ricevuta': p.receipt_date || '',
+        'Stato': p.status === 'paid' ? 'Pagato' : p.status === 'pending' ? 'In Attesa' : p.status === 'overdue' ? 'Scaduto' : p.status
+      }))
+
+      exportToXlsx(mappedRows, 'esportazione_pagamenti.xlsx', 'Pagamenti')
+    } catch (err) {
+      console.error("Errore durante l'esportazione dei pagamenti:", err)
+    } finally {
+      setIsExporting(false)
+    }
+  }
 
   const { data, isLoading } = useQuery({
     queryKey: ['payments', search, statusFilter, page, selectedSeasonId],
@@ -63,12 +103,14 @@ export default function Payments() {
             Quote annuali e rate stagionali — 1ª rata: 15 set · 2ª rata: 15 gen
           </p>
         </div>
-        <Button
-          onClick={() => setShowNewModal(true)}
-          className="pill bg-primary hover:bg-primary/90 text-white gap-2 h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/30"
-        >
-          <Plus className="w-5 h-5" /> Nuova Quota
-        </Button>
+        {isAdmin && (
+          <Button
+            onClick={() => setShowNewModal(true)}
+            className="pill bg-primary hover:bg-primary/90 text-white gap-2 h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/30"
+          >
+            <Plus className="w-5 h-5" /> Nuova Quota
+          </Button>
+        )}
       </div>
 
       {/* Stats */}
@@ -105,19 +147,36 @@ export default function Payments() {
             className="h-14 pl-14 w-full pill glass-card border-black/5 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/30 font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground text-sm transition-all"
           />
         </div>
-        <div className="flex items-center gap-1.5 p-1.5 glass-card rounded-2xl border-black/5 dark:border-white/10 overflow-x-auto no-scrollbar">
-          {(['all', 'pending', 'paid', 'overdue'] as const).map(status => (
-            <button
-              key={status}
-              onClick={() => { setStatusFilter(status); setPage(0) }}
-              className={cn(
-                'px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap',
-                statusFilter === status ? 'bg-primary text-white shadow-md shadow-primary/20 scale-105' : 'text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5'
-              )}
+        <div className="flex flex-col md:flex-row w-full md:w-auto items-stretch md:items-center gap-2">
+          <div className="flex items-center gap-1.5 p-1.5 glass-card rounded-2xl border-black/5 dark:border-white/10 overflow-x-auto no-scrollbar">
+            {(['all', 'pending', 'paid', 'overdue'] as const).map(status => (
+              <button
+                key={status}
+                onClick={() => { setStatusFilter(status); setPage(0) }}
+                className={cn(
+                  'px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap',
+                  statusFilter === status ? 'bg-primary text-white shadow-md shadow-primary/20 scale-105' : 'text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5'
+                )}
+              >
+                {status === 'all' ? 'Tutti' : status === 'pending' ? 'In Attesa' : status === 'paid' ? 'Pagati' : 'Scaduti'}
+              </button>
+            ))}
+          </div>
+          {isAdmin && (
+            <Button
+              variant="outline"
+              onClick={handleExport}
+              disabled={totalCount === 0 || isExporting}
+              className="pill h-14 px-5 shrink-0 gap-2 border border-black/10 dark:border-white/10 hover:border-primary transition-all font-black uppercase tracking-widest text-[10px] w-full md:w-auto justify-center disabled:opacity-50"
             >
-              {status === 'all' ? 'Tutti' : status === 'pending' ? 'In Attesa' : status === 'paid' ? 'Pagati' : 'Scaduti'}
-            </button>
-          ))}
+              {isExporting ? (
+                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              ) : (
+                <Download className="w-4 h-4" />
+              )}
+              {isExporting ? 'Esportazione...' : 'Esporta Excel'}
+            </Button>
+          )}
         </div>
       </div>
 

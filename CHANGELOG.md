@@ -5,6 +5,10 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-021**: Creata l'utility condivisa `xlsxExport.ts` per centralizzare la logica di generazione e download di fogli di calcolo `.xlsx` tramite la libreria SheetJS.
+- **US-021**: Implementati i metodi `getPlayersForExport` in `athleteService.ts` e `getPaymentsForExport` in `paymentService.ts` per recuperare tutti i dati corrispondenti ai filtri attivi (senza paginazione lato server).
+- **US-021**: Aggiunto il pulsante "Esporta Excel" nella toolbar di `Athletes.tsx` per scaricare l'anagrafica completa degli atleti (con codice fiscale, residenza, contatti dei genitori) mappata in lingua italiana.
+- **US-021**: Aggiunto il pulsante "Esporta Excel" nella toolbar di `Payments.tsx`, visibile e utilizzabile solo per i ruoli `president` e `director` (gating tramite `useAuth`), per esportare la tabella finanziaria con filtri e ordinamento applicati.
 - **US-017**: Riscritto `Attendance.tsx` per implementare un registro presenze completo e mobile-first, comprensivo di selettore date, indicatori progressivi di stato e contatori di riepilogo.
 - **US-017**: Creata la migrazione SQL per l'enum `attendance_status` ('present', 'absent', 'justified') e la colonna `status` associata, con backfill sicuro e vincolo di unicità `(player_id, session_date, type)`.
 - **US-017**: Creato `attendanceService.ts` per gestire il caricamento della rosa di atleti attivi, il recupero dello stato presenze storico per data e l'upsert atomico con mutation ottimistica via React Query.

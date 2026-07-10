@@ -53,6 +53,53 @@ export const INSTALLMENT_DUE_DATES = {
   2: `${new Date().getFullYear() + (new Date().getMonth() >= 8 ? 1 : 0)}-01-15`, // 15 gennaio (anno successivo se siamo già dopo settembre)
 }
 
+function buildPaymentsQuery(
+  search?: string,
+  status?: PaymentStatus | 'all',
+  sortBy: 'due_date' | 'player_name' | 'amount' = 'due_date',
+  sortDir: 'asc' | 'desc' = 'asc',
+  seasonId?: string | null,
+  selectOptions?: { count: 'exact' }
+) {
+  let query = supabase
+    .from('payments')
+    .select(`
+      *,
+      player:players!inner(first_name, last_name, team_sector, birth_date)
+    `, selectOptions)
+
+  if (status && status !== 'all') {
+    if (status === 'overdue') {
+      const todayStr = new Date().toISOString().split('T')[0]
+      query = query.eq('status', 'pending').lt('due_date', todayStr)
+    } else if (status === 'pending') {
+      const todayStr = new Date().toISOString().split('T')[0]
+      query = query.eq('status', 'pending').or(`due_date.gte.${todayStr},due_date.is.null`)
+    } else {
+      query = query.eq('status', status)
+    }
+  }
+
+  if (seasonId) {
+    query = query.eq('season_id', seasonId)
+  }
+
+  if (search) {
+    query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`, { foreignTable: 'players' })
+  }
+
+  if (sortBy === 'player_name') {
+    // Fallback: Supabase JS order by on foreign table requires specific setup
+    query = query.order('due_date', { ascending: sortDir === 'asc' })
+  } else if (sortBy === 'amount') {
+    query = query.order('amount_eur', { ascending: sortDir === 'asc' })
+  } else {
+    query = query.order(sortBy, { ascending: sortDir === 'asc' })
+  }
+
+  return query
+}
+
 export const paymentService = {
   async getPayments(
     search?: string,
@@ -66,42 +113,8 @@ export const paymentService = {
     const from = page * pageSize
     const to = from + pageSize - 1
 
-    let query = supabase
-      .from('payments')
-      .select(`
-        *,
-        player:players!inner(first_name, last_name, team_sector, birth_date)
-      `, { count: 'exact' })
+    const query = buildPaymentsQuery(search, status, sortBy, sortDir, seasonId, { count: 'exact' })
       .range(from, to)
-
-    if (status && status !== 'all') {
-      if (status === 'overdue') {
-        const todayStr = new Date().toISOString().split('T')[0]
-        query = query.eq('status', 'pending').lt('due_date', todayStr)
-      } else if (status === 'pending') {
-        const todayStr = new Date().toISOString().split('T')[0]
-        query = query.eq('status', 'pending').or(`due_date.gte.${todayStr},due_date.is.null`)
-      } else {
-        query = query.eq('status', status)
-      }
-    }
-
-    if (seasonId) {
-      query = query.eq('season_id', seasonId)
-    }
-
-    if (search) {
-      query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%`, { foreignTable: 'players' })
-    }
-
-    if (sortBy === 'player_name') {
-      // Fallback: Supabase JS order by on foreign table requires specific setup
-      query = query.order('due_date', { ascending: sortDir === 'asc' })
-    } else if (sortBy === 'amount') {
-      query = query.order('amount_eur', { ascending: sortDir === 'asc' })
-    } else {
-      query = query.order(sortBy, { ascending: sortDir === 'asc' })
-    }
 
     const { data, error, count } = await query
     if (error) throw error
@@ -115,6 +128,29 @@ export const paymentService = {
     })
 
     return { data: mapped as unknown as PaymentReference[], count: count || 0 }
+  },
+
+  async getPaymentsForExport(
+    search?: string,
+    status?: PaymentStatus | 'all',
+    sortBy: 'due_date' | 'player_name' | 'amount' = 'due_date',
+    sortDir: 'asc' | 'desc' = 'asc',
+    seasonId?: string | null
+  ) {
+    const query = buildPaymentsQuery(search, status, sortBy, sortDir, seasonId)
+
+    const { data, error } = await query
+    if (error) throw error
+
+    const todayStr = new Date().toISOString().split('T')[0]
+    const mapped = (data || []).map((p: any) => {
+      if (p.status === 'pending' && p.due_date && p.due_date < todayStr) {
+        return { ...p, status: 'overdue' as PaymentStatus }
+      }
+      return p
+    })
+
+    return mapped as unknown as PaymentReference[]
   },
 
   // Recupera tutti i pagamenti di un singolo atleta
