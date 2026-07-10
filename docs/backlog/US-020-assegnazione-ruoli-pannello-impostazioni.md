@@ -15,6 +15,6 @@ After implementing this story, the user can: promuovere un utente a Dirigente e 
 - [ ] Il cambio ruolo ha effetto sui permessi dell'utente (RLS di US-002) senza interventi manuali sul database
 - [ ] L'interfaccia impedisce al Presidente di rimuovere il proprio ruolo di super admin lasciando il sistema senza amministratori
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [docs/planning/US-020-plan.md](../planning/US-020-plan.md)
 
