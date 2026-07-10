@@ -1,196 +1,16 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
-
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
-}
-
-:root {
-    --background: oklch(0.98 0 0);
-    --foreground: oklch(0.13 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.13 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.13 0 0);
-    /* Bordeaux primario #800020 */
-    --primary: oklch(0.33 0.13 15);
-    --primary-foreground: oklch(0.98 0 0);
-    --secondary: oklch(0.96 0 0);
-    --secondary-foreground: oklch(0.2 0 0);
-    --muted: oklch(0.96 0 0);
-    --muted-foreground: oklch(0.5 0 0);
-    --accent: oklch(0.95 0.02 15);
-    --accent-foreground: oklch(0.33 0.13 15);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.91 0 0);
-    --input: oklch(0.91 0 0);
-    --ring: oklch(0.33 0.13 15 / 40%);
-    --chart-1: oklch(0.33 0.13 15);
-    --chart-2: oklch(0.5 0.1 15);
-    --chart-3: oklch(0.65 0.07 15);
-    --chart-4: oklch(0.75 0.04 15);
-    --chart-5: oklch(0.88 0.02 15);
-    --radius: 0.625rem;
-    /* Sidebar bordeaux scuro */
-    --sidebar: oklch(0.22 0.06 15);
-    --sidebar-foreground: oklch(0.95 0 0);
-    --sidebar-primary: oklch(0.95 0 0);
-    --sidebar-primary-foreground: oklch(0.22 0.06 15);
-    --sidebar-accent: oklch(0.30 0.10 15);
-    --sidebar-accent-foreground: oklch(0.97 0 0);
-    --sidebar-border: oklch(0.30 0.08 15 / 50%);
-    --sidebar-ring: oklch(0.33 0.13 15);
-    
-    /* Mockup custom colors & properties (US-018) */
-    --rose: oklch(0.645 0.246 16.44);
-    --gold: oklch(0.84 0.115 85);
-    --emerald: oklch(0.696 0.17 162.48);
-    --primary-soft: oklch(0.33 0.13 15 / 0.2);
-    --border-soft: oklch(0 0 0 / 0.1);
-    --surface-05: oklch(0 0 0 / 0.05);
-    --radius-pill: 9999px;
-    --radius-32: 2rem;
-}
-
-.dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-    
-    /* Mockup custom colors & properties (US-018 - Dark mode override) */
-    --rose: oklch(0.645 0.246 16.44);
-    --gold: oklch(0.84 0.115 85);
-    --emerald: oklch(0.696 0.17 162.48);
-    --primary-soft: oklch(0.922 0 0 / 0.2);
-    --border-soft: oklch(1 0 0 / 0.1);
-    --surface-05: oklch(1 0 0 / 0.05);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
-  html {
-    @apply font-sans;
-    }
-}
-
-@layer utilities {
-  .glass-card {
-    background: oklch(1 0 0 / 0.7);
-    backdrop-filter: blur(16px);
-    border: 1px solid oklch(0 0 0 / 0.1);
-    box-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.05);
-  }
-  
-  .dark .glass-card {
-    background: oklch(0.205 0 0 / 0.4);
-    border: 1px solid oklch(1 0 0 / 0.1);
-  }
-
-  .glass-morphism {
-    background: oklch(1 0 0 / 0.1);
-    backdrop-filter: blur(12px);
-    border: 1px solid oklch(1 0 0 / 0.05);
-  }
-
-  .pill {
-    @apply rounded-full;
-  }
-
-  .glow-primary {
-    box-shadow: 0 0 25px oklch(0.33 0.13 15 / 0.4);
-  }
-
-  .glass-sidebar {
-    background: oklch(0.22 0.06 15 / 0.85);
-    backdrop-filter: blur(20px);
-    border-right: 1px solid oklch(0.30 0.08 15 / 0.3);
-  }
-
-  .floating-nav {
-    @apply fixed bottom-8 left-1/2 -translate-x-1/2 z-50;
-  }
-}
-
 /* ============================================================
    US-018 — Impostazioni profilo utente base · profile-edit.css
+   Estende docs/mockups/US-005/shared.css (non lo duplica).
+   Solo le regole aggiuntive necessarie alla modalità "modifica"
+   del modale profilo: campi editabili, sezione password
+   collassabile, badge email in attesa, errori inline.
    ============================================================ */
 
+/* [hidden] deve sempre vincere sulle regole di layout (.rows, footer, ecc.)
+   che altrimenti lo sovrascriverebbero a parità di specificità. */
+[hidden] { display: none !important; }
+
+/* ---------- Sottotitolo sezione + wrapper campi editabili ---------- */
 .section-head {
   display: flex;
   align-items: baseline;
@@ -205,6 +25,8 @@
   text-transform: none; letter-spacing: 0;
 }
 
+/* Riga campo editabile: eredita l'anatomia di .info-row, ma il valore
+   diventa un <input> "a incastro" che si illumina in focus/errore. */
 .info-row.editable {
   align-items: center;
   transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
@@ -213,11 +35,6 @@
   border-color: oklch(0.62 0.19 12 / 0.55);
   background: oklch(0.33 0.13 15 / 0.1);
   box-shadow: 0 0 0 3px oklch(0.33 0.13 15 / 0.16);
-}
-.dark .info-row.editable:focus-within {
-  border-color: oklch(0.84 0.115 85 / 0.55);
-  background: oklch(0.84 0.115 85 / 0.1);
-  box-shadow: 0 0 0 3px oklch(0.84 0.115 85 / 0.16);
 }
 .info-row.editable.has-error {
   border-color: oklch(0.645 0.246 16.44 / 0.6);
@@ -245,6 +62,7 @@
 .field-visibility-btn:hover { color: var(--foreground); background: var(--surface-05); }
 .field-visibility-btn svg { width: 1rem; height: 1rem; display: block; }
 
+/* Messaggio di errore inline sotto il campo */
 .field-error {
   display: flex; align-items: center; gap: .4rem;
   padding-left: 1.375rem; margin-top: -0.4rem;
@@ -259,6 +77,7 @@
   font-size: 10.5px; font-weight: 600; color: oklch(0.708 0 0 / 0.65);
 }
 
+/* ---------- Banner "email in attesa di conferma" ---------- */
 .pending-banner {
   display: flex; gap: .85rem; align-items: flex-start;
   padding: 1rem 1.1rem; margin-top: .1rem;
@@ -297,6 +116,7 @@
 .pending-link:hover { color: var(--foreground); }
 .pending-link.danger:hover { color: var(--rose); }
 
+/* ---------- Sezione collassabile "Cambia password" ---------- */
 .collapse-section {
   border-radius: var(--radius-32);
   background: var(--surface-05);
@@ -305,7 +125,6 @@
   transition: border-color .25s ease, background .25s ease;
 }
 .collapse-section.open { border-color: oklch(0.33 0.13 15 / 0.3); background: oklch(0.33 0.13 15 / 0.07); }
-.dark .collapse-section.open { border-color: oklch(0.84 0.115 85 / 0.3); background: oklch(0.84 0.115 85 / 0.07); }
 .collapse-trigger {
   width: 100%; border: none; background: transparent; cursor: pointer;
   font-family: inherit; text-align: left; color: var(--foreground);
@@ -317,10 +136,6 @@
   width: 2.35rem; height: 2.35rem; flex-shrink: 0; border-radius: var(--radius-2xl);
   background: oklch(0.33 0.13 15 / 0.18); border: 1px solid oklch(0.33 0.13 15 / 0.3);
   display: flex; align-items: center; justify-content: center; color: var(--primary-soft);
-}
-.dark .collapse-icon {
-  background: oklch(0.84 0.115 85 / 0.18); border: 1px solid oklch(0.84 0.115 85 / 0.3);
-  color: var(--primary);
 }
 .collapse-icon svg { width: 1.15rem; height: 1.15rem; }
 .collapse-titles { min-width: 0; }
@@ -340,6 +155,7 @@
 .strength-bar.on-mid { background: var(--gold); }
 .strength-bar.on-strong { background: var(--emerald); }
 
+/* ---------- Toast di conferma salvataggio ---------- */
 .save-toast {
   position: absolute; left: 50%; bottom: 6.5rem; z-index: 30;
   transform: translate(-50%, .5rem);
@@ -356,6 +172,7 @@
 .save-toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 .save-toast svg { width: 1rem; height: 1rem; color: var(--emerald); flex-shrink: 0; }
 
+/* ---------- Chip di stato "Attivo" accanto all'email corrente ---------- */
 .status-chip {
   display: inline-flex; align-items: center; gap: .3rem;
   height: 1.15rem; padding: 0 .5rem;
@@ -367,8 +184,37 @@
 }
 .status-chip svg { width: .6rem; height: .6rem; }
 
+/* ---------- Header del modale in modalità modifica ---------- */
 .modal-header.is-editing .icon-box {
   background: oklch(0.84 0.115 85 / 0.15);
   border-color: oklch(0.84 0.115 85 / 0.35);
   color: var(--gold);
+}
+
+/* ---------- Barra di stato demo (per navigare gli stati del mockup) ---------- */
+.demo-toggle {
+  position: fixed; top: 1.25rem; right: 1.25rem; z-index: 200;
+  display: flex; align-items: center; gap: .375rem; padding: .375rem;
+  border-radius: var(--radius-pill);
+  background: oklch(0.145 0 0 / 0.7);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-soft);
+}
+.demo-toggle button {
+  display: inline-flex; align-items: center; gap: .5rem;
+  height: 2.25rem; padding: 0 1rem;
+  border-radius: var(--radius-pill); border: 1px solid transparent;
+  background: transparent; color: var(--muted-foreground);
+  font-family: inherit; font-size: 10px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: .1em; cursor: pointer;
+  transition: all .2s ease; white-space: nowrap;
+}
+.demo-toggle button:hover { color: var(--foreground); background: var(--surface-05); }
+.demo-toggle button.active { background: oklch(0.33 0.13 15 / 0.35); border-color: oklch(0.33 0.13 15 / 0.5); color: #fff; }
+
+@media (max-width: 900px) {
+  .demo-toggle { position: static; margin: 0 auto 1.25rem; width: fit-content; flex-wrap: wrap; justify-content: center; }
+}
+@media (max-width: 640px) {
+  .mock-nav { position: static; margin: 1.25rem auto 0; width: fit-content; }
 }
