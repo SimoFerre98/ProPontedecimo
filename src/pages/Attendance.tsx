@@ -67,11 +67,6 @@ export default function Attendance() {
     return completeRoster.filter(p => p.team_sector === selectedSector)
   }, [completeRoster, selectedSector])
 
-  // Extract filtered player IDs to query attendance records
-  const filteredPlayerIds = useMemo(() => {
-    return filteredRoster.map(p => p.id)
-  }, [filteredRoster])
-
   // 2. Fetch attendance records for the roster on the selected date
   const { data: attendanceRecords = [], isLoading: isLoadingRecords } = useQuery({
     queryKey: ['attendance-records', selectedSeasonId, selectedDate],
