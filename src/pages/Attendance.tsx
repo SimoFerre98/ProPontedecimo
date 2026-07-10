@@ -29,7 +29,7 @@ export default function Attendance() {
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [justSetPlayerId, setJustSetPlayerId] = useState<string | null>(null)
 
-  const toastTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -119,7 +119,7 @@ export default function Attendance() {
 
       return { previousRecords }
     },
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       queryClient.setQueryData(['attendance-records', selectedSeasonId, selectedDate], context?.previousRecords)
       setJustSetPlayerId(null)
     },
