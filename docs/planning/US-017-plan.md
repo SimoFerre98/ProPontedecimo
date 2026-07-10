@@ -2,6 +2,7 @@
 
 **Generato da:** Archetipo Planning Team
 **Data:** 2026-07-10
+**Stato:** ✅ COMPLETATO — merge in `dev`/`main` dopo code review e verifica manuale multi-ruolo
 
 ---
 
@@ -58,13 +59,21 @@ Il registro presenze tocca sia lo schema DB (superficie condivisa con US-002) si
 | DONE | TASK-03 | Aggiornare `scripts/test-rls.mjs` | Sostituire gli insert di test che usano `present: true` con `status: 'present'`, per non rompere la suite RLS esistente (superficie condivisa US-002). | Test | TASK-01 |
 | DONE | TASK-04 | `attendanceService`: roster e presenze | Nuovo `src/services/attendanceService.ts` con `getRosterForAttendance`, `getAttendanceForDate`, `setAttendanceStatus` (upsert `onConflict`). | Impl | TASK-02 |
 | DONE | TASK-05 | Script di integrazione registro presenze | Nuovo `scripts/test-attendance.mjs`: tri-stato per leva, blocco cross-leva, upsert idempotente senza duplicati, coerenza con la stagione selezionata. | Test | TASK-04 |
-| TODO | TASK-06 | Componenti UI mobile-first | Selettore data, chip selettore leva (visibile solo se >1 settore), riga atleta con toggle tri-stato a tocco singolo, contatore presenti/assenti/giustificati, skeleton/empty state. | Impl | TASK-04 |
-| TODO | TASK-07 | Riscrittura `Attendance.tsx` | Sostituire il placeholder con la schermata funzionante: query roster+presenze via React Query, mutation ottimistica, rispetto della stagione selezionata dallo store. | Impl | TASK-06 |
+| DONE | TASK-06 | Componenti UI mobile-first | Selettore data, chip selettore leva (visibile solo se >1 settore), riga atleta con toggle tri-stato a tocco singolo, contatore presenti/assenti/giustificati, skeleton/empty state. | Impl | TASK-04 |
+| DONE | TASK-07 | Riscrittura `Attendance.tsx` | Sostituire il placeholder con la schermata funzionante: query roster+presenze via React Query, mutation ottimistica, rispetto della stagione selezionata dallo store. | Impl | TASK-06 |
 | DONE | TASK-08 | Aggiornamento "Superfici condivise" in CLAUDE.md | Aggiungere la riga `attendance` (story US-002, US-017; cosa verificare: `test-rls.mjs`, vincolo di unicità) alla tabella delle superfici condivise. | Impl | TASK-01 |
-| TODO | TASK-09 | Verifica manuale multi-ruolo | Reset Supabase locale, login come coach (propria leva) e come president/director (multi-settore); verificare presenze pre-esistenti modificabili e responsive su viewport mobile. | Test | TASK-07 |
+| DONE | TASK-09 | Verifica manuale multi-ruolo | Reset Supabase locale, login come coach (propria leva) e come president/director (multi-settore); verificare presenze pre-esistenti modificabili e responsive su viewport mobile. | Test | TASK-07 |
 
 ---
 
 > 🎨 I mockup per questa storia sono disponibili in `docs/mockups/US-017/`
 
 _Piano generato via Archetipo Planning — 2026-07-10_
+
+---
+
+## Note di implementazione (deviazioni dal piano)
+
+- **TASK-01:** il piano prevedeva di aggiungere il vincolo `UNIQUE (player_id, session_date, type)`; la migrazione correttamente non lo fa perché esisteva già dalla baseline (`attendance_player_id_session_date_type_key`) — non individuato durante la sessione di planning.
+- **Code review:** `npm run lint` ha rilevato una variabile `filteredPlayerIds` calcolata ma non utilizzata in `Attendance.tsx` (la query presenze usa correttamente `completeRoster` per non perdere i conteggi al cambio di leva) — rimossa in review (commit `9d0f9a1`).
+- **Verifica manuale:** eseguita con dati di prova ad hoc (stagione, coach multi-leva, 5 atleti su 2 leve, una presenza pre-esistente) su Supabase locale; confermati filtro per leva, tocco tri-stato, editabilità senza duplicazione (verificata anche via query diretta sulla tabella) e conteggi coerenti.
