@@ -298,7 +298,8 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
         await profileService.updateFullName(trimmedName)
       }
 
-      if (trimmedEmail !== (profile?.email ?? '')) {
+      const emailBaseline = localUser?.new_email ?? profile?.email ?? ''
+      if (trimmedEmail !== emailBaseline) {
         await profileService.updateEmail(trimmedEmail)
         emailUpdated = true
       }
