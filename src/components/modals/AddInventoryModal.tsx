@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { inventoryService } from '@/services/inventoryService'
 import { useQueryClient } from '@tanstack/react-query'
+import { useToast } from '@/contexts/ToastContext'
+import { getErrorMessage } from '@/lib/errors'
 
 interface AddInventoryModalProps {
   isOpen: boolean
@@ -15,6 +17,7 @@ interface AddInventoryModalProps {
 export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readonly<AddInventoryModalProps>) {
   const [loading, setLoading] = useState(false)
   const queryClient = useQueryClient()
+  const toast = useToast()
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -39,7 +42,7 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
         min_stock: 5
       })
     } catch (error) {
-      console.error('Error adding inventory item:', error)
+      toast.error(getErrorMessage(error))
     } finally {
       setLoading(false)
     }

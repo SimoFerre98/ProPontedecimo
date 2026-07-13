@@ -16,6 +16,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
 import { useAppStore } from '@/store/useAppStore'
+import { QueryErrorState } from '@/components/ui/query-error-state'
 import { attendanceService, type AttendanceStatus, type AttendanceRecord } from '@/services/attendanceService'
 
 export default function Attendance() {
@@ -42,7 +43,7 @@ export default function Attendance() {
 
   // 1. Fetch complete active roster for this season.
   // RLS automatically limits results to the coach's assigned sectors.
-  const { data: completeRoster = [], isLoading: isLoadingRoster } = useQuery({
+  const { data: completeRoster = [], isLoading: isLoadingRoster, isError: isRosterError, error: rosterError, refetch: refetchRoster } = useQuery({
     queryKey: ['attendance-complete-roster', selectedSeasonId],
     queryFn: () => attendanceService.getRosterForAttendance(selectedSeasonId!),
     enabled: !!selectedSeasonId
@@ -68,7 +69,7 @@ export default function Attendance() {
   }, [completeRoster, selectedSector])
 
   // 2. Fetch attendance records for the roster on the selected date
-  const { data: attendanceRecords = [], isLoading: isLoadingRecords } = useQuery({
+  const { data: attendanceRecords = [], isLoading: isLoadingRecords, isError: isRecordsError, refetch: refetchRecords } = useQuery({
     queryKey: ['attendance-records', selectedSeasonId, selectedDate],
     queryFn: () => attendanceService.getAttendanceForDate(completeRoster.map(p => p.id), selectedDate),
     enabled: completeRoster.length > 0,
@@ -385,8 +386,19 @@ export default function Attendance() {
           </div>
         </div>
 
+        {isRecordsError && !isRosterError && (
+          <div className="flex items-center justify-between gap-3 px-4 py-3 bg-[var(--rose)]/10 border border-[var(--rose)]/20 rounded-2xl text-xs font-bold text-[var(--rose)]">
+            <span>Impossibile caricare le presenze già registrate per questa data.</span>
+            <button onClick={() => refetchRecords()} className="underline whitespace-nowrap">Riprova</button>
+          </div>
+        )}
+
         {/* Loading skeleton state */}
-        {isLoading && completeRoster.length === 0 ? (
+        {isRosterError ? (
+          <div className="glass-card rounded-2xl border-black/5 dark:border-white/10">
+            <QueryErrorState error={rosterError} onRetry={() => refetchRoster()} />
+          </div>
+        ) : isLoading && completeRoster.length === 0 ? (
           <div className="space-y-2.5">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={`sk-${i}`} className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-2xl animate-pulse">

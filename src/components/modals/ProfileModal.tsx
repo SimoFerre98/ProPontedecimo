@@ -21,6 +21,8 @@ import { cn } from '@/lib/utils'
 import { icsFeedService } from '@/services/icsFeedService'
 import { profileService } from '@/services/profileService'
 import { supabase } from '@/lib/supabase'
+import { useToast } from '@/contexts/ToastContext'
+import { getErrorMessage } from '@/lib/errors'
 
 interface ProfileModalProps {
   isOpen: boolean
@@ -94,6 +96,7 @@ function getInitials(fullName: string | null, email: string): string {
 
 export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalProps>) {
   const { profile, user, refreshProfile } = useAuth()
+  const toast = useToast()
 
   const [icsToken, setIcsToken] = useState<string | null>(null)
   const [isLoadingToken, setIsLoadingToken] = useState(false)
@@ -111,7 +114,6 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [localUser, setLocalUser] = useState(user)
   const [isSaving, setIsSaving] = useState(false)
-  const [showToast, setShowToast] = useState(false)
   const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent'>('idle')
 
   const [generalError, setGeneralError] = useState<string | null>(null)
@@ -221,7 +223,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
       setResendStatus('sent')
       setTimeout(() => setResendStatus('idle'), 2000)
     } catch (err) {
-      console.error(err)
+      toast.error(getErrorMessage(err))
       setResendStatus('idle')
     }
   }
@@ -234,7 +236,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
       setLocalUser(updatedUser)
       setEmail(user.email)
     } catch (err) {
-      console.error(err)
+      toast.error(getErrorMessage(err))
     }
   }
 
@@ -312,8 +314,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
       const { data: { user: updatedUser } } = await supabase.auth.getUser()
       setLocalUser(updatedUser)
 
-      setShowToast(true)
-      setTimeout(() => setShowToast(false), 2200)
+      toast.success('Modifiche salvate')
 
       if (emailUpdated) {
         setNewPassword('')
@@ -820,12 +821,6 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                   </section>
                 </>
               )}
-            </div>
-
-            {/* Success toast */}
-            <div className={cn("save-toast", showToast && "show")}>
-              <Check className="w-4 h-4 text-emerald-500" strokeWidth={3} />
-              Modifiche salvate
             </div>
 
             {/* Footer azioni */}

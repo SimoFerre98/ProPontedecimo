@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { medicalService, type MedicalVisitRecord } from '@/services/medicalService'
 import { useQueryClient } from '@tanstack/react-query'
+import { useToast } from '@/contexts/ToastContext'
+import { getErrorMessage } from '@/lib/errors'
 
 interface MedicalVisitModalProps {
   isOpen: boolean
@@ -16,6 +18,7 @@ interface MedicalVisitModalProps {
 export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }: Readonly<MedicalVisitModalProps>) {
   const [loading, setLoading] = useState(false)
   const queryClient = useQueryClient()
+  const toast = useToast()
   const [medicalExpiry, setMedicalExpiry] = useState('')
 
   useEffect(() => {
@@ -41,7 +44,7 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
       onSuccess?.()
       onClose()
     } catch (error) {
-      console.error('Error updating medical expiry:', error)
+      toast.error(getErrorMessage(error))
     } finally {
       setLoading(false)
     }

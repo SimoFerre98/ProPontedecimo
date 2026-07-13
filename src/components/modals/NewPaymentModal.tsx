@@ -8,6 +8,8 @@ import { paymentService } from '@/services/paymentService'
 import { supabase } from '@/lib/supabase'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppStore } from '@/store/useAppStore'
+import { useToast } from '@/contexts/ToastContext'
+import { getErrorMessage } from '@/lib/errors'
 
 interface NewPaymentModalProps {
   isOpen: boolean
@@ -38,6 +40,7 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
   ])
 
   const queryClient = useQueryClient()
+  const toast = useToast()
   const { selectedSeasonId } = useAppStore()
 
   useEffect(() => {
@@ -154,7 +157,7 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
       queryClient.invalidateQueries({ queryKey: ['overduePaymentsCount'] })
       onClose()
     } catch (err) {
-      console.error(err)
+      toast.error(getErrorMessage(err))
     } finally {
       setLoading(false)
     }

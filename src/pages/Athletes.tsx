@@ -36,6 +36,7 @@ import AddAthleteModal from '@/components/modals/AddAthleteModal'
 import DeleteAthleteModal from '@/components/modals/DeleteAthleteModal'
 import PlayerPaymentSummaryModal from '@/components/modals/PlayerPaymentSummaryModal'
 import { Pagination } from '@/components/ui/Pagination'
+import { QueryErrorState } from '@/components/ui/query-error-state'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAppStore } from '@/store/useAppStore'
 
@@ -134,7 +135,7 @@ export default function Athletes() {
 
   const isAdmin = role === 'president' || role === 'director'
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['players', search, sectorFilter, page, filters, selectedSeasonId],
     queryFn: () => athleteService.getPlayers(search, sectorFilter, page, pageSize, filters, selectedSeasonId),
     enabled: !!selectedSeasonId,
@@ -652,6 +653,10 @@ export default function Athletes() {
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={`athlete-skel-${i}`} className="glass-card p-8 h-64 animate-pulse bg-muted/20 border-black/5 dark:border-white/10 rounded-[2rem]" />
           ))}
+        </div>
+      ) : isError ? (
+        <div className="glass-card rounded-[2rem]">
+          <QueryErrorState error={error} onRetry={() => refetch()} />
         </div>
       ) : players.length === 0 ? (
         <div className="glass-card rounded-[2rem] p-16 flex flex-col items-center justify-center gap-4 text-center">
