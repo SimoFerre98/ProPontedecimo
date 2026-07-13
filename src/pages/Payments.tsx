@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, CheckCircle2, Clock, AlertCircle, Plus,
   User, Euro, FileText, CreditCard, Smartphone, Banknote, Building2, Pencil,
-  Download, Loader2
+  Download, Loader2, TrendingUp
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns/format'
@@ -17,6 +17,7 @@ import { exportToXlsx } from '@/lib/xlsxExport'
 import PaymentModal from '@/components/modals/PaymentModal'
 import NewPaymentModal from '@/components/modals/NewPaymentModal'
 import { useAppStore } from '@/store/useAppStore'
+import { FinancialTrendChart } from '@/components/charts/FinancialTrendChart'
 
 const METHOD_ICONS: Record<string, React.ElementType> = {
   satispay: Smartphone,
@@ -78,6 +79,12 @@ export default function Payments() {
     enabled: !!selectedSeasonId,
   })
 
+  const { data: trendData } = useQuery({
+    queryKey: ['financial-trend', selectedSeasonId],
+    queryFn: () => paymentService.getFinancialTrend(selectedSeasonId!),
+    enabled: isAdmin && !!selectedSeasonId,
+  })
+
   const payments = useMemo(() => data?.data ?? [], [data])
   const totalCount = data?.count || 0
 
@@ -112,6 +119,129 @@ export default function Payments() {
           </Button>
         )}
       </div>
+
+      {/* Nuova Sezione Finanziaria per Admin */}
+      {isAdmin && selectedSeasonId && trendData && (
+        <div className="space-y-6 animate-in fade-in duration-300">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gold">
+              <TrendingUp className="w-4 h-4" />
+              <span>Andamento Finanziario</span>
+            </div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-muted-foreground">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <span>Visibile solo ad Amministratori</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-white/5 transition-all duration-300 hover:border-emerald-500/20 hover:-translate-y-1"
+            >
+              <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-emerald-500 group-hover:opacity-20 transition-opacity" />
+              <div className="flex items-start justify-between relative z-10">
+                <div className="flex-1">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 opacity-70">Incassato Totale</p>
+                  <p className="text-4xl font-black text-foreground tracking-tighter tabular-nums">
+                    € {trendData.totals.incassato_totale.toLocaleString('it-IT')}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-2 font-medium bg-background/50 pill inline-block px-2 py-0.5 border border-black/5 dark:border-white/10">
+                    {trendData.totals.previsto_totale > 0 
+                      ? `${((trendData.totals.incassato_totale / trendData.totals.previsto_totale) * 100).toFixed(1)}% del previsto`
+                      : '0% del previsto'
+                    }
+                  </p>
+                </div>
+                <div className="w-12 h-12 pill flex items-center justify-center shrink-0 ml-4 border bg-emerald-500/10 border-emerald-500/20 text-emerald-500">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-white/5 transition-all duration-300 hover:border-primary/20 hover:-translate-y-1"
+            >
+              <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-primary group-hover:opacity-20 transition-opacity" />
+              <div className="flex items-start justify-between relative z-10">
+                <div className="flex-1">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 opacity-70">Previsto Totale</p>
+                  <p className="text-4xl font-black text-foreground tracking-tighter tabular-nums">
+                    € {trendData.totals.previsto_totale.toLocaleString('it-IT')}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-2 font-medium bg-background/50 pill inline-block px-2 py-0.5 border border-black/5 dark:border-white/10">
+                    quote + rate pianificate
+                  </p>
+                </div>
+                <div className="w-12 h-12 pill flex items-center justify-center shrink-0 ml-4 border bg-primary/10 border-primary/20 text-primary">
+                  <Building2 className="w-5 h-5" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-white/5 transition-all duration-300 hover:border-gold/20 hover:-translate-y-1"
+            >
+              <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-gold group-hover:opacity-20 transition-opacity" />
+              <div className="flex items-start justify-between relative z-10">
+                <div className="flex-1">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 opacity-70">Insoluti Recuperati</p>
+                  <p className="text-4xl font-black text-foreground tracking-tighter tabular-nums">
+                    € {trendData.totals.insoluti_recuperati.toLocaleString('it-IT')}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-2 font-medium bg-background/50 pill inline-block px-2 py-0.5 border border-black/5 dark:border-white/10">
+                    {trendData.totals.incassato_totale > 0
+                      ? `${((trendData.totals.insoluti_recuperati / trendData.totals.incassato_totale) * 100).toFixed(1)}% dell'incassato`
+                      : '0% dell\'incassato'
+                    }
+                  </p>
+                </div>
+                <div className="w-12 h-12 pill flex items-center justify-center shrink-0 ml-4 border bg-gold/10 border-gold/20 text-gold">
+                  <Clock className="w-5 h-5" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-white/5 transition-all duration-300 hover:border-muted-foreground/20 hover:-translate-y-1"
+            >
+              <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-muted group-hover:opacity-20 transition-opacity" />
+              <div className="flex items-start justify-between relative z-10">
+                <div className="flex-1">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 opacity-70">Rate Future Residue</p>
+                  <p className="text-4xl font-black text-foreground tracking-tighter tabular-nums">
+                    € {trendData.totals.rate_future_residue.toLocaleString('it-IT')}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-2 font-medium bg-background/50 pill inline-block px-2 py-0.5 border border-black/5 dark:border-white/10">
+                    non ancora in scadenza
+                  </p>
+                </div>
+                <div className="w-12 h-12 pill flex items-center justify-center shrink-0 ml-4 border bg-muted/10 border-muted/20 text-muted-foreground">
+                  <FileText className="w-5 h-5" />
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          <FinancialTrendChart data={trendData} />
+
+          <div className="flex items-center gap-4 my-8">
+            <div className="h-[1px] flex-1 bg-black/5 dark:bg-white/5" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Dettaglio Pagamenti</span>
+            <div className="h-[1px] flex-1 bg-black/5 dark:bg-white/5" />
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

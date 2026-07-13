@@ -135,7 +135,7 @@
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
 | [US-021](backlog/US-021-esportazione-excel-atleti-pagamenti.md) | Esportazione Excel di atleti e pagamenti | MEDIUM | 3 | DONE |
-| [US-022](backlog/US-022-grafici-andamento-finanziario.md) | Grafici andamento finanziario | MEDIUM | 3 | TODO |
+| [US-022](backlog/US-022-grafici-andamento-finanziario.md) | Grafici andamento finanziario | MEDIUM | 3 | DONE |
 
 ### EP-009: Deploy VPS, Migrazione & Backup
 
@@ -144,7 +144,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-023](backlog/US-023-setup-supabase-self-hosted-vps.md) | Setup Supabase self-hosted su VPS | MEDIUM | 5 | TODO |
+| [US-023](backlog/US-023-setup-supabase-self-hosted-vps.md) | Setup Supabase self-hosted su VPS | MEDIUM | 5 | PLANNED |
 | [US-024](backlog/US-024-migrazione-schema-configurazioni-cloud.md) | Migrazione schema e configurazioni dal cloud | MEDIUM | 3 | TODO |
 | [US-025](backlog/US-025-deploy-frontend-container.md) | Deploy del frontend in container | MEDIUM | 3 | TODO |
 | [US-026](backlog/US-026-backup-periodico-database.md) | Backup periodico del database | MEDIUM | 3 | TODO |

@@ -40,6 +40,25 @@ export interface PaymentUpsertPayload {
   notes?: string | null
 }
 
+export interface FinancialTrendMonth {
+  month: string
+  previsto_eur: number
+  incassato_quota_eur: number
+  incassato_insoluti_eur: number
+}
+
+export interface FinancialTrendTotals {
+  previsto_totale: number
+  incassato_totale: number
+  insoluti_recuperati: number
+  rate_future_residue: number
+}
+
+export interface FinancialTrend {
+  months: FinancialTrendMonth[]
+  totals: FinancialTrendTotals
+}
+
 export const PAYMENT_METHODS: { value: PaymentMethod; label: string; icon: string }[] = [
   { value: 'satispay', label: 'Satispay', icon: '📱' },
   { value: 'contanti', label: 'Contanti', icon: '💵' },
@@ -297,5 +316,14 @@ export const paymentService = {
       p_installments: installments
     })
     if (error) throw error
+  },
+
+  // Recupera il trend finanziario per una stagione
+  async getFinancialTrend(seasonId: string): Promise<FinancialTrend> {
+    const { data, error } = await supabase.rpc('get_financial_trend', {
+      p_season_id: seasonId
+    })
+    if (error) throw error
+    return data as FinancialTrend
   }
 }
