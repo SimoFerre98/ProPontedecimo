@@ -111,12 +111,12 @@ export function FinancialTrendChart({ data }: Readonly<FinancialTrendChartProps>
                 fontSize: '11px',
                 fontWeight: 600
               }}
-              formatter={(value: number | string, name: string) => {
+              formatter={(value, name) => {
                 const formattedVal = `€ ${Number(value).toLocaleString('it-IT')}`
                 if (name === 'previsto_eur') return [formattedVal, 'Previsto']
                 if (name === 'incassato_quota_eur') return [formattedVal, 'Quota Incassata']
                 if (name === 'incassato_insoluti_eur') return [formattedVal, 'Insoluti Recuperati']
-                return [formattedVal, name]
+                return [formattedVal, String(name)]
               }}
               labelFormatter={(label) => `Mese: ${formatMonth(String(label))}`}
             />
