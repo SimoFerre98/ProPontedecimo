@@ -1,0 +1,222 @@
+/* ============================================================
+   US-022 — Grafici andamento finanziario · style.css
+   Estende i token di ../US-015/shared.css. Contiene solo le
+   regole specifiche di questa pagina (sidebar dimostrativa,
+   sezione grafico finanziario, stat card nuove).
+   ============================================================ */
+
+:root { --amber: oklch(0.769 0.188 70.08); }
+
+html, body { height: auto; }
+body { overflow-x: hidden; overflow-y: auto; }
+
+/* ---------- Scena: layout applicativo reale (header sticky + floating pill nav, NO sidebar) ---------- */
+.app-shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+.app-header {
+  position: sticky; top: 0; z-index: 40;
+  height: 4rem; padding: 0 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border-soft);
+  background: oklch(0.145 0.006 15 / 0.75); backdrop-filter: blur(20px);
+}
+.app-logo { display: flex; align-items: center; gap: .85rem; }
+.app-logo-mark {
+  width: 2.5rem; height: 2.5rem; border-radius: var(--radius-2xl); flex-shrink: 0;
+  background: linear-gradient(135deg, oklch(0.45 0.16 15), oklch(0.28 0.11 15));
+  border: 1px solid oklch(0.84 0.115 85 / 0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-style: italic; font-size: .85rem; color: var(--gold);
+}
+.app-logo-text { display: flex; flex-direction: column; line-height: 1.15; }
+.app-logo-text b { font-size: .8rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; }
+.app-logo-text span { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-foreground); }
+
+.app-header-actions { display: flex; align-items: center; gap: .75rem; }
+.app-season-pill {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .5rem .9rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-05); border: 1px solid var(--border-soft);
+  font-size: 11px;
+}
+.app-season-pill svg { width: .85rem; height: .85rem; color: var(--muted-foreground); flex-shrink: 0; }
+.app-season-pill .lbl { color: var(--muted-foreground); font-weight: 500; margin-right: .3rem; }
+.app-season-pill .val { font-weight: 900; color: var(--primary-soft); }
+
+.app-icon-btn {
+  width: 2.25rem; height: 2.25rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-soft);
+  color: var(--muted-foreground);
+}
+.app-icon-btn svg { width: 1rem; height: 1rem; }
+
+.app-profile-chip { display: flex; align-items: center; gap: .65rem; padding-left: 1rem; border-left: 1px solid var(--border-soft); }
+.app-profile-chip .who { display: flex; flex-direction: column; line-height: 1.2; text-align: right; }
+.app-profile-chip .who b { font-size: .7rem; font-weight: 700; }
+.app-profile-chip .who span { font-size: 9px; color: var(--muted-foreground); }
+.app-profile-chip .avatar {
+  width: 2rem; height: 2rem; border-radius: 50%;
+  background: oklch(0.33 0.13 15 / 0.14); border: 1px solid oklch(0.33 0.13 15 / 0.3);
+  display: flex; align-items: center; justify-content: center; color: var(--primary-soft);
+}
+.app-profile-chip .avatar svg { width: 1rem; height: 1rem; }
+
+/* Pulsante di navigazione flottante (pillola in basso, come nell'app reale) */
+.app-floating-nav {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 50;
+  display: flex; align-items: center; gap: .5rem;
+  padding: .75rem 1.5rem; border-radius: var(--radius-pill);
+  background: var(--primary); color: #fff; font-weight: 700; font-size: .85rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  box-shadow: 0 0 20px oklch(0.33 0.13 15 / 0.4);
+}
+.app-floating-nav svg { width: 1.15rem; height: 1.15rem; }
+
+.app-main { flex: 1; min-width: 0; padding: 1.5rem 1.5rem 7rem; max-width: 1440px; margin: 0 auto; width: 100%; }
+
+/* ---------- Sezione grafico finanziario ---------- */
+.fin-section { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.fin-eyebrow-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.fin-eyebrow {
+  display: flex; align-items: center; gap: .55rem;
+  font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .2em;
+  color: var(--gold);
+}
+.fin-eyebrow svg { width: 1rem; height: 1rem; }
+
+.visibility-note {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .4rem .9rem .4rem .55rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-05); border: 1px solid var(--border-soft);
+  font-size: 9.5px; font-weight: 800; color: oklch(0.708 0 0 / 0.75);
+  letter-spacing: .04em;
+}
+.visibility-note .stack-avatars { display: flex; }
+.visibility-note .mini-badge {
+  width: 1.35rem; height: 1.35rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 900; border: 2px solid oklch(0.145 0.006 15);
+  margin-left: -.4rem;
+}
+.visibility-note .mini-badge:first-child { margin-left: 0; }
+.visibility-note .mini-badge.pres { background: oklch(0.84 0.115 85 / 0.25); color: var(--gold); }
+.visibility-note .mini-badge.dir { background: oklch(0.33 0.13 15 / 0.5); color: var(--primary-soft); }
+
+/* Stat card nuove (4 card riepilogo finanziario) */
+.fin-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+.fin-stat-card {
+  padding: 1.5rem; border-radius: var(--radius-32);
+  display: flex; flex-direction: column; gap: .9rem;
+  border: 1px solid var(--border-soft);
+  transition: all .25s ease;
+}
+.fin-stat-card:hover { border-color: oklch(0.33 0.13 15 / 0.3); transform: translateY(-2px); }
+.fin-stat-top { display: flex; align-items: center; justify-content: space-between; }
+.fin-stat-icon {
+  width: 3rem; height: 3rem; border-radius: var(--radius-2xl);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .25s ease;
+}
+.fin-stat-card:hover .fin-stat-icon { transform: scale(1.08); }
+.fin-stat-icon svg { width: 1.4rem; height: 1.4rem; }
+.fin-stat-icon.emerald { background: oklch(0.696 0.17 162.48 / 0.14); color: var(--emerald); }
+.fin-stat-icon.primary { background: oklch(0.33 0.13 15 / 0.22); color: var(--primary-soft); }
+.fin-stat-icon.gold    { background: oklch(0.84 0.115 85 / 0.14); color: var(--gold); }
+.fin-stat-icon.neutral { background: var(--surface-10); color: var(--foreground); }
+
+.fin-stat-trend {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: 10px; font-weight: 900;
+}
+.fin-stat-trend.up { color: var(--emerald); }
+.fin-stat-trend.flat { color: oklch(0.708 0 0 / 0.55); }
+.fin-stat-trend svg { width: .8rem; height: .8rem; }
+
+.fin-stat-label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; color: var(--muted-foreground); }
+.fin-stat-value { font-size: 1.9rem; font-weight: 900; color: var(--foreground); font-variant-numeric: tabular-nums; line-height: 1; }
+.fin-stat-sub { font-size: .74rem; font-weight: 700; color: oklch(0.708 0 0 / 0.6); }
+
+/* ---------- Card grafico ---------- */
+.chart-card { border-radius: var(--radius-32); padding: 2rem 2rem 1.5rem; border: 1px solid var(--border-soft); }
+.chart-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+.chart-title-block h3 {
+  font-size: 1.15rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em;
+  color: var(--foreground); margin-bottom: .3rem;
+}
+.chart-title-block h3 .accent { color: var(--gold); font-style: normal; }
+.chart-title-block p { font-size: .78rem; font-weight: 600; color: oklch(0.708 0 0 / 0.7); }
+
+.chart-legend { display: flex; align-items: center; gap: 1.35rem; flex-wrap: wrap; }
+.chart-legend .item { display: flex; align-items: center; gap: .5rem; font-size: 10.5px; font-weight: 800; color: oklch(0.85 0 0 / 0.8); }
+.chart-legend .swatch { width: .8rem; height: .8rem; border-radius: .25rem; flex-shrink: 0; }
+.chart-legend .swatch.previsto { background: oklch(1 0 0 / 0.14); border: 1px dashed oklch(1 0 0 / 0.35); }
+.chart-legend .swatch.quota { background: var(--emerald); }
+.chart-legend .swatch.insoluti { background: var(--gold); }
+
+.chart-plot-wrap { width: 100%; overflow-x: auto; }
+.chart-plot-wrap svg { width: 100%; height: auto; min-width: 640px; display: block; }
+
+.chart-plot-wrap .bar-previsto { fill: oklch(1 0 0 / 0.10); stroke: oklch(1 0 0 / 0.28); stroke-width: 1; stroke-dasharray: 3 2; }
+.chart-plot-wrap .bar-quota { fill: var(--emerald); }
+.chart-plot-wrap .bar-insoluti { fill: var(--gold); }
+.chart-plot-wrap .bar-previsto:hover,
+.chart-plot-wrap .bar-quota:hover,
+.chart-plot-wrap .bar-insoluti:hover { opacity: .78; cursor: pointer; }
+
+.chart-plot-wrap .gridline { stroke: oklch(1 0 0 / 0.07); stroke-width: 1; }
+.chart-plot-wrap .axis-label { fill: oklch(0.708 0 0 / 0.65); font-size: 10px; font-weight: 700; font-family: var(--font-mono); }
+.chart-plot-wrap .month-label { fill: oklch(0.85 0 0 / 0.75); font-size: 11px; font-weight: 800; text-anchor: middle; text-transform: uppercase; }
+.chart-plot-wrap .month-label.current { fill: var(--gold); }
+.chart-plot-wrap .today-line { stroke: var(--gold); stroke-width: 1.4; stroke-dasharray: 4 3; }
+.chart-plot-wrap .today-tag { fill: var(--gold); font-size: 9.5px; font-weight: 900; text-anchor: middle; letter-spacing: .05em; }
+.chart-plot-wrap .future-bracket { stroke: oklch(0.708 0 0 / 0.5); stroke-width: 1.2; fill: none; }
+.chart-plot-wrap .future-tag { fill: oklch(0.708 0 0 / 0.75); font-size: 9.5px; font-weight: 900; text-anchor: middle; letter-spacing: .1em; text-transform: uppercase; }
+.chart-plot-wrap .callout-value { fill: var(--foreground); font-size: 10px; font-weight: 900; text-anchor: middle; font-variant-numeric: tabular-nums; }
+
+.chart-foot-note {
+  margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border-soft);
+  display: flex; align-items: center; gap: .6rem;
+  font-size: .74rem; font-weight: 600; color: oklch(0.708 0 0 / 0.6);
+}
+.chart-foot-note svg { width: .95rem; height: .95rem; color: var(--gold); flex-shrink: 0; }
+
+/* ---------- Divider fra la nuova sezione e la pagina esistente ---------- */
+.section-divider {
+  display: flex; align-items: center; gap: 1rem;
+  margin: .5rem 0 -.25rem;
+}
+.section-divider .line { flex: 1; height: 1px; background: var(--border-soft); }
+.section-divider span {
+  font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .2em;
+  color: oklch(0.708 0 0 / 0.45);
+  white-space: nowrap;
+}
+
+@media (max-width: 1180px) {
+  .fin-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .app-header .app-season-pill .lbl { display: none; }
+  .app-main { padding: 1.25rem 1.25rem 6rem; }
+}
+
+@media (max-width: 640px) {
+  .app-profile-chip .who { display: none; }
+}
+
+@media (max-width: 640px) {
+  .fin-stats-grid { grid-template-columns: 1fr; }
+  .chart-card { padding: 1.5rem 1.25rem 1.25rem; }
+  .chart-head { flex-direction: column; }
+  .mock-nav .nav-tag { display: none; }
+}
