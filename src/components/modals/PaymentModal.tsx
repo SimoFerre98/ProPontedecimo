@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { paymentService, PAYMENT_METHODS, type PaymentReference, type PaymentMethod } from '@/services/paymentService'
 import { useQueryClient } from '@tanstack/react-query'
+import { useToast } from '@/contexts/ToastContext'
+import { getErrorMessage } from '@/lib/errors'
 
 interface PaymentModalProps {
   isOpen: boolean
@@ -21,6 +23,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
   const [method, setMethod] = useState<PaymentMethod>('contanti')
   const [notes, setNotes] = useState('')
   const queryClient = useQueryClient()
+  const toast = useToast()
 
   useEffect(() => {
     if (isOpen && payment) {
@@ -48,7 +51,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
       queryClient.invalidateQueries({ queryKey: ['overduePaymentsCount'] })
       onClose()
     } catch (err) {
-      console.error(err)
+      toast.error(getErrorMessage(err))
     } finally {
       setLoading(false)
     }

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { ToastProvider } from '@/contexts/ToastContext'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import RoleGuard from '@/components/RoleGuard'
 
@@ -37,62 +38,64 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router>
-          <Routes>
-            {/* Rotte pubbliche */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/recovery" element={<RecoveryPage />} />
+      <ToastProvider>
+        <AuthProvider>
+          <Router>
+            <Routes>
+              {/* Rotte pubbliche */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/recovery" element={<RecoveryPage />} />
 
-            {/* Rotte Protette - Divise per Ruolo */}
-            
-            {/* 1. Branch Staff (Admin/Coach) */}
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <RoleGuard 
-                    allowedRoles={['president', 'director', 'coach']} 
-                    fallbackPath="/portal" 
-                  />
-                </ProtectedRoute>
-              }
-            >
-              <Route element={<DashboardLayout />}>
-                <Route index element={<Dashboard />} />
-                <Route path="atleti"    element={<Athletes />} />
-                <Route path="pagamenti" element={<Payments />} />
-                <Route path="visite"    element={<MedicalVisits />} />
-                <Route path="presenze"  element={<Attendance />} />
-                <Route path="magazzino" element={<Inventory />} />
-                <Route path="task"      element={<StaffTasks />} />
+              {/* Rotte Protette - Divise per Ruolo */}
+
+              {/* 1. Branch Staff (Admin/Coach) */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <RoleGuard
+                      allowedRoles={['president', 'director', 'coach']}
+                      fallbackPath="/portal"
+                    />
+                  </ProtectedRoute>
+                }
+              >
+                <Route element={<DashboardLayout />}>
+                  <Route index element={<Dashboard />} />
+                  <Route path="atleti"    element={<Athletes />} />
+                  <Route path="pagamenti" element={<Payments />} />
+                  <Route path="visite"    element={<MedicalVisits />} />
+                  <Route path="presenze"  element={<Attendance />} />
+                  <Route path="magazzino" element={<Inventory />} />
+                  <Route path="task"      element={<StaffTasks />} />
+                </Route>
               </Route>
-            </Route>
 
-            {/* 2. Branch Atleti e Genitori */}
-            <Route
-              path="/portal"
-              element={
-                <ProtectedRoute>
-                  <RoleGuard 
-                    allowedRoles={['player', 'parent']} 
-                    fallbackPath="/" 
-                  />
-                </ProtectedRoute>
-              }
-            >
-              <Route element={<PortalLayout />}>
-                <Route index element={<PortalDashboard />} />
+              {/* 2. Branch Atleti e Genitori */}
+              <Route
+                path="/portal"
+                element={
+                  <ProtectedRoute>
+                    <RoleGuard
+                      allowedRoles={['player', 'parent']}
+                      fallbackPath="/"
+                    />
+                  </ProtectedRoute>
+                }
+              >
+                <Route element={<PortalLayout />}>
+                  <Route index element={<PortalDashboard />} />
+                </Route>
               </Route>
-            </Route>
 
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Router>
-      </AuthProvider>
-      <SpeedInsights />
+              {/* Fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Router>
+        </AuthProvider>
+        <SpeedInsights />
+      </ToastProvider>
     </QueryClientProvider>
   )
 }

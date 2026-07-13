@@ -51,18 +51,18 @@ Il progetto non ha un framework di test frontend configurato (niente vitest/jest
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Utility `getErrorMessage` | Creare `src/lib/errors.ts` con la funzione che estrae `error.message` o ritorna un fallback italiano generico | Impl | - |
-| TODO | TASK-02 | Sistema toast (Context + hook) | Creare `src/contexts/ToastContext.tsx` con `ToastProvider`, `useToast()` e `<ToastContainer />`, stile esteso da `.save-toast` con varianti emerald/rose/gold | Impl | - |
-| TODO | TASK-03 | Montare `ToastProvider` in `App.tsx` | Avvolgere l'app con `ToastProvider` dentro `QueryClientProvider`, sopra `<Router>` | Impl | TASK-02 |
-| TODO | TASK-04 | Componente `ErrorBoundary` | Creare `src/components/ErrorBoundary.tsx` (class component) con fallback glass-card e bottone "Ricarica pagina" | Impl | - |
-| TODO | TASK-05 | Montare `ErrorBoundary` in `main.tsx` | Avvolgere `<App />` con `<ErrorBoundary>` nell'entry point | Impl | TASK-04 |
-| TODO | TASK-06 | Verifica manuale Error Boundary | Forzare un errore di rendering controllato e confermare fallback + reload funzionanti | Test | TASK-05 |
-| TODO | TASK-07 | Componente `QueryErrorState` | Creare `src/components/ui/query-error-state.tsx` con icona, messaggio e bottone "Riprova" (`refetch`) | Impl | TASK-01 |
-| TODO | TASK-08 | Integrare `QueryErrorState` nelle pagine | Aggiungere il ramo `isError` in `Athletes`, `Payments`, `MedicalVisits`, `Inventory`, `StaffTasks`, `Attendance`, `Dashboard`, destrutturando `refetch` dove manca | Impl | TASK-07 |
-| TODO | TASK-09 | Verifica manuale query error state | Simulare un errore di rete/RPC su almeno 2 pagine e confermare messaggio + retry funzionante | Test | TASK-08 |
-| TODO | TASK-10 | Fix dei 6 catch silenziosi nei modali | Sostituire `console.error(err)` con `toast.error(getErrorMessage(err))` in `NewPaymentModal`, `PaymentModal`, `MedicalVisitModal`, `AddInventoryModal` e i 2 punti in `ProfileModal` | Impl | TASK-01, TASK-03 |
-| TODO | TASK-11 | Verifica manuale mutation error nei modali | Forzare il fallimento di ciascuna mutazione corretta e confermare toast visibile + modale che resta aperto con i dati intatti | Test | TASK-10 |
-| TODO | TASK-12 | Verifica finale type-check | Eseguire `npx tsc --noEmit` e correggere eventuali errori residui prima della review | Test | TASK-06, TASK-09, TASK-11 |
+| DONE | TASK-01 | Utility `getErrorMessage` | Creare `src/lib/errors.ts` con la funzione che estrae `error.message` o ritorna un fallback italiano generico | Impl | - |
+| DONE | TASK-02 | Sistema toast (Context + hook) | Creare `src/contexts/ToastContext.tsx` con `ToastProvider`, `useToast()` e `<ToastContainer />`, stile esteso da `.save-toast` con varianti emerald/rose/gold | Impl | - |
+| DONE | TASK-03 | Montare `ToastProvider` in `App.tsx` | Avvolgere l'app con `ToastProvider` dentro `QueryClientProvider`, sopra `<Router>` | Impl | TASK-02 |
+| DONE | TASK-04 | Componente `ErrorBoundary` | Creare `src/components/ErrorBoundary.tsx` (class component) con fallback glass-card e bottone "Ricarica pagina" | Impl | - |
+| DONE | TASK-05 | Montare `ErrorBoundary` in `main.tsx` | Avvolgere `<App />` con `<ErrorBoundary>` nell'entry point | Impl | TASK-04 |
+| DONE | TASK-06 | Verifica manuale Error Boundary | Forzare un errore di rendering controllato e confermare fallback + reload funzionanti | Test | TASK-05 |
+| DONE | TASK-07 | Componente `QueryErrorState` | Creare `src/components/ui/query-error-state.tsx` con icona, messaggio e bottone "Riprova" (`refetch`) | Impl | TASK-01 |
+| DONE | TASK-08 | Integrare `QueryErrorState` nelle pagine | Aggiungere il ramo `isError` in `Athletes`, `Payments`, `MedicalVisits`, `Inventory`, `StaffTasks`, `Attendance`, `Dashboard`, destrutturando `refetch` dove manca | Impl | TASK-07 |
+| DONE | TASK-09 | Verifica manuale query error state | Simulare un errore di rete/RPC su almeno 2 pagine e confermare messaggio + retry funzionante | Test | TASK-08 |
+| DONE | TASK-10 | Fix dei 6 catch silenziosi nei modali | Sostituire `console.error(err)` con `toast.error(getErrorMessage(err))` in `NewPaymentModal`, `PaymentModal`, `MedicalVisitModal`, `AddInventoryModal` e i 2 punti in `ProfileModal` | Impl | TASK-01, TASK-03 |
+| DONE | TASK-11 | Verifica manuale mutation error nei modali | Forzare il fallimento di ciascuna mutazione corretta e confermare toast visibile + modale che resta aperto con i dati intatti | Test | TASK-10 |
+| DONE | TASK-12 | Verifica finale type-check | Eseguire `npx tsc --noEmit` e correggere eventuali errori residui prima della review | Test | TASK-06, TASK-09, TASK-11 |
 
 ---
 

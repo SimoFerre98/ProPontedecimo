@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils'
 import { medicalService, type MedicalVisitRecord, type VisitStatus } from '@/services/medicalService'
 import { Pagination } from '@/components/ui/Pagination'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
+import { QueryErrorState } from '@/components/ui/query-error-state'
 import MedicalVisitModal from '@/components/modals/MedicalVisitModal'
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
@@ -33,7 +34,7 @@ export default function MedicalVisits() {
   const [sortBy, setSortBy] = useState<'last_name' | 'first_name' | 'team_sector' | 'medical_expiry'>('last_name')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['medical-visits', search, sectorFilter, page, sortBy, sortDir],
     queryFn: () => medicalService.getMedicalVisits(search, sectorFilter, page, pageSize, sortBy, sortDir),
   })
@@ -143,6 +144,12 @@ export default function MedicalVisits() {
                       </td>
                     </tr>
                   ))
+                ) : isError ? (
+                  <tr key="error">
+                    <td colSpan={6} className="px-6 py-6">
+                      <QueryErrorState error={error} onRetry={() => refetch()} />
+                    </td>
+                  </tr>
                 ) : filteredVisits?.length === 0 ? (
                   <motion.tr
                     initial={{ opacity: 0 }}

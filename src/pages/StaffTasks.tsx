@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
+import { QueryErrorState } from '@/components/ui/query-error-state'
 import { staffService, type TaskStatus, type StaffTask } from '@/services/staffService'
 import TaskModal from "@/components/modals/TaskModal"
 import KanbanBoard from "@/components/tasks/KanbanBoard"
@@ -28,7 +29,7 @@ export default function StaffTasks() {
   
   const queryClient = useQueryClient()
 
-  const { data: tasks, isLoading } = useQuery({
+  const { data: tasks, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['staff-tasks'],
     queryFn: () => staffService.getTasks()
   })
@@ -166,6 +167,10 @@ export default function StaffTasks() {
           {[1, 2, 3, 4].map((i) => (
             <div key={`kanban-skeleton-${i}`} className="h-[600px] glass-card border-white/5 animate-pulse rounded-[2.5rem]" />
           ))}
+        </div>
+      ) : isError ? (
+        <div className="glass-card rounded-[2rem]">
+          <QueryErrorState error={error} onRetry={() => refetch()} />
         </div>
       ) : (
         <div className="mt-2 min-h-[600px]">

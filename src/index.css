@@ -340,22 +340,6 @@
 .strength-bar.on-mid { background: var(--gold); }
 .strength-bar.on-strong { background: var(--emerald); }
 
-.save-toast {
-  position: absolute; left: 50%; bottom: 6.5rem; z-index: 30;
-  transform: translate(-50%, .5rem);
-  display: inline-flex; align-items: center; gap: .6rem;
-  padding: .75rem 1.25rem;
-  border-radius: var(--radius-pill);
-  background: oklch(0.22 0.02 15 / 0.95);
-  border: 1px solid oklch(0.696 0.17 162.48 / 0.4);
-  box-shadow: 0 20px 40px -12px oklch(0 0 0 / 0.6);
-  font-size: 11.5px; font-weight: 800; color: var(--foreground);
-  opacity: 0; pointer-events: none;
-  transition: opacity .25s ease, transform .25s ease;
-}
-.save-toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-.save-toast svg { width: 1rem; height: 1rem; color: var(--emerald); flex-shrink: 0; }
-
 .status-chip {
   display: inline-flex; align-items: center; gap: .3rem;
   height: 1.15rem; padding: 0 .5rem;

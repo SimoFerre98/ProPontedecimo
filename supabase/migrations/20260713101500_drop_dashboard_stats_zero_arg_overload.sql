@@ -1,0 +1,19 @@
+-- Rimuove l'overload get_dashboard_stats(p_season_id uuid) introdotto da US-007
+-- (20260706130412_dashboard_stats_season_param.sql), che convive da allora con
+-- l'overload originale get_dashboard_stats() del baseline schema.
+--
+-- Perché serve: le due firme non sono disambiguabili da PostgREST quando la
+-- chiamata non specifica argomenti, che risponde 300 Multiple Choices o 400 Bad
+-- Request — bug scoperto durante US-035 (gestione errori), che ha fatto propagare
+-- l'errore della RPC invece di inghiottirlo silenziosamente con zeri finti.
+--
+-- L'overload con parametro va rimosso (non quello originale) perché è a sua volta
+-- rotto indipendentemente dall'ambiguità: referenzia una colonna "amount" che non
+-- esiste su public.payments (la colonna si chiama "amount_eur") e ritorna uno
+-- shape JSON (total_players, total_revenue, collected_amount, overdue_amount,
+-- active_tasks, season_id) incompatibile con quello letto da Dashboard.tsx
+-- (totalPlayers, expiringMedical, urgentMedical, pendingPayments, sectors) —
+-- a causa dell'ambiguità di overload non ha mai funzionato in produzione.
+-- L'overload originale ha lo shape corretto ma non filtra per stagione: la
+-- season-awareness va reintrodotta correttamente in una story dedicata.
+DROP FUNCTION IF EXISTS public.get_dashboard_stats(uuid);

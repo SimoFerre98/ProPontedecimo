@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button'
 import { inventoryService, type InventoryItem } from '@/services/inventoryService'
 import AddInventoryModal from '@/components/modals/AddInventoryModal'
 import { Pagination } from '@/components/ui/Pagination'
+import { QueryErrorState } from '@/components/ui/query-error-state'
 
 export default function Inventory() {
   const [search, setSearch] = useState('')
@@ -26,7 +27,7 @@ export default function Inventory() {
   const pageSize = 10
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['inventory', search, categoryFilter, page],
     queryFn: () => inventoryService.getInventory(search, categoryFilter, page, pageSize),
   })
@@ -152,6 +153,12 @@ export default function Inventory() {
                       <td colSpan={6} className="px-6 py-8"><div className="h-6 bg-white/5 pill w-full" /></td>
                     </tr>
                   ))
+                ) : isError ? (
+                  <tr key="error">
+                    <td colSpan={6} className="px-6 py-6">
+                      <QueryErrorState error={error} onRetry={() => refetch()} />
+                    </td>
+                  </tr>
                 ) : filteredItems?.map((item, idx) => (
                   <motion.tr 
                     key={item.id}
