@@ -5,6 +5,15 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-035**: Introdotto un sistema di toast/notifiche centralizzato (`ToastContext`/`useToast`) in stile Premium Glass, montato globalmente in `App.tsx`.
+- **US-035**: Creato un `ErrorBoundary` globale montato in `main.tsx` con schermata di fallback e pulsante "Ricarica pagina" per intercettare errori di rendering non gestiti.
+- **US-035**: Creato il componente condiviso `QueryErrorState` per mostrare un messaggio d'errore con retry al posto di un'interfaccia vuota quando una `useQuery` fallisce; integrato in `Athletes`, `Payments`, `MedicalVisits`, `Inventory`, `StaffTasks`, `Attendance` e `Dashboard`.
+- **US-035**: Creata l'utility `getErrorMessage` in `src/lib/errors.ts` per estrarre un messaggio leggibile dagli errori Supabase/RPC con fallback italiano generico.
+
+### Fixed
+- **US-035**: Sostituiti i 6 punti in cui gli errori delle mutazioni nei modali venivano inghiottiti con solo `console.error` (`NewPaymentModal`, `PaymentModal`, `MedicalVisitModal`, `AddInventoryModal`, 2 punti in `ProfileModal`) con `toast.error(getErrorMessage(err))`, senza chiudere il modale e perdere i dati inseriti.
+- **US-035**: Unificato il toast di successo del salvataggio profilo (`ProfileModal`) al nuovo sistema centralizzato, rimuovendo il pattern locale `.save-toast` non più utilizzato altrove.
+- **US-035**: Corretta la RPC `get_dashboard_stats`, che aveva due overload conflittuali (uno senza parametri dal baseline schema, uno con `p_season_id` da US-007) che PostgREST non riusciva a disambiguare, causando errori 300/400 su ogni chiamata inghiottiti silenziosamente da `Dashboard.tsx` con zeri finti. Rimosso l'overload con parametro, che referenziava anche una colonna inesistente (`amount` invece di `amount_eur`) e ritornava uno shape JSON incompatibile col frontend; la season-awareness andrà reintrodotta correttamente in una story dedicata.
 - **US-022**: Creata la RPC `get_financial_trend` per calcolare l'andamento finanziario mensile della stagione attiva (incassato quota, incassato insoluti pregressi, previsto totale, insoluti recuperati e rate future residue).
 - **US-022**: Aggiunta la funzione `getFinancialTrend` in `paymentService.ts` per recuperare ed esporre i dati tipizzati nel frontend.
 - **US-022**: Creato il componente `FinancialTrendChart.tsx` utilizzando Recharts per mostrare il grafico "Incassato vs Previsto" con barre impilate per quota/insoluti e linea "Oggi".

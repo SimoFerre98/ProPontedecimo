@@ -15,6 +15,7 @@ import {
   ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { QueryErrorState } from '@/components/ui/query-error-state'
 
 interface StatCardProps {
   title: string
@@ -80,18 +81,13 @@ export default function Dashboard() {
   const selectedSeason = seasons.find(s => s.id === selectedSeasonId)
   const seasonName = selectedSeason?.name || 'Stagione Corrente'
 
-  // Recupero unificato delle statistiche tramite RPC
-  const { data: statsData, isLoading: isLoadingStats } = useQuery({
-    queryKey: ['dashboard', 'unified-stats', selectedSeasonId],
+  // Recupero unificato delle statistiche tramite RPC.
+  // get_dashboard_stats() non accetta parametri: non filtra per stagione (limite noto, da affrontare in una story dedicata).
+  const { data: statsData, isLoading: isLoadingStats, isError: isStatsError, error: statsError, refetch: refetchStats } = useQuery({
+    queryKey: ['dashboard', 'unified-stats'],
     queryFn: async () => {
-      // Se non abbiamo ancora il selectedSeasonId dallo store, usiamo null
-      // La RPC farà fallback sulla stagione attiva.
-      const params = selectedSeasonId ? { p_season_id: selectedSeasonId } : {}
-      const { data, error } = await supabase.rpc('get_dashboard_stats', params)
-      if (error) {
-        console.error('Error fetching dashboard stats:', error)
-        return null
-      }
+      const { data, error } = await supabase.rpc('get_dashboard_stats')
+      if (error) throw error
       return data as {
         totalPlayers: number
         expiringMedical: number
@@ -139,6 +135,11 @@ export default function Dashboard() {
       </div>
 
       {/* Stats cards */}
+      {isStatsError ? (
+        <div className="glass-card rounded-[2rem]">
+          <QueryErrorState error={statsError} onRetry={() => refetchStats()} />
+        </div>
+      ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         <StatCard
           title="Atleti Iscritti"
@@ -173,6 +174,7 @@ export default function Dashboard() {
           loading={l3}
         />
       </div>
+      )}
 
       {/* Sezione inferiore */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

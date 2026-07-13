@@ -12,6 +12,7 @@ import { it } from 'date-fns/locale/it'
 import { paymentService, PAYMENT_METHODS, type PaymentStatus, type PaymentReference } from '@/services/paymentService'
 import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/button'
+import { QueryErrorState } from '@/components/ui/query-error-state'
 import { useAuth } from '@/hooks/useAuth'
 import { exportToXlsx } from '@/lib/xlsxExport'
 import PaymentModal from '@/components/modals/PaymentModal'
@@ -73,7 +74,7 @@ export default function Payments() {
     }
   }
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['payments', search, statusFilter, page, selectedSeasonId],
     queryFn: () => paymentService.getPayments(search, statusFilter, page, pageSize, 'due_date', 'asc', selectedSeasonId),
     enabled: !!selectedSeasonId,
@@ -336,6 +337,12 @@ export default function Payments() {
                       </td>
                     </tr>
                   ))
+                ) : isError ? (
+                  <tr key="error">
+                    <td colSpan={8} className="px-6 py-6">
+                      <QueryErrorState error={error} onRetry={() => refetch()} />
+                    </td>
+                  </tr>
                 ) : payments.length === 0 ? (
                   <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} key="empty">
                     <td colSpan={8} className="px-6 py-20 text-center">
