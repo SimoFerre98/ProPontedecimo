@@ -19,5 +19,5 @@ After implementing this story, the user can: simulare un errore di rete e vedere
 **Context**
 Dall'analisi architetturale: solo 2 gestioni errori in tutta l'app (LoginPage, RegisterPage); i services fanno `throw error` ma nessun componente li cattura; nessun error boundary presente.
 
-**Status:** TODO
-**Plan:** —
+**Status:** IN PROGRESS
+**Plan:** [docs/planning/US-035-plan.md](../planning/US-035-plan.md)
