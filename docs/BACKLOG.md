@@ -196,7 +196,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-035](backlog/US-035-gestione-errori-globale-feedback.md) | Gestione errori globale e feedback utente | HIGH | 3 | REVIEW |
+| [US-035](backlog/US-035-gestione-errori-globale-feedback.md) | Gestione errori globale e feedback utente | HIGH | 3 | DONE |
 | [US-036](backlog/US-036-hook-unificato-modali-form.md) | Hook unificato per i modali form | MEDIUM | 3 | TODO |
 | [US-037](backlog/US-037-scomposizione-pagina-atleti-feature.md) | Scomposizione della pagina Atleti in feature folder | MEDIUM | 3 | TODO |
 | [US-038](backlog/US-038-tipizzazione-filtri-rimozione-cast.md) | Tipizzazione dei filtri e rimozione dei cast `as any` | MEDIUM | 2 | TODO |
