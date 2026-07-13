@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-022 · Grafici Andamento Finanziario — Pagina Pagamenti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../US-015/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="mock-nav">
+  <span class="nav-tag">US-022</span>
+  <a href="index.html" class="active">Pagamenti · Grafici</a>
+</nav>
+
+<div class="app-shell">
+
+  <!-- Header applicativo reale (contesto — non oggetto della story). Niente sidebar: la navigazione è la pillola flottante in basso, come in src/layouts/DashboardLayout.tsx -->
+  <header class="app-header" aria-hidden="true">
+    <div class="app-logo">
+      <div class="app-logo-mark">PP</div>
+      <div class="app-logo-text">
+        <b>Pontedecimo</b>
+        <span>Manager</span>
+      </div>
+    </div>
+    <div class="app-header-actions">
+      <div class="app-season-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="lbl">Stagione</span>
+        <span class="val">2025/2026</span>
+      </div>
+      <div class="app-icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="app-icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      </div>
+      <div class="app-profile-chip">
+        <div class="who"><b>Mario Rossi</b><span>Presidente</span></div>
+        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Pulsante di navigazione flottante (pillola in basso) — stessa forma dell'app reale, non funzionante nel mockup -->
+  <div class="app-floating-nav" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+    Menu
+  </div>
+
+  <!-- Contenuto principale: pagina Pagamenti -->
+  <main class="app-main">
+    <div class="space-y-8" style="display:flex; flex-direction:column; gap:2.25rem;">
+
+      <!-- Header pagina (esistente) -->
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem;">
+        <div style="display:flex; flex-direction:column; gap:.5rem;">
+          <div style="display:flex; align-items:center; gap:.5rem; color:var(--primary-soft); font-weight:900; text-transform:uppercase; letter-spacing:.2em; font-size:10px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1rem;height:1rem;"><path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12a7.9 7.9 0 0 0 7.8 8 7.7 7.7 0 0 0 5.2-2"/></svg>
+            <span>Quote Associative</span>
+          </div>
+          <h1 style="font-size:2.75rem; font-weight:900; font-style:italic; text-transform:uppercase; letter-spacing:-0.02em; color:var(--foreground);">
+            Gestione <span style="color:var(--primary-soft); font-style:normal;">Pagamenti</span>
+          </h1>
+          <p style="color:oklch(0.708 0 0 / 0.75); font-weight:600; border-left:2px solid oklch(0.33 0.13 15 / 0.4); padding-left:1rem;">
+            Quote annuali e rate stagionali — 1ª rata: 15 set · 2ª rata: 15 gen
+          </p>
+        </div>
+        <button type="button" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Nuova Quota
+        </button>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- NUOVA SEZIONE US-022 — Andamento Finanziario                  -->
+      <!-- ============================================================ -->
+      <section class="fin-section" aria-label="Andamento finanziario stagione">
+
+        <div class="fin-eyebrow-row">
+          <div class="fin-eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8 12 14.7l-3.3-3.3L4 16"/></svg>
+            <span>Andamento Finanziario · Stagione 2025/26</span>
+          </div>
+          <div class="visibility-note">
+            <span class="stack-avatars">
+              <span class="mini-badge pres">P</span>
+              <span class="mini-badge dir">D</span>
+            </span>
+            Visibile solo a Presidente e Direttore Sportivo
+          </div>
+        </div>
+
+        <!-- 4 stat card riepilogo -->
+        <div class="fin-stats-grid">
+          <div class="fin-stat-card glass-card">
+            <div class="fin-stat-top">
+              <div class="fin-stat-icon emerald">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></svg>
+              </div>
+              <span class="fin-stat-trend up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></svg>
+                70%
+              </span>
+            </div>
+            <p class="fin-stat-label">Incassato Totale</p>
+            <p class="fin-stat-value">€ 39.450</p>
+            <p class="fin-stat-sub">del previsto stagionale</p>
+          </div>
+
+          <div class="fin-stat-card glass-card">
+            <div class="fin-stat-top">
+              <div class="fin-stat-icon primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+              </div>
+              <span class="fin-stat-trend flat">Set → Giu</span>
+            </div>
+            <p class="fin-stat-label">Previsto Totale</p>
+            <p class="fin-stat-value">€ 56.400</p>
+            <p class="fin-stat-sub">quote + rate pianificate 2025/26</p>
+          </div>
+
+          <div class="fin-stat-card glass-card">
+            <div class="fin-stat-top">
+              <div class="fin-stat-icon gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.3"/><path d="M3 4v5h5"/></svg>
+              </div>
+              <span class="fin-stat-trend up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></svg>
+                7,2%
+              </span>
+            </div>
+            <p class="fin-stat-label">Insoluti Recuperati</p>
+            <p class="fin-stat-value">€ 2.850</p>
+            <p class="fin-stat-sub">debiti pregressi rientrati</p>
+          </div>
+
+          <div class="fin-stat-card glass-card">
+            <div class="fin-stat-top">
+              <div class="fin-stat-icon neutral">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h4"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><circle cx="17.5" cy="17.5" r="4.5"/><path d="M17.5 15.75V17.5l1.2 1.2"/></svg>
+              </div>
+              <span class="fin-stat-trend flat">Apr → Giu</span>
+            </div>
+            <p class="fin-stat-label">Rate Future Residue</p>
+            <p class="fin-stat-value">€ 16.950</p>
+            <p class="fin-stat-sub">non ancora in scadenza</p>
+          </div>
+        </div>
+
+        <!-- Grafico -->
+        <div class="chart-card glass-card">
+          <div class="chart-head">
+            <div class="chart-title-block">
+              <h3>Incassato <span class="accent">vs</span> Previsto</h3>
+              <p>Ripartizione mensile — quote correnti, insoluti pregressi recuperati e rate ancora da incassare</p>
+            </div>
+            <div class="chart-legend">
+              <span class="item"><span class="swatch previsto"></span>Previsto</span>
+              <span class="item"><span class="swatch quota"></span>Quota Incassata</span>
+              <span class="item"><span class="swatch insoluti"></span>Insoluti Recuperati</span>
+            </div>
+          </div>
+
+          <div class="chart-plot-wrap no-scrollbar">
+            <svg viewBox="0 0 780 290" role="img" aria-label="Grafico a barre: incassato mensile rispetto al previsto, stagione 2025/26">
+
+              <!-- Griglia orizzontale -->
+              <line class="gridline" x1="40" y1="244" x2="770" y2="244"/>
+              <line class="gridline" x1="40" y1="195" x2="770" y2="195"/>
+              <line class="gridline" x1="40" y1="146" x2="770" y2="146"/>
+              <line class="gridline" x1="40" y1="97"  x2="770" y2="97"/>
+              <line class="gridline" x1="40" y1="48"  x2="770" y2="48"/>
+
+              <!-- Etichette asse Y -->
+              <text class="axis-label" x="32" y="248" text-anchor="end">€0</text>
+              <text class="axis-label" x="32" y="199" text-anchor="end">2k</text>
+              <text class="axis-label" x="32" y="150" text-anchor="end">4k</text>
+              <text class="axis-label" x="32" y="101" text-anchor="end">6k</text>
+              <text class="axis-label" x="32" y="52"  text-anchor="end">8k</text>
+
+              <!-- Linea "oggi" (fine Marzo, mese in corso) -->
+              <line class="today-line" x1="514.5" y1="24" x2="514.5" y2="244"/>
+              <text class="today-tag" x="514.5" y="17">OGGI</text>
+
+              <!-- Bracket "rate future" (Apr–Giu) -->
+              <path class="future-bracket" d="M551 16 551 10 770 10 770 16"/>
+              <text class="future-tag" x="660.5" y="7">Rate future</text>
+
+              <!-- Settembre -->
+              <g>
+                <title>Settembre 2025 — Previsto € 8.400 · Incassato € 8.400 (Quota € 7.800 + Insoluti € 600)</title>
+                <rect class="bar-previsto" x="52.5" y="39" width="20" height="205" rx="2"/>
+                <rect class="bar-quota" x="80.5" y="53" width="20" height="191"/>
+                <rect class="bar-insoluti" x="80.5" y="38" width="20" height="15"/>
+              </g>
+              <text class="month-label" x="76.5" y="264">Set</text>
+
+              <!-- Ottobre -->
+              <g>
+                <title>Ottobre 2025 — Previsto € 3.200 · Incassato € 3.150 (Quota € 2.900 + Insoluti € 250)</title>
+                <rect class="bar-previsto" x="125.5" y="166" width="20" height="78" rx="2"/>
+                <rect class="bar-quota" x="153.5" y="173" width="20" height="71"/>
+                <rect class="bar-insoluti" x="153.5" y="167" width="20" height="6"/>
+              </g>
+              <text class="month-label" x="149.5" y="264">Ott</text>
+
+              <!-- Novembre -->
+              <g>
+                <title>Novembre 2025 — Previsto € 7.900 · Incassato € 7.500 (Quota € 7.100 + Insoluti € 400)</title>
+                <rect class="bar-previsto" x="198.5" y="51" width="20" height="193" rx="2"/>
+                <rect class="bar-quota" x="226.5" y="70" width="20" height="174"/>
+                <rect class="bar-insoluti" x="226.5" y="60" width="20" height="10"/>
+              </g>
+              <text class="month-label" x="222.5" y="264">Nov</text>
+
+              <!-- Dicembre -->
+              <g>
+                <title>Dicembre 2025 — Previsto € 2.800 · Incassato € 2.550 (Quota € 2.400 + Insoluti € 150)</title>
+                <rect class="bar-previsto" x="271.5" y="176" width="20" height="68" rx="2"/>
+                <rect class="bar-quota" x="299.5" y="185" width="20" height="59"/>
+                <rect class="bar-insoluti" x="299.5" y="181" width="20" height="4"/>
+              </g>
+              <text class="month-label" x="295.5" y="264">Dic</text>
+
+              <!-- Gennaio -->
+              <g>
+                <title>Gennaio 2026 — Previsto € 8.600 · Incassato € 8.000 (Quota € 7.200 + Insoluti € 800)</title>
+                <rect class="bar-previsto" x="344.5" y="34" width="20" height="210" rx="2"/>
+                <rect class="bar-quota" x="372.5" y="68" width="20" height="176"/>
+                <rect class="bar-insoluti" x="372.5" y="48" width="20" height="20"/>
+              </g>
+              <text class="month-label" x="368.5" y="264">Gen</text>
+
+              <!-- Febbraio -->
+              <g>
+                <title>Febbraio 2026 — Previsto € 3.100 · Incassato € 2.800 (Quota € 2.600 + Insoluti € 200)</title>
+                <rect class="bar-previsto" x="417.5" y="168" width="20" height="76" rx="2"/>
+                <rect class="bar-quota" x="445.5" y="180" width="20" height="64"/>
+                <rect class="bar-insoluti" x="445.5" y="175" width="20" height="5"/>
+              </g>
+              <text class="month-label" x="441.5" y="264">Feb</text>
+
+              <!-- Marzo (mese in corso) -->
+              <g>
+                <title>Marzo 2026 (in corso) — Previsto € 7.800 · Incassato finora € 5.750 (Quota € 5.400 + Insoluti € 350)</title>
+                <rect class="bar-previsto" x="490.5" y="53" width="20" height="191" rx="2"/>
+                <rect class="bar-quota" x="518.5" y="112" width="20" height="132"/>
+                <rect class="bar-insoluti" x="518.5" y="103" width="20" height="9"/>
+              </g>
+              <text class="callout-value" x="500.5" y="42">€7.800</text>
+              <text class="callout-value" x="528.5" y="94" style="fill:var(--emerald)">€5.750</text>
+              <text class="month-label current" x="514.5" y="264">Mar</text>
+
+              <!-- Aprile (futuro) -->
+              <g>
+                <title>Aprile 2026 (futura) — Previsto € 3.400 · Incassato finora € 1.000 (Quota € 900 + Insoluti € 100)</title>
+                <rect class="bar-previsto" x="563.5" y="161" width="20" height="83" rx="2"/>
+                <rect class="bar-quota" x="591.5" y="222" width="20" height="22"/>
+                <rect class="bar-insoluti" x="591.5" y="220" width="20" height="2"/>
+              </g>
+              <text class="month-label" x="587.5" y="264">Apr</text>
+
+              <!-- Maggio (futuro) -->
+              <g>
+                <title>Maggio 2026 (futura) — Previsto € 8.200 · Incassato finora € 300 (Quota € 300)</title>
+                <rect class="bar-previsto" x="636.5" y="44" width="20" height="200" rx="2"/>
+                <rect class="bar-quota" x="664.5" y="237" width="20" height="7"/>
+              </g>
+              <text class="month-label" x="660.5" y="264">Mag</text>
+
+              <!-- Giugno (futuro) -->
+              <g>
+                <title>Giugno 2026 (futura) — Previsto € 3.000 · Incassato finora € 0</title>
+                <rect class="bar-previsto" x="709.5" y="171" width="20" height="73" rx="2"/>
+              </g>
+              <text class="month-label" x="733.5" y="264">Giu</text>
+
+            </svg>
+          </div>
+
+          <div class="chart-foot-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Passa il mouse su una barra per il dettaglio del mese. I mesi successivi a Marzo mostrano il previsto già pianificato, non ancora incassato.
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider">
+        <span>Elenco Pagamenti</span>
+        <div class="line"></div>
+      </div>
+
+      <!-- Stats esistenti (Payments.tsx) -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;">
+        <div class="glass-card" style="padding:1.5rem; border-radius:var(--radius-32); display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; flex-direction:column; gap:.25rem;">
+            <p style="font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.14em; color:var(--muted-foreground);">Incassato</p>
+            <p style="font-size:1.6rem; font-weight:900; color:var(--foreground); font-variant-numeric:tabular-nums;">€ 5.750</p>
+          </div>
+          <div style="width:3rem; height:3rem; border-radius:var(--radius-2xl); display:flex; align-items:center; justify-content:center; background:oklch(0.696 0.17 162.48 / 0.12); color:var(--emerald);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1.4rem;height:1.4rem;"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+          </div>
+        </div>
+        <div class="glass-card" style="padding:1.5rem; border-radius:var(--radius-32); display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; flex-direction:column; gap:.25rem;">
+            <p style="font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.14em; color:var(--muted-foreground);">Da Riscuotere</p>
+            <p style="font-size:1.6rem; font-weight:900; color:var(--foreground); font-variant-numeric:tabular-nums;">€ 2.050</p>
+          </div>
+          <div style="width:3rem; height:3rem; border-radius:var(--radius-2xl); display:flex; align-items:center; justify-content:center; background:oklch(0.769 0.188 70.08 / 0.12); color:var(--amber);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1.4rem;height:1.4rem;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+        <div class="glass-card" style="padding:1.5rem; border-radius:var(--radius-32); display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; flex-direction:column; gap:.25rem;">
+            <p style="font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.14em; color:var(--muted-foreground);">Rate Scadute</p>
+            <p style="font-size:1.6rem; font-weight:900; color:var(--foreground); font-variant-numeric:tabular-nums;">4</p>
+          </div>
+          <div style="width:3rem; height:3rem; border-radius:var(--radius-2xl); display:flex; align-items:center; justify-content:center; background:oklch(0.645 0.246 16.44 / 0.12); color:var(--rose);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1.4rem;height:1.4rem;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toolbar (esistente) -->
+      <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:center;">
+        <div style="flex:1; min-width:16rem; position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; left:1.25rem; top:50%; transform:translateY(-50%); width:1.25rem; height:1.25rem; color:oklch(0.708 0 0 / 0.5);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Cerca per nome atleta..." disabled
+            style="height:3.5rem; padding-left:3.5rem; width:100%; border-radius:var(--radius-pill); background:oklch(0.205 0 0 / 0.4); border:1px solid var(--border-soft); color:var(--foreground); font-weight:500;">
+        </div>
+        <div style="display:flex; align-items:center; gap:.4rem; padding:.4rem; border-radius:var(--radius-2xl); background:oklch(0.205 0 0 / 0.4); border:1px solid var(--border-soft);">
+          <button class="pill" style="padding:.6rem 1rem; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.1em; background:var(--primary); color:#fff;">Tutti</button>
+          <button class="pill" style="padding:.6rem 1rem; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.1em; color:var(--muted-foreground); background:none; border:none;">In Attesa</button>
+          <button class="pill" style="padding:.6rem 1rem; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.1em; color:var(--muted-foreground); background:none; border:none;">Pagati</button>
+          <button class="pill" style="padding:.6rem 1rem; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.1em; color:var(--muted-foreground); background:none; border:none;">Scaduti</button>
+        </div>
+        <button class="btn" style="height:3.5rem; border:1px solid var(--border-soft); color:var(--foreground);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Esporta Excel
+        </button>
+      </div>
+
+      <!-- Tabella (esistente, estratto rappresentativo) -->
+      <div class="glass-card" style="border-radius:var(--radius-32); overflow:hidden;">
+        <table style="width:100%; border-collapse:collapse; text-align:left;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border-soft); background:oklch(1 0 0 / 0.02);">
+              <th style="padding:1.25rem 1.5rem; font-size:10px; font-weight:900; color:var(--muted-foreground); text-transform:uppercase; letter-spacing:.1em;">Atleta</th>
+              <th style="padding:1.25rem 1.5rem; font-size:10px; font-weight:900; color:var(--muted-foreground); text-transform:uppercase; letter-spacing:.1em;">Rata</th>
+              <th style="padding:1.25rem 1.5rem; font-size:10px; font-weight:900; color:var(--muted-foreground); text-transform:uppercase; letter-spacing:.1em;">Scadenza</th>
+              <th style="padding:1.25rem 1.5rem; font-size:10px; font-weight:900; color:var(--muted-foreground); text-transform:uppercase; letter-spacing:.1em;">Importo</th>
+              <th style="padding:1.25rem 1.5rem; font-size:10px; font-weight:900; color:var(--muted-foreground); text-transform:uppercase; letter-spacing:.1em;">Stato</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid oklch(1 0 0 / 0.05);">
+              <td style="padding:1.25rem 1.5rem;">
+                <div style="display:flex; align-items:center; gap:.75rem;">
+                  <div style="width:2.25rem; height:2.25rem; border-radius:.75rem; background:oklch(0.33 0.13 15 / 0.1); border:1px solid oklch(0.33 0.13 15 / 0.2); display:flex; align-items:center; justify-content:center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1rem;height:1rem; color:var(--primary-soft);"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                  <div>
+                    <p style="font-size:.85rem; font-weight:900; color:var(--foreground);">Bianchi Marco</p>
+                    <p style="font-size:10px; font-weight:700; color:oklch(0.708 0 0 / 0.6); text-transform:uppercase;">Under 15</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:1.25rem 1.5rem;"><span class="pill" style="background:oklch(1 0 0 / 0.05); border:1px solid var(--border-soft); padding:.35rem .75rem; font-size:10px; font-weight:900; text-transform:uppercase; color:var(--muted-foreground);">3ª Rata</span></td>
+              <td style="padding:1.25rem 1.5rem; font-size:.8rem; font-weight:700; color:oklch(1 0 0 / 0.85);">15 Mar 2026</td>
+              <td style="padding:1.25rem 1.5rem; font-size:.9rem; font-weight:900; color:var(--foreground);">€ 70,00</td>
+              <td style="padding:1.25rem 1.5rem;">
+                <span class="pill" style="display:inline-flex; align-items:center; gap:.4rem; padding:.4rem .75rem; font-size:10px; font-weight:900; text-transform:uppercase; background:oklch(0.769 0.188 70.08 / 0.1); color:var(--amber); border:1px solid oklch(0.769 0.188 70.08 / 0.2);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:.85rem;height:.85rem;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  In Attesa
+                </span>
+              </td>
+            </tr>
+            <tr style="border-bottom:1px solid oklch(1 0 0 / 0.05);">
+              <td style="padding:1.25rem 1.5rem;">
+                <div style="display:flex; align-items:center; gap:.75rem;">
+                  <div style="width:2.25rem; height:2.25rem; border-radius:.75rem; background:oklch(0.33 0.13 15 / 0.1); border:1px solid oklch(0.33 0.13 15 / 0.2); display:flex; align-items:center; justify-content:center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1rem;height:1rem; color:var(--primary-soft);"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                  <div>
+                    <p style="font-size:.85rem; font-weight:900; color:var(--foreground);">Rossi Giulia</p>
+                    <p style="font-size:10px; font-weight:700; color:oklch(0.708 0 0 / 0.6); text-transform:uppercase;">Allieve</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:1.25rem 1.5rem;"><span class="pill" style="background:oklch(0.769 0.188 70.08 / 0.08); border:1px solid var(--border-soft); padding:.35rem .75rem; font-size:10px; font-weight:900; text-transform:uppercase; color:var(--amber);">Debito Pregresso</span></td>
+              <td style="padding:1.25rem 1.5rem; font-size:.8rem; font-weight:700; color:oklch(1 0 0 / 0.85);">28 Feb 2026</td>
+              <td style="padding:1.25rem 1.5rem; font-size:.9rem; font-weight:900; color:var(--foreground);">€ 120,00</td>
+              <td style="padding:1.25rem 1.5rem;">
+                <span class="pill" style="display:inline-flex; align-items:center; gap:.4rem; padding:.4rem .75rem; font-size:10px; font-weight:900; text-transform:uppercase; background:oklch(0.696 0.17 162.48 / 0.1); color:var(--emerald); border:1px solid oklch(0.696 0.17 162.48 / 0.2);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:.85rem;height:.85rem;"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                  Pagato
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:1.25rem 1.5rem;">
+                <div style="display:flex; align-items:center; gap:.75rem;">
+                  <div style="width:2.25rem; height:2.25rem; border-radius:.75rem; background:oklch(0.33 0.13 15 / 0.1); border:1px solid oklch(0.33 0.13 15 / 0.2); display:flex; align-items:center; justify-content:center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1rem;height:1rem; color:var(--primary-soft);"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                  <div>
+                    <p style="font-size:.85rem; font-weight:900; color:var(--foreground);">Ferrari Luca</p>
+                    <p style="font-size:10px; font-weight:700; color:oklch(0.708 0 0 / 0.6); text-transform:uppercase;">Juniores</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:1.25rem 1.5rem;"><span class="pill" style="background:oklch(1 0 0 / 0.05); border:1px solid var(--border-soft); padding:.35rem .75rem; font-size:10px; font-weight:900; text-transform:uppercase; color:var(--muted-foreground);">2ª Rata</span></td>
+              <td style="padding:1.25rem 1.5rem; font-size:.8rem; font-weight:700; color:var(--rose);">15 Gen 2026 ⚠</td>
+              <td style="padding:1.25rem 1.5rem; font-size:.9rem; font-weight:900; color:var(--foreground);">€ 90,00</td>
+              <td style="padding:1.25rem 1.5rem;">
+                <span class="pill" style="display:inline-flex; align-items:center; gap:.4rem; padding:.4rem .75rem; font-size:10px; font-weight:900; text-transform:uppercase; background:oklch(0.645 0.246 16.44 / 0.1); color:var(--rose); border:1px solid oklch(0.645 0.246 16.44 / 0.2);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:.85rem;height:.85rem;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Scaduto
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display:flex; justify-content:center; align-items:center; gap:.5rem; padding:1rem 0 0;">
+        <span style="font-size:10px; font-weight:800; color:oklch(0.708 0 0 / 0.5); text-transform:uppercase; letter-spacing:.1em;">Pagina 1 di 12 · 178 pagamenti</span>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

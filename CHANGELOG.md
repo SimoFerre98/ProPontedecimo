@@ -5,6 +5,11 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-022**: Creata la RPC `get_financial_trend` per calcolare l'andamento finanziario mensile della stagione attiva (incassato quota, incassato insoluti pregressi, previsto totale, insoluti recuperati e rate future residue).
+- **US-022**: Aggiunta la funzione `getFinancialTrend` in `paymentService.ts` per recuperare ed esporre i dati tipizzati nel frontend.
+- **US-022**: Creato il componente `FinancialTrendChart.tsx` utilizzando Recharts per mostrare il grafico "Incassato vs Previsto" con barre impilate per quota/insoluti e linea "Oggi".
+- **US-022**: Integrata la dashboard finanziaria in `Payments.tsx` (4 StatCard e il grafico) visibile solo agli amministratori (Presidente/Direttore Sportivo) con caricamento reattivo al cambio stagione.
+- **US-022**: Creato lo script di test di integrazione `test-financial-trend.mjs` per validare l'aggregazione corretta delle rate pagate, insoluti carried_over, rate future residue e controlli RLS.
 - **US-021**: Creata l'utility condivisa `xlsxExport.ts` per centralizzare la logica di generazione e download di fogli di calcolo `.xlsx` tramite la libreria SheetJS.
 - **US-021**: Implementati i metodi `getPlayersForExport` in `athleteService.ts` e `getPaymentsForExport` in `paymentService.ts` per recuperare tutti i dati corrispondenti ai filtri attivi (senza paginazione lato server).
 - **US-021**: Aggiunto il pulsante "Esporta Excel" nella toolbar di `Athletes.tsx` per scaricare l'anagrafica completa degli atleti (con codice fiscale, residenza, contatti dei genitori) mappata in lingua italiana.
