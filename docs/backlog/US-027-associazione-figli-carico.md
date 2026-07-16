@@ -15,6 +15,6 @@ After implementing this story, the user can: vedere nel proprio portale l'elenco
 - [x] Gli amministratori possono creare, confermare e rimuovere le associazioni genitore-figlio
 - [x] Il genitore vede solo i dati dei figli effettivamente associati (RLS di US-002)
 
-**Status:** REVIEW
+**Status:** DONE (16 Luglio 2026)
 **Plan:** [docs/planning/US-027-plan.md](../planning/US-027-plan.md)
 
