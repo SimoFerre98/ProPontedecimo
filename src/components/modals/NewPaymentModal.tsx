@@ -6,10 +6,8 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { paymentService } from '@/services/paymentService'
 import { supabase } from '@/lib/supabase'
-import { useQueryClient } from '@tanstack/react-query'
 import { useAppStore } from '@/store/useAppStore'
-import { useToast } from '@/contexts/ToastContext'
-import { getErrorMessage } from '@/lib/errors'
+import { useFormModal } from '@/hooks/useFormModal'
 
 interface NewPaymentModalProps {
   isOpen: boolean
@@ -26,7 +24,6 @@ interface PlayerOption {
 const MONTHS_STEP_DAYS = 60
 
 export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProps) {
-  const [loading, setLoading] = useState(false)
   const [players, setPlayers] = useState<PlayerOption[]>([])
   const [searchPlayer, setSearchPlayer] = useState('')
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerOption | null>(null)
@@ -39,8 +36,6 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
     { amount_eur: 0, due_date: defaultFirstDate }
   ])
 
-  const queryClient = useQueryClient()
-  const toast = useToast()
   const { selectedSeasonId } = useAppStore()
 
   useEffect(() => {
@@ -142,26 +137,25 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
 
   const isValid = selectedPlayer && totalTarget > 0 && isSumValid && areDatesValid && areAmountsValid
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!selectedPlayer || !selectedSeasonId || !isValid) return
-    setLoading(true)
-    try {
+  const { loading, submit: handleSubmit } = useFormModal({
+    onSubmit: async () => {
+      // Non un return silenzioso: l'hook interpreta qualsiasi ritorno senza errore
+      // come successo (invalida le query e chiude il modale). `isValid`/il disabled
+      // sul button non coprono `selectedSeasonId` (store globale, non nel form), quindi
+      // questo path è realmente raggiungibile se la stagione non è ancora selezionata.
+      if (!selectedPlayer || !selectedSeasonId) {
+        throw new Error('Seleziona un atleta e assicurati che una stagione sia attiva prima di salvare.')
+      }
       await paymentService.createPaymentPlan(
         selectedPlayer.id,
         selectedSeasonId,
         totalTarget,
         installments
       )
-      queryClient.invalidateQueries({ queryKey: ['payments'] })
-      queryClient.invalidateQueries({ queryKey: ['overduePaymentsCount'] })
-      onClose()
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    invalidateKeys: [['payments'], ['overduePaymentsCount']],
+    onClose,
+  })
 
   return (
     <AnimatePresence>

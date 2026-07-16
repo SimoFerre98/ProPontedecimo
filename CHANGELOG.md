@@ -9,8 +9,12 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 - **US-035**: Creato un `ErrorBoundary` globale montato in `main.tsx` con schermata di fallback e pulsante "Ricarica pagina" per intercettare errori di rendering non gestiti.
 - **US-035**: Creato il componente condiviso `QueryErrorState` per mostrare un messaggio d'errore con retry al posto di un'interfaccia vuota quando una `useQuery` fallisce; integrato in `Athletes`, `Payments`, `MedicalVisits`, `Inventory`, `StaffTasks`, `Attendance` e `Dashboard`.
 - **US-035**: Creata l'utility `getErrorMessage` in `src/lib/errors.ts` per estrarre un messaggio leggibile dagli errori Supabase/RPC con fallback italiano generico.
+- **US-036**: Creato l'hook `useFormModal` (`src/hooks/useFormModal.ts`) che centralizza il pattern loading/try-catch/finally/invalidateQueries/onClose nei modali con singola azione di submit.
 
-### Fixed
+### Refactored
+- **US-036**: Migrati 5 modali all'hook `useFormModal` eliminando la duplicazione del pattern submit: `AddAthleteModal` (rimosso anche il banner `submitError` inline + `console.error`, sostituiti con toast), `AddInventoryModal`, `NewPaymentModal`, `PaymentModal`, `MedicalVisitModal`. I 9 modali con forme diverse (`EventModal`, `TaskModal`, `DeleteAthleteModal`, `ProfileModal`, `NewSeasonWizardModal`, ecc.) sono documentati come fuori scope con motivazione esplicita nell'hook stesso.
+
+
 - **US-035**: Sostituiti i 6 punti in cui gli errori delle mutazioni nei modali venivano inghiottiti con solo `console.error` (`NewPaymentModal`, `PaymentModal`, `MedicalVisitModal`, `AddInventoryModal`, 2 punti in `ProfileModal`) con `toast.error(getErrorMessage(err))`, senza chiudere il modale e perdere i dati inseriti.
 - **US-035**: Unificato il toast di successo del salvataggio profilo (`ProfileModal`) al nuovo sistema centralizzato, rimuovendo il pattern locale `.save-toast` non più utilizzato altrove.
 - **US-035**: Corretta la RPC `get_dashboard_stats`, che aveva due overload conflittuali (uno senza parametri dal baseline schema, uno con `p_season_id` da US-007) che PostgREST non riusciva a disambiguare, causando errori 300/400 su ogni chiamata inghiottiti silenziosamente da `Dashboard.tsx` con zeri finti. Rimosso l'overload con parametro, che referenziava anche una colonna inesistente (`amount` invece di `amount_eur`) e ritornava uno shape JSON incompatibile col frontend; la season-awareness andrà reintrodotta correttamente in una story dedicata.
