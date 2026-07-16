@@ -1,11 +1,20 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, UserCog, Mail, ShieldAlert, Loader2, Trash2, X, Users, AlertTriangle, KeyRound, Check } from 'lucide-react'
+import { Search, UserCog, Mail, ShieldAlert, Loader2, Trash2, X, Users, AlertTriangle, KeyRound, Check, Link2, CheckCircle2, Clock, Plus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import type { Database } from '@/types/database'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
+import {
+  listParentLinkRequests,
+  confirmParentLink,
+  removeParentLink,
+  createParentLink,
+  searchPlayersForRequest,
+  type ParentPlayerLinkFull,
+  type PlayerSearchResult,
+} from '@/services/parentService'
 
 type UserRole = Database['public']['Enums']['user_role']
 
@@ -44,9 +53,12 @@ interface DeleteConfirmState {
   inputValue: string
 }
 
+type ActiveTab = 'accounts' | 'parentLinks'
+
 export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModalProps>) {
   const { user, role: currentUserRole } = useAuth()
   const queryClient = useQueryClient()
+  const [activeTab, setActiveTab] = useState<ActiveTab>('accounts')
   const [searchTerm, setSearchTerm] = useState('')
   const [roleFilter, setRoleFilter] = useState<UserRole | 'all'>('all')
   const [updatingId, setUpdatingId] = useState<string | null>(null)
@@ -55,6 +67,20 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
   const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState | null>(null)
   const [sendingResetId, setSendingResetId] = useState<string | null>(null)
   const [resetSuccessId, setResetSuccessId] = useState<string | null>(null)
+
+  // ── Parent Links tab state ─────────────────────────────────────────────────
+  const [linksActionError, setLinksActionError] = useState<string | null>(null)
+  const [confirmingLink, setConfirmingLink] = useState<string | null>(null) // 'parentId:playerId'
+  const [removingLink, setRemovingLink] = useState<string | null>(null)
+  // Direct link creation form
+  const [newLinkParentQuery, setNewLinkParentQuery] = useState('')
+  const [newLinkPlayerQuery, setNewLinkPlayerQuery] = useState('')
+  const [newLinkPlayerResults, setNewLinkPlayerResults] = useState<PlayerSearchResult[]>([])
+  const [newLinkPlayerSearching, setNewLinkPlayerSearching] = useState(false)
+  const [newLinkSelectedPlayer, setNewLinkSelectedPlayer] = useState<PlayerSearchResult | null>(null)
+  const [newLinkSelectedParent, setNewLinkSelectedParent] = useState<{ id: string; name: string } | null>(null)
+  const [creatingLink, setCreatingLink] = useState(false)
+  const playerDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Fetch via TanStack Query (idioma del progetto): niente setState negli effect.
   const { data: profilesData, isLoading: loading, isError: loadError } = useQuery({
@@ -71,6 +97,15 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
   })
   const profiles = profilesData ?? []
 
+  const { data: parentLinksData = [], isLoading: linksLoading } = useQuery({
+    queryKey: ['settings-parent-links'],
+    queryFn: listParentLinkRequests,
+    enabled: isOpen && activeTab === 'parentLinks',
+  })
+  const parentLinks: ParentPlayerLinkFull[] = parentLinksData
+  const pendingLinks = parentLinks.filter(l => l.status === 'pending')
+  const confirmedLinks = parentLinks.filter(l => l.status === 'confirmed')
+
   // Reset dei campi all'apertura: pattern "adjust state on prop change" durante il
   // render (React docs) — un setState sincrono dentro l'effect causerebbe render a cascata.
   const [prevOpen, setPrevOpen] = useState(false)
@@ -80,6 +115,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
       setSearchTerm('')
       setRoleFilter('all')
       setErrorMsg(null)
+      setActiveTab('accounts')
     }
   }
 
@@ -89,6 +125,80 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
       void queryClient.invalidateQueries({ queryKey: ['settings-profiles'] })
     }
   }, [isOpen, queryClient])
+
+  // Debounced player search for new link form (uses RPC that requires parent role —
+  // but admin can query players directly via supabase; we use a raw query here)
+  useEffect(() => {
+    if (playerDebounceRef.current) clearTimeout(playerDebounceRef.current)
+    if (newLinkPlayerQuery.trim().length < 2) {
+      setNewLinkPlayerResults([])
+      return
+    }
+    playerDebounceRef.current = setTimeout(async () => {
+      setNewLinkPlayerSearching(true)
+      try {
+        const { data, error } = await supabase
+          .from('players')
+          .select('id, first_name, last_name, team_sector')
+          .or(`first_name.ilike.%${newLinkPlayerQuery.trim()}%,last_name.ilike.%${newLinkPlayerQuery.trim()}%`)
+          .order('last_name')
+          .limit(20)
+        if (error) throw error
+        setNewLinkPlayerResults((data ?? []) as PlayerSearchResult[])
+      } catch {
+        setNewLinkPlayerResults([])
+      } finally {
+        setNewLinkPlayerSearching(false)
+      }
+    }, 350)
+    return () => { if (playerDebounceRef.current) clearTimeout(playerDebounceRef.current) }
+  }, [newLinkPlayerQuery])
+
+  const handleConfirmLink = async (parentId: string, playerId: string) => {
+    const key = `${parentId}:${playerId}`
+    setConfirmingLink(key)
+    setLinksActionError(null)
+    try {
+      await confirmParentLink(parentId, playerId)
+      await queryClient.invalidateQueries({ queryKey: ['settings-parent-links'] })
+    } catch (err: unknown) {
+      setLinksActionError(err instanceof Error ? err.message : 'Errore durante la conferma.')
+    } finally {
+      setConfirmingLink(null)
+    }
+  }
+
+  const handleRemoveLink = async (parentId: string, playerId: string) => {
+    const key = `${parentId}:${playerId}`
+    setRemovingLink(key)
+    setLinksActionError(null)
+    try {
+      await removeParentLink(parentId, playerId)
+      await queryClient.invalidateQueries({ queryKey: ['settings-parent-links'] })
+    } catch (err: unknown) {
+      setLinksActionError(err instanceof Error ? err.message : 'Errore durante la rimozione.')
+    } finally {
+      setRemovingLink(null)
+    }
+  }
+
+  const handleCreateDirectLink = async () => {
+    if (!newLinkSelectedParent || !newLinkSelectedPlayer) return
+    setCreatingLink(true)
+    setLinksActionError(null)
+    try {
+      await createParentLink(newLinkSelectedParent.id, newLinkSelectedPlayer.id)
+      await queryClient.invalidateQueries({ queryKey: ['settings-parent-links'] })
+      setNewLinkSelectedParent(null)
+      setNewLinkSelectedPlayer(null)
+      setNewLinkParentQuery('')
+      setNewLinkPlayerQuery('')
+    } catch (err: unknown) {
+      setLinksActionError(err instanceof Error ? err.message : 'Errore nella creazione del collegamento.')
+    } finally {
+      setCreatingLink(false)
+    }
+  }
 
   const handleRoleChange = async (profileId: string, newRole: UserRole) => {
     setUpdatingId(profileId)
@@ -230,7 +340,41 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
               </button>
             </div>
 
-            {/* Filters */}
+            {/* Tab bar */}
+            <div className="px-8 pb-2 flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => setActiveTab('accounts')}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                  activeTab === 'accounts'
+                    ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                    : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground"
+                )}
+              >
+                <Users className="w-3.5 h-3.5" />
+                Account
+              </button>
+              <button
+                onClick={() => setActiveTab('parentLinks')}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                  activeTab === 'parentLinks'
+                    ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                    : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground"
+                )}
+              >
+                <Link2 className="w-3.5 h-3.5" />
+                Associazioni Genitore-Figlio
+                {pendingLinks.length > 0 && (
+                  <span className="ml-1 bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">
+                    {pendingLinks.length}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* Filters — solo per la tab Account */}
+            {activeTab === 'accounts' && (
             <div className="px-8 pb-4 space-y-3 shrink-0">
               {/* Search */}
               <div className="relative group">
@@ -273,22 +417,35 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                 ))}
               </div>
             </div>
+            )}
 
-            {/* Error */}
-            {loadError && !errorMsg && (
+            {/* Error - Account tab */}
+            {activeTab === 'accounts' && loadError && !errorMsg && (
               <div className="mx-8 mt-4 px-4 py-3 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-semibold">
                 Errore nel caricamento degli utenti.
               </div>
             )}
-            {errorMsg && (
+            {activeTab === 'accounts' && errorMsg && (
               <div className="mx-8 mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-sm font-semibold flex items-center gap-2 shrink-0">
                 <ShieldAlert className="w-5 h-5 flex-shrink-0" />
                 {errorMsg}
               </div>
             )}
 
-            {/* User List - scrollable */}
+            {/* Error - ParentLinks tab */}
+            {activeTab === 'parentLinks' && linksActionError && (
+              <div className="mx-8 mb-3 p-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-sm font-semibold flex items-center gap-2 shrink-0">
+                <ShieldAlert className="w-5 h-5 flex-shrink-0" />
+                {linksActionError}
+              </div>
+            )}
+
+            {/* ── TAB CONTENT — scrollable ──────────────────────────────────── */}
             <div className="flex-1 overflow-y-auto no-scrollbar px-8 pb-8">
+
+              {/* ─── Tab: Account ─── */}
+              {activeTab === 'accounts' && (
+              <>
               {loading ? (
                 <div className="flex justify-center items-center py-16">
                   <Loader2 className="w-8 h-8 text-primary animate-spin" />
@@ -404,6 +561,212 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                   ))}
                 </div>
               )}
+              </>
+              )}
+
+              {/* ─── Tab: Associazioni Genitore-Figlio ─── */}
+              {activeTab === 'parentLinks' && (
+              <div className="space-y-8">
+
+                {linksLoading ? (
+                  <div className="flex justify-center items-center py-16">
+                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                  </div>
+                ) : (
+                  <>
+                  {/* Richieste in attesa */}
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">
+                      In attesa di conferma ({pendingLinks.length})
+                    </h3>
+                    {pendingLinks.length === 0 ? (
+                      <p className="text-sm text-muted-foreground/50 italic py-3">Nessuna richiesta pending.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {pendingLinks.map(link => {
+                          const key = `${link.parent_profile_id}:${link.player_id}`
+                          return (
+                            <motion.div
+                              key={key}
+                              layout
+                              initial={{ opacity: 0, y: 6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 glass-card rounded-2xl border border-amber-500/20 bg-amber-500/5"
+                            >
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <Clock className="w-3.5 h-3.5 text-amber-500" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">Pending</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-foreground">
+                                  <span className="text-muted-foreground">Genitore:</span> {link.parent_full_name ?? link.parent_email}
+                                </p>
+                                <p className="text-sm font-bold text-foreground">
+                                  <span className="text-muted-foreground">Figlio:</span> {link.player_last_name} {link.player_first_name}
+                                  {link.player_team_sector && <span className="text-[10px] text-muted-foreground ml-2">({link.player_team_sector})</span>}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <button
+                                  onClick={() => void handleConfirmLink(link.parent_profile_id, link.player_id)}
+                                  disabled={confirmingLink === key || removingLink !== null}
+                                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50"
+                                >
+                                  {confirmingLink === key ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                                  Conferma
+                                </button>
+                                <button
+                                  onClick={() => void handleRemoveLink(link.parent_profile_id, link.player_id)}
+                                  disabled={removingLink === key || confirmingLink !== null}
+                                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50"
+                                >
+                                  {removingLink === key ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                                  Rifiuta
+                                </button>
+                              </div>
+                            </motion.div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Associazioni confermate */}
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">
+                      Associazioni confermate ({confirmedLinks.length})
+                    </h3>
+                    {confirmedLinks.length === 0 ? (
+                      <p className="text-sm text-muted-foreground/50 italic py-3">Nessuna associazione confermata.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {confirmedLinks.map(link => {
+                          const key = `${link.parent_profile_id}:${link.player_id}`
+                          return (
+                            <motion.div
+                              key={key}
+                              layout
+                              initial={{ opacity: 0, y: 6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 glass-card rounded-2xl border border-emerald-500/20 bg-emerald-500/5"
+                            >
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Confermato</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-foreground">
+                                  <span className="text-muted-foreground">Genitore:</span> {link.parent_full_name ?? link.parent_email}
+                                </p>
+                                <p className="text-sm font-bold text-foreground">
+                                  <span className="text-muted-foreground">Figlio:</span> {link.player_last_name} {link.player_first_name}
+                                  {link.player_team_sector && <span className="text-[10px] text-muted-foreground ml-2">({link.player_team_sector})</span>}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => void handleRemoveLink(link.parent_profile_id, link.player_id)}
+                                disabled={removingLink === key || confirmingLink !== null}
+                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50 shrink-0"
+                              >
+                                {removingLink === key ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                                Rimuovi
+                              </button>
+                            </motion.div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Creazione diretta */}
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-3">
+                      Crea associazione diretta
+                    </h3>
+                    <div className="p-5 glass-card rounded-2xl border border-black/5 dark:border-white/5 space-y-4">
+                      {/* Selezione genitore */}
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Genitore (profilo)</label>
+                        <select
+                          value={newLinkSelectedParent?.id ?? ''}
+                          onChange={e => {
+                            const p = profiles.find(p => p.id === e.target.value)
+                            setNewLinkSelectedParent(p ? { id: p.id, name: p.full_name ?? p.email } : null)
+                            setNewLinkParentQuery(p ? (p.full_name ?? p.email) : '')
+                          }}
+                          className="w-full h-12 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-primary focus:outline-none text-sm font-medium text-foreground transition-all"
+                        >
+                          <option value="">Seleziona un genitore...</option>
+                          {profiles.filter(p => p.role === 'parent').map(p => (
+                            <option key={p.id} value={p.id}>{p.full_name ?? p.email}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Selezione atleta */}
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Atleta</label>
+                        {newLinkSelectedPlayer ? (
+                          <div className="flex items-center gap-3 p-3 rounded-2xl bg-primary/5 border border-primary/20">
+                            <span className="flex-1 text-sm font-bold text-foreground">
+                              {newLinkSelectedPlayer.last_name} {newLinkSelectedPlayer.first_name}
+                              {newLinkSelectedPlayer.team_sector && <span className="text-[10px] text-muted-foreground ml-2">({newLinkSelectedPlayer.team_sector})</span>}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => { setNewLinkSelectedPlayer(null); setNewLinkPlayerQuery('') }}
+                              className="w-7 h-7 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="relative">
+                            {newLinkPlayerSearching
+                              ? <Loader2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary animate-spin" />
+                              : <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                            }
+                            <input
+                              type="text"
+                              value={newLinkPlayerQuery}
+                              onChange={e => { setNewLinkPlayerQuery(e.target.value); setNewLinkSelectedPlayer(null) }}
+                              placeholder="Cerca atleta (min 2 caratteri)..."
+                              className="w-full h-12 pl-11 pr-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-primary focus:outline-none text-sm font-medium placeholder:text-muted-foreground/40 text-foreground transition-all"
+                            />
+                            {newLinkPlayerResults.length > 0 && !newLinkSelectedPlayer && (
+                              <div className="absolute z-10 w-full mt-1 glass-card rounded-2xl border border-black/5 dark:border-white/10 overflow-hidden divide-y divide-black/5 dark:divide-white/5 shadow-lg">
+                                {newLinkPlayerResults.map(player => (
+                                  <button
+                                    key={player.id}
+                                    type="button"
+                                    onClick={() => { setNewLinkSelectedPlayer(player); setNewLinkPlayerResults([]) }}
+                                    className="w-full text-left px-4 py-2.5 hover:bg-primary/10 transition-colors text-sm font-medium text-foreground"
+                                  >
+                                    {player.last_name} {player.first_name}
+                                    {player.team_sector && <span className="text-xs text-muted-foreground ml-2">({player.team_sector})</span>}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => void handleCreateDirectLink()}
+                        disabled={!newLinkSelectedParent || !newLinkSelectedPlayer || creatingLink}
+                        className="w-full h-11 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+                      >
+                        {creatingLink ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                        Crea Associazione
+                      </button>
+                    </div>
+                  </div>
+                  </>
+                )}
+              </div>
+              )}
+
             </div>
           </motion.div>
 
