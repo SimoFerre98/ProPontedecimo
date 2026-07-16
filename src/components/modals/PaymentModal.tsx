@@ -5,9 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { paymentService, PAYMENT_METHODS, type PaymentReference, type PaymentMethod } from '@/services/paymentService'
-import { useQueryClient } from '@tanstack/react-query'
-import { useToast } from '@/contexts/ToastContext'
-import { getErrorMessage } from '@/lib/errors'
+import { useFormModal } from '@/hooks/useFormModal'
 
 interface PaymentModalProps {
   isOpen: boolean
@@ -16,14 +14,11 @@ interface PaymentModalProps {
 }
 
 export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalProps) {
-  const [loading, setLoading] = useState(false)
   const [paidAmount, setPaidAmount] = useState('')
   const [receiptNumber, setReceiptNumber] = useState('')
   const [receiptDate, setReceiptDate] = useState(new Date().toISOString().split('T')[0])
   const [method, setMethod] = useState<PaymentMethod>('contanti')
   const [notes, setNotes] = useState('')
-  const queryClient = useQueryClient()
-  const toast = useToast()
 
   useEffect(() => {
     if (isOpen && payment) {
@@ -35,11 +30,12 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
     }
   }, [isOpen, payment])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!payment) return
-    setLoading(true)
-    try {
+  const { loading, submit: handleSubmit } = useFormModal({
+    onSubmit: async () => {
+      // Invariante garantita dal render (isOpen && payment &&), ma usiamo throw
+      // invece di return silenzioso: l'hook interpreta qualsiasi ritorno senza
+      // errore come successo e chiamerebbe onClose().
+      if (!payment) throw new Error('payment non disponibile')
       await paymentService.recordPayment(payment.id, {
         paid_amount_eur: parseFloat(paidAmount) || 0,
         receipt_number: receiptNumber,
@@ -47,15 +43,10 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
         payment_method: method,
         notes: notes || undefined,
       })
-      queryClient.invalidateQueries({ queryKey: ['payments'] })
-      queryClient.invalidateQueries({ queryKey: ['overduePaymentsCount'] })
-      onClose()
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    invalidateKeys: [['payments'], ['overduePaymentsCount']],
+    onClose,
+  })
 
   const isValid = paidAmount !== '' && parseFloat(paidAmount) > 0 && receiptNumber.trim() !== '' && receiptDate !== ''
 
