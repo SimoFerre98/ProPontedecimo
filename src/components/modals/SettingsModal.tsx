@@ -11,7 +11,6 @@ import {
   confirmParentLink,
   removeParentLink,
   createParentLink,
-  searchPlayersForRequest,
   type ParentPlayerLinkFull,
   type PlayerSearchResult,
 } from '@/services/parentService'
@@ -73,7 +72,6 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
   const [confirmingLink, setConfirmingLink] = useState<string | null>(null) // 'parentId:playerId'
   const [removingLink, setRemovingLink] = useState<string | null>(null)
   // Direct link creation form
-  const [newLinkParentQuery, setNewLinkParentQuery] = useState('')
   const [newLinkPlayerQuery, setNewLinkPlayerQuery] = useState('')
   const [newLinkPlayerResults, setNewLinkPlayerResults] = useState<PlayerSearchResult[]>([])
   const [newLinkPlayerSearching, setNewLinkPlayerSearching] = useState(false)
@@ -191,7 +189,6 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
       await queryClient.invalidateQueries({ queryKey: ['settings-parent-links'] })
       setNewLinkSelectedParent(null)
       setNewLinkSelectedPlayer(null)
-      setNewLinkParentQuery('')
       setNewLinkPlayerQuery('')
     } catch (err: unknown) {
       setLinksActionError(err instanceof Error ? err.message : 'Errore nella creazione del collegamento.')
@@ -692,7 +689,6 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                           onChange={e => {
                             const p = profiles.find(p => p.id === e.target.value)
                             setNewLinkSelectedParent(p ? { id: p.id, name: p.full_name ?? p.email } : null)
-                            setNewLinkParentQuery(p ? (p.full_name ?? p.email) : '')
                           }}
                           className="w-full h-12 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-primary focus:outline-none text-sm font-medium text-foreground transition-all"
                         >
