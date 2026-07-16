@@ -32,7 +32,10 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
 
   const { loading, submit: handleSubmit } = useFormModal({
     onSubmit: async () => {
-      if (!payment) return
+      // Invariante garantita dal render (isOpen && payment &&), ma usiamo throw
+      // invece di return silenzioso: l'hook interpreta qualsiasi ritorno senza
+      // errore come successo e chiamerebbe onClose().
+      if (!payment) throw new Error('payment non disponibile')
       await paymentService.recordPayment(payment.id, {
         paid_amount_eur: parseFloat(paidAmount) || 0,
         receipt_number: receiptNumber,

@@ -129,7 +129,7 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
                       required
                       min="1"
                       value={formData.min_stock}
-                      onChange={e => setFormData({ ...formData, min_stock: Number.parseInt(e.target.value, 10) || 0 })}
+                      onChange={e => setFormData({ ...formData, min_stock: Number.parseInt(e.target.value, 10) || 1 })}
                       className="pl-11 h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-foreground font-bold"
                     />
                   </div>

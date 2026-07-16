@@ -139,7 +139,7 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
 
   const { loading, submit: handleSubmit } = useFormModal({
     onSubmit: async () => {
-      if (!selectedPlayer || !selectedSeasonId || !isValid) return
+      if (!selectedPlayer || !selectedSeasonId) return // guardia difensiva: isValid già coperta dal disabled sul button
       await paymentService.createPaymentPlan(
         selectedPlayer.id,
         selectedSeasonId,

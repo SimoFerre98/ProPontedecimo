@@ -26,7 +26,10 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
 
   const { loading, submit: handleSubmit } = useFormModal({
     onSubmit: async () => {
-      if (!record) return
+      // Invariante garantita dal render (isOpen && record &&), ma usiamo throw
+      // invece di return silenzioso: l'hook interpreta qualsiasi ritorno senza
+      // errore come successo e chiamerebbe onClose().
+      if (!record) throw new Error('record non disponibile')
       await medicalService.updateMedicalExpiry(record.id, medicalExpiry || null)
     },
     // Invalida tutte le query correlate per aggiornare liste, stats e campanella
