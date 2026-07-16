@@ -56,7 +56,7 @@ La migrazione `20260704154518_baseline_schema.sql` fotografa lo schema completo 
 - il trigger `on_auth_user_created` su `auth.users` (creazione automatica del profilo alla registrazione)
 - le estensioni `pg_net` e `pg_graphql`
 
-Sul progetto cloud attuale la baseline è marcata come già applicata (repair `--status applied`); verrà eseguita per intero solo su ambienti nuovi, come la futura VPS self-hosted (US-023/US-024).
+Sul progetto cloud attuale la baseline è marcata come già applicata (repair `--status applied`); verrà eseguita per intero solo su ambienti nuovi, come la futura VPS self-hosted (US-042/US-043).
 
 ## Storia e artefatti legacy
 

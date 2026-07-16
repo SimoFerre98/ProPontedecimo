@@ -26,7 +26,7 @@ così che ogni modifica allo schema sia tracciata, riproducibile e applicabile s
 
 ## Soluzione Tecnica
 
-Adottiamo il flusso standard della Supabase CLI (init → link → db pull) usando il progetto cloud esistente come fonte di verità iniziale: lo schema remoto viene fotografato in una migrazione timestampata, e da lì in poi ogni modifica passa da migrazioni locali pushate verso il cloud. È la via più "noiosa e collaudata", ed è lo stesso meccanismo che permetterà di riapplicare l'intero schema sulla VPS self-hosted (US-023/US-024).
+Adottiamo il flusso standard della Supabase CLI (init → link → db pull) usando il progetto cloud esistente come fonte di verità iniziale: lo schema remoto viene fotografato in una migrazione timestampata, e da lì in poi ogni modifica passa da migrazioni locali pushate verso il cloud. È la via più "noiosa e collaudata", ed è lo stesso meccanismo che permetterà di riapplicare l'intero schema sulla VPS self-hosted (US-042/US-043).
 
 - **Init & pinning della CLI:** `supabase init` genera `supabase/config.toml`; la CLI viene aggiunta come devDependency (`supabase`) con script npm dedicati (`db:new`, `db:pull`, `db:push`, `db:diff`) così la versione è bloccata nel lockfile e il flusso è uniforme per chiunque cloni il repo. `.gitignore` aggiornato con `supabase/.temp/`.
 - **Collegamento al cloud:** `supabase link --project-ref <ref>` — il project-ref si ricava dall'URL in `VITE_SUPABASE_URL` (`https://<ref>.supabase.co`). Richiede `SUPABASE_ACCESS_TOKEN` (da account Supabase) e la password del database: **prerequisito a carico di Simone**, i segreti non entrano nel repository.
