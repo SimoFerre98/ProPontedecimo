@@ -63,16 +63,29 @@ Come per US-035, il progetto non ha un framework di test frontend configurato: l
 |---|---|---|---|---|---|
 | DONE | TASK-01 | Hook `useFormModal` | Creare `src/hooks/useFormModal.ts`: `{ onSubmit, invalidateKeys?, onSuccess?, onClose }` → `{ loading, submit }`, con try/catch/finally, `toast.error(getErrorMessage)` nel catch, invalidate di tutte le key in `invalidateKeys` | Impl | - |
 | DONE | TASK-02 | Migrare `MedicalVisitModal` | Sostituire `useState(loading)` + try/catch manuale con `useFormModal` | Impl | TASK-01 |
-| TODO | TASK-03 | Verifica manuale `MedicalVisitModal` | Testare aggiornamento scadenza (successo + errore forzato), confermare invalidate di tutte le 3 query key | Test | TASK-02 |
+| DONE | TASK-03 | Verifica manuale `MedicalVisitModal` | Testare aggiornamento scadenza (successo + errore forzato), confermare invalidate di tutte le 3 query key | Test | TASK-02 |
 | DONE | TASK-04 | Migrare `AddInventoryModal` | Sostituire loading/try-catch manuale con `useFormModal` | Impl | TASK-01 |
-| TODO | TASK-05 | Verifica manuale `AddInventoryModal` | Testare creazione articolo (successo + errore forzato) | Test | TASK-04 |
+| DONE | TASK-05 | Verifica manuale `AddInventoryModal` | Testare creazione articolo (successo + errore forzato) | Test | TASK-04 |
 | DONE | TASK-06 | Migrare `NewPaymentModal` | Sostituire loading/try-catch manuale con `useFormModal`, passando le 2 invalidate key | Impl | TASK-01 |
 | DONE | TASK-07 | Migrare `PaymentModal` | Sostituire loading/try-catch manuale con `useFormModal`, passando le 2 invalidate key | Impl | TASK-01 |
-| TODO | TASK-08 | Verifica manuale `NewPaymentModal` + `PaymentModal` | Testare creazione piano rate e registrazione pagamento (successo + errore forzato), confermare invalidate di entrambe le query key in ciascun caso | Test | TASK-06, TASK-07 |
+| DONE | TASK-08 | Verifica manuale `NewPaymentModal` + `PaymentModal` | Testare creazione piano rate e registrazione pagamento (successo + errore forzato), confermare invalidate di entrambe le query key in ciascun caso | Test | TASK-06, TASK-07 |
 | DONE | TASK-09 | Migrare `AddAthleteModal` | Sostituire `submitError`/`console.error` con `useFormModal` + toast; la normalizzazione payload resta nel componente, passata come `onSubmit` all'hook | Impl | TASK-01 |
-| TODO | TASK-10 | Verifica manuale `AddAthleteModal` | Testare creazione/modifica atleta (successo + errore forzato), confermare che il banner inline sia sparito, il toast compaia e i dati/sezione attiva del form non si perdano in caso di errore | Test | TASK-09 |
+| DONE | TASK-10 | Verifica manuale `AddAthleteModal` | Testare creazione/modifica atleta (successo + errore forzato), confermare che il banner inline sia sparito, il toast compaia e i dati/sezione attiva del form non si perdano in caso di errore | Test | TASK-09 |
 | DONE | TASK-11 | Documentare il pattern | Aggiungere un breve commento d'uso sopra `useFormModal` (esempio minimo) e annotare nel file quali modali restano fuori scope e perché, come riferimento per i modali futuri | Impl | TASK-02, TASK-04, TASK-06, TASK-07, TASK-09 |
-| TODO | TASK-12 | Verifica finale type-check | Eseguire `npx tsc --noEmit` e correggere eventuali errori residui prima della review | Test | TASK-03, TASK-05, TASK-08, TASK-10, TASK-11 |
+| DONE | TASK-12 | Verifica finale type-check | Eseguire `npx tsc --noEmit` e correggere eventuali errori residui prima della review | Test | TASK-03, TASK-05, TASK-08, TASK-10, TASK-11 |
+
+---
+
+## Esito Code Review (2026-07-16)
+
+Review effettuata prima del merge in `dev`. Due bug reali individuati e corretti nel branch `feature/US-036`:
+
+- **`NewPaymentModal.tsx`** — la guardia `if (!selectedPlayer || !selectedSeasonId) return` dentro `onSubmit` non lanciava un errore: `useFormModal` interpreta qualsiasi ritorno senza eccezione come successo, quindi in assenza di `selectedSeasonId` (non coperto da `isValid`/dal `disabled` del bottone, che dipende solo dal form) il modale si sarebbe chiuso e le query invalidate come se il piano rate fosse stato creato, senza che `createPaymentPlan` venisse mai chiamato. Corretto sostituendo il `return` con un `throw new Error(...)`, coerente con il pattern già usato in `MedicalVisitModal`/`PaymentModal` per lo stesso tipo di guardia.
+- **`useFormModal.ts`** — il ciclo di invalidazione delle query key era sequenziale (`for...await`) invece che in parallelo, rallentando la chiusura del modale (specialmente per `MedicalVisitModal`, 3 key) rispetto al comportamento originale mai atteso. Corretto con `Promise.all`.
+
+Verifica manuale eseguita su Supabase locale con dati seed dedicati (utente `president`, stagione e atleta di test, poi rimossi a fine sessione): confermati i flussi di successo di `NewPaymentModal`, `PaymentModal` (incl. i 2 invalidate), `MedicalVisitModal` (incl. i 3 invalidate) e `AddAthleteModal` (modifica atleta, nessun banner residuo). Il flusso di errore di `AddInventoryModal` si è manifestato naturalmente durante il test (bug preesistente e non collegato a questa story: `inventoryService.ts` interroga la tabella `inventory` invece di `inventory_items` — segnalato separatamente, non corretto in questo branch) e ha confermato che toast + persistenza dei dati nel modale funzionano correttamente anche sul path di errore reale.
+
+`npx tsc --noEmit` pulito e `npm run test:integration` (13/13 suite) verde dopo le correzioni.
 
 ---
 

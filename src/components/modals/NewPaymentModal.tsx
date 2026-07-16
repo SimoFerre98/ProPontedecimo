@@ -139,7 +139,13 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
 
   const { loading, submit: handleSubmit } = useFormModal({
     onSubmit: async () => {
-      if (!selectedPlayer || !selectedSeasonId) return // guardia difensiva: isValid già coperta dal disabled sul button
+      // Non un return silenzioso: l'hook interpreta qualsiasi ritorno senza errore
+      // come successo (invalida le query e chiude il modale). `isValid`/il disabled
+      // sul button non coprono `selectedSeasonId` (store globale, non nel form), quindi
+      // questo path è realmente raggiungibile se la stagione non è ancora selezionata.
+      if (!selectedPlayer || !selectedSeasonId) {
+        throw new Error('Seleziona un atleta e assicurati che una stagione sia attiva prima di salvare.')
+      }
       await paymentService.createPaymentPlan(
         selectedPlayer.id,
         selectedSeasonId,

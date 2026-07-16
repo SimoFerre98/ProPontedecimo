@@ -63,9 +63,7 @@ export function useFormModal({
     try {
       await onSubmit()
       if (invalidateKeys) {
-        for (const key of invalidateKeys) {
-          await queryClient.invalidateQueries({ queryKey: key })
-        }
+        await Promise.all(invalidateKeys.map(key => queryClient.invalidateQueries({ queryKey: key })))
       }
       onSuccess?.()
       onClose()
