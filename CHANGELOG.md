@@ -5,6 +5,12 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-027**: Introdotto lo stato `pending`/`confirmed` sulle associazioni genitore-figlio con una nuova colonna `status` e l'enum `parent_link_status`.
+- **US-027**: Implementata la policy RLS `parent_players_insert_self_request` per consentire ai genitori di collegare figli in modalità `pending` in autonomia.
+- **US-027**: Create le RPC SECURITY DEFINER `search_players_for_parent_request` per la ricerca protetta di atleti e `get_my_parent_players` per visualizzare le proprie richieste (pending e confirmed).
+- **US-027**: Aggiunta la sezione "I miei figli" nella `PortalDashboard.tsx` per i genitori, con il nuovo modale di richiesta `RequestChildLinkModal.tsx`.
+- **US-027**: Aggiunta la tab "Associazioni Genitore-Figlio" in `SettingsModal.tsx` per gli amministratori, che consente di approvare/rifiutare le richieste pendenti e creare associazioni dirette.
+- **US-027**: Creato lo script di test di integrazione database `test-parent-children.mjs` che valida l'RLS di isolamento, le RPC e il ciclo di vita del collegamento.
 - **US-035**: Introdotto un sistema di toast/notifiche centralizzato (`ToastContext`/`useToast`) in stile Premium Glass, montato globalmente in `App.tsx`.
 - **US-035**: Creato un `ErrorBoundary` globale montato in `main.tsx` con schermata di fallback e pulsante "Ricarica pagina" per intercettare errori di rendering non gestiti.
 - **US-035**: Creato il componente condiviso `QueryErrorState` per mostrare un messaggio d'errore con retry al posto di un'interfaccia vuota quando una `useQuery` fallisce; integrato in `Athletes`, `Payments`, `MedicalVisits`, `Inventory`, `StaffTasks`, `Attendance` e `Dashboard`.
