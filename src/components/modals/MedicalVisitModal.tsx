@@ -4,9 +4,7 @@ import { X, HeartPulse, User, Calendar, Save, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { medicalService, type MedicalVisitRecord } from '@/services/medicalService'
-import { useQueryClient } from '@tanstack/react-query'
-import { useToast } from '@/contexts/ToastContext'
-import { getErrorMessage } from '@/lib/errors'
+import { useFormModal } from '@/hooks/useFormModal'
 
 interface MedicalVisitModalProps {
   isOpen: boolean
@@ -16,9 +14,6 @@ interface MedicalVisitModalProps {
 }
 
 export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }: Readonly<MedicalVisitModalProps>) {
-  const [loading, setLoading] = useState(false)
-  const queryClient = useQueryClient()
-  const toast = useToast()
   const [medicalExpiry, setMedicalExpiry] = useState('')
 
   useEffect(() => {
@@ -29,26 +24,16 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
     }
   }, [isOpen, record])
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!record) return
-
-    setLoading(true)
-    try {
+  const { loading, submit: handleSubmit } = useFormModal({
+    onSubmit: async () => {
+      if (!record) return
       await medicalService.updateMedicalExpiry(record.id, medicalExpiry || null)
-      
-      // Invalida tutte le query correlate per aggiornare liste, stats e campanella
-      queryClient.invalidateQueries({ queryKey: ['medical-visits'] })
-      queryClient.invalidateQueries({ queryKey: ['medical-visits-stats'] })
-      queryClient.invalidateQueries({ queryKey: ['notifications'] })
-      onSuccess?.()
-      onClose()
-    } catch (error) {
-      toast.error(getErrorMessage(error))
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    // Invalida tutte le query correlate per aggiornare liste, stats e campanella
+    invalidateKeys: [['medical-visits'], ['medical-visits-stats'], ['notifications']],
+    onSuccess,
+    onClose,
+  })
 
   return (
     <AnimatePresence>

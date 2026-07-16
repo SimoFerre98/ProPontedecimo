@@ -19,5 +19,5 @@ After implementing this story, the user can: usare qualsiasi modale (es. nuovo a
 **Context**
 Dall'analisi architetturale: ogni modale ripete `useState(loading)` + `try/catch` + `invalidateQueries` + `onClose`, con gestione errori assente o solo `console.error`.
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [docs/planning/US-036-plan.md](../planning/US-036-plan.md)

@@ -137,18 +137,6 @@
 | [US-021](backlog/US-021-esportazione-excel-atleti-pagamenti.md) | Esportazione Excel di atleti e pagamenti | MEDIUM | 3 | DONE |
 | [US-022](backlog/US-022-grafici-andamento-finanziario.md) | Grafici andamento finanziario | MEDIUM | 3 | DONE |
 
-### EP-009: Deploy VPS, Migrazione & Backup
-
-> Portare la piattaforma in produzione su VPS Hetzner self-hosted con Docker/Coolify e backup automatici.
-> **Scope:** Growth | **Stories:** 4 | **Story Points:** 14
-
-| ID | Story | Priority | Pts | Status |
-|---|---|---|---|---|
-| [US-023](backlog/US-023-setup-supabase-self-hosted-vps.md) | Setup Supabase self-hosted su VPS | MEDIUM | 5 | PLANNED |
-| [US-024](backlog/US-024-migrazione-schema-configurazioni-cloud.md) | Migrazione schema e configurazioni dal cloud | MEDIUM | 3 | TODO |
-| [US-025](backlog/US-025-deploy-frontend-container.md) | Deploy del frontend in container | MEDIUM | 3 | TODO |
-| [US-026](backlog/US-026-backup-periodico-database.md) | Backup periodico del database | MEDIUM | 3 | TODO |
-
 ### EP-010: Portale Genitore & Pagamenti Online
 
 > Dare ai genitori visibilità su scadenze e pagamenti dei figli e la possibilità di pagare online.
@@ -197,11 +185,25 @@
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
 | [US-035](backlog/US-035-gestione-errori-globale-feedback.md) | Gestione errori globale e feedback utente | HIGH | 3 | DONE |
-| [US-036](backlog/US-036-hook-unificato-modali-form.md) | Hook unificato per i modali form | MEDIUM | 3 | TODO |
+| [US-036](backlog/US-036-hook-unificato-modali-form.md) | Hook unificato per i modali form | MEDIUM | 3 | REVIEW |
 | [US-037](backlog/US-037-scomposizione-pagina-atleti-feature.md) | Scomposizione della pagina Atleti in feature folder | MEDIUM | 3 | TODO |
 | [US-038](backlog/US-038-tipizzazione-filtri-rimozione-cast.md) | Tipizzazione dei filtri e rimozione dei cast `as any` | MEDIUM | 2 | TODO |
 | [US-039](backlog/US-039-componenti-condivisi-pulizie-minori.md) | Componenti condivisi e pulizie minori | LOW | 2 | TODO |
 | [US-040](backlog/US-040-fix-drag-drop-kanban.md) | Fix drag & drop della board Kanban | MEDIUM | 2 | TODO |
+
+### EP-009: Deploy VPS, Migrazione & Backup
+
+> Portare la piattaforma in produzione su VPS Contabo self-hosted con Docker/Coolify e backup automatici.
+> **Scope:** Growth | **Stories:** 4 | **Story Points:** 14
+>
+> **⏸ ON HOLD (2026-07-16):** epica rimandata in fondo all'ordine di lavorazione — VPS non ancora disponibile. Lo sviluppo prosegue nel frattempo su Supabase locale + Supabase Cloud (progetto collegato a Vercel), mantenuti sincronizzati. Si riprende quando la VPS sarà provisionata.
+
+| ID | Story | Priority | Pts | Status |
+|---|---|---|---|---|
+| [US-042](backlog/US-042-setup-supabase-self-hosted-vps.md) | Setup Supabase self-hosted su VPS | MEDIUM | 5 | PLANNED |
+| [US-043](backlog/US-043-migrazione-schema-configurazioni-cloud.md) | Migrazione schema e configurazioni dal cloud | MEDIUM | 3 | TODO |
+| [US-044](backlog/US-044-deploy-frontend-container.md) | Deploy del frontend in container | MEDIUM | 3 | TODO |
+| [US-045](backlog/US-045-backup-periodico-database.md) | Backup periodico del database | MEDIUM | 3 | TODO |
 
 ---
 

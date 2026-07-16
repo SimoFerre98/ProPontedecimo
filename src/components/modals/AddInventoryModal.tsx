@@ -4,9 +4,7 @@ import { X, Package, Tag, Hash, Box, Save, Loader2, AlertTriangle } from 'lucide
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { inventoryService } from '@/services/inventoryService'
-import { useQueryClient } from '@tanstack/react-query'
-import { useToast } from '@/contexts/ToastContext'
-import { getErrorMessage } from '@/lib/errors'
+import { useFormModal } from '@/hooks/useFormModal'
 
 interface AddInventoryModalProps {
   isOpen: boolean
@@ -15,9 +13,6 @@ interface AddInventoryModalProps {
 }
 
 export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readonly<AddInventoryModalProps>) {
-  const [loading, setLoading] = useState(false)
-  const queryClient = useQueryClient()
-  const toast = useToast()
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -26,27 +21,17 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
     min_stock: 5
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    try {
-      await inventoryService.addItem(formData)
-      queryClient.invalidateQueries({ queryKey: ['inventory'] })
+  const resetForm = () => setFormData({ name: '', category: '', quantity: 0, unit: 'pz', min_stock: 5 })
+
+  const { loading, submit: handleSubmit } = useFormModal({
+    onSubmit: () => inventoryService.addItem(formData),
+    invalidateKeys: [['inventory']],
+    onSuccess: () => {
       onSuccess?.()
-      onClose()
-      setFormData({
-        name: '',
-        category: '',
-        quantity: 0,
-        unit: 'pz',
-        min_stock: 5
-      })
-    } catch (error) {
-      toast.error(getErrorMessage(error))
-    } finally {
-      setLoading(false)
-    }
-  }
+      resetForm()
+    },
+    onClose,
+  })
 
   return (
     <AnimatePresence>

@@ -7,7 +7,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { athleteService, type Player } from '@/services/athleteService'
-import { useQueryClient } from '@tanstack/react-query'
+import { useFormModal } from '@/hooks/useFormModal'
 import { cn } from '@/lib/utils'
 
 interface AddAthleteModalProps {
@@ -68,13 +68,10 @@ function FieldLabel({ label, required }: Readonly<{ label: string; required?: bo
 
 
 export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, availableSectors = [] }: Readonly<AddAthleteModalProps>) {
-  const [loading, setLoading] = useState(false)
   const [activeSection, setActiveSection] = useState<FormSection>('anagrafica')
   const [isCreatingNewSector, setIsCreatingNewSector] = useState(false)
-  const queryClient = useQueryClient()
   const [formData, setFormData] = useState({ ...EMPTY_FORM })
   const [touched, setTouched] = useState<Record<string, boolean>>({})
-  const [submitError, setSubmitError] = useState<string | null>(null)
 
   // Calcola età per determinare se è minorenne.
   // Il campo è una data pura (YYYY-MM-DD): la parsiamo a mano invece di usare `new Date(...)`,
@@ -225,7 +222,6 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
   useEffect(() => {
     if (isOpen) {
       setActiveSection('anagrafica')
-      setSubmitError(null)
       if (player) {
         setFormData({
           first_name: player.first_name || '',
@@ -271,52 +267,45 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
     }
   }, [isOpen, player, availableSectors])
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
-    setSubmitError(null)
-    try {
-      const payload = {
-        ...formData,
-        birth_date: formData.birth_date || null,
-        medical_expiry: formData.medical_expiry || null,
-        phone_home: formData.phone_home || null,
-        phone_player: formData.phone_player || null,
-        email: formData.email.trim() || null,
-        team_sector: formData.team_sector || null,
-        birth_place: formData.birth_place || null,
-        citizenship: formData.citizenship || null,
-        tax_code: formData.tax_code.trim() || null,
-        address_street: formData.address_street || null,
-        address_locality: formData.address_locality || null,
-        address_city: formData.address_city || null,
-        address_zip: formData.address_zip || null,
-        parent1_name: formData.parent1_name || null,
-        parent1_phone: formData.parent1_phone || null,
-        parent1_tax_code: formData.parent1_tax_code || null,
-        parent2_name: formData.parent2_name || null,
-        parent2_phone: formData.parent2_phone || null,
-        parent2_tax_code: formData.parent2_tax_code || null,
-        figc_registration: formData.figc_registration || null,
-        notes: formData.notes || null,
-      }
+  const handleSubmitFn = async () => {
+    const payload = {
+      ...formData,
+      birth_date: formData.birth_date || null,
+      medical_expiry: formData.medical_expiry || null,
+      phone_home: formData.phone_home || null,
+      phone_player: formData.phone_player || null,
+      email: formData.email.trim() || null,
+      team_sector: formData.team_sector || null,
+      birth_place: formData.birth_place || null,
+      citizenship: formData.citizenship || null,
+      tax_code: formData.tax_code.trim() || null,
+      address_street: formData.address_street || null,
+      address_locality: formData.address_locality || null,
+      address_city: formData.address_city || null,
+      address_zip: formData.address_zip || null,
+      parent1_name: formData.parent1_name || null,
+      parent1_phone: formData.parent1_phone || null,
+      parent1_tax_code: formData.parent1_tax_code || null,
+      parent2_name: formData.parent2_name || null,
+      parent2_phone: formData.parent2_phone || null,
+      parent2_tax_code: formData.parent2_tax_code || null,
+      figc_registration: formData.figc_registration || null,
+      notes: formData.notes || null,
+    }
 
-      if (player?.id) {
-        await athleteService.updatePlayer(player.id, payload)
-      } else {
-        await athleteService.createPlayer(payload)
-      }
-
-      queryClient.invalidateQueries({ queryKey: ['players'] })
-      onSuccess?.()
-      onClose()
-    } catch (error) {
-      console.error('Error saving athlete:', error)
-      setSubmitError(error instanceof Error ? error.message : 'Si è verificato un errore durante il salvataggio. Riprova.')
-    } finally {
-      setLoading(false)
+    if (player?.id) {
+      await athleteService.updatePlayer(player.id, payload)
+    } else {
+      await athleteService.createPlayer(payload)
     }
   }
+
+  const { loading, submit: handleSubmit } = useFormModal({
+    onSubmit: handleSubmitFn,
+    invalidateKeys: [['players']],
+    onSuccess,
+    onClose,
+  })
 
   const inputClass = "h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-14"
   const inputClassNoIcon = "h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-6"
@@ -928,11 +917,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                     )}
                   </div>
                 )}
-                {submitError && (
-                  <div className="mb-3 px-4 py-3 rounded-2xl border border-red-500/30 bg-red-500/10 text-center text-xs font-bold text-red-500">
-                    {submitError}
-                  </div>
-                )}
+
                 <div className="flex items-center gap-4">
                   <Button type="button" variant="ghost" onClick={onClose}
                     className="flex-1 h-14 pill font-black uppercase tracking-widest text-[10px] hover:bg-black/5 dark:hover:bg-white/5">
