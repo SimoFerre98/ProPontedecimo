@@ -166,7 +166,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-032](backlog/US-032-gestione-convocazioni.md) | Gestione convocazioni | LOW | 5 | PLANNED |
+| [US-032](backlog/US-032-gestione-convocazioni.md) | Gestione convocazioni | LOW | 5 | DONE |
 | [US-033](backlog/US-033-pannello-gestione-atleti-squadra.md) | Pannello gestione atleti della squadra | LOW | 3 | TODO |
 
 ### EP-013: Sistema di Notifiche Color-Coded
