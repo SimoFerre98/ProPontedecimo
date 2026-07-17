@@ -6,6 +6,8 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import RequestChildLinkModal from '@/components/modals/RequestChildLinkModal'
 import { getMyChildren, type MyParentPlayer } from '@/services/parentService'
+import { useParentBillingData } from '@/hooks/useParentBillingData'
+import ChildBillingCard from '@/components/ChildBillingCard'
 
 export default function PortalDashboard() {
   const { profile, role } = useAuth()
@@ -22,6 +24,10 @@ export default function PortalDashboard() {
 
   const confirmedChildren = myChildren.filter((c: MyParentPlayer) => c.status === 'confirmed')
   const pendingChildren = myChildren.filter((c: MyParentPlayer) => c.status === 'pending')
+
+  // Hook di composizione dati per il bilancio dei figli
+  const { data: billingData = [], isLoading: billingLoading, isError: billingError } = useParentBillingData(confirmedChildren, isParent)
+
 
   const sections = [
     {
@@ -40,7 +46,7 @@ export default function PortalDashboard() {
       color: 'text-emerald-500',
       bgColor: 'bg-emerald-500/10',
       borderColor: 'border-emerald-500/20',
-      visible: isPlayer // maybe only players, although parents care too. For now show it.
+      visible: isPlayer
     },
     {
       title: 'Stato Pagamenti',
@@ -49,7 +55,7 @@ export default function PortalDashboard() {
       color: 'text-amber-500',
       bgColor: 'bg-amber-500/10',
       borderColor: 'border-amber-500/20',
-      visible: true
+      visible: isPlayer
     }
   ]
 
@@ -176,6 +182,52 @@ export default function PortalDashboard() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Bilancio e scadenze dei figli */}
+      {isParent && confirmedChildren.length > 0 && (
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20">
+              <CreditCard className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-foreground uppercase italic">
+                Bilancio e <span className="text-primary not-italic">Scadenze</span>
+              </h2>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
+                Stato dei pagamenti e delle visite mediche
+              </p>
+            </div>
+          </div>
+
+          {billingLoading ? (
+            <div className="flex items-center justify-center py-12 glass-card border-white/10 rounded-3xl">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : billingError ? (
+            <div className="flex flex-col items-center justify-center py-10 gap-3 text-center glass-card border-white/10 rounded-3xl bg-rose-500/5">
+              <p className="text-sm font-black text-rose-500 uppercase tracking-widest">Errore nel caricamento del bilancio</p>
+              <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+                Non è stato possibile caricare le informazioni di bilancio e scadenze. Per favore riprova più tardi.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              {billingData.map((childData) => (
+                <ChildBillingCard
+                  key={childData.childId}
+                  firstName={childData.firstName}
+                  lastName={childData.lastName}
+                  teamSector={childData.teamSector}
+                  seasonName={childData.seasonName}
+                  medicalExpiry={childData.medicalExpiry}
+                  payments={childData.payments}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 

@@ -1,4 +1,6 @@
 import { supabase } from '@/lib/supabase'
+import type { Season } from './seasonService'
+
 
 // ── Tipi ──────────────────────────────────────────────────────────────────────
 
@@ -38,6 +40,11 @@ export interface ParentPlayerLinkFull extends ParentPlayerLink {
   player_first_name: string
   player_last_name: string
   player_team_sector: string | null
+}
+
+export interface ChildMedicalExpiry {
+  id: string
+  medical_expiry: string | null
 }
 
 // ── API Genitore ───────────────────────────────────────────────────────────────
@@ -156,3 +163,30 @@ export async function removeParentLink(parentProfileId: string, playerId: string
     .eq('player_id', playerId)
   if (error) throw error
 }
+
+/**
+ * Recupera direttamente la stagione attiva.
+ */
+export async function getActiveSeasonDirect(): Promise<Season> {
+  const { data, error } = await supabase
+    .from('seasons')
+    .select('*')
+    .eq('is_active', true)
+    .single()
+  if (error) throw error
+  return data as Season
+}
+
+/**
+ * Esegue una query batch per recuperare le scadenze visite mediche dei figli.
+ */
+export async function getChildrenMedicalExpiry(childIds: string[]): Promise<ChildMedicalExpiry[]> {
+  if (childIds.length === 0) return []
+  const { data, error } = await supabase
+    .from('players')
+    .select('id, medical_expiry')
+    .in('id', childIds)
+  if (error) throw error
+  return (data ?? []) as ChildMedicalExpiry[]
+}
+
