@@ -145,7 +145,7 @@
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
 | [US-027](backlog/US-027-associazione-figli-carico.md) | Associazione figli a carico | LOW | 3 | DONE |
-| [US-028](backlog/US-028-bilancio-scadenze-figli.md) | Bilancio e scadenze dei figli | LOW | 3 | TODO |
+| [US-028](backlog/US-028-bilancio-scadenze-figli.md) | Bilancio e scadenze dei figli | LOW | 3 | DONE |
 | [US-029](backlog/US-029-pagamento-rate-online-stripe.md) | Pagamento rate online con Stripe | LOW | 5 | TODO |
 
 ### EP-011: Portale Giocatore

@@ -5,6 +5,11 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-028**: Implementata la visualizzazione in sola lettura del bilancio pagamenti e dello stato visite mediche per i figli confermati dei genitori.
+- **US-028**: Creato il componente `ChildBillingCard.tsx` per mostrare quota stagionale, rate saldate, rate residue, debito pregresso carried_over e lo stato del certificato medico (valido, in scadenza, scaduto, mancante).
+- **US-028**: Realizzato il custom hook di composizione dati `useParentBillingData.ts` per caricare in parallelo stagione attiva, scadenze mediche in batch e pagamenti di ogni figlio.
+- **US-028**: Integrato il bilancio dei figli in `PortalDashboard.tsx` per gli utenti genitori, gestendo anche lo stato di caricamento e gli errori di recupero dati.
+- **US-028**: Creato lo script di test di integrazione database `test-parent-billing.mjs` che valida il recupero dati e l'isolamento RLS da figli pending o altrui.
 - **US-027**: Introdotto lo stato `pending`/`confirmed` sulle associazioni genitore-figlio con una nuova colonna `status` e l'enum `parent_link_status`.
 - **US-027**: Implementata la policy RLS `parent_players_insert_self_request` per consentire ai genitori di collegare figli in modalità `pending` in autonomia.
 - **US-027**: Create le RPC SECURITY DEFINER `search_players_for_parent_request` per la ricerca protetta di atleti e `get_my_parent_players` per visualizzare le proprie richieste (pending e confirmed).
