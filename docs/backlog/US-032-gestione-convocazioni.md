@@ -17,6 +17,6 @@ After implementing this story, the user can: comporre la lista convocati per la 
 - [ ] L'allenatore non può convocare atleti di altre leve
 - [ ] L'allenatore può ritirare la pubblicazione (tornare in bozza, nascondendo di nuovo la convocazione ai giocatori) fino all'orario di ritrovo, per correggere un errore
 
-**Status:** PLANNED
+**Status:** REVIEW
 **Plan:** [docs/planning/US-032-plan.md](../planning/US-032-plan.md)
 

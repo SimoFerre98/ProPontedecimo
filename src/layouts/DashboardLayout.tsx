@@ -12,6 +12,7 @@ import {
   CreditCard,
   Stethoscope,
   CalendarCheck,
+  ClipboardCheck,
   Package,
   ClipboardList,
   LogOut,
@@ -46,6 +47,7 @@ const NAV_ITEMS = [
   { to: '/pagamenti', icon: CreditCard,      label: 'Pagamenti' },
   { to: '/visite',    icon: Stethoscope,     label: 'Visite Mediche' },
   { to: '/presenze',  icon: CalendarCheck,   label: 'Presenze' },
+  { to: '/convocazioni', icon: ClipboardCheck, label: 'Convocazioni' },
   { to: '/magazzino', icon: Package,         label: 'Magazzino' },
   { to: '/task',      icon: ClipboardList,   label: 'Task Staff' },
 ]
@@ -61,7 +63,7 @@ const ROLE_LABELS: Record<string, string> = {
 const getVisibleNavItems = (userRole: string | null) => {
   if (!userRole || userRole === 'player' || userRole === 'parent') return []
   if (userRole === 'coach') {
-    return NAV_ITEMS.filter(item => ['/', '/atleti', '/presenze', '/task'].includes(item.to))
+    return NAV_ITEMS.filter(item => ['/', '/atleti', '/presenze', '/convocazioni', '/task'].includes(item.to))
   }
   return NAV_ITEMS
 }

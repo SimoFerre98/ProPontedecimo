@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Calendar, FileText, Save, Loader2, Trash2, Clock } from 'lucide-react'
+import { X, Calendar, FileText, Save, Loader2, Trash2, Clock, Users, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { eventService, type FootballEvent, type FootballEventType } from '@/services/eventService'
+import { athleteService } from '@/services/athleteService'
 import { supabase } from '@/lib/supabase'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useAppStore } from '@/store/useAppStore'
 import { combineLocalDateTime, splitLocalDateTime } from '@/lib/dateTime'
 import { EVENT_TYPES_CONFIG } from '@/lib/eventTypes'
 
@@ -20,6 +22,16 @@ export default function EventModal({ isOpen, onClose, onSuccess, event }: Readon
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const queryClient = useQueryClient()
+  const { selectedSeasonId } = useAppStore()
+
+  // Leve realmente in uso dagli atleti attivi: un input libero qui rischierebbe un
+  // mismatch silenzioso con players.team_sector, facendo sparire la partita dai
+  // selettori di Convocazioni/US-030/US-031 senza alcun errore visibile.
+  const { data: availableSectors = [] } = useQuery({
+    queryKey: ['sectors', selectedSeasonId],
+    queryFn: () => athleteService.getUniqueSectors(selectedSeasonId || undefined),
+    enabled: isOpen && !!selectedSeasonId,
+  })
 
   const [formData, setFormData] = useState({
     event_type: 'generic' as FootballEventType,
@@ -28,6 +40,8 @@ export default function EventModal({ isOpen, onClose, onSuccess, event }: Readon
     start_date: splitLocalDateTime(new Date().toISOString()).date,
     start_time: '18:00',
     meetup_time: '17:00',
+    opponent: '',
+    team_sector: '',
   })
 
   // Helpers to handle ISO to Local Data
@@ -48,6 +62,8 @@ export default function EventModal({ isOpen, onClose, onSuccess, event }: Readon
           start_date: start.date || splitLocalDateTime(new Date().toISOString()).date,
           start_time: start.time || '18:00',
           meetup_time: meetup?.time || '17:00',
+          opponent: event.opponent || '',
+          team_sector: event.team_sector || '',
         })
       } else {
         setFormData({
@@ -57,6 +73,8 @@ export default function EventModal({ isOpen, onClose, onSuccess, event }: Readon
           start_date: splitLocalDateTime(new Date().toISOString()).date,
           start_time: '18:00',
           meetup_time: '17:00',
+          opponent: '',
+          team_sector: '',
         })
       }
       setResult(null)
@@ -83,6 +101,8 @@ export default function EventModal({ isOpen, onClose, onSuccess, event }: Readon
         event_type: formData.event_type,
         start_date: startIso,
         meetup_time: meetupIso,
+        opponent: isMatch ? (formData.opponent || null) : null,
+        team_sector: isMatch ? (formData.team_sector || null) : null,
       }
 
       if (event) {
@@ -248,6 +268,47 @@ export default function EventModal({ isOpen, onClose, onSuccess, event }: Readon
                   )}
                 </div>
               </div>
+
+              {isMatch && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2">
+                  <div className="space-y-2 group">
+                    <label htmlFor="event_opponent" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Avversario</label>
+                    <div className="relative">
+                      <Users className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+                      <Input
+                        id="event_opponent"
+                        required={isMatch}
+                        placeholder="Es. Genova FC"
+                        value={formData.opponent}
+                        onChange={e => setFormData({ ...formData, opponent: e.target.value })}
+                        className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-14"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 group">
+                    <label htmlFor="event_team_sector" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Leva</label>
+                    <div className="relative">
+                      <Shield className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors pointer-events-none" />
+                      <select
+                        id="event_team_sector"
+                        required={isMatch}
+                        value={formData.team_sector}
+                        onChange={e => setFormData({ ...formData, team_sector: e.target.value })}
+                        className="w-full h-14 pl-14 pr-6 bg-transparent border border-black/5 dark:border-white/10 rounded-full focus:outline-none focus:border-primary/50 text-foreground text-base font-bold appearance-none backdrop-blur-md"
+                      >
+                        <option value="" className="text-foreground bg-background">Seleziona leva...</option>
+                        {formData.team_sector && !availableSectors.includes(formData.team_sector) && (
+                          <option value={formData.team_sector} className="text-foreground bg-background">{formData.team_sector}</option>
+                        )}
+                        {availableSectors.map(sector => (
+                          <option key={sector} value={sector} className="text-foreground bg-background">{sector}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <label htmlFor="event_desc" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Descrizione (Opzionale)</label>
