@@ -15,7 +15,8 @@ After implementing this story, the user can: comporre la lista convocati per la 
 - [ ] La pubblicazione rende la convocazione visibile ai giocatori sul loro portale
 - [ ] La lista convocati è modificabile fino all'orario di ritrovo, con stato aggiornato per i giocatori
 - [ ] L'allenatore non può convocare atleti di altre leve
+- [ ] L'allenatore può ritirare la pubblicazione (tornare in bozza, nascondendo di nuovo la convocazione ai giocatori) fino all'orario di ritrovo, per correggere un errore
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [docs/planning/US-032-plan.md](../planning/US-032-plan.md)
 

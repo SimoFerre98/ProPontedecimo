@@ -146,7 +146,8 @@
 |---|---|---|---|---|
 | [US-027](backlog/US-027-associazione-figli-carico.md) | Associazione figli a carico | LOW | 3 | DONE |
 | [US-028](backlog/US-028-bilancio-scadenze-figli.md) | Bilancio e scadenze dei figli | LOW | 3 | DONE |
-| [US-029](backlog/US-029-pagamento-rate-online-stripe.md) | Pagamento rate online con Stripe | LOW | 5 | TODO |
+
+> **⏸ Nota di sequenziamento (2026-07-17):** la terza story di questa epica (ex US-029, "Pagamento rate online con Stripe") è stata **rinumerata in US-046** e spostata in fondo al file, dopo EP-009 — non solo nell'indice ma anche come nome file in `docs/backlog/`, così l'ordinamento alfabetico della cartella riflette il fatto che va lavorata solo dopo il deploy sulla VPS. Vedi la riga dedicata sotto la tabella di EP-009.
 
 ### EP-011: Portale Giocatore
 
@@ -165,7 +166,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-032](backlog/US-032-gestione-convocazioni.md) | Gestione convocazioni | LOW | 5 | TODO |
+| [US-032](backlog/US-032-gestione-convocazioni.md) | Gestione convocazioni | LOW | 5 | PLANNED |
 | [US-033](backlog/US-033-pannello-gestione-atleti-squadra.md) | Pannello gestione atleti della squadra | LOW | 3 | TODO |
 
 ### EP-013: Sistema di Notifiche Color-Coded
@@ -205,6 +206,14 @@
 | [US-044](backlog/US-044-deploy-frontend-container.md) | Deploy del frontend in container | MEDIUM | 3 | TODO |
 | [US-045](backlog/US-045-backup-periodico-database.md) | Backup periodico del database | MEDIUM | 3 | TODO |
 
+> **⏸ Nota di sequenziamento (2026-07-17):** oltre alle 4 storie di questa epica, anche la story sotto è stata posizionata qui su richiesta esplicita: il pagamento reale con carta/Apple Pay richiede l'infrastruttura di produzione, quindi si lavora solo dopo il deploy sulla VPS.
+
+**Story rinviata da EP-010 (Portale Genitore & Pagamenti Online):**
+
+| ID | Story | Priority | Pts | Status |
+|---|---|---|---|---|
+| [US-046](backlog/US-046-pagamento-rate-online-stripe.md) | Pagamento rate online con Stripe *(ex US-029, rinumerata)* | LOW | 5 | TODO |
+
 ---
 
 ## Backlog Assumptions & Open Questions
@@ -222,6 +231,13 @@
 ---
 
 ## Change Log
+
+### 2026-07-17 — Sequenziamento US-029 → US-046, dopo EP-009
+
+**Modified:**
+- US-029 (EP-010 — Pagamento rate online con Stripe): nessuna modifica al contenuto della story, ma **rinumerata in US-046** (file rinominato in `docs/backlog/`, non solo spostato nell'indice) e il suo ordine di lavorazione posizionato dopo l'intera epica EP-009 (Deploy VPS) su richiesta esplicita dell'utente — il pagamento reale via Stripe richiede l'infrastruttura di produzione, quindi ha senso lavorarla solo a VPS operativa. La rinumerazione garantisce che anche l'ordinamento alfabetico dei file rifletta la sequenza, evitando che venga lavorata per errore prima del tempo. Resta assegnata a EP-010 (nessun cambio di epica).
+
+**Triggered by:** richiesta esplicita di riordino del backlog
 
 ### 2026-07-04 — Update v1.2
 

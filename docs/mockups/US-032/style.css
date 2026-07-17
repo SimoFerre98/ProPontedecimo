@@ -1,0 +1,281 @@
+/* ============================================================
+   US-032 — Gestione Convocazioni · style.css
+   Estende i token "Premium Glass" di US-017/shared.css (linkato
+   prima di questo file) con i componenti nuovi della story:
+   match-picker, event-hero, timeline ritrovo/inizio, status-badge
+   bozza/pubblicata, callup-toggle a 2 stati, publish-bar, lock-banner,
+   live-pill, e la hero card della vista giocatore.
+   ============================================================ */
+
+/* ---------- Match picker (scroll orizzontale eventi Partita) ---------- */
+.match-scroll {
+  display: flex; gap: .6rem; overflow-x: auto;
+  margin: 0 -1.1rem; padding: 0 1.1rem .2rem;
+  scrollbar-width: none; flex-shrink: 0;
+}
+.match-scroll::-webkit-scrollbar { display: none; }
+.match-card {
+  flex-shrink: 0; width: 9.75rem;
+  border-radius: var(--radius-2xl);
+  background: var(--surface-05); border: 1px solid var(--border-soft);
+  padding: .75rem .8rem; display: flex; flex-direction: column; gap: .45rem;
+  cursor: pointer; transition: all .18s ease; text-align: left;
+  font-family: inherit; color: var(--foreground);
+}
+.match-card .mc-tag {
+  display: inline-flex; align-items: center; gap: .25rem; width: fit-content;
+  padding: .15rem .45rem; border-radius: var(--radius-pill);
+  font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em;
+}
+.match-card .mc-tag svg { width: .55rem; height: .55rem; }
+.match-card .mc-tag.home { background: oklch(0.696 0.17 162.48 / 0.14); color: var(--emerald); }
+.match-card .mc-tag.away { background: oklch(0.769 0.188 70.08 / 0.14); color: var(--amber); }
+.match-card .mc-opponent { font-size: .8rem; font-weight: 800; line-height: 1.2; }
+.match-card .mc-date { font-size: 9.5px; font-weight: 700; color: var(--muted-foreground); }
+.match-card.active {
+  background: oklch(0.33 0.13 15 / 0.4); border-color: oklch(0.62 0.19 12 / 0.6);
+  box-shadow: 0 4px 16px -4px oklch(0.33 0.13 15 / 0.5);
+}
+.match-card:active { transform: scale(0.96); }
+
+/* ---------- Status badge (bozza / pubblicata / bloccata) ---------- */
+.status-badge {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .35rem .7rem; border-radius: var(--radius-pill);
+  font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em;
+  flex-shrink: 0; white-space: nowrap;
+}
+.status-badge svg { width: .68rem; height: .68rem; }
+.status-badge.draft { background: oklch(1 0 0 / 0.06); border: 1px solid var(--border-soft); color: var(--muted-foreground); }
+.status-badge.published { background: oklch(0.696 0.17 162.48 / 0.12); border: 1px solid oklch(0.696 0.17 162.48 / 0.3); color: var(--emerald); }
+.status-badge.locked { background: oklch(0.645 0.246 16.44 / 0.12); border: 1px solid oklch(0.645 0.246 16.44 / 0.3); color: var(--rose); }
+
+/* ---------- Event hero card (partita selezionata) ---------- */
+.event-hero {
+  border-radius: var(--radius-32);
+  background: var(--surface-05); border: 1px solid var(--border-soft);
+  padding: 1.05rem 1.1rem; display: flex; flex-direction: column; gap: .9rem;
+  position: relative; overflow: hidden; flex-shrink: 0;
+  transition: border-color .25s ease, background .25s ease;
+}
+.event-hero.is-locked { border-color: oklch(0.645 0.246 16.44 / 0.3); }
+.event-hero .eh-top { display: flex; align-items: flex-start; justify-content: space-between; gap: .6rem; }
+.event-hero .eh-vs { display: flex; align-items: center; gap: .65rem; min-width: 0; }
+.event-hero .eh-crest {
+  width: 2.5rem; height: 2.5rem; flex-shrink: 0; border-radius: var(--radius-xl);
+  background: oklch(1 0 0 / 0.07); border: 1px solid var(--border-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-weight: 800; font-size: .78rem; color: oklch(0.708 0 0 / 0.85);
+}
+.event-hero .eh-name { min-width: 0; }
+.event-hero .eh-name b {
+  font-size: .98rem; font-weight: 900; font-style: italic;
+  text-transform: uppercase; letter-spacing: -.01em; display: block;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.event-hero .eh-name span {
+  font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted-foreground); display: block; margin-top: .1rem;
+}
+.event-hero .eh-date-row {
+  display: flex; align-items: center; gap: .4rem;
+  font-size: .74rem; font-weight: 700; color: oklch(1 0 0 / 0.8);
+  padding-left: .1rem;
+}
+.event-hero .eh-date-row svg { width: .8rem; height: .8rem; color: var(--gold); flex-shrink: 0; }
+
+/* ---------- Timeline ritrovo → inizio gara ---------- */
+.eh-timeline {
+  display: flex; align-items: center; gap: .55rem;
+  padding: .7rem .85rem; border-radius: var(--radius-2xl);
+  background: oklch(1 0 0 / 0.03); border: 1px solid var(--border-soft);
+}
+.eh-time { flex: 1; display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.eh-time.right { align-items: flex-end; text-align: right; }
+.eh-time .lbl {
+  display: flex; align-items: center; gap: .3rem;
+  font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--muted-foreground);
+}
+.eh-time.right .lbl { flex-direction: row-reverse; }
+.eh-time .lbl svg { width: .65rem; height: .65rem; }
+.eh-time b { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; line-height: 1; }
+.eh-time.ritrovo .lbl, .eh-time.ritrovo b { color: var(--gold); }
+.eh-arrow { color: oklch(0.708 0 0 / 0.35); width: 1.05rem; height: 1.05rem; flex-shrink: 0; }
+
+/* ---------- Live pill (modifiche pubblicate in tempo reale) ---------- */
+.live-pill {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .4rem .8rem; border-radius: var(--radius-pill);
+  background: oklch(0.696 0.17 162.48 / 0.1); border: 1px solid oklch(0.696 0.17 162.48 / 0.25);
+  color: var(--emerald); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em;
+}
+.live-dot { width: .4rem; height: .4rem; border-radius: 50%; background: var(--emerald); flex-shrink: 0; animation: livePulse 1.8s infinite; }
+.live-dot.static { animation: none; }
+@keyframes livePulse {
+  0% { box-shadow: 0 0 0 0 oklch(0.696 0.17 162.48 / 0.6); }
+  70% { box-shadow: 0 0 0 6px oklch(0.696 0.17 162.48 / 0); }
+  100% { box-shadow: 0 0 0 0 oklch(0.696 0.17 162.48 / 0); }
+}
+
+/* ---------- Riga stato pubblicato: live-pill + azione secondaria "Ritira" ---------- */
+.unpublish-row {
+  display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap;
+}
+.btn-unpublish {
+  display: inline-flex; align-items: center; gap: .4rem;
+  height: 2.05rem; padding: 0 .9rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-strong); background: transparent;
+  color: var(--muted-foreground);
+  font-family: inherit; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em;
+  cursor: pointer; transition: all .18s ease; flex-shrink: 0; white-space: nowrap;
+}
+.btn-unpublish svg { width: .78rem; height: .78rem; }
+.btn-unpublish:hover:not(:disabled) { color: var(--amber); border-color: oklch(0.769 0.188 70.08 / 0.5); background: oklch(0.769 0.188 70.08 / 0.08); }
+.btn-unpublish:active:not(:disabled) { transform: scale(0.96); }
+.btn-unpublish:disabled, .btn-unpublish.is-disabled { opacity: .4; cursor: not-allowed; }
+
+/* ---------- Lock banner (dopo il ritrovo) ---------- */
+.lock-banner {
+  display: flex; align-items: center; gap: .65rem;
+  padding: .75rem .9rem; border-radius: var(--radius-2xl);
+  background: oklch(0.645 0.246 16.44 / 0.1); border: 1px solid oklch(0.645 0.246 16.44 / 0.28);
+  flex-shrink: 0;
+}
+.lock-banner .lb-icon {
+  width: 2rem; height: 2rem; border-radius: 50%; flex-shrink: 0;
+  background: oklch(0.645 0.246 16.44 / 0.18); color: var(--rose);
+  display: flex; align-items: center; justify-content: center;
+}
+.lock-banner .lb-icon svg { width: 1rem; height: 1rem; }
+.lock-banner .lb-text b { font-size: .74rem; font-weight: 800; color: var(--rose); display: block; }
+.lock-banner .lb-text span { font-size: .68rem; font-weight: 600; color: oklch(0.645 0.246 16.44 / 0.85); }
+
+/* ---------- Counter card: variante 3 statistiche (convocati / non convocati / totale) ---------- */
+.counter-stat.called b { color: var(--emerald); }
+.counter-stat.notcalled b { color: oklch(0.708 0 0 / 0.75); }
+.segbar .seg-called { background: var(--emerald); }
+.segbar .seg-notcalled { background: oklch(1 0 0 / 0.14); }
+
+/* ---------- Roster row: variante convocazioni (nessun sotto-testo stato, il toggle parla da sé) ---------- */
+.roster-row.locked-row { opacity: .55; }
+
+/* ---------- Call-up toggle (2 stati: convoca / convocato) ---------- */
+.callup-toggle {
+  display: flex; align-items: center; gap: .4rem;
+  height: 2.15rem; padding: 0 .85rem 0 .4rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-soft); background: oklch(1 0 0 / 0.03);
+  color: oklch(0.708 0 0 / 0.55);
+  font-family: inherit; font-size: 9.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em;
+  cursor: pointer; transition: all .15s cubic-bezier(.3,.9,.4,1.3);
+  flex-shrink: 0; white-space: nowrap;
+}
+.callup-toggle .ct-icon {
+  width: 1.3rem; height: 1.3rem; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+}
+.callup-toggle .ct-icon svg { width: .68rem; height: .68rem; }
+.callup-toggle:active { transform: scale(0.9); }
+.callup-toggle.active {
+  background: var(--emerald); border-color: var(--emerald); color: #08130e;
+  box-shadow: 0 0 0 3px oklch(0.696 0.17 162.48 / 0.22), 0 4px 10px -2px oklch(0.696 0.17 162.48 / 0.45);
+}
+.callup-toggle.active .ct-icon { border-color: #08130e; background: #08130e; color: var(--emerald); }
+.callup-toggle:not(.active):hover { color: var(--foreground); border-color: var(--border-strong); }
+.callup-toggle.just-set { animation: pop .32s cubic-bezier(.3,1.4,.4,1); }
+.callup-toggle.is-disabled { opacity: .4; pointer-events: none; }
+
+/* ---------- Publish bar (fissa, solo stato bozza) ---------- */
+.publish-bar {
+  position: absolute; left: 1.1rem; right: 1.1rem; bottom: 4.5rem; z-index: 45;
+  opacity: 0; transform: translateY(.6rem) scale(.98); pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+}
+.publish-bar.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.btn-publish {
+  width: 100%; height: 3.2rem; border-radius: var(--radius-pill); border: none;
+  background: linear-gradient(135deg, var(--primary), oklch(0.42 0.15 15));
+  color: #fff; font-family: inherit; font-size: .78rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: .08em;
+  display: flex; align-items: center; justify-content: center; gap: .55rem;
+  box-shadow: 0 14px 28px -10px oklch(0.33 0.13 15 / 0.65), 0 0 0 1px oklch(1 0 0 / 0.08) inset;
+  cursor: pointer; transition: transform .15s ease;
+}
+.btn-publish svg { width: 1rem; height: 1rem; }
+.btn-publish .count {
+  font-family: var(--font-mono); background: oklch(1 0 0 / 0.18);
+  padding: .18rem .55rem; border-radius: var(--radius-pill); font-size: .7rem;
+}
+.btn-publish:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+.btn-publish:not(:disabled):active { transform: scale(0.98); }
+
+/* ---------- Pannello guida demo: pulsanti stato (bozza / pubblicata / bloccata) ---------- */
+.demo-state-btns { display: flex; flex-direction: column; gap: .5rem; margin-top: .3rem; }
+.demo-state-btn {
+  display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+  padding: .65rem .85rem; border-radius: var(--radius-2xl);
+  border: 1px solid var(--border-soft); background: var(--surface-05);
+  color: var(--foreground); font-family: inherit; font-size: .72rem; font-weight: 800;
+  cursor: pointer; transition: all .18s ease; text-align: left;
+}
+.demo-state-btn b { font-family: var(--font-mono); font-size: .62rem; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+.demo-state-btn.active { background: oklch(0.33 0.13 15 / 0.35); border-color: oklch(0.62 0.19 12 / 0.6); }
+
+/* ============================================================
+   VISTA GIOCATORE (player-view.html) — hero card "sei convocato"
+   ============================================================ */
+.callup-hero-card {
+  border-radius: var(--radius-32);
+  padding: 1.8rem 1.5rem 1.6rem;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem;
+  position: relative; overflow: hidden;
+  background: linear-gradient(165deg, oklch(0.33 0.13 15 / 0.4), oklch(0.16 0.02 15 / 0.7));
+  border: 1px solid oklch(0.62 0.19 12 / 0.45);
+  box-shadow: 0 20px 45px -15px oklch(0.33 0.13 15 / 0.5);
+}
+.callup-hero-card::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.84 0.115 85 / 0.18), transparent 60%);
+}
+.chc-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem 1.1rem; border-radius: var(--radius-pill);
+  background: oklch(0.696 0.17 162.48 / 0.16); border: 1px solid oklch(0.696 0.17 162.48 / 0.4);
+  color: var(--emerald); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em;
+  position: relative; z-index: 1;
+}
+.chc-badge svg { width: .85rem; height: .85rem; }
+.chc-title { position: relative; z-index: 1; }
+.chc-title span { display: block; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; color: var(--muted-foreground); margin-bottom: .35rem; }
+.chc-title b { font-size: 1.5rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.15; }
+.chc-title b .accent { color: var(--gold); font-style: normal; }
+.chc-date { position: relative; z-index: 1; font-size: .8rem; font-weight: 700; color: oklch(1 0 0 / 0.85); display: flex; align-items: center; gap: .4rem; }
+.chc-date svg { width: .85rem; height: .85rem; color: var(--gold); }
+.chc-timeline {
+  position: relative; z-index: 1; width: 100%;
+  display: flex; align-items: center; gap: .6rem;
+  padding: .85rem 1rem; border-radius: var(--radius-2xl);
+  background: oklch(0 0 0 / 0.22); border: 1px solid var(--border-soft);
+}
+.chc-not-card {
+  border-radius: var(--radius-32); padding: 1.8rem 1.5rem;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: .9rem;
+  background: var(--surface-05); border: 1px dashed var(--border-strong);
+}
+.chc-not-card .empty-icon { width: 3.2rem; height: 3.2rem; }
+.chc-not-card h4 { font-size: .88rem; font-weight: 900; font-style: italic; text-transform: uppercase; }
+.chc-not-card p { font-size: .74rem; font-weight: 500; color: var(--muted-foreground); line-height: 1.6; max-width: 15rem; }
+.player-switch {
+  display: flex; align-items: center; gap: .4rem; padding: .35rem;
+  border-radius: var(--radius-pill); background: var(--surface-05); border: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.player-switch button {
+  flex: 1; height: 2rem; border-radius: var(--radius-pill); border: none; background: none;
+  color: var(--muted-foreground); font-family: inherit; font-size: 9px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: .08em; cursor: pointer; transition: all .18s ease;
+}
+.player-switch button.active { background: var(--primary); color: #fff; }

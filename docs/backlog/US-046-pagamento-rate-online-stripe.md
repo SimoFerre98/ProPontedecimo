@@ -1,4 +1,4 @@
-# US-029: Pagamento rate online con Stripe
+# US-046: Pagamento rate online con Stripe
 
 **Epic:** EP-010 — Portale Genitore & Pagamenti Online | **Priority:** LOW | **Story Points:** 5 | **Scope:** Vision
 
@@ -18,4 +18,6 @@ After implementing this story, the user can: pagare una rata dal portale e veder
 
 **Status:** TODO
 **Plan:** —
+
+> **⏸ Nota di sequenziamento (2026-07-17):** su richiesta esplicita, questa story è stata rinumerata da US-029 a **US-046** e spostata in fondo all'ordine di lavorazione, **dopo EP-009 (Deploy VPS, Migrazione & Backup)** — il pagamento reale via Stripe richiede l'infrastruttura di produzione, quindi si lavora solo a VPS operativa. La rinumerazione (non solo lo spostamento nell'indice) garantisce che anche l'ordinamento alfabetico dei file in `docs/backlog/` rifletta questa sequenza, evitando di lavorarla per errore prima del tempo.
 
