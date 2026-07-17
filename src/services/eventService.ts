@@ -12,6 +12,11 @@ export interface FootballEvent {
   created_by: string | null
   created_at: string
   updated_at: string
+  opponent?: string | null
+  team_sector?: string | null
+  // Sola lettura da questo servizio generico: valorizzato solo dal flusso di
+  // pubblicazione delle convocazioni (callUpService.ts), mai scritto qui.
+  call_up_published_at?: string | null
 }
 
 export const eventService = {

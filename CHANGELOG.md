@@ -5,6 +5,11 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-032**: Aggiunte le colonne `opponent`, `team_sector` e `call_up_published_at` a `events` e creata la tabella `call_ups` (presenza riga = atleta convocato) con RLS separate per comando: lettura libera per l'allenatore, scrittura vincolata sia per leva (`is_coach_of_player`) sia per orario di ritrovo (`meetup_time > now()`), nessuna restrizione per president/director.
+- **US-032**: Introdotta la funzione SECURITY DEFINER `is_call_up_published()` per verificare lo stato di pubblicazione della convocazione senza richiedere al ruolo `player` una policy SELECT su `events`.
+- **US-032**: Creato `callUpService.ts` (`getUpcomingMatchEvents`, `getCallUpsForEvent`, `toggleCallUp`, `publishCallUps`, `unpublishCallUps`) e la nuova pagina `Convocazioni.tsx` per l'allenatore, con stati bozza/pubblicata/bloccata, contatori e toggle ottimistico in stile `Attendance.tsx`.
+- **US-032**: Esteso il modale evento (`EventModal.tsx`) con i campi avversario e leva per le partite, con selettore leva vincolato alle leve realmente attive (`athleteService.getUniqueSectors`), non testo libero.
+- **US-032**: Creato lo script di test di integrazione `test-call-ups.mjs` che valida isolamento per leva, blocco post-ritrovo, visibilità del giocatore solo dopo pubblicazione (e dopo ritiro pubblicazione) e accesso libero per president/director.
 - **US-028**: Implementata la visualizzazione in sola lettura del bilancio pagamenti e dello stato visite mediche per i figli confermati dei genitori.
 - **US-028**: Creato il componente `ChildBillingCard.tsx` per mostrare quota stagionale, rate saldate, rate residue, debito pregresso carried_over e lo stato del certificato medico (valido, in scadenza, scaduto, mancante).
 - **US-028**: Realizzato il custom hook di composizione dati `useParentBillingData.ts` per caricare in parallelo stagione attiva, scadenze mediche in batch e pagamenti di ogni figlio.

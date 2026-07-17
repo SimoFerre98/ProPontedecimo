@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-032 · Gestione Convocazioni — Vista Giocatore (contesto)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../US-017/shared.css">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ============================================================
+     Mockup secondario (contesto, non oggetto diretto di US-032):
+     come il giocatore vede il proprio esito convocazione sul
+     portale. Condivide gli stessi dati dell'evento US-032 per
+     validare il flusso end-to-end con la vista Allenatore.
+     ============================================================ */
+</style>
+</head>
+<body>
+
+<div class="pitch-stage" aria-hidden="true"></div>
+<div class="pitch-centre" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="mock-nav">
+  <span class="nav-tag">US-032</span>
+  <a href="index.html">Vista Allenatore</a>
+  <a href="player-view.html" class="active">Vista Giocatore</a>
+</nav>
+
+<div class="scene">
+
+  <div class="scene-note">
+    <h1>Portale <span class="accent">Giocatore</span></h1>
+    <p>Mockup secondario, solo di contesto: la vista con cui il giocatore (o il genitore collegato) legge l'esito della convocazione — non è l'oggetto di questa story (US-030), ma condivide gli stessi dati per validare il flusso end-to-end.</p>
+    <div class="tag-row">
+      <span class="scene-tag on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Stessa partita vista Allenatore</span>
+    </div>
+    <p style="font-size:.68rem; opacity:.6;">Usa il selettore in alto nello schermo per vedere il caso "convocato" e il caso "non convocato / non ancora pubblicata".</p>
+  </div>
+
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <div class="app-bg" aria-hidden="true"></div>
+
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v3H2zM6 13h2v7H6zm4-4h2v11h-2zm4-3h2v14h-2zm4 6h2v8h-2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/></svg>
+        </div>
+      </div>
+
+      <header class="app-header">
+        <div class="app-brand">
+          <img src="../../../public/Logo ASD Pro Pontedecimo.png" onerror="this.style.display='none'" alt="">
+          <span>Pontedecimo</span>
+        </div>
+        <div class="app-header-actions">
+          <button class="icon-btn" aria-label="Notifiche">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <div class="app-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-main" style="justify-content:flex-start; gap:1.4rem;">
+
+        <div class="page-eyebrow">
+          <h2><span class="page-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>La Mia Squadra</h2>
+          <span class="leva-static">Lorenzo Parodi</span>
+        </div>
+
+        <div class="player-switch" id="playerSwitch">
+          <button type="button" data-mode="called" class="active">Convocato</button>
+          <button type="button" data-mode="notcalled">Non convocato</button>
+          <button type="button" data-mode="draft">Non pubblicata</button>
+        </div>
+
+        <div id="chcWrap"><!-- generata via JS --></div>
+
+        <div class="glass-card" style="border-radius: var(--radius-2xl); padding: 1rem 1.1rem; display:flex; align-items:center; gap:.75rem;">
+          <div style="width:2.2rem;height:2.2rem;border-radius:var(--radius-pill);background:oklch(0.33 0.13 15 / 0.18);border:1px solid oklch(0.33 0.13 15 / 0.3);display:flex;align-items:center;justify-content:center;color:var(--primary-soft);flex-shrink:0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1rem;height:1rem;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          </div>
+          <p style="font-size:.72rem; font-weight:600; color:var(--muted-foreground); line-height:1.5;">Se l'allenatore modifica la lista dopo la pubblicazione, questa schermata si aggiorna da sola, senza bisogno di ricaricare.</p>
+        </div>
+
+      </main>
+
+      <div class="floating-nav-fake">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        Menu
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const MATCH = { opponent: 'Voltrese', home: true, weekday: 'Sabato', date: '18 Luglio 2026', competition: 'Campionato Allievi · Girone A', ritrovo: '14:15', inizio: '15:30' };
+
+function renderCalled() {
+  return (
+    '<div class="callup-hero-card">' +
+      '<span class="chc-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Sei stato convocato</span>' +
+      '<div class="chc-title"><span>' + MATCH.competition + '</span><b>Pro Pontedecimo <span class="accent">vs</span> ' + MATCH.opponent + '</b></div>' +
+      '<div class="chc-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' + MATCH.weekday + ' ' + MATCH.date + '</div>' +
+      '<div class="chc-timeline">' +
+        '<div class="eh-time ritrovo"><span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ritrovo</span><b>' + MATCH.ritrovo + '</b></div>' +
+        '<svg class="eh-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>' +
+        '<div class="eh-time right"><span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="3"/></svg>Inizio gara</span><b>' + MATCH.inizio + '</b></div>' +
+      '</div>' +
+      '<span class="live-pill"><span class="live-dot"></span>Lista aggiornata in tempo reale</span>' +
+    '</div>'
+  );
+}
+
+function renderNotCalled() {
+  return (
+    '<div class="chc-not-card">' +
+      '<div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m17 8 5 5m0-5-5 5"/></svg></div>' +
+      '<h4>Non convocato</h4>' +
+      '<p>Per <b style="color:var(--foreground)">' + MATCH.weekday + ' ' + MATCH.date + '</b> vs ' + MATCH.opponent + ' non sei stato convocato dall\'allenatore. Buon allenamento con il gruppo!</p>' +
+    '</div>'
+  );
+}
+
+function renderDraft() {
+  return (
+    '<div class="empty-state">' +
+      '<div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>' +
+      '<h4>Convocazione non ancora pubblicata</h4>' +
+      '<p>L\'allenatore sta preparando la lista per <b style="color:var(--foreground)">' + MATCH.weekday + ' ' + MATCH.date + '</b> vs ' + MATCH.opponent + '. Riceverai una notifica appena sarà pubblicata.</p>' +
+    '</div>'
+  );
+}
+
+const RENDERERS = { called: renderCalled, notcalled: renderNotCalled, draft: renderDraft };
+
+function paint(mode) {
+  document.getElementById('chcWrap').innerHTML = RENDERERS[mode]();
+  document.querySelectorAll('#playerSwitch button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+}
+
+document.querySelectorAll('#playerSwitch button').forEach(b => b.addEventListener('click', () => paint(b.dataset.mode)));
+
+paint('called');
+</script>
+
+</body>
+</html>
