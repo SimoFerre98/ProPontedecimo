@@ -90,6 +90,7 @@
     --emerald: oklch(0.696 0.17 162.48);
     --primary-soft: oklch(0.33 0.13 15 / 0.2);
     --border-soft: oklch(0 0 0 / 0.1);
+    --border-strong: oklch(1 0 0 / 0.20);
     --surface-05: oklch(0 0 0 / 0.05);
     --radius-pill: 9999px;
     --radius-32: 2rem;
@@ -356,3 +357,48 @@
   border-color: oklch(0.84 0.115 85 / 0.35);
   color: var(--gold);
 }
+
+/* ============================================================
+   VISTA GIOCATORE (US-030) — Componenti visualizzazione convocazioni
+   ============================================================ */
+.callup-hero-card {
+  border-radius: var(--radius-32);
+  padding: 1.8rem 1.5rem 1.6rem;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem;
+  position: relative; overflow: hidden;
+  background: linear-gradient(165deg, oklch(0.33 0.13 15 / 0.4), oklch(0.16 0.02 15 / 0.7));
+  border: 1px solid oklch(0.62 0.19 12 / 0.45);
+  box-shadow: 0 20px 45px -15px oklch(0.33 0.13 15 / 0.5);
+}
+.callup-hero-card::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.84 0.115 85 / 0.18), transparent 60%);
+}
+.chc-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem 1.1rem; border-radius: var(--radius-pill);
+  background: oklch(0.696 0.17 162.48 / 0.16); border: 1px solid oklch(0.696 0.17 162.48 / 0.4);
+  color: var(--emerald); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em;
+  position: relative; z-index: 1;
+}
+.chc-badge svg { width: .85rem; height: .85rem; }
+.chc-title { position: relative; z-index: 1; }
+.chc-title span { display: block; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; color: var(--muted-foreground); margin-bottom: .35rem; }
+.chc-title b { font-size: 1.5rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.15; }
+.chc-title b .accent { color: var(--gold); font-style: normal; }
+.chc-date { position: relative; z-index: 1; font-size: .8rem; font-weight: 700; color: oklch(1 0 0 / 0.85); display: flex; align-items: center; gap: .4rem; }
+.chc-date svg { width: .85rem; height: .85rem; color: var(--gold); }
+.chc-timeline {
+  position: relative; z-index: 1; width: 100%;
+  display: flex; align-items: center; gap: .6rem;
+  padding: .85rem 1rem; border-radius: var(--radius-2xl);
+  background: oklch(0 0 0 / 0.22); border: 1px solid var(--border-soft);
+}
+.chc-not-card {
+  border-radius: var(--radius-32); padding: 1.8rem 1.5rem;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: .9rem;
+  background: var(--surface-05); border: 1px dashed var(--border-strong);
+}
+.chc-not-card .empty-icon { width: 3.2rem; height: 3.2rem; }
+.chc-not-card h4 { font-size: .88rem; font-weight: 900; font-style: italic; text-transform: uppercase; }
+.chc-not-card p { font-size: .74rem; font-weight: 500; color: var(--muted-foreground); line-height: 1.6; max-width: 15rem; }

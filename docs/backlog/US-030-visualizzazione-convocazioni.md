@@ -16,6 +16,6 @@ After implementing this story, the user can: aprire il portale e vedere chiarame
 - [ ] La grafica è moderna e adatta ai ragazzi senza risultare infantile, coerente col design system
 - [ ] Il giocatore vede solo le proprie convocazioni
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [docs/planning/US-030-plan.md](../planning/US-030-plan.md)
 

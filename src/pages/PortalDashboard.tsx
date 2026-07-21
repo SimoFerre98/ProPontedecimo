@@ -8,6 +8,7 @@ import RequestChildLinkModal from '@/components/modals/RequestChildLinkModal'
 import { getMyChildren, type MyParentPlayer } from '@/services/parentService'
 import { useParentBillingData } from '@/hooks/useParentBillingData'
 import ChildBillingCard from '@/components/ChildBillingCard'
+import NextCallUpCard from '@/components/NextCallUpCard'
 
 export default function PortalDashboard() {
   const { profile, role } = useAuth()
@@ -77,6 +78,9 @@ export default function PortalDashboard() {
           </p>
         </div>
       </div>
+
+      {/* Convocazione prossima partita — solo per giocatori */}
+      {isPlayer && <NextCallUpCard />}
 
       {/* Sezione "I miei figli" — solo per i genitori */}
       {isParent && (
