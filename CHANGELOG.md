@@ -5,6 +5,11 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-030**: Creata la RPC SECURITY DEFINER `get_my_next_call_up()` per consentire al ruolo `player` di leggere le informazioni e lo stato della propria prossima partita in modo mirato e sicuro.
+- **US-030**: Aggiunto il metodo `getMyNextCallUp` nel client-side `callUpService.ts` per recuperare i dettagli di convocazione della leva e allineata la rigenerazione automatica dei tipi in `src/types/database.ts`.
+- **US-030**: Creato il componente `NextCallUpCard.tsx` per mostrare lo stato di convocazione del giocatore con 5 stati grafici fedeli ai mockup (convocato, non convocato, bozza/non pubblicata, nessuna partita, profilo non collegato).
+- **US-030**: Integrato `NextCallUpCard` in `PortalDashboard.tsx` per gli utenti giocatori in cima al portale atleti.
+- **US-030**: Creato lo script di test di integrazione database `test-player-next-callup.mjs` che valida la RPC e le sue regole di sicurezza cross-leva e di pubblicazione.
 - **US-032**: Aggiunte le colonne `opponent`, `team_sector` e `call_up_published_at` a `events` e creata la tabella `call_ups` (presenza riga = atleta convocato) con RLS separate per comando: lettura libera per l'allenatore, scrittura vincolata sia per leva (`is_coach_of_player`) sia per orario di ritrovo (`meetup_time > now()`), nessuna restrizione per president/director.
 - **US-032**: Introdotta la funzione SECURITY DEFINER `is_call_up_published()` per verificare lo stato di pubblicazione della convocazione senza richiedere al ruolo `player` una policy SELECT su `events`.
 - **US-032**: Creato `callUpService.ts` (`getUpcomingMatchEvents`, `getCallUpsForEvent`, `toggleCallUp`, `publishCallUps`, `unpublishCallUps`) e la nuova pagina `Convocazioni.tsx` per l'allenatore, con stati bozza/pubblicata/bloccata, contatori e toggle ottimistico in stile `Attendance.tsx`.
