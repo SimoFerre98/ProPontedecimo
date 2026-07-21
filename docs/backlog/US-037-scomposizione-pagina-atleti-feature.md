@@ -19,5 +19,5 @@ After implementing this story, the user can: usare la pagina Atleti esattamente 
 **Context**
 Dall'analisi architetturale: `Athletes.tsx` contiene toolbar, filtri, grid, tabella e paginazione inline in un unico file, violando la single responsibility.
 
-**Status:** TODO
-**Plan:** —
+**Status:** IN PROGRESS
+**Plan:** [docs/planning/US-037-plan.md](../planning/US-037-plan.md)
