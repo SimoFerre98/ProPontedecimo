@@ -48,16 +48,16 @@ La strategia si concentra sul rischio principale della story: lo scoping per lev
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Migrazione tabella `announcements` | Creare enum `announcement_severity`, tabella `announcements` con indici su `team_sector` e `created_at`, RLS abilitata di base. | Impl | - |
-| TODO | TASK-02 | Funzioni helper RLS | Creare `is_coach_of_sector(text)` e `get_my_announcement_sectors()` (SECURITY DEFINER), riusando `coach_teams` e `get_parent_player_ids()`. | Impl | TASK-01 |
-| TODO | TASK-03 | Policy RLS insert/select | Policy insert per `president`/`director`/`coach` (scoping leva) e select per staff + pubblico (`announcements_select_public`). | Impl | TASK-02 |
-| TODO | TASK-04 | Test RLS `test-announcements-rls.mjs` | Suite di integrazione: scrittura fuori leva bloccata, lettura cross-leva bloccata, invariante `parent_players.status='confirmed'` rispettata. | Test | TASK-03 |
-| TODO | TASK-05 | `announcementService.ts` | Servizio frontend: `listAnnouncements()`, `createAnnouncement()`, tipizzato su `Database['public']['Tables']['announcements']`. | Impl | TASK-03 |
-| TODO | TASK-06 | Pagina staff `/notifiche` | Nuova pagina `Announcements.tsx`: storico (badge severità colorato, leva o "Tutta la società", data) + form di composizione con selettore severità e selettore leva scoping-aware (pattern `SendEmailModal.tsx`). Aggiunta a `App.tsx` e alla sidebar di `DashboardLayout.tsx` per `president`/`director`/`coach`. | Impl | TASK-05 |
-| TODO | TASK-07 | Test componente form di composizione | Verificare che il coach veda solo le proprie leve nel selettore e non possa selezionarne altre; verificare validazione campi obbligatori (severità/titolo/testo). | Test | TASK-06 |
-| TODO | TASK-08 | Pagina pubblica `/portal/notifiche` | Nuova pagina feed sola lettura sotto `PortalLayout.tsx`: card colorate per gravità, ordine cronologico inverso, stato vuoto. Card di accesso aggiunta su `PortalDashboard.tsx`. | Impl | TASK-05 |
-| TODO | TASK-09 | Test rendering feed pubblico | Verificare mapping colore↔severità per le tre gravità e comportamento con feed vuoto. | Test | TASK-08 |
-| TODO | TASK-10 | Regressione integrazione completa | Rieseguire `npx supabase db reset` + `npm run test:integration` per intero e `npx tsc --noEmit`, per escludere impatti su `coach_teams`/`parent_players`/RLS esistenti. | Test | TASK-04, TASK-07, TASK-09 |
+| DONE | TASK-01 | Migrazione tabella `announcements` | Creare enum `announcement_severity`, tabella `announcements` con indici su `team_sector` e `created_at`, RLS abilitata di base. | Impl | - |
+| DONE | TASK-02 | Funzioni helper RLS | Creare `is_coach_of_sector(text)` e `get_my_announcement_sectors()` (SECURITY DEFINER), riusando `coach_teams` e `get_parent_player_ids()`. | Impl | TASK-01 |
+| DONE | TASK-03 | Policy RLS insert/select | Policy insert per `president`/`director`/`coach` (scoping leva) e select per staff + pubblico (`announcements_select_public`). | Impl | TASK-02 |
+| DONE | TASK-04 | Test RLS `test-announcements-rls.mjs` | Suite di integrazione: scrittura fuori leva bloccata, lettura cross-leva bloccata, invariante `parent_players.status='confirmed'` rispettata. | Test | TASK-03 |
+| DONE | TASK-05 | `announcementService.ts` | Servizio frontend: `listAnnouncements()`, `createAnnouncement()`, tipizzato su `Database['public']['Tables']['announcements']`. | Impl | TASK-03 |
+| DONE | TASK-06 | Pagina staff `/notifiche` | Nuova pagina `Notifiche.tsx`: storico (badge severità colorato, leva o "Tutta la società", data) + form di composizione con selettore severità e selettore leva scoping-aware (pattern `SendEmailModal.tsx`). Aggiunta a `App.tsx` e alla sidebar di `DashboardLayout.tsx` per `president`/`director`/`coach`. | Impl | TASK-05 |
+| DONE | TASK-07 | Verifica selettore leva scoping-aware | Nessun framework di test componente nel progetto (solo integrazione contro Supabase reale, vedi TASK-04) — su decisione esplicita dell'utente, verificato manualmente via browser con login reale: il coach vede solo la propria leva bloccata, nessuna leva altrui selezionabile. | Test | TASK-06 |
+| DONE | TASK-08 | Pagina pubblica `/portal/notifiche` | Nuova pagina feed sola lettura sotto `PortalLayout.tsx`: card colorate per gravità, ordine cronologico inverso, stato vuoto. Card di accesso aggiunta su `PortalDashboard.tsx`. | Impl | TASK-05 |
+| DONE | TASK-09 | Verifica rendering feed pubblico | Stessa nota di TASK-07: verificato manualmente via browser il mapping colore↔severità per le tre gravità, il filtro e lo scoping RLS end-to-end (player/president). | Test | TASK-08 |
+| DONE | TASK-10 | Regressione integrazione completa | `npx supabase db reset` + `npm run test:integration` per intero e `npx tsc --noEmit`, per escludere impatti su `coach_teams`/`parent_players`/RLS esistenti. | Test | TASK-04, TASK-07, TASK-09 |
 
 ---
 

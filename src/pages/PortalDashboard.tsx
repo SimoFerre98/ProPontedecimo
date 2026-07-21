@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import { CalendarDays, CreditCard, Stethoscope, Construction, Users, Plus, Clock, CheckCircle2, User } from 'lucide-react'
+import { CalendarDays, CreditCard, Stethoscope, Construction, Users, Plus, Clock, CheckCircle2, User, Bell, ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import RequestChildLinkModal from '@/components/modals/RequestChildLinkModal'
@@ -9,10 +10,17 @@ import { getMyChildren, type MyParentPlayer } from '@/services/parentService'
 import { useParentBillingData } from '@/hooks/useParentBillingData'
 import ChildBillingCard from '@/components/ChildBillingCard'
 import NextCallUpCard from '@/components/NextCallUpCard'
+import { announcementService } from '@/services/announcementService'
 
 export default function PortalDashboard() {
   const { profile, role } = useAuth()
+  const navigate = useNavigate()
   const [requestModalOpen, setRequestModalOpen] = useState(false)
+
+  const { data: announcements = [] } = useQuery({
+    queryKey: ['announcements'],
+    queryFn: announcementService.listAnnouncements
+  })
 
   const isPlayer = role === 'player'
   const isParent = role === 'parent'
@@ -78,6 +86,28 @@ export default function PortalDashboard() {
           </p>
         </div>
       </div>
+
+      {/* Bacheca notifiche — punto d'ingresso al feed color-coded */}
+      <motion.button
+        type="button"
+        onClick={() => navigate('/portal/notifiche')}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full flex items-center gap-4 p-6 glass-card border-white/10 rounded-3xl text-left hover:border-primary/30 transition-all group"
+      >
+        <div className="w-12 h-12 pill bg-primary/15 flex items-center justify-center text-primary border border-primary/20 shrink-0">
+          <Bell className="w-5 h-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h2 className="text-base font-black text-foreground uppercase italic">Bacheca Notifiche</h2>
+          <p className="text-xs text-muted-foreground font-medium truncate">
+            {announcements.length > 0
+              ? `${announcements.length} comunicazion${announcements.length === 1 ? 'e' : 'i'} dalla società`
+              : 'Nessuna comunicazione al momento'}
+          </p>
+        </div>
+        <ChevronRight className="w-5 h-5 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
+      </motion.button>
 
       {/* Convocazione prossima partita — solo per giocatori */}
       {isPlayer && <NextCallUpCard />}

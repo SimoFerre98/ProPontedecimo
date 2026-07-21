@@ -17,10 +17,12 @@ import Convocazioni from '@/pages/Convocazioni'
 import SquadraAtleti from '@/pages/SquadraAtleti'
 import Inventory from '@/pages/Inventory'
 import StaffTasks from '@/pages/StaffTasks'
+import Notifiche from '@/pages/Notifiche'
 
 // Layouts e Pagine Atleti/Genitori
 import PortalLayout from '@/layouts/PortalLayout'
 import PortalDashboard from '@/pages/PortalDashboard'
+import PortalNotifiche from '@/pages/PortalNotifiche'
 
 // Auth Pages
 import LoginPage from '@/pages/LoginPage'
@@ -73,6 +75,7 @@ function App() {
                   <Route path="squadra" element={<SquadraAtleti />} />
                   <Route path="magazzino" element={<Inventory />} />
                   <Route path="task"      element={<StaffTasks />} />
+                  <Route path="notifiche" element={<Notifiche />} />
                 </Route>
               </Route>
 
@@ -90,6 +93,7 @@ function App() {
               >
                 <Route element={<PortalLayout />}>
                   <Route index element={<PortalDashboard />} />
+                  <Route path="notifiche" element={<PortalNotifiche />} />
                 </Route>
               </Route>
 

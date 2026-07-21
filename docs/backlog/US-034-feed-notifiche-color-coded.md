@@ -11,11 +11,11 @@ così che io colga subito l'importanza di ogni avviso, dalle variazioni d'orario
 After implementing this story, the user can: aprire il feed e distinguere a colpo d'occhio un avviso urgente rosso da una comunicazione generale, con i più recenti in evidenza.
 
 **Acceptance Criteria**
-- [ ] Dirigenti e allenatori possono creare notifiche scegliendo la gravità (Urgente/Promemoria/Comunicazione)
-- [ ] Le notifiche sono mostrate ad atleti e genitori con il colore corrispondente alla gravità (Rosso/Ambra/Bordeaux-Verde)
-- [ ] Il design è accattivante per i ragazzi ma non infantile, coerente col design system Premium Glass
-- [ ] Gli allenatori possono notificare solo la propria leva; i dirigenti tutta la società
+- [x] Dirigenti e allenatori possono creare notifiche scegliendo la gravità (Urgente/Promemoria/Comunicazione)
+- [x] Le notifiche sono mostrate ad atleti e genitori con il colore corrispondente alla gravità (Rosso/Ambra/Bordeaux-Verde)
+- [x] Il design è accattivante per i ragazzi ma non infantile, coerente col design system Premium Glass
+- [x] Gli allenatori possono notificare solo la propria leva; i dirigenti tutta la società
 
-**Status:** PLANNED
+**Status:** REVIEW
 **Plan:** [docs/planning/US-034-plan.md](../planning/US-034-plan.md)
 
