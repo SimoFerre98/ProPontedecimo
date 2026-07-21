@@ -1,0 +1,30 @@
+export type FiltersState = {
+  isActive: 'all' | 'active' | 'inactive'
+  isRegistered: 'all' | 'yes' | 'no'
+  medicalStatus: 'all' | 'expired' | 'valid' | 'missing'
+  privacyStatus: 'all' | 'accepted' | 'missing'
+  registrationStatus: 'all' | 'missing'
+  sortBy: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
+  sortDir: 'asc' | 'desc'
+}
+
+export const DEFAULT_FILTERS: FiltersState = {
+  isActive: 'all',
+  isRegistered: 'all',
+  medicalStatus: 'all',
+  privacyStatus: 'all',
+  registrationStatus: 'all',
+  sortBy: 'last_name',
+  sortDir: 'asc',
+}
+
+export function activeFilterCount(f: FiltersState) {
+  let c = 0
+  if (f.isActive !== 'all') c++
+  if (f.isRegistered !== 'all') c++
+  if (f.medicalStatus !== 'all') c++
+  if (f.privacyStatus !== 'all') c++
+  if (f.registrationStatus !== 'all') c++
+  if (f.sortBy !== 'last_name' || f.sortDir !== 'asc') c++
+  return c
+}
