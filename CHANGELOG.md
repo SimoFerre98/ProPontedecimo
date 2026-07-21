@@ -5,6 +5,11 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-033**: Estratto il componente condiviso `MedicalStatusIndicator.tsx` da `MedicalVisits.tsx` (refactor puramente estrattivo, nessun cambio di comportamento) per riusare la stessa logica di badge di stato medico nel nuovo pannello dell'allenatore.
+- **US-033**: Aggiunto `getSquadRoster(seasonId, sector?)` a `medicalService.ts`: query non paginata su `players` (anagrafica essenziale + `medical_expiry`) filtrata per stagione/attivi, riusando le RLS già esistenti (`players_select_coach`) senza alcuna nuova migrazione.
+- **US-033**: Creata la pagina `SquadraAtleti.tsx` — pannello di sola lettura per l'allenatore con anagrafica e stato visite mediche dei soli atleti della propria squadra, chip di selezione leva per i coach multi-leva, empty-state onesto se nessun atleto attivo. Nessun dato finanziario esposto (AC3).
+- **US-033**: Aggiunta la rotta `/squadra` e la relativa voce di navigazione per i ruoli president/director/coach.
+- **US-033**: Creato lo script di test di integrazione `test-squad-panel.mjs` che valida isolamento mono-leva/multi-leva, esclusione atleti inattivi, assenza di colonne `payments` nella query e caso coach senza atleti attivi.
 - **US-030**: Creata la RPC SECURITY DEFINER `get_my_next_call_up()` per consentire al ruolo `player` di leggere le informazioni e lo stato della propria prossima partita in modo mirato e sicuro.
 - **US-030**: Aggiunto il metodo `getMyNextCallUp` nel client-side `callUpService.ts` per recuperare i dettagli di convocazione della leva e allineata la rigenerazione automatica dei tipi in `src/types/database.ts`.
 - **US-030**: Creato il componente `NextCallUpCard.tsx` per mostrare lo stato di convocazione del giocatore con 5 stati grafici fedeli ai mockup (convocato, non convocato, bozza/non pubblicata, nessuna partita, profilo non collegato).
