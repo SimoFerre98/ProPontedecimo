@@ -156,7 +156,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-030](backlog/US-030-visualizzazione-convocazioni.md) | Visualizzazione convocazioni | LOW | 3 | REVIEW |
+| [US-030](backlog/US-030-visualizzazione-convocazioni.md) | Visualizzazione convocazioni | LOW | 3 | DONE |
 | [US-031](backlog/US-031-calendario-partite-classifica-leva.md) | Calendario partite e classifica della leva | LOW | 3 | TODO |
 
 ### EP-012: Portale Allenatore
