@@ -5,6 +5,12 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-034**: Creata la tabella `announcements` (bacheca societaria append-only, distinta dalle notifiche operative di `notificationService.ts`) con enum `announcement_severity` (urgent/reminder/communication) e RLS scoping per leva.
+- **US-034**: Introdotte le funzioni SECURITY DEFINER `is_coach_of_sector(text)` e `get_my_announcement_sectors()`, quest'ultima riusata da `get_parent_player_ids()` per rispettare l'invariante `parent_players.status='confirmed'`.
+- **US-034**: Creato `announcementService.ts` e la pagina staff `Notifiche.tsx` (storico + form di composizione con selettore leva scoping-aware, incluso il caso allenatore multi-leva) per president/director/coach.
+- **US-034**: Creata la pagina pubblica `PortalNotifiche.tsx` (feed sola lettura color-coded per gravità, con filtro) e la relativa card di accesso in `PortalDashboard.tsx`.
+- **US-034**: Estratta la configurazione di gravità condivisa in `src/lib/announcementSeverity.ts` (label/icona/colore), riusata da entrambe le pagine.
+- **US-034**: Creato lo script di test di integrazione `test-announcements-rls.mjs` che valida lo scoping RLS insert/select per coach/president/player/parent, incluso l'invariante `parent_players.status='confirmed'`.
 - **US-033**: Estratto il componente condiviso `MedicalStatusIndicator.tsx` da `MedicalVisits.tsx` (refactor puramente estrattivo, nessun cambio di comportamento) per riusare la stessa logica di badge di stato medico nel nuovo pannello dell'allenatore.
 - **US-033**: Aggiunto `getSquadRoster(seasonId, sector?)` a `medicalService.ts`: query non paginata su `players` (anagrafica essenziale + `medical_expiry`) filtrata per stagione/attivi, riusando le RLS già esistenti (`players_select_coach`) senza alcuna nuova migrazione.
 - **US-033**: Creata la pagina `SquadraAtleti.tsx` — pannello di sola lettura per l'allenatore con anagrafica e stato visite mediche dei soli atleti della propria squadra, chip di selezione leva per i coach multi-leva, empty-state onesto se nessun atleto attivo. Nessun dato finanziario esposto (AC3).

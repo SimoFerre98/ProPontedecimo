@@ -52,6 +52,7 @@ const NAV_ITEMS = [
   { to: '/squadra',   icon: ShieldCheck,     label: 'Squadra' },
   { to: '/magazzino', icon: Package,         label: 'Magazzino' },
   { to: '/task',      icon: ClipboardList,   label: 'Task Staff' },
+  { to: '/notifiche', icon: Bell,            label: 'Notifiche' },
 ]
 
 const ROLE_LABELS: Record<string, string> = {
@@ -65,7 +66,7 @@ const ROLE_LABELS: Record<string, string> = {
 const getVisibleNavItems = (userRole: string | null) => {
   if (!userRole || userRole === 'player' || userRole === 'parent') return []
   if (userRole === 'coach') {
-    return NAV_ITEMS.filter(item => ['/', '/atleti', '/presenze', '/convocazioni', '/squadra', '/task'].includes(item.to))
+    return NAV_ITEMS.filter(item => ['/', '/atleti', '/presenze', '/convocazioni', '/squadra', '/task', '/notifiche'].includes(item.to))
   }
   return NAV_ITEMS
 }

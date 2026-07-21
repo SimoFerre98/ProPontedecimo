@@ -34,6 +34,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          severity: Database["public"]["Enums"]["announcement_severity"]
+          team_sector: string | null
+          title: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          severity: Database["public"]["Enums"]["announcement_severity"]
+          team_sector?: string | null
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          severity?: Database["public"]["Enums"]["announcement_severity"]
+          team_sector?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attendance: {
         Row: {
           created_at: string | null
@@ -677,6 +715,7 @@ export type Database = {
       get_coach_sectors: { Args: never; Returns: string[] }
       get_dashboard_stats: { Args: never; Returns: Json }
       get_financial_trend: { Args: { p_season_id: string }; Returns: Json }
+      get_my_announcement_sectors: { Args: never; Returns: string[] }
       get_my_next_call_up: {
         Args: never
         Returns: {
@@ -707,6 +746,7 @@ export type Database = {
       }
       is_call_up_published: { Args: { p_event_id: string }; Returns: boolean }
       is_coach_of_player: { Args: { p_player_id: string }; Returns: boolean }
+      is_coach_of_sector: { Args: { p_team_sector: string }; Returns: boolean }
       regenerate_ics_token: { Args: never; Returns: string }
       search_players_for_parent_request: {
         Args: { p_query: string }
@@ -719,6 +759,7 @@ export type Database = {
       }
     }
     Enums: {
+      announcement_severity: "urgent" | "reminder" | "communication"
       attendance_status: "present" | "absent" | "justified"
       event_type:
         | "training"
@@ -868,6 +909,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      announcement_severity: ["urgent", "reminder", "communication"],
       attendance_status: ["present", "absent", "justified"],
       event_type: [
         "training",
