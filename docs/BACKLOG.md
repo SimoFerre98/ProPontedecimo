@@ -28,11 +28,11 @@
 | EP-011 | Portale Giocatore | 2 | 6 | Vision |
 | EP-012 | Portale Allenatore | 2 | 8 | Vision |
 | EP-013 | Sistema di Notifiche Color-Coded | 1 | 5 | Vision |
-| EP-014 | Refactoring Architetturale & Resilienza | 6 | 15 | MVP |
+| EP-014 | Refactoring Architetturale & Resilienza | 7 | 17 | MVP |
 
-**Total stories:** 41
-**Total story points:** 131
-**MVP stories:** 29 (87pt)
+**Total stories:** 42
+**Total story points:** 133
+**MVP stories:** 30 (89pt)
 
 ---
 
@@ -167,7 +167,7 @@
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
 | [US-032](backlog/US-032-gestione-convocazioni.md) | Gestione convocazioni | LOW | 5 | DONE |
-| [US-033](backlog/US-033-pannello-gestione-atleti-squadra.md) | Pannello gestione atleti della squadra | LOW | 3 | TODO |
+| [US-033](backlog/US-033-pannello-gestione-atleti-squadra.md) | Pannello gestione atleti della squadra | LOW | 3 | REVIEW |
 
 ### EP-013: Sistema di Notifiche Color-Coded
 
@@ -181,7 +181,7 @@
 ### EP-014: Refactoring Architetturale & Resilienza
 
 > Sanare i debiti architetturali emersi dall'analisi della codebase: gestione errori, duplicazione nei modali, file monolitici e type safety.
-> **Scope:** MVP | **Stories:** 6 | **Story Points:** 15
+> **Scope:** MVP | **Stories:** 7 | **Story Points:** 17
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
@@ -191,6 +191,7 @@
 | [US-038](backlog/US-038-tipizzazione-filtri-rimozione-cast.md) | Tipizzazione dei filtri e rimozione dei cast `as any` | MEDIUM | 2 | TODO |
 | [US-039](backlog/US-039-componenti-condivisi-pulizie-minori.md) | Componenti condivisi e pulizie minori | LOW | 2 | TODO |
 | [US-040](backlog/US-040-fix-drag-drop-kanban.md) | Fix drag & drop della board Kanban | MEDIUM | 2 | TODO |
+| [US-047](backlog/US-047-fix-loop-refetch-profilo-utente.md) | Fix loop di refetch del profilo utente dopo il login | MEDIUM | 2 | TODO |
 
 ### EP-009: Deploy VPS, Migrazione & Backup
 

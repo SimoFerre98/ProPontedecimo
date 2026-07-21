@@ -1,14 +1,10 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Stethoscope, 
-  AlertTriangle, 
-  CheckCircle2, 
+import {
+  Stethoscope,
   Calendar,
   User,
-  AlertCircle,
-  Clock,
   ChevronRight,
   ArrowDown,
   ArrowUp
@@ -19,8 +15,8 @@ import { Pagination } from '@/components/ui/Pagination'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
 import { QueryErrorState } from '@/components/ui/query-error-state'
 import MedicalVisitModal from '@/components/modals/MedicalVisitModal'
+import MedicalStatusIndicator from '@/components/MedicalStatusIndicator'
 import { format } from "date-fns/format";
-import { differenceInDays } from "date-fns/differenceInDays";
 import { it } from "date-fns/locale/it";
 
 export default function MedicalVisits() {
@@ -212,7 +208,7 @@ export default function MedicalVisits() {
                           )}
                         </td>
                         <td className="px-6 py-5">
-                          <StatusIndicator status={status} expiry={visit.medical_expiry || null} />
+                          <MedicalStatusIndicator status={status} expiry={visit.medical_expiry || null} />
                         </td>
                         <td className="px-6 py-5 text-right">
                           <button className="p-2 pill hover:bg-white/10 text-muted-foreground hover:text-primary transition-all">
@@ -261,61 +257,6 @@ function StatBadge({ count, label, type }: Readonly<{ count: number, label: stri
     <div className={cn("px-4 py-2 rounded-2xl border flex flex-col items-center min-w-[100px]", colors[type])}>
       <span className="text-2xl font-black leading-none">{count}</span>
       <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{label}</span>
-    </div>
-  )
-}
-
-function StatusIndicator({ status, expiry }: Readonly<{ status: VisitStatus, expiry: string | null }>) {
-  const configs = {
-    valid: {
-      label: 'Valida',
-      icon: <CheckCircle2 className="w-3.5 h-3.5" />,
-      class: 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20',
-      glow: 'shadow-[0_0_15px_-3px_rgba(52,211,153,0.3)]'
-    },
-    expiring: {
-      label: 'In Scadenza',
-      icon: <Clock className="w-3.5 h-3.5" />,
-      class: 'bg-amber-400/10 text-amber-400 border-amber-400/20',
-      glow: 'shadow-[0_0_15px_-3px_rgba(251,191,36,0.3)]'
-    },
-    expired: {
-      label: 'Scaduta',
-      icon: <AlertCircle className="w-3.5 h-3.5" />,
-      class: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20',
-      glow: 'shadow-[0_0_15px_-3px_rgba(248,113,113,0.3)]'
-    },
-    missing: {
-      label: 'Pendente',
-      icon: <AlertTriangle className="w-3.5 h-3.5" />,
-      class: 'bg-white/5 text-muted-foreground border-white/10',
-      glow: ''
-    }
-  }
-
-  const cfg = configs[status]
-  const daysLeft = expiry ? differenceInDays(new Date(expiry), new Date()) : null
-
-  return (
-    <div className="flex flex-col gap-1">
-      <div className={cn(
-        "px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit",
-        cfg.class,
-        cfg.glow
-      )}>
-        {cfg.icon}
-        {cfg.label}
-      </div>
-      {status === 'expiring' && daysLeft !== null && (
-        <span className="text-[9px] font-bold text-amber-400/80 pl-1">
-          Scade tra {daysLeft} giorn{daysLeft === 1 ? 'o' : 'i'}
-        </span>
-      )}
-      {status === 'expired' && daysLeft !== null && (
-        <span className="text-[9px] font-bold text-rose-400/80 pl-1">
-          Scaduta da {Math.abs(daysLeft)} giorn{Math.abs(daysLeft) === 1 ? 'o' : 'i'}
-        </span>
-      )}
     </div>
   )
 }

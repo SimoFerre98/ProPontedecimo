@@ -12,6 +12,16 @@ export interface MedicalVisitRecord {
   medical_expiry: string | null
 }
 
+export interface SquadRosterMember {
+  id: string
+  first_name: string
+  last_name: string
+  birth_date: string | null
+  figc_registration: string | null
+  team_sector: string | null
+  medical_expiry: string | null
+}
+
 export const medicalService = {
   async getMedicalVisits(
     search?: string, 
@@ -88,5 +98,21 @@ export const medicalService = {
       .eq('id', playerId)
 
     if (error) throw error
+  },
+
+  async getSquadRoster(seasonId: string, sector?: string): Promise<SquadRosterMember[]> {
+    let query = supabase
+      .from('players')
+      .select('id, first_name, last_name, birth_date, figc_registration, team_sector, medical_expiry')
+      .eq('season_id', seasonId)
+      .eq('is_active', true)
+
+    if (sector && sector !== 'all') {
+      query = query.eq('team_sector', sector)
+    }
+
+    const { data, error } = await query.order('last_name').order('first_name')
+    if (error) throw error
+    return data as SquadRosterMember[]
   }
 }

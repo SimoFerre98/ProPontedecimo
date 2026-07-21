@@ -14,6 +14,7 @@ import Payments from '@/pages/Payments'
 import MedicalVisits from '@/pages/MedicalVisits'
 import Attendance from '@/pages/Attendance'
 import Convocazioni from '@/pages/Convocazioni'
+import SquadraAtleti from '@/pages/SquadraAtleti'
 import Inventory from '@/pages/Inventory'
 import StaffTasks from '@/pages/StaffTasks'
 
@@ -69,6 +70,7 @@ function App() {
                   <Route path="visite"    element={<MedicalVisits />} />
                   <Route path="presenze"  element={<Attendance />} />
                   <Route path="convocazioni" element={<Convocazioni />} />
+                  <Route path="squadra" element={<SquadraAtleti />} />
                   <Route path="magazzino" element={<Inventory />} />
                   <Route path="task"      element={<StaffTasks />} />
                 </Route>

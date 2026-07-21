@@ -15,6 +15,6 @@ After implementing this story, the user can: consultare la lista della propria s
 - [ ] Le visite mediche scadute o in scadenza sono evidenziate visivamente
 - [ ] Nessun dato finanziario è visibile all'allenatore
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [docs/planning/US-033-plan.md](../planning/US-033-plan.md)
 
