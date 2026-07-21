@@ -677,6 +677,17 @@ export type Database = {
       get_coach_sectors: { Args: never; Returns: string[] }
       get_dashboard_stats: { Args: never; Returns: Json }
       get_financial_trend: { Args: { p_season_id: string }; Returns: Json }
+      get_my_next_call_up: {
+        Args: never
+        Returns: {
+          event_type: Database["public"]["Enums"]["event_type"]
+          is_called_up: boolean
+          is_published: boolean
+          meetup_time: string
+          opponent: string
+          start_date: string
+        }[]
+      }
       get_my_parent_players: {
         Args: never
         Returns: {

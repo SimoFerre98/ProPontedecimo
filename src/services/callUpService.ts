@@ -83,5 +83,16 @@ export const callUpService = {
       .eq('id', eventId)
 
     if (error) throw error
+  },
+
+  /**
+   * Retrieves the next call-up details for the logged-in player.
+   */
+  async getMyNextCallUp(): Promise<Database['public']['Functions']['get_my_next_call_up']['Returns'][number] | null> {
+    const { data, error } = await supabase.rpc('get_my_next_call_up')
+
+    if (error) throw error
+    return data && data.length > 0 ? data[0] : null
   }
 }
+
