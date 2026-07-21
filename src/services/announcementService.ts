@@ -55,7 +55,7 @@ export const announcementService = {
    * self-select RLS policy on coach_teams (coach_teams_select_self).
    */
   async getMyCoachSectors(): Promise<string[]> {
-    const { data, error } = await supabase.from('coach_teams').select('team_sector')
+    const { data, error } = await supabase.from('coach_teams').select('team_sector').order('team_sector')
 
     if (error) throw error
     return (data ?? []).map(row => row.team_sector)

@@ -2,39 +2,24 @@ import { useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns/format'
 import { it } from 'date-fns/locale/it'
-import { Bell, AlertTriangle, Clock, Megaphone, Lock, Users, Loader2, Send } from 'lucide-react'
+import { Bell, Lock, Users, Loader2, Send } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/contexts/ToastContext'
 import { getErrorMessage } from '@/lib/errors'
 import { QueryErrorState } from '@/components/ui/query-error-state'
+import { SEVERITY_CONFIG, SEVERITY_ORDER } from '@/lib/announcementSeverity'
 import {
   announcementService,
   type Announcement,
   type AnnouncementSeverity
 } from '@/services/announcementService'
 
-const SEVERITIES: { key: AnnouncementSeverity; label: string; icon: typeof AlertTriangle }[] = [
-  { key: 'urgent', label: 'Urgente', icon: AlertTriangle },
-  { key: 'reminder', label: 'Promemoria', icon: Clock },
-  { key: 'communication', label: 'Comunicazione', icon: Megaphone }
-]
-
-const SEV_CSS_CLASS: Record<AnnouncementSeverity, string> = {
-  urgent: 'urgent',
-  reminder: 'reminder',
-  communication: 'comm'
-}
-
-function sevMeta(key: AnnouncementSeverity) {
-  return SEVERITIES.find(s => s.key === key)!
-}
-
 function SeverityBadge({ severity }: { severity: AnnouncementSeverity }) {
-  const meta = sevMeta(severity)
+  const meta = SEVERITY_CONFIG[severity]
   const Icon = meta.icon
   return (
-    <span className={cn('sev-badge', SEV_CSS_CLASS[severity])}>
+    <span className={cn('sev-badge', meta.cssClass)}>
       <Icon />
       {meta.label}
     </span>
@@ -75,13 +60,14 @@ export default function Notifiche() {
   const [severity, setSeverity] = useState<AnnouncementSeverity>('urgent')
   const [targetAll, setTargetAll] = useState(false)
   const [adminTargetSector, setAdminTargetSector] = useState<string | null>(null)
+  const [coachSelectedSector, setCoachSelectedSector] = useState<string | null>(null)
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [publishing, setPublishing] = useState(false)
 
-  // L'allenatore è bloccato sulla propria unica leva (o la prima assegnata, se più di una);
-  // derivata direttamente da mySectors, non c'è bisogno di stato locale sincronizzato via effetto.
-  const coachTargetSector = mySectors[0] ?? null
+  // L'allenatore è bloccato su una delle proprie leve (mai libero): se non ha ancora
+  // scelto esplicitamente (caso multi-leva), il default è la prima in ordine alfabetico.
+  const coachTargetSector = coachSelectedSector ?? mySectors[0] ?? null
   const targetSector = isCoach ? coachTargetSector : adminTargetSector
 
   const resolvedTeamSector = isCoach ? coachTargetSector : (targetAll ? null : adminTargetSector)
@@ -113,9 +99,9 @@ export default function Notifiche() {
 
   const roleTag = useMemo(() => {
     if (isAdmin) return role === 'president' ? 'Presidente · tutta la società' : 'Direttore · tutta la società'
-    if (isCoach) return `Allenatore · ${mySectors[0] ?? 'nessuna leva assegnata'}`
+    if (isCoach) return `Allenatore · ${coachTargetSector ?? 'nessuna leva assegnata'}`
     return null
-  }, [isAdmin, isCoach, role, mySectors])
+  }, [isAdmin, isCoach, role, coachTargetSector])
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700 max-w-2xl mx-auto pb-10">
@@ -140,17 +126,18 @@ export default function Notifiche() {
         <div className="compose-section">
           <span className="compose-label">Gravità</span>
           <div className="sev-tile-row">
-            {SEVERITIES.map(s => {
-              const Icon = s.icon
+            {SEVERITY_ORDER.map(key => {
+              const meta = SEVERITY_CONFIG[key]
+              const Icon = meta.icon
               return (
                 <button
-                  key={s.key}
+                  key={key}
                   type="button"
-                  onClick={() => setSeverity(s.key)}
-                  className={cn('sev-tile', SEV_CSS_CLASS[s.key], severity === s.key && 'active')}
+                  onClick={() => setSeverity(key)}
+                  className={cn('sev-tile', meta.cssClass, severity === key && 'active')}
                 >
                   <span className="sev-tile-icon"><Icon className="w-[1.15rem] h-[1.15rem]" /></span>
-                  <span className="sev-tile-label">{s.label}</span>
+                  <span className="sev-tile-label">{meta.label}</span>
                 </button>
               )
             })}
@@ -160,7 +147,9 @@ export default function Notifiche() {
         <div className="compose-section">
           <span className="compose-label">Destinatari</span>
           {isCoach ? (
-            mySectors.length > 0 ? (
+            mySectors.length === 0 ? (
+              <p className="text-xs font-semibold text-muted-foreground">Nessuna leva assegnata: contatta il presidente o il direttore.</p>
+            ) : mySectors.length === 1 ? (
               <div className="target-locked-pill">
                 <span className="tlp-icon"><Lock className="w-[.95rem] h-[.95rem]" /></span>
                 <div>
@@ -169,7 +158,26 @@ export default function Notifiche() {
                 </div>
               </div>
             ) : (
-              <p className="text-xs font-semibold text-muted-foreground">Nessuna leva assegnata: contatta il presidente o il direttore.</p>
+              <div className="space-y-2">
+                <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Scegli fra le tue leve assegnate</p>
+                <div className="flex flex-wrap gap-2">
+                  {mySectors.map(sector => (
+                    <button
+                      key={sector}
+                      type="button"
+                      onClick={() => setCoachSelectedSector(sector)}
+                      className={cn(
+                        'px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border',
+                        coachTargetSector === sector
+                          ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+                          : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground'
+                      )}
+                    >
+                      {sector}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )
           ) : (
             <div className="flex flex-wrap gap-2">
@@ -262,7 +270,7 @@ export default function Notifiche() {
         ) : (
           <div className="flex flex-col gap-2.5">
             {announcements.map((item: Announcement) => (
-              <div key={item.id} className={cn('announcement-history-row', SEV_CSS_CLASS[item.severity])}>
+              <div key={item.id} className={cn('announcement-history-row', SEVERITY_CONFIG[item.severity].cssClass)}>
                 <div className="flex-1 min-w-0 space-y-1.5">
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-sm font-extrabold text-foreground truncate">{item.title}</p>

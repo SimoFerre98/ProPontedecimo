@@ -3,34 +3,11 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { format } from 'date-fns/format'
 import { it } from 'date-fns/locale/it'
-import { ArrowLeft, Bell, AlertTriangle, Clock, Megaphone, Users } from 'lucide-react'
+import { ArrowLeft, Bell, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { QueryErrorState } from '@/components/ui/query-error-state'
 import { announcementService, type AnnouncementSeverity } from '@/services/announcementService'
-
-const SEVERITIES: { key: AnnouncementSeverity; label: string; icon: typeof AlertTriangle }[] = [
-  { key: 'urgent', label: 'Urgenti', icon: AlertTriangle },
-  { key: 'reminder', label: 'Promemoria', icon: Clock },
-  { key: 'communication', label: 'Comunicazioni', icon: Megaphone }
-]
-
-const SEV_CSS_CLASS: Record<AnnouncementSeverity, string> = {
-  urgent: 'urgent',
-  reminder: 'reminder',
-  communication: 'comm'
-}
-
-const SEV_LABEL: Record<AnnouncementSeverity, string> = {
-  urgent: 'Urgente',
-  reminder: 'Promemoria',
-  communication: 'Comunicazione'
-}
-
-const SEV_ICON: Record<AnnouncementSeverity, typeof AlertTriangle> = {
-  urgent: AlertTriangle,
-  reminder: Clock,
-  communication: Megaphone
-}
+import { SEVERITY_CONFIG, SEVERITY_ORDER } from '@/lib/announcementSeverity'
 
 type FilterKey = 'all' | AnnouncementSeverity
 
@@ -93,20 +70,21 @@ export default function PortalNotifiche() {
         >
           Tutte
         </button>
-        {SEVERITIES.map(s => {
-          const Icon = s.icon
+        {SEVERITY_ORDER.map(key => {
+          const meta = SEVERITY_CONFIG[key]
+          const Icon = meta.icon
           return (
             <button
-              key={s.key}
+              key={key}
               type="button"
-              onClick={() => setFilter(s.key)}
+              onClick={() => setFilter(key)}
               className={cn(
                 'flex-shrink-0 flex items-center gap-2 h-9 px-4 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all',
-                filter === s.key ? cn('sev-badge', SEV_CSS_CLASS[s.key], '!h-9 !px-4 border-2') : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50'
+                filter === key ? cn('sev-badge', meta.cssClass, '!h-9 !px-4 border-2') : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50'
               )}
             >
               <Icon className="w-3.5 h-3.5" />
-              {s.label}
+              {meta.labelPlural}
             </button>
           )
         })}
@@ -134,21 +112,17 @@ export default function PortalNotifiche() {
       ) : (
         <div className="flex flex-col gap-3">
           {filtered.map(item => {
-            const Icon = SEV_ICON[item.severity]
+            const meta = SEVERITY_CONFIG[item.severity]
+            const Icon = meta.icon
             return (
-              <div key={item.id} className={cn('announcement-feed-card', SEV_CSS_CLASS[item.severity])}>
+              <div key={item.id} className={cn('announcement-feed-card', meta.cssClass)}>
                 <div className="flex items-start justify-between gap-2">
                   <span className="announcement-feed-card-icon">
                     <Icon className="w-[1.15rem] h-[1.15rem]" />
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className={cn(
-                      'text-[9px] font-black uppercase tracking-[0.14em] mb-1',
-                      item.severity === 'urgent' && 'text-[var(--sev-urgent)]',
-                      item.severity === 'reminder' && 'text-[var(--sev-reminder)]',
-                      item.severity === 'communication' && 'text-[var(--sev-comm)]'
-                    )}>
-                      {SEV_LABEL[item.severity]}
+                    <p className={cn('text-[9px] font-black uppercase tracking-[0.14em] mb-1', meta.textColorClass)}>
+                      {meta.label}
                     </p>
                     <p className="text-base font-black italic uppercase leading-tight text-foreground">{item.title}</p>
                   </div>
