@@ -59,11 +59,11 @@ Il rischio principale non è una nuova regola di sicurezza (non ce ne sono) ma l
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Estrazione `MedicalStatusIndicator` | Estrarre `StatusIndicator` da `MedicalVisits.tsx` in `src/components/MedicalStatusIndicator.tsx`, aggiornare `MedicalVisits.tsx` per usare il componente condiviso senza cambiarne il comportamento | Impl | - |
-| TODO | TASK-02 | Service layer `getSquadRoster` | Aggiungere `getSquadRoster(seasonId, sector?)` a `medicalService.ts`: query non paginata su `players` con anagrafica essenziale + `medical_expiry`, filtrata per stagione/attivi, opzionale per leva | Impl | - |
-| TODO | TASK-03 | Test integrazione multi-leva e no-financial | Nuovo `scripts/test-squad-panel.mjs`: coach mono-leva, coach multi-leva, isolamento cross-leva, assenza di colonne `payments` nella query, coach senza atleti attivi | Test | TASK-02 |
-| TODO | TASK-04 | Pagina `SquadraAtleti.tsx` | Chip leva (visibili solo se l'allenatore ha più di una leva), card atleta con anagrafica + `MedicalStatusIndicator`, empty-state onesto se nessun atleto attivo | Impl | TASK-01, TASK-02 |
-| TODO | TASK-05 | Route e voce di navigazione | Aggiungere `/squadra` in `App.tsx`, `NAV_ITEMS` e whitelist coach in `DashboardLayout.tsx` | Impl | TASK-04 |
+| DONE | TASK-01 | Estrazione `MedicalStatusIndicator` | Estrarre `StatusIndicator` da `MedicalVisits.tsx` in `src/components/MedicalStatusIndicator.tsx`, aggiornare `MedicalVisits.tsx` per usare il componente condiviso senza cambiarne il comportamento | Impl | - |
+| DONE | TASK-02 | Service layer `getSquadRoster` | Aggiungere `getSquadRoster(seasonId, sector?)` a `medicalService.ts`: query non paginata su `players` con anagrafica essenziale + `medical_expiry`, filtrata per stagione/attivi, opzionale per leva | Impl | - |
+| DONE | TASK-03 | Test integrazione multi-leva e no-financial | Nuovo `scripts/test-squad-panel.mjs`: coach mono-leva, coach multi-leva, isolamento cross-leva, assenza di colonne `payments` nella query, coach senza atleti attivi | Test | TASK-02 |
+| DONE | TASK-04 | Pagina `SquadraAtleti.tsx` | Chip leva (visibili solo se l'allenatore ha più di una leva), card atleta con anagrafica + `MedicalStatusIndicator`, empty-state onesto se nessun atleto attivo | Impl | TASK-01, TASK-02 |
+| DONE | TASK-05 | Route e voce di navigazione | Aggiungere `/squadra` in `App.tsx`, `NAV_ITEMS` e whitelist coach in `DashboardLayout.tsx` | Impl | TASK-04 |
 | TODO | TASK-06 | Verifica manuale regressione `MedicalVisits.tsx` | Confronto visivo pre/post estrazione del componente condiviso, per escludere regressioni sulla pagina amministrativa esistente | Test | TASK-01 |
 | TODO | TASK-07 | Verifica manuale end-to-end multi-ruolo | Percorso completo: coach mono-leva, coach multi-leva, coach senza atleti, president/director, su Supabase locale via browser | Test | TASK-05 |
 | TODO | TASK-08 | Regressione completa | `npx supabase db reset` + `npm run test:integration` (in particolare `test-rls.mjs`) + `npx tsc -p tsconfig.app.json --noEmit` | Test | TASK-03, TASK-06, TASK-07 |

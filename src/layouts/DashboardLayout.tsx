@@ -30,7 +30,8 @@ import {
   Bell,
   ChevronDown,
   Calendar,
-  Plus
+  Plus,
+  ShieldCheck
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/hooks/useTheme'
@@ -48,6 +49,7 @@ const NAV_ITEMS = [
   { to: '/visite',    icon: Stethoscope,     label: 'Visite Mediche' },
   { to: '/presenze',  icon: CalendarCheck,   label: 'Presenze' },
   { to: '/convocazioni', icon: ClipboardCheck, label: 'Convocazioni' },
+  { to: '/squadra',   icon: ShieldCheck,     label: 'Squadra' },
   { to: '/magazzino', icon: Package,         label: 'Magazzino' },
   { to: '/task',      icon: ClipboardList,   label: 'Task Staff' },
 ]
@@ -63,7 +65,7 @@ const ROLE_LABELS: Record<string, string> = {
 const getVisibleNavItems = (userRole: string | null) => {
   if (!userRole || userRole === 'player' || userRole === 'parent') return []
   if (userRole === 'coach') {
-    return NAV_ITEMS.filter(item => ['/', '/atleti', '/presenze', '/convocazioni', '/task'].includes(item.to))
+    return NAV_ITEMS.filter(item => ['/', '/atleti', '/presenze', '/convocazioni', '/squadra', '/task'].includes(item.to))
   }
   return NAV_ITEMS
 }
