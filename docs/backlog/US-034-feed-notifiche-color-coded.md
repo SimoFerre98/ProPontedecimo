@@ -16,6 +16,6 @@ After implementing this story, the user can: aprire il feed e distinguere a colp
 - [ ] Il design è accattivante per i ragazzi ma non infantile, coerente col design system Premium Glass
 - [ ] Gli allenatori possono notificare solo la propria leva; i dirigenti tutta la società
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [docs/planning/US-034-plan.md](../planning/US-034-plan.md)
 

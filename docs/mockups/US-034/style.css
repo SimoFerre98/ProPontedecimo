@@ -1,0 +1,314 @@
+/* ============================================================
+   US-034 — Feed notifiche color-coded · style.css
+   Estende i token "Premium Glass" di ../US-017/shared.css (linkato
+   prima di questo file: tokens, glass-card, pill, phone-frame,
+   skeleton, empty-state, demo-panel/demo-state-btn sono già lì).
+   Aggiunge qui solo i componenti nuovi della story:
+   - sistema di gravità a 3 livelli (Urgente/Promemoria/Comunicazione)
+     condiviso fra vista Staff (compose) e vista Giocatore/Genitore (feed)
+   - compose card (tile gravità, target leva/società, form)
+   - lista storico invii (vista Staff)
+   - feed card color-coded + filtro gravità (vista Giocatore/Genitore)
+   ============================================================ */
+
+/* ---------- Gravità: mappatura colore ↔ tier ----------
+   Urgente      → --rose      (rosso)
+   Promemoria   → --gold      (ambra)
+   Comunicazione→ --primary   (bordeaux #800020, già il colore
+                  "primary" di sistema: vedi src/index.css)
+   ---------------------------------------------------------- */
+:root {
+  --sev-urgent: var(--rose);
+  --sev-urgent-soft: oklch(0.645 0.246 16.44 / 0.14);
+  --sev-reminder: var(--gold);
+  --sev-reminder-soft: oklch(0.84 0.115 85 / 0.14);
+  /* Nota: --primary-soft (oklch hue 12, chroma .19) è visivamente troppo
+     vicino a --rose (hue 16.44, chroma .246) per restare distinguibile
+     a colpo d'occhio nello stato "non selezionato". Per la gravità
+     Comunicazione usiamo quindi un tono bordeaux più smorzato (chroma
+     più bassa) — stessa famiglia hue del brand, ma chiaramente meno
+     acceso del rosso urgente. Lo stato attivo/badge pieno resta invece
+     sul bordeaux "vero" (--primary, #800020) per il fondo pieno. */
+  --sev-comm: oklch(0.64 0.085 22);
+  --sev-comm-solid: var(--primary);
+  --sev-comm-soft: oklch(0.33 0.13 15 / 0.22);
+}
+
+/* ============================================================
+   Ruolo demo switch (staff) — stessa anatomia di .player-switch
+   di US-032/style.css, rinominata per evitare ambiguità cross-story
+   ============================================================ */
+.role-switch {
+  display: flex; align-items: center; gap: .35rem; padding: .35rem;
+  border-radius: var(--radius-pill); background: var(--surface-05); border: 1px solid var(--border-soft);
+}
+.role-switch button {
+  flex: 1; height: 2rem; border-radius: var(--radius-pill); border: none; background: none;
+  color: var(--muted-foreground); font-family: inherit; font-size: 8.5px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: .06em; cursor: pointer; transition: all .18s ease;
+  white-space: nowrap; padding: 0 .5rem;
+}
+.role-switch button.active { background: var(--primary); color: #fff; }
+
+/* ============================================================
+   Tile di scelta gravità (compose) — 3 blocchi grandi, un solo
+   attivo. Colore + icona + label distinti per ciascun livello.
+   ============================================================ */
+.sev-tile-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem; }
+.sev-tile {
+  display: flex; flex-direction: column; align-items: center; gap: .45rem;
+  padding: .85rem .4rem .75rem;
+  border-radius: var(--radius-2xl);
+  border: 1.5px solid var(--border-soft); background: oklch(1 0 0 / 0.03);
+  color: var(--muted-foreground);
+  font-family: inherit; cursor: pointer; transition: all .18s cubic-bezier(.3,.9,.4,1.3);
+}
+.sev-tile-icon {
+  width: 2.35rem; height: 2.35rem; border-radius: var(--radius-pill);
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid currentColor; background: oklch(1 0 0 / 0.04);
+}
+.sev-tile-icon svg { width: 1.15rem; height: 1.15rem; }
+.sev-tile-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; text-align: center; line-height: 1.3; }
+.sev-tile-sub { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: oklch(0.708 0 0 / 0.55); }
+.sev-tile:active { transform: scale(0.95); }
+
+.sev-tile.urgent { color: var(--sev-urgent); }
+.sev-tile.urgent.active {
+  background: var(--sev-urgent-soft); border-color: var(--sev-urgent);
+  box-shadow: 0 0 0 3px oklch(0.645 0.246 16.44 / 0.18), 0 8px 20px -8px oklch(0.645 0.246 16.44 / 0.5);
+}
+.sev-tile.urgent.active .sev-tile-icon { background: var(--sev-urgent); color: #1a0507; }
+.sev-tile.urgent.active .sev-tile-sub { color: var(--sev-urgent); opacity: .85; }
+
+.sev-tile.reminder { color: var(--sev-reminder); }
+.sev-tile.reminder.active {
+  background: var(--sev-reminder-soft); border-color: var(--sev-reminder);
+  box-shadow: 0 0 0 3px oklch(0.84 0.115 85 / 0.18), 0 8px 20px -8px oklch(0.84 0.115 85 / 0.5);
+}
+.sev-tile.reminder.active .sev-tile-icon { background: var(--sev-reminder); color: #1d1204; }
+.sev-tile.reminder.active .sev-tile-sub { color: var(--sev-reminder); opacity: .85; }
+
+.sev-tile.comm { color: var(--sev-comm); }
+.sev-tile.comm.active {
+  background: var(--sev-comm-soft); border-color: var(--sev-comm-solid);
+  box-shadow: 0 0 0 3px oklch(0.33 0.13 15 / 0.28), 0 8px 20px -8px oklch(0.33 0.13 15 / 0.6);
+}
+.sev-tile.comm.active .sev-tile-icon { background: var(--sev-comm-solid); color: #fff; }
+.sev-tile.comm.active .sev-tile-sub { color: var(--sev-comm); opacity: .9; }
+
+/* ============================================================
+   Badge di gravità compatto (usato su storico invii + feed)
+   ============================================================ */
+.sev-badge {
+  display: inline-flex; align-items: center; gap: .35rem;
+  height: 1.5rem; padding: 0 .6rem;
+  border-radius: var(--radius-pill);
+  font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em;
+  flex-shrink: 0; white-space: nowrap;
+}
+.sev-badge svg { width: .65rem; height: .65rem; }
+.sev-badge.urgent { background: var(--sev-urgent-soft); color: var(--sev-urgent); border: 1px solid oklch(0.645 0.246 16.44 / 0.35); }
+.sev-badge.reminder { background: var(--sev-reminder-soft); color: var(--sev-reminder); border: 1px solid oklch(0.84 0.115 85 / 0.4); }
+.sev-badge.comm { background: var(--sev-comm-soft); color: var(--sev-comm); border: 1px solid oklch(0.33 0.13 15 / 0.4); }
+
+/* ============================================================
+   Target: leva bloccata (allenatore) vs picker (dirigente/presidente)
+   Riusa .leva-chip-row / .leva-chip di US-017/shared.css
+   ============================================================ */
+.target-locked-pill {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .7rem .9rem; border-radius: var(--radius-2xl);
+  background: var(--surface-05); border: 1px dashed var(--border-strong);
+  color: var(--foreground);
+}
+.target-locked-pill .tlp-icon {
+  width: 2rem; height: 2rem; border-radius: var(--radius-pill); flex-shrink: 0;
+  background: oklch(1 0 0 / 0.06); border: 1px solid var(--border-soft);
+  display: flex; align-items: center; justify-content: center; color: oklch(0.708 0 0 / 0.6);
+}
+.target-locked-pill .tlp-icon svg { width: .95rem; height: .95rem; }
+.target-locked-pill .tlp-text b { display: block; font-size: .8rem; font-weight: 800; }
+.target-locked-pill .tlp-text span { display: block; font-size: 9px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .06em; margin-top: .1rem; }
+
+.leva-chip.all-club { }
+.leva-chip.all-club svg { width: .75rem; height: .75rem; }
+
+/* ============================================================
+   Compose card
+   ============================================================ */
+.compose-card {
+  border-radius: var(--radius-32);
+  background: var(--surface-05); border: 1px solid var(--border-soft);
+  padding: 1.1rem 1.1rem 1.2rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.compose-section { display: flex; flex-direction: column; gap: .55rem; }
+.compose-label {
+  font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em;
+  color: oklch(0.708 0 0 / 0.7); padding-left: .1rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.compose-input {
+  height: 2.9rem; padding: 0 1rem; border-radius: var(--radius-2xl);
+  background: oklch(1 0 0 / 0.04); border: 1px solid var(--border-soft);
+  color: var(--foreground); font-family: inherit; font-size: .82rem; font-weight: 700;
+  width: 100%; outline: none; transition: border-color .2s ease, background .2s ease;
+}
+.compose-input::placeholder { color: oklch(0.708 0 0 / 0.4); font-weight: 500; }
+.compose-input:focus { border-color: var(--sev-focus, var(--primary-soft)); background: oklch(1 0 0 / 0.06); }
+.compose-textarea {
+  min-height: 5.5rem; padding: .8rem 1rem; border-radius: var(--radius-2xl);
+  background: oklch(1 0 0 / 0.04); border: 1px solid var(--border-soft);
+  color: var(--foreground); font-family: inherit; font-size: .8rem; font-weight: 600; line-height: 1.55;
+  width: 100%; outline: none; resize: none; transition: border-color .2s ease, background .2s ease;
+}
+.compose-textarea::placeholder { color: oklch(0.708 0 0 / 0.4); font-weight: 500; }
+.compose-textarea:focus { border-color: var(--sev-focus, var(--primary-soft)); background: oklch(1 0 0 / 0.06); }
+.compose-charcount { font-size: 8.5px; font-weight: 700; color: oklch(0.708 0 0 / 0.5); text-align: right; padding-right: .2rem; }
+
+.btn-publish-notif {
+  width: 100%; height: 3.1rem; border-radius: var(--radius-pill); border: none;
+  background: linear-gradient(135deg, var(--sev-focus, var(--primary)), oklch(0.42 0.15 15));
+  color: #fff; font-family: inherit; font-size: .76rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: .08em;
+  display: flex; align-items: center; justify-content: center; gap: .55rem;
+  box-shadow: 0 14px 28px -10px oklch(0.33 0.13 15 / 0.5), 0 0 0 1px oklch(1 0 0 / 0.08) inset;
+  cursor: pointer; transition: transform .15s ease, background .3s ease, box-shadow .3s ease;
+}
+.btn-publish-notif svg { width: .95rem; height: .95rem; }
+.btn-publish-notif:disabled { opacity: .4; cursor: not-allowed; }
+.btn-publish-notif:not(:disabled):active { transform: scale(0.98); }
+
+/* ============================================================
+   Storico invii (vista Staff)
+   ============================================================ */
+.history-list { display: flex; flex-direction: column; gap: .55rem; }
+.history-row {
+  display: flex; align-items: flex-start; gap: .75rem;
+  padding: .8rem .9rem .8rem .75rem;
+  border-radius: var(--radius-2xl);
+  background: var(--surface-05); border: 1px solid var(--border-soft);
+  border-left: 3px solid transparent;
+  animation: historyIn .35s cubic-bezier(.2,.85,.3,1.15) both;
+}
+.history-row.urgent { border-left-color: var(--sev-urgent); }
+.history-row.reminder { border-left-color: var(--sev-reminder); }
+.history-row.comm { border-left-color: var(--sev-comm-solid); }
+@keyframes historyIn { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.history-icon {
+  width: 2.15rem; height: 2.15rem; border-radius: var(--radius-pill); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; margin-top: .05rem;
+}
+.history-icon svg { width: 1rem; height: 1rem; }
+.history-row.urgent .history-icon { background: var(--sev-urgent-soft); color: var(--sev-urgent); }
+.history-row.reminder .history-icon { background: var(--sev-reminder-soft); color: var(--sev-reminder); }
+.history-row.comm .history-icon { background: var(--sev-comm-soft); color: var(--sev-comm); }
+
+.history-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .3rem; }
+.history-top-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.history-title { font-size: .82rem; font-weight: 800; color: var(--foreground); line-height: 1.3; }
+.history-time { font-size: 8.5px; font-weight: 800; color: oklch(0.708 0 0 / 0.55); text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; flex-shrink: 0; }
+.history-excerpt { font-size: .72rem; font-weight: 500; color: var(--muted-foreground); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.history-meta-row { display: flex; align-items: center; gap: .4rem; margin-top: .1rem; }
+.target-chip {
+  display: inline-flex; align-items: center; gap: .3rem;
+  height: 1.35rem; padding: 0 .55rem; border-radius: var(--radius-pill);
+  background: oklch(1 0 0 / 0.05); border: 1px solid var(--border-soft);
+  font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-foreground);
+}
+.target-chip svg { width: .55rem; height: .55rem; }
+.target-chip.all { color: var(--gold); border-color: oklch(0.84 0.115 85 / 0.35); background: oklch(0.84 0.115 85 / 0.08); }
+
+/* ============================================================
+   Feed (vista Giocatore/Genitore) — filtro gravità
+   ============================================================ */
+.feed-filter-row { display: flex; gap: .45rem; overflow-x: auto; margin: 0 -1.1rem; padding: 0 1.1rem .1rem; scrollbar-width: none; }
+.feed-filter-row::-webkit-scrollbar { display: none; }
+.feed-filter-chip {
+  flex-shrink: 0; display: flex; align-items: center; gap: .4rem;
+  height: 2.15rem; padding: 0 .95rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-soft); background: var(--surface-05);
+  color: var(--muted-foreground);
+  font-family: inherit; font-size: 9.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em;
+  white-space: nowrap; cursor: pointer; transition: all .18s ease;
+}
+.feed-filter-chip svg { width: .78rem; height: .78rem; }
+.feed-filter-chip.active.all { background: oklch(1 0 0 / 0.12); border-color: var(--border-strong); color: var(--foreground); }
+.feed-filter-chip.active.urgent { background: var(--sev-urgent-soft); border-color: var(--sev-urgent); color: var(--sev-urgent); }
+.feed-filter-chip.active.reminder { background: var(--sev-reminder-soft); border-color: var(--sev-reminder); color: var(--sev-reminder); }
+.feed-filter-chip.active.comm { background: var(--sev-comm-soft); border-color: var(--sev-comm-solid); color: var(--sev-comm); }
+
+/* ---------- Feed card ---------- */
+.feed-list { display: flex; flex-direction: column; gap: .8rem; }
+.feed-card {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius-2xl);
+  padding: 1rem 1.1rem 1.05rem 1.2rem;
+  border: 1px solid var(--border-soft);
+  animation: feedIn .4s cubic-bezier(.2,.85,.3,1.15) both;
+  display: flex; flex-direction: column; gap: .6rem;
+}
+@keyframes feedIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.feed-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+}
+.feed-card.urgent { background: linear-gradient(120deg, oklch(0.645 0.246 16.44 / 0.14), oklch(1 0 0 / 0.02) 55%); border-color: oklch(0.645 0.246 16.44 / 0.3); }
+.feed-card.urgent::before { background: var(--sev-urgent); box-shadow: 0 0 12px oklch(0.645 0.246 16.44 / 0.6); }
+.feed-card.reminder { background: linear-gradient(120deg, oklch(0.84 0.115 85 / 0.13), oklch(1 0 0 / 0.02) 55%); border-color: oklch(0.84 0.115 85 / 0.32); }
+.feed-card.reminder::before { background: var(--sev-reminder); box-shadow: 0 0 12px oklch(0.84 0.115 85 / 0.55); }
+.feed-card.comm { background: linear-gradient(120deg, oklch(0.33 0.13 15 / 0.28), oklch(1 0 0 / 0.02) 55%); border-color: oklch(0.62 0.19 12 / 0.4); }
+.feed-card.comm::before { background: var(--sev-comm-solid); box-shadow: 0 0 12px oklch(0.33 0.13 15 / 0.7); }
+
+.feed-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: .6rem; }
+.feed-card-icon {
+  width: 2.5rem; height: 2.5rem; border-radius: var(--radius-pill); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid currentColor;
+}
+.feed-card-icon svg { width: 1.15rem; height: 1.15rem; }
+.feed-card.urgent .feed-card-icon { color: var(--sev-urgent); background: oklch(0.645 0.246 16.44 / 0.16); }
+.feed-card.reminder .feed-card-icon { color: var(--sev-reminder); background: oklch(0.84 0.115 85 / 0.16); }
+.feed-card.comm .feed-card-icon { color: var(--sev-comm); background: oklch(0.33 0.13 15 / 0.32); }
+
+.feed-card-headline { flex: 1; min-width: 0; }
+.feed-card-tag {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: 8.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em;
+  margin-bottom: .3rem;
+}
+.feed-card.urgent .feed-card-tag { color: var(--sev-urgent); }
+.feed-card.reminder .feed-card-tag { color: var(--sev-reminder); }
+.feed-card.comm .feed-card-tag { color: var(--sev-comm); }
+.feed-card-title { font-size: .98rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.2; color: var(--foreground); }
+
+.feed-new-dot { position: relative; width: .5rem; height: .5rem; border-radius: 50%; flex-shrink: 0; margin-top: .35rem; }
+.feed-card.urgent .feed-new-dot { background: var(--sev-urgent); animation: feedPulseR 1.6s infinite; }
+.feed-card.reminder .feed-new-dot { background: var(--sev-reminder); animation: feedPulseG 1.6s infinite; }
+.feed-card.comm .feed-new-dot { background: var(--sev-comm-solid); animation: feedPulseB 1.6s infinite; }
+@keyframes feedPulseR { 0% { box-shadow: 0 0 0 0 oklch(0.645 0.246 16.44 / 0.55); } 70% { box-shadow: 0 0 0 7px oklch(0.645 0.246 16.44 / 0); } 100% { box-shadow: 0 0 0 0 oklch(0.645 0.246 16.44 / 0); } }
+@keyframes feedPulseG { 0% { box-shadow: 0 0 0 0 oklch(0.84 0.115 85 / 0.55); } 70% { box-shadow: 0 0 0 7px oklch(0.84 0.115 85 / 0); } 100% { box-shadow: 0 0 0 0 oklch(0.84 0.115 85 / 0); } }
+@keyframes feedPulseB { 0% { box-shadow: 0 0 0 0 oklch(0.33 0.13 15 / 0.6); } 70% { box-shadow: 0 0 0 7px oklch(0.33 0.13 15 / 0); } 100% { box-shadow: 0 0 0 0 oklch(0.33 0.13 15 / 0); } }
+
+.feed-card-body { font-size: .78rem; font-weight: 500; color: oklch(1 0 0 / 0.82); line-height: 1.55; }
+.feed-card-foot { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding-top: .35rem; border-top: 1px solid oklch(1 0 0 / 0.07); }
+.feed-card-time { font-size: 8.5px; font-weight: 800; color: oklch(0.708 0 0 / 0.6); text-transform: uppercase; letter-spacing: .06em; }
+
+/* ---------- Contesto: mini-preview punto d'ingresso su PortalDashboard ---------- */
+.entry-preview {
+  border-radius: var(--radius-2xl);
+  background: oklch(1 0 0 / 0.03); border: 1px dashed var(--border-strong);
+  padding: 1rem 1.1rem; display: flex; align-items: center; gap: .85rem;
+}
+.entry-preview .ep-icon {
+  width: 2.6rem; height: 2.6rem; border-radius: var(--radius-2xl); flex-shrink: 0;
+  background: oklch(0.33 0.13 15 / 0.2); border: 1px solid oklch(0.33 0.13 15 / 0.35);
+  display: flex; align-items: center; justify-content: center; color: var(--primary-soft);
+}
+.entry-preview .ep-icon svg { width: 1.2rem; height: 1.2rem; }
+.entry-preview .ep-text b { display: block; font-size: .8rem; font-weight: 800; }
+.entry-preview .ep-text span { display: block; font-size: .68rem; font-weight: 600; color: var(--muted-foreground); margin-top: .15rem; line-height: 1.4; }
+.entry-preview .ep-arrow { margin-left: auto; color: oklch(0.708 0 0 / 0.4); flex-shrink: 0; }
+.entry-preview .ep-arrow svg { width: 1rem; height: 1rem; }

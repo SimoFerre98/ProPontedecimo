@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-034 · Feed Notifiche Color-Coded — Vista Giocatore/Genitore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../US-017/shared.css">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ============================================================
+     US-034 — vista Giocatore/Genitore: /portal/notifiche
+     Bacheca in sola lettura, ordine cronologico inverso. Ogni card
+     è colorata in modo netto per gravità (Urgente/Promemoria/
+     Comunicazione), con icona e etichetta dedicate. Il pannello a
+     destra permette di passare fra stato Caricato, Vuoto e
+     Caricamento senza creare schermate separate.
+     ============================================================ */
+</style>
+</head>
+<body>
+
+<div class="pitch-stage" aria-hidden="true"></div>
+<div class="pitch-centre" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="mock-nav">
+  <span class="nav-tag">US-034</span>
+  <a href="index.html">Vista Staff</a>
+  <a href="feed.html" class="active">Vista Giocatore/Genitore</a>
+</nav>
+
+<div class="scene">
+
+  <div class="scene-note">
+    <h1>Bacheca <span class="accent">Notifiche</span></h1>
+    <p>Atleti e genitori leggono qui le comunicazioni della società, più recenti in alto. Il colore racconta subito la gravità: rosso per l'urgenza, ambra per i promemoria, bordeaux per le comunicazioni ordinarie — nessuna sorpresa, nessun tono infantile.</p>
+    <div class="tag-row">
+      <span class="scene-tag on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Sola lettura</span>
+      <span class="scene-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Propria leva + società intera</span>
+    </div>
+
+    <div class="entry-preview">
+      <span class="ep-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+      <span class="ep-text"><b>Da PortalDashboard.tsx</b><span>Punto d'ingresso proposto: una card "Notifiche" (badge con il conteggio) fra le sezioni della home portale, dato che oggi non esiste ancora una nav dedicata sul portale.</span></span>
+      <span class="ep-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span>
+    </div>
+
+    <p style="font-size:.68rem; opacity:.6;">Usa il pannello a destra per filtrare per gravità o per vedere lo stato Vuoto/Caricamento.</p>
+  </div>
+
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <div class="app-bg" aria-hidden="true"></div>
+
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v3H2zM6 13h2v7H6zm4-4h2v11h-2zm4-3h2v14h-2zm4 6h2v8h-2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 10v4"/></svg>
+        </div>
+      </div>
+
+      <header class="app-header">
+        <div class="app-brand">
+          <img src="../../../public/Logo ASD Pro Pontedecimo.png" onerror="this.style.display='none'" alt="">
+          <span>Pontedecimo</span>
+        </div>
+        <div class="app-header-actions">
+          <button class="icon-btn" aria-label="Notifiche">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <div class="app-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-main" style="gap:1rem;">
+
+        <div class="page-eyebrow">
+          <h2><span class="page-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>Bacheca</h2>
+          <span class="leva-static">Allievi 2011</span>
+        </div>
+
+        <div class="feed-filter-row" id="filterRow"><!-- generata via JS --></div>
+
+        <div id="feedZone"><!-- generata via JS: lista / vuoto / skeleton --></div>
+
+      </main>
+
+      <div class="floating-nav-fake">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        Menu
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-panel">
+    <div class="demo-label eyebrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2"/><path d="m5.6 5.6 1.4 1.4"/><path d="M3 12h2"/><path d="M19 12h2"/><path d="m17 7 1.4-1.4"/><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 7a5 5 0 0 1 3.5 8.5c-.6.6-1 1.4-1.2 2.5h-4.6c-.2-1.1-.6-1.9-1.2-2.5A5 5 0 0 1 12 7z"/></svg>
+      Guida al mockup
+    </div>
+    <p>Passa fra gli stati della bacheca, senza cambiare schermata:</p>
+    <div class="demo-state-btns" id="demoStateBtns"><!-- generata via JS --></div>
+    <p style="margin-top:.2rem;">Il badge <b style="color:var(--rose)">punto rosso pulsante</b> segnala le notifiche appena arrivate. Il filtro sopra la lista permette di isolare una sola gravità.</p>
+  </div>
+
+</div>
+
+<script>
+const ICON_URGENT = '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>';
+const ICON_REMINDER = '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>';
+const ICON_COMM = '<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>';
+const ICON_CLUB = '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>';
+const ICON_ALL = '<rect x="3" y="4" width="7" height="7" rx="1"/><rect x="14" y="4" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>';
+const ICON_EMPTY_BELL = '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>';
+
+const SEVERITIES = {
+  urgent:   { label: 'Urgente',       icon: ICON_URGENT },
+  reminder: { label: 'Promemoria',    icon: ICON_REMINDER },
+  comm:     { label: 'Comunicazione', icon: ICON_COMM }
+};
+
+const FEED = [
+  { id: 6, severity: 'urgent',   title: 'Allenamento di oggi ANTICIPATO alle 18:00', body: 'Per l\'imminente allerta meteo, l\'allenamento di questa sera è anticipato di 30 minuti. Mi raccomando la puntualità, si comincia puntuali con il riscaldamento.', target: 'Allievi 2011', time: '12 minuti fa', unread: true },
+  { id: 5, severity: 'reminder', title: 'Scadenza quota 2ª rata: venerdì', body: 'Ricordiamo che venerdì 25 luglio scade la seconda rata della quota associativa. Chi non avesse ancora provveduto può farlo dalla sezione Pagamenti del portale.', target: null, time: '3 ore fa', unread: true },
+  { id: 4, severity: 'comm',     title: 'Nuove maglie da gara in distribuzione', body: 'Da lunedì saranno disponibili in segreteria le nuove maglie da gara 2025/26. La distribuzione avverrà per leva secondo il calendario allenamenti abituale.', target: null, time: 'Ieri', unread: false },
+  { id: 3, severity: 'comm',     title: 'Foto di squadra: sabato prima dell\'allenamento', body: 'Sabato prossimo, 30 minuti prima dell\'inizio dell\'allenamento, verranno scattate le foto ufficiali di squadra per l\'annuario stagionale. Presentarsi già in tenuta da gioco.', target: 'Allievi 2011', time: '4 giorni fa', unread: false },
+  { id: 2, severity: 'urgent',   title: 'Partita di sabato RINVIATA', body: 'La partita di sabato contro la Voltrese è stata rinviata dalla Federazione per indisponibilità del campo. Nuova data in arrivo appena confermata.', target: 'Allievi 2011', time: '5 giorni fa', unread: false },
+  { id: 1, severity: 'reminder', title: 'Ricorda il certificato medico', body: 'Alcuni atleti risultano ancora senza certificato medico agonistico caricato a sistema. Senza certificato non sarà possibile scendere in campo dalla prossima gara.', target: null, time: '6 giorni fa', unread: false }
+];
+
+let activeFilter = 'all';
+let viewState = 'loaded'; // loaded | empty | loading
+
+function filteredFeed() {
+  if (activeFilter === 'all') return FEED;
+  return FEED.filter(f => f.severity === activeFilter);
+}
+
+function renderFilterRow() {
+  const wrap = document.getElementById('filterRow');
+  wrap.innerHTML = '';
+  const items = [
+    ['all', 'Tutte', null],
+    ['urgent', 'Urgenti', ICON_URGENT],
+    ['reminder', 'Promemoria', ICON_REMINDER],
+    ['comm', 'Comunicazioni', ICON_COMM]
+  ];
+  items.forEach(([key, label, icon]) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'feed-filter-chip' + (activeFilter === key ? ' active ' + key : '');
+    b.innerHTML = (icon ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + icon + '</svg>' : '') + label;
+    b.addEventListener('click', () => { activeFilter = key; renderAll(); });
+    wrap.appendChild(b);
+  });
+}
+
+function renderCard(item) {
+  const meta = SEVERITIES[item.severity];
+  const card = document.createElement('div');
+  card.className = 'feed-card ' + item.severity;
+  card.innerHTML =
+    '<div class="feed-card-top">' +
+      '<span class="feed-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + meta.icon + '</svg></span>' +
+      '<div class="feed-card-headline">' +
+        '<div class="feed-card-tag">' + meta.label + '</div>' +
+        '<div class="feed-card-title">' + item.title + '</div>' +
+      '</div>' +
+      (item.unread ? '<span class="feed-new-dot"></span>' : '') +
+    '</div>' +
+    '<p class="feed-card-body">' + item.body + '</p>' +
+    '<div class="feed-card-foot">' +
+      (item.target
+        ? '<span class="target-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICON_ALL + '</svg>' + item.target + '</span>'
+        : '<span class="target-chip all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICON_CLUB + '</svg>Tutta la società</span>') +
+      '<span class="feed-card-time">' + item.time + '</span>' +
+    '</div>';
+  return card;
+}
+
+function renderFeedZone() {
+  const zone = document.getElementById('feedZone');
+  zone.innerHTML = '';
+
+  if (viewState === 'loading') {
+    const wrap = document.createElement('div');
+    wrap.className = 'feed-list';
+    for (let i = 0; i < 4; i++) {
+      const row = document.createElement('div');
+      row.className = 'skeleton-row';
+      row.style.borderRadius = 'var(--radius-2xl)';
+      row.innerHTML =
+        '<div class="sk-block sk-avatar"></div>' +
+        '<div class="sk-lines"><div class="sk-block sk-line w60"></div><div class="sk-block sk-line w35"></div></div>';
+      wrap.appendChild(row);
+    }
+    zone.appendChild(wrap);
+    return;
+  }
+
+  const data = filteredFeed();
+
+  if (viewState === 'empty' || data.length === 0) {
+    zone.innerHTML =
+      '<div class="empty-state">' +
+        '<div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICON_EMPTY_BELL + '</svg></div>' +
+        '<h4>Nessuna notifica</h4>' +
+        '<p>Non ci sono ancora comunicazioni ' + (activeFilter === 'all' ? '' : 'di questa gravità ') + 'per la tua leva o per tutta la società. Quando arriverà una notizia la vedrai comparire qui.</p>' +
+      '</div>';
+    return;
+  }
+
+  const list = document.createElement('div');
+  list.className = 'feed-list';
+  data.forEach(item => list.appendChild(renderCard(item)));
+  zone.appendChild(list);
+}
+
+function renderDemoButtons() {
+  const wrap = document.getElementById('demoStateBtns');
+  const items = [
+    ['loaded', 'Caricato', '01', 'Feed pieno, con badge "nuove"'],
+    ['empty', 'Vuoto', '02', 'Nessuna comunicazione ancora'],
+    ['loading', 'Caricamento', '03', 'Skeleton in attesa dei dati']
+  ];
+  wrap.innerHTML = '';
+  items.forEach(([key, label, num, hint]) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'demo-state-btn' + (viewState === key ? ' active' : '');
+    btn.innerHTML = '<span><b>' + num + '</b> &nbsp; ' + label + '</span>';
+    btn.title = hint;
+    btn.addEventListener('click', () => { viewState = key; renderAll(); });
+    wrap.appendChild(btn);
+  });
+}
+
+function renderAll() {
+  renderFilterRow();
+  renderFeedZone();
+  renderDemoButtons();
+}
+
+renderAll();
+</script>
+
+</body>
+</html>
