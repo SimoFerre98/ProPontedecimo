@@ -176,7 +176,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-034](backlog/US-034-feed-notifiche-color-coded.md) | Feed notifiche color-coded | LOW | 5 | REVIEW |
+| [US-034](backlog/US-034-feed-notifiche-color-coded.md) | Feed notifiche color-coded | LOW | 5 | DONE |
 
 ### EP-014: Refactoring Architetturale & Resilienza
 
