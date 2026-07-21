@@ -11,13 +11,13 @@ così che la pagina più complessa dell'app sia leggibile, testabile e faccia da
 After implementing this story, the user can: usare la pagina Atleti esattamente come prima (filtri, ricerca, viste, paginazione), con il codice suddiviso in moduli sotto `src/pages/Athletes/`.
 
 **Acceptance Criteria**
-- [ ] `Athletes.tsx` è suddiviso in feature folder: layout principale, vista griglia, vista tabella, pannello filtri e hook per query+filtri
-- [ ] Nessun file della feature supera ~300 righe
-- [ ] Nessuna regressione funzionale: filtri, ricerca, ordinamento, paginazione e azioni funzionano come prima
-- [ ] La struttura adottata è replicabile per `AddAthleteModal.tsx` (726 righe) e le altre pagine grandi
+- [x] `Athletes.tsx` è suddiviso in feature folder: layout principale, vista griglia, vista tabella, pannello filtri e hook per query+filtri
+- [x] Nessun file della feature supera ~300 righe
+- [x] Nessuna regressione funzionale: filtri, ricerca, ordinamento, paginazione e azioni funzionano come prima
+- [x] La struttura adottata è replicabile per `AddAthleteModal.tsx` (726 righe) e le altre pagine grandi
 
 **Context**
 Dall'analisi architetturale: `Athletes.tsx` contiene toolbar, filtri, grid, tabella e paginazione inline in un unico file, violando la single responsibility.
 
-**Status:** IN PROGRESS
+**Status:** REVIEW
 **Plan:** [docs/planning/US-037-plan.md](../planning/US-037-plan.md)

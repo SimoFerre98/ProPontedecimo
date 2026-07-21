@@ -57,18 +57,18 @@ Come per US-035/US-036, il progetto non ha un framework di test frontend configu
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Creare `types.ts` | Estrarre `FiltersState`, `DEFAULT_FILTERS` e `activeFilterCount` in `src/pages/Athletes/types.ts` | Impl | - |
-| TODO | TASK-02 | Creare hook `useAthletesData` | Estrarre le 4 query, lo stato filtri/pendingFilters, `applyFilters`/`resetFilters`/`setPending`/`handleSort`/`handleExport` in `src/pages/Athletes/hooks/useAthletesData.ts` | Impl | TASK-01 |
-| TODO | TASK-03 | Creare `AthleteFilterPanel.tsx` | Estrarre pannello filtri avanzati + chip filtri attivi in un componente puro | Impl | TASK-01 |
-| TODO | TASK-04 | Creare `AthleteGridView.tsx` | Estrarre la vista griglia in un componente puro, props per dati e callback | Impl | TASK-01 |
-| TODO | TASK-05 | Creare `AthleteTableView.tsx` | Estrarre la vista tabella (incluso ordinamento colonne) in un componente puro | Impl | TASK-01 |
-| TODO | TASK-06 | Assemblare `index.tsx` | Riscrivere il file principale come guscio di orchestrazione: header, banner, stats, toolbar, wiring dell'hook, dei 3 componenti e dei 3 modali esistenti; rimuovere il vecchio `Athletes.tsx` | Impl | TASK-02, TASK-03, TASK-04, TASK-05 |
-| TODO | TASK-07 | Verifica manuale viste dati | Testare griglia e tabella: dati, azioni Dettagli/Pagamenti/Elimina, invariati rispetto a prima | Test | TASK-06 |
-| TODO | TASK-08 | Verifica manuale pannello filtri | Testare ogni filtro, applica/reset, chip rimovibili singolarmente | Test | TASK-06 |
-| TODO | TASK-09 | Verifica manuale ordinamento | Testare `handleSort` su ogni colonna ordinabile, confermando sincronia `filters`/`pendingFilters` | Test | TASK-06 |
-| TODO | TASK-10 | Verifica manuale banner, export, paginazione | Testare banner insoluti/matricola (click e navigazione/filtro), export Excel, ricerca, filtro settore, paginazione | Test | TASK-06 |
-| TODO | TASK-11 | Verifica dimensione file | Confermare che nessun file della feature superi ~300 righe; se un file la supera, valutare un'ulteriore estrazione mirata | Test | TASK-06 |
-| TODO | TASK-12 | Verifica finale type-check | Eseguire `npx tsc --noEmit` e correggere eventuali errori residui prima della review | Test | TASK-07, TASK-08, TASK-09, TASK-10, TASK-11 |
+| DONE | TASK-01 | Creare `types.ts` | Estrarre `FiltersState`, `DEFAULT_FILTERS` e `activeFilterCount` in `src/pages/Athletes/types.ts` | Impl | - |
+| DONE | TASK-02 | Creare hook `useAthletesData` | Estrarre le 4 query, lo stato filtri/pendingFilters, `applyFilters`/`resetFilters`/`setPending`/`handleSort`/`handleExport` in `src/pages/Athletes/hooks/useAthletesData.ts` | Impl | TASK-01 |
+| DONE | TASK-03 | Creare `AthleteFilterPanel.tsx` | Estrarre pannello filtri avanzati + chip filtri attivi in un componente puro | Impl | TASK-01 |
+| DONE | TASK-04 | Creare `AthleteGridView.tsx` | Estrarre la vista griglia in un componente puro, props per dati e callback | Impl | TASK-01 |
+| DONE | TASK-05 | Creare `AthleteTableView.tsx` | Estrarre la vista tabella (incluso ordinamento colonne) in un componente puro | Impl | TASK-01 |
+| DONE | TASK-06 | Assemblare `index.tsx` | Riscrivere il file principale come guscio di orchestrazione: header, banner, stats, toolbar, wiring dell'hook, dei 3 componenti e dei 3 modali esistenti; rimuovere il vecchio `Athletes.tsx` | Impl | TASK-02, TASK-03, TASK-04, TASK-05 |
+| DONE | TASK-07 | Verifica manuale viste dati | Testare griglia e tabella: dati, azioni Dettagli/Pagamenti/Elimina, invariati rispetto a prima | Test | TASK-06 |
+| DONE | TASK-08 | Verifica manuale pannello filtri | Testare ogni filtro, applica/reset, chip rimovibili singolarmente | Test | TASK-06 |
+| DONE | TASK-09 | Verifica manuale ordinamento | Testare `handleSort` su ogni colonna ordinabile, confermando sincronia `filters`/`pendingFilters` | Test | TASK-06 |
+| DONE | TASK-10 | Verifica manuale banner, export, paginazione | Testare banner insoluti/matricola (click e navigazione/filtro), export Excel, ricerca, filtro settore, paginazione | Test | TASK-06 |
+| DONE | TASK-11 | Verifica dimensione file | Confermare che nessun file della feature superi ~300 righe; se un file la supera, valutare un'ulteriore estrazione mirata | Test | TASK-06 |
+| DONE | TASK-12 | Verifica finale type-check | Eseguire `npx tsc --noEmit` e correggere eventuali errori residui prima della review | Test | TASK-07, TASK-08, TASK-09, TASK-10, TASK-11 |
 
 ---
 
