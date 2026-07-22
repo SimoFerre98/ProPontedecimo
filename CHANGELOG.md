@@ -44,6 +44,7 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 - **US-036**: Creato l'hook `useFormModal` (`src/hooks/useFormModal.ts`) che centralizza il pattern loading/try-catch/finally/invalidateQueries/onClose nei modali con singola azione di submit.
 
 ### Fixed
+- **US-040**: Corretto il drag & drop della board Kanban (`KanbanBoard.tsx`), non funzionante da sempre: la card è un `motion.div` di framer-motion, che intercetta le prop `onDragStart`/`onDragEnd` come proprio sistema di gesture e non le inoltra mai al DOM nativo, per cui gli handler non partivano mai (mascherato da un doppio cast `as unknown as React.DragEvent`). Sostituito con `onDragStartCapture` (che framer-motion non riconosce e lascia passare inalterato) e aggiunto `onDragEndCapture` per resettare lo stato di drag anche quando il trascinamento viene annullato, non solo su drop riuscito.
 - Corretto il testo invisibile negli input di `LoginPage`, `RegisterPage` e `RecoveryPage` in dark mode: il colore ereditava `text-foreground` (quasi bianco in dark mode) su uno sfondo `bg-white` intenzionalmente sempre chiaro; ora `text-gray-900` fisso, indipendente dal tema. Rilevato durante la verifica visiva di US-039.
 
 ### Refactored
