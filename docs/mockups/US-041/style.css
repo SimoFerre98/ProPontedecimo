@@ -1,0 +1,368 @@
+/* ============================================================
+   US-041 — Revisione contrasti tema scuro · style.css
+   Estende i token "Premium Glass" di ../US-005/shared.css (linkato
+   prima di questo file: --background/--card/--primary/--gold/--rose/
+   --emerald/--border-soft/--border-strong/--surface-05/--surface-10,
+   .glass-card, .pill, .mock-nav, .chip sono già lì).
+   Questo file aggiunge solo ciò che serve al documento di confronto
+   PRIMA/DOPO: layout della pagina, badge di rating contrasto, e le
+   riproduzioni fedeli dei 5 pattern trovati con l'audit del codice.
+   ============================================================ */
+
+/* ---------- Token "proposta di fix" (candidati per src/index.css) ----------
+   Questi NON sostituiscono i token esistenti: sono la proposta visiva
+   che l'implementazione dovrà poi cablare in src/index.css secondo le
+   regole del progetto (fix nei token centralizzati, non sparsi).
+   Valori tarati sul tema scuro; la sezione "tema chiaro" più in basso
+   mostra gli equivalenti chiari con la stessa logica. */
+:root {
+  /* Badge/chip di stato "neutro" (non successo, non errore) */
+  --neutral-chip-bg: oklch(1 0 0 / 0.11);
+  --neutral-chip-border: oklch(1 0 0 / 0.22);
+  --neutral-chip-text: oklch(0.87 0 0);
+
+  /* Testo secondario "attenuato ma leggibile" — sostituisce le opacità
+     libere /30 /40 applicate sopra text-muted-foreground */
+  --muted-faint: oklch(0.62 0 0);
+
+  /* Placeholder input — sostituisce oklch(0.708 0 0 / 0.45) fisso */
+  --placeholder-foreground: oklch(0.75 0 0 / 0.75);
+
+  /* Input di autenticazione (Login/Register/Recovery) integrato al tema */
+  --auth-input-bg: oklch(1 0 0 / 0.06);
+  --auth-input-border: oklch(1 0 0 / 0.18);
+  --auth-input-text: var(--foreground);
+
+  /* Controllo disabilitato — resta subordinato ma percepibile */
+  --disabled-opacity: 0.55;
+
+  /* Nuovo token per l'accento di marchio (icone, titoli, badge filtro):
+     in chiaro coincide col bordeaux di --primary, in scuro NON segue
+     il flip di --primary verso il quasi-bianco, resta un bordeaux
+     chiaro leggibile — stesso valore già anticipato in US-005/shared.css */
+  --brand-accent: oklch(0.62 0.19 12);
+  --brand-accent-soft: oklch(0.62 0.19 12 / 0.18);
+  --brand-accent-soft-border: oklch(0.62 0.19 12 / 0.35);
+}
+
+/* ---------- Layout di pagina ---------- */
+.page-shell {
+  position: relative;
+  max-width: 74rem;
+  margin: 0 auto;
+  padding: 7.5rem 2rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 42rem;
+}
+.hero .eyebrow { animation: fade .6s ease .05s both; }
+.hero h1 {
+  font-size: clamp(2.1rem, 4vw, 3.1rem);
+  font-weight: 900; font-style: italic;
+  text-transform: uppercase; letter-spacing: -0.03em; line-height: 1.02;
+  animation: rise .55s cubic-bezier(.2,.9,.3,1.2) .1s both;
+}
+.hero h1 .accent { color: var(--gold); font-style: normal; }
+.hero h1 .accent2 { color: var(--primary-soft); font-style: normal; }
+.hero p {
+  font-size: .95rem; line-height: 1.65; color: var(--muted-foreground);
+  max-width: 38rem;
+  animation: fade .6s ease .2s both;
+}
+.hero-meta {
+  display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .35rem;
+  animation: fade .6s ease .3s both;
+}
+.hero-meta .chip { color: var(--muted-foreground); }
+.hero-meta .chip b { color: var(--gold); font-weight: 800; }
+
+/* ---------- Legenda rating ---------- */
+.legend {
+  display: flex; flex-wrap: wrap; gap: .75rem 1.75rem;
+  padding: 1.1rem 1.4rem;
+  border-radius: var(--radius-32);
+  background: var(--surface-05);
+  border: 1px solid var(--border-soft);
+}
+.legend-item { display: flex; align-items: center; gap: .55rem; font-size: .72rem; color: var(--muted-foreground); }
+.legend-item strong { color: var(--foreground); font-weight: 700; }
+.legend-swatch { width: 1.6rem; height: 0.85rem; border-radius: .3rem; flex-shrink: 0; }
+.legend-swatch.fail { background: var(--rose); }
+.legend-swatch.pass { background: var(--emerald); }
+.legend-swatch.warn { background: var(--gold); }
+.legend-note { flex-basis: 100%; font-size: .68rem; color: oklch(0.708 0 0 / 0.75); font-style: italic; margin-top: -.2rem; }
+
+/* ---------- Nav ancore fra i 6 casi ---------- */
+.case-nav {
+  position: sticky; top: 1.1rem; z-index: 50;
+  display: flex; flex-wrap: wrap; gap: .4rem;
+  padding: .5rem; border-radius: var(--radius-pill);
+  background: oklch(0.145 0 0 / 0.82);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-soft);
+  width: fit-content;
+  align-self: flex-start;
+}
+.case-nav a {
+  display: inline-flex; align-items: center; gap: .4rem;
+  height: 2.15rem; padding: 0 .95rem;
+  border-radius: var(--radius-pill);
+  font-size: 9.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted-foreground); text-decoration: none;
+  transition: all .2s ease;
+}
+.case-nav a:hover { color: var(--foreground); background: var(--surface-05); }
+.case-nav a .n { display: inline-flex; align-items: center; justify-content: center; width: 1.15rem; height: 1.15rem; border-radius: 50%; background: var(--surface-10); font-size: 8.5px; }
+.case-nav a.light-link { color: var(--gold); }
+
+/* ---------- Sezione "problema" ---------- */
+.problem-section {
+  display: flex; flex-direction: column; gap: 1.5rem;
+  opacity: 1; transform: translateY(0);
+  transition: opacity .6s cubic-bezier(.2,.7,.3,1), transform .6s cubic-bezier(.2,.7,.3,1);
+}
+.problem-section.pre-reveal { opacity: 0; transform: translateY(18px); }
+.problem-section.in-view { opacity: 1; transform: translateY(0); }
+
+.problem-head { display: flex; flex-direction: column; gap: .55rem; }
+.problem-head .eyebrow { display: flex; align-items: center; gap: .6rem; }
+.problem-head .eyebrow .idx {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  background: oklch(0.33 0.13 15 / 0.3); border: 1px solid oklch(0.33 0.13 15 / 0.5);
+  color: var(--gold); font-size: 10px; font-weight: 900; font-style: normal;
+}
+.problem-head h2 {
+  font-size: 1.5rem; font-weight: 900; font-style: italic;
+  text-transform: uppercase; letter-spacing: -0.03em; color: var(--foreground);
+}
+.problem-head p { font-size: .84rem; line-height: 1.6; color: var(--muted-foreground); max-width: 46rem; }
+.file-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .15rem; }
+
+/* ---------- Grid di confronto ---------- */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: stretch; }
+@media (max-width: 780px) { .compare-grid { grid-template-columns: 1fr; } }
+
+.compare-col {
+  border-radius: var(--radius-32);
+  border: 1px solid var(--border-soft);
+  background: var(--surface-05);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.compare-col.is-before { border-color: oklch(0.645 0.246 16.44 / 0.28); }
+.compare-col.is-after { border-color: oklch(0.696 0.17 162.48 / 0.3); }
+
+.compare-col-head {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  padding: .85rem 1.1rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.compare-tag {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: 9.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .16em;
+}
+.compare-tag.before { color: var(--rose); }
+.compare-tag.after { color: var(--emerald); }
+.compare-tag svg { width: .78rem; height: .78rem; }
+
+.ratio-badge {
+  display: inline-flex; align-items: center; gap: .35rem;
+  height: 1.4rem; padding: 0 .65rem; border-radius: var(--radius-pill);
+  font-size: 9px; font-weight: 800; letter-spacing: .04em; white-space: nowrap;
+}
+.ratio-badge.fail { background: oklch(0.645 0.246 16.44 / 0.14); color: oklch(0.78 0.16 20); border: 1px solid oklch(0.645 0.246 16.44 / 0.35); }
+.ratio-badge.pass { background: oklch(0.696 0.17 162.48 / 0.14); color: var(--emerald); border: 1px solid oklch(0.696 0.17 162.48 / 0.35); }
+.ratio-badge.warn { background: oklch(0.84 0.115 85 / 0.14); color: var(--gold); border: 1px solid oklch(0.84 0.115 85 / 0.35); }
+
+.compare-stage {
+  flex: 1;
+  padding: 2rem 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, oklch(0.33 0.13 15 / 0.1), transparent 65%),
+    var(--background);
+  min-height: 9rem;
+}
+.compare-foot {
+  padding: .75rem 1.1rem 1rem;
+  font-size: .72rem; line-height: 1.55; color: var(--muted-foreground);
+  border-top: 1px solid var(--border-soft);
+}
+.compare-foot b { color: var(--foreground); font-weight: 700; }
+
+/* ============================================================
+   Riproduzioni fedeli dei componenti reali (prima/dopo)
+   ============================================================ */
+
+/* --- Caso 0: accento di marchio (icon-box + titolo con parola in evidenza) --- */
+.mini-modal-head { display: flex; align-items: center; gap: 1rem; width: 100%; max-width: 21rem; }
+.mini-icon-box {
+  width: 3.4rem; height: 3.4rem; border-radius: var(--radius-2xl); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.06);
+}
+.mini-icon-box svg { width: 1.55rem; height: 1.55rem; }
+.mini-icon-box.accent-before { background: oklch(0.922 0 0 / 0.18); border-color: oklch(0.922 0 0 / 0.22); color: oklch(0.922 0 0); }
+.mini-icon-box.accent-after { background: var(--brand-accent-soft); border-color: var(--brand-accent-soft-border); color: var(--brand-accent); }
+.mini-modal-title { font-size: 1.1rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; color: var(--foreground); line-height: 1.18; }
+.mini-modal-title .accent-word-before { color: oklch(0.922 0 0); font-style: normal; }
+.mini-modal-title .accent-word-after { color: var(--brand-accent); font-style: normal; }
+.mini-modal-title small { display: block; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; color: var(--muted-foreground); margin-bottom: .3rem; }
+
+/* --- Caso 1: badge di stato --- */
+.mini-card {
+  width: 100%; max-width: 17rem;
+  border-radius: var(--radius-2xl);
+  background: var(--card); border: 1px solid var(--border-soft);
+  padding: 1.1rem 1.2rem;
+  display: flex; flex-direction: column; gap: .7rem;
+}
+.mini-card-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.mini-card-label { font-size: .72rem; font-weight: 700; color: var(--foreground); }
+
+.status-pill {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .3rem .7rem; border-radius: var(--radius-pill); flex-shrink: 0;
+  font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em; border: 1px solid transparent;
+}
+.status-pill svg { width: .7rem; height: .7rem; }
+.status-pill.before-neutral { background: var(--surface-05); border-color: var(--border-soft); color: var(--muted-foreground); }
+.status-pill.after-neutral { background: var(--neutral-chip-bg); border-color: var(--neutral-chip-border); color: var(--neutral-chip-text); }
+
+/* --- Caso 2: testo secondario doppiamente smorzato --- */
+.mini-table { width: 100%; max-width: 19rem; border-radius: var(--radius-2xl); background: var(--card); border: 1px solid var(--border-soft); overflow: hidden; }
+.mini-table-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 1.1rem; border-bottom: 1px solid var(--border-soft); }
+.mini-table-row:last-child { border-bottom: none; }
+.mini-table-label { font-size: .74rem; font-weight: 600; color: var(--foreground); }
+.mini-dash-before { font-size: .74rem; color: oklch(0.708 0 0 / 0.3); }
+.mini-dash-after { font-size: .74rem; font-weight: 600; color: var(--muted-faint); }
+
+.tab-row { display: inline-flex; gap: .4rem; }
+.tab-pill {
+  padding: .4rem .8rem; border-radius: var(--radius-pill);
+  font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+  border: 1px solid var(--border-soft); background: var(--surface-05);
+}
+.tab-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.tab-pill.inactive-before { color: oklch(0.708 0 0 / 0.4); }
+.tab-pill.inactive-after { color: var(--muted-faint); }
+
+/* --- Caso 3: placeholder --- */
+.mini-field { width: 100%; max-width: 18rem; display: flex; flex-direction: column; gap: .4rem; }
+.mini-field-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; color: oklch(0.708 0 0 / 0.7); }
+.mini-input {
+  height: 2.9rem; border-radius: var(--radius-pill);
+  background: var(--surface-05); border: 1px solid var(--border-soft);
+  display: flex; align-items: center; padding: 0 1.1rem;
+  font-size: .82rem; font-weight: 500;
+}
+.mini-input.ph-before { color: oklch(0.708 0 0 / 0.45); }
+.mini-input.ph-after { color: var(--placeholder-foreground); }
+
+/* --- Caso 4: input login --- */
+.mini-auth { width: 100%; max-width: 19rem; display: flex; flex-direction: column; gap: .9rem; }
+.mini-auth-brand { display: flex; align-items: center; gap: .55rem; margin-bottom: .1rem; }
+.mini-auth-mark { width: 1.9rem; height: 1.9rem; border-radius: .6rem; background: linear-gradient(135deg, oklch(0.45 0.16 15), oklch(0.24 0.1 15)); border: 1px solid oklch(0.84 0.115 85 / 0.35); }
+.mini-auth-brand span { font-size: .78rem; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.02em; }
+.mini-auth-field { display: flex; flex-direction: column; gap: .35rem; }
+.mini-auth-field label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--muted-foreground); }
+.mini-auth-input {
+  height: 2.6rem; border-radius: .55rem;
+  display: flex; align-items: center; padding: 0 .85rem;
+  font-size: .78rem;
+}
+.mini-auth-input.before {
+  background: #fff; color: oklch(0.21 0 0); border: 1px solid oklch(0.91 0 0);
+  box-shadow: 0 0 0 3px oklch(1 0 0 / 0.08);
+}
+.mini-auth-input.after {
+  background: var(--auth-input-bg); color: var(--auth-input-text);
+  border: 1px solid var(--auth-input-border);
+}
+.mini-auth-input.after.filled { color: var(--auth-input-text); }
+.mini-auth-input .ph { opacity: .6; }
+.mini-auth-input.before .ph { color: oklch(0.55 0 0); }
+
+/* --- Caso 5: paginazione disabilitata --- */
+.mini-pagination {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .3rem; border-radius: var(--radius-2xl);
+  background: var(--card); border: 1px solid var(--border-soft);
+}
+.mini-pagination .pg-label { font-size: 10px; font-weight: 800; color: var(--foreground); padding: 0 .9rem; background: var(--surface-10); height: 2.1rem; display: flex; align-items: center; border-radius: .6rem; }
+.mini-pagination button {
+  width: 2.1rem; height: 2.1rem; border-radius: .6rem;
+  display: flex; align-items: center; justify-content: center;
+  border: none; background: none; color: var(--muted-foreground);
+}
+.mini-pagination button svg { width: 1.1rem; height: 1.1rem; }
+.mini-pagination button.disabled-before { opacity: 0.3; }
+.mini-pagination button.disabled-after { opacity: var(--disabled-opacity); color: var(--foreground); }
+
+/* ============================================================
+   Riepilogo token proposti
+   ============================================================ */
+.token-summary {
+  border-radius: var(--radius-32);
+  background: var(--surface-05); border: 1px solid var(--border-soft);
+  padding: 1.6rem 1.8rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.token-summary h3 { font-size: .78rem; font-weight: 900; text-transform: uppercase; letter-spacing: .12em; color: var(--gold); }
+.token-table { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: .9rem; }
+.token-row { display: flex; flex-direction: column; gap: .3rem; padding: .85rem 1rem; border-radius: var(--radius-2xl); background: var(--ink-20, oklch(0 0 0 / 0.2)); border: 1px solid var(--border-soft); }
+.token-row code { font-family: var(--font-mono); font-size: 11px; color: var(--foreground); font-weight: 700; }
+.token-row span { font-size: .68rem; color: var(--muted-foreground); line-height: 1.5; }
+
+/* ============================================================
+   Sezione tema chiaro
+   ============================================================ */
+.light-preview {
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.13 0 0);
+  --card: oklch(1 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --border-soft: oklch(0 0 0 / 0.1);
+  --border-strong: oklch(0 0 0 / 0.16);
+  --surface-05: oklch(0 0 0 / 0.045);
+  --surface-10: oklch(0 0 0 / 0.07);
+  --primary: oklch(0.33 0.13 15);
+  --gold: oklch(0.63 0.13 78);
+  --rose: oklch(0.55 0.21 16);
+  --emerald: oklch(0.52 0.14 162);
+
+  --neutral-chip-bg: oklch(0 0 0 / 0.055);
+  --neutral-chip-border: oklch(0 0 0 / 0.22);
+  --neutral-chip-text: oklch(0.32 0 0);
+  --placeholder-foreground: oklch(0.42 0 0 / 0.85);
+
+  background: var(--background);
+  color: var(--foreground);
+  border-radius: var(--radius-32);
+  border: 1px solid var(--border-soft);
+  padding: 2.2rem 2rem 2.4rem;
+  box-shadow: 0 25px 60px -25px oklch(0 0 0 / 0.4);
+}
+.light-preview .problem-head p,
+.light-preview .compare-foot,
+.light-preview .field-hint { color: var(--muted-foreground); }
+.light-preview .compare-col { background: var(--surface-05); border-color: var(--border-soft); }
+.light-preview .mini-card,
+.light-preview .mini-input,
+.light-preview .mini-table { background: var(--card); border-color: var(--border-soft); }
+.light-preview .compare-stage {
+  background: radial-gradient(ellipse 70% 60% at 50% 0%, oklch(0.33 0.13 15 / 0.04), transparent 65%), var(--background);
+}
+.light-preview .mini-field-label { color: oklch(0.5 0 0 / 0.85); }
+.light-preview .mini-input.ph-before { color: oklch(0.708 0 0 / 0.45); }
+
+/* ---------- Footer ---------- */
+.doc-footer { font-size: .7rem; color: oklch(0.708 0 0 / 0.6); text-align: center; padding-bottom: 1rem; }

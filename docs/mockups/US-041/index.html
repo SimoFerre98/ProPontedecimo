@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-041 · Contrasti Tema Scuro — Prima / Dopo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../US-005/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="mock-nav">
+  <span class="nav-tag">US-041</span>
+  <a href="#top" class="active">Prima / Dopo</a>
+</nav>
+
+<div class="page-shell" id="top">
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero">
+    <span class="eyebrow">US-041 · Audit di leggibilità</span>
+    <h1>Contrasti tema scuro<br><span class="accent">prima</span> e <span class="accent2">dopo</span></h1>
+    <p>Sei pattern reali trovati grep-ando il codice attuale: il colore di marchio che sbianca in dark, badge duplicati senza contrasto, testo secondario doppiamente smorzato, placeholder troppo tenui, un input di login "fuori tema" e un pulsante disabilitato quasi invisibile. Ogni riquadro riproduce fedelmente lo stile oggi in produzione — non un'illustrazione, il componente vero con le sue classi.</p>
+    <div class="hero-meta">
+      <span class="chip">Correzioni via <b>token in src/index.css</b></span>
+      <span class="chip">Palette <b>bordeaux · oro</b> invariata</span>
+      <span class="chip">Nessun redesign, solo contrasto</span>
+    </div>
+  </header>
+
+  <!-- ===================== LEGENDA ===================== -->
+  <div class="legend">
+    <span class="legend-item"><span class="legend-swatch fail"></span> <strong>FAIL</strong> — sotto la soglia AA, elemento poco/non percepibile</span>
+    <span class="legend-item"><span class="legend-swatch warn"></span> <strong>Rottura di coerenza</strong> — non è un problema di contrasto ma di stile fuori contesto</span>
+    <span class="legend-item"><span class="legend-swatch pass"></span> <strong>PASS</strong> — contrasto adeguato, elemento leggibile</span>
+    <span class="legend-note">* rapporti di contrasto stimati sui token oklch coinvolti, a scopo comparativo — la verifica puntuale con strumento (es. axe/Lighthouse) sarà fatta in fase di implementazione.</span>
+  </div>
+
+  <!-- ===================== CASE NAV ===================== -->
+  <nav class="case-nav">
+    <a href="#caso1"><span class="n">1</span>Colore di marchio</a>
+    <a href="#caso2"><span class="n">2</span>Badge di stato</a>
+    <a href="#caso3"><span class="n">3</span>Testo secondario</a>
+    <a href="#caso4"><span class="n">4</span>Placeholder</a>
+    <a href="#caso5"><span class="n">5</span>Input login</a>
+    <a href="#caso6"><span class="n">6</span>Paginazione</a>
+    <a href="#tema-chiaro" class="light-link"><span class="n">☀</span>Tema chiaro</a>
+  </nav>
+
+  <!-- ===================== CASO 1 — ACCENTO DI MARCHIO ===================== -->
+  <section class="problem-section" id="caso1">
+    <div class="problem-head">
+      <span class="eyebrow"><span class="idx">1</span>Il colore di marchio "sbianca" in tema scuro</span>
+      <h2>Il bordeaux si <span style="color:var(--rose)">confonde con il testo normale</span></h2>
+      <p>Segnalato direttamente da Simone. In <code style="color:var(--gold)">src/index.css</code>, <code style="color:var(--gold)">--primary</code> è bordeaux in chiaro ma diventa <b>quasi bianco</b> (<code style="color:var(--gold)">oklch(0.922 0 0)</code>) in scuro — per convenzione, serve solo come sfondo dei bottoni. Il problema è che <b>201 usi di <code style="color:var(--gold)">text-primary</code></b> e <b>153 di <code style="color:var(--gold)">border-primary</code></b> lo trattano invece come "colore di marchio" per icone di intestazione, parole in evidenza nei titoli e badge filtro — <b>nessuno con una variante dark accanto</b>. Quando sfondo e testo derivano dallo stesso token (icon-box <code style="color:var(--gold)">bg-primary/20 text-primary</code>), in scuro diventano entrambi bianco: il cerchio del badge resta ma l'icona ci si confonde dentro, e la parola in evidenza nel titolo diventa dello stesso bianco della parola "normale" a fianco — l'enfasi di marchio sparisce.</p>
+      <div class="file-chips">
+        <span class="chip">src/index.css — token --primary</span>
+        <span class="chip">201× text-primary, 45+ file</span>
+        <span class="chip">153× border-primary</span>
+        <span class="chip">126× bg-primary/N</span>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col is-before">
+        <div class="compare-col-head">
+          <span class="compare-tag before"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Prima</span>
+          <span class="ratio-badge fail">Accento di marchio perso</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-modal-head">
+            <div class="mini-icon-box accent-before"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="mini-modal-title"><small>Dettagli</small>Nuovo <span class="accent-word-before">Atleta</span></div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>bg-primary/20 · text-primary · border-primary/20</b> — sfondo, bordo e icona derivano tutti da <code>--primary</code>: in scuro convergono sullo stesso quasi-bianco. Il cerchio del badge diventa una macchia chiara appena percettibile e la parola "Atleta" si confonde con "Nuovo" a fianco: l'accento di marchio, non solo il contrasto, sparisce.</div>
+      </div>
+
+      <div class="compare-col is-after">
+        <div class="compare-col-head">
+          <span class="compare-tag after"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Dopo</span>
+          <span class="ratio-badge pass">Marchio riconoscibile</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-modal-head">
+            <div class="mini-icon-box accent-after"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="mini-modal-title"><small>Dettagli</small>Nuovo <span class="accent-word-after">Atleta</span></div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>--brand-accent</b> — nuovo token, separato da <code>--primary</code>: in chiaro coincide col bordeaux attuale, in scuro resta un bordeaux chiaro leggibile invece di seguire il flip verso il bianco. Il badge torna una sagoma bordeaux definita e "Atleta" torna a distinguersi da "Nuovo" — contrasto <em>e</em> identità di marchio recuperati insieme. I bottoni (<code>bg-primary</code> + <code>text-primary-foreground</code>) non vengono toccati: lì il flip è corretto.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CASO 2 — BADGE ===================== -->
+  <section class="problem-section" id="caso2">
+    <div class="problem-head">
+      <span class="eyebrow"><span class="idx">2</span>Badge / chip di stato duplicato senza contrasto</span>
+      <h2>Il badge "neutro" si <span style="color:var(--rose)">confonde con lo sfondo</span></h2>
+      <p>Il pattern <code style="color:var(--gold)">bg-white/5 border-white/10 text-muted-foreground</code> è ripetuto identico in almeno 8 punti del codice per indicare uno stato "in attesa / non ancora presente" — non un errore, non un successo. Sovrapponendo tre livelli di trasparenza sullo stesso sfondo scuro il badge perde completamente la sua sagoma.</p>
+      <div class="file-chips">
+        <span class="chip">MedicalStatusIndicator.tsx:29</span>
+        <span class="chip">ChildBillingCard.tsx:80</span>
+        <span class="chip">TaskListView.tsx:26</span>
+        <span class="chip">+5 altri file</span>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col is-before">
+        <div class="compare-col-head">
+          <span class="compare-tag before"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Prima</span>
+          <span class="ratio-badge fail">≈ 1.7:1 · FAIL</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-card">
+            <div class="mini-card-row">
+              <span class="mini-card-label">Visita medica</span>
+              <span class="status-pill before-neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Pendente</span>
+            </div>
+            <div class="mini-card-row">
+              <span class="mini-card-label">Quota stagionale</span>
+              <span class="status-pill before-neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Non Inserita</span>
+            </div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>bg-white/5 · border-white/10 · text-muted-foreground</b> — tre trasparenze sovrapposte sullo stesso nero: il badge resta una sagoma appena percettibile, il testo si legge solo se si sa già cosa c'è scritto.</div>
+      </div>
+
+      <div class="compare-col is-after">
+        <div class="compare-col-head">
+          <span class="compare-tag after"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Dopo</span>
+          <span class="ratio-badge pass">≈ 4.8:1 · PASS AA</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-card">
+            <div class="mini-card-row">
+              <span class="mini-card-label">Visita medica</span>
+              <span class="status-pill after-neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Pendente</span>
+            </div>
+            <div class="mini-card-row">
+              <span class="mini-card-label">Quota stagionale</span>
+              <span class="status-pill after-neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Non Inserita</span>
+            </div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>--neutral-chip-bg / --neutral-chip-border / --neutral-chip-text</b> — stesso grigio "discreto" ma con un solo livello di trasparenza più corposo: la sagoma pillola torna leggibile senza somigliare a un badge di successo o di errore.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CASO 3 — TESTO SECONDARIO ===================== -->
+  <section class="problem-section" id="caso3">
+    <div class="problem-head">
+      <span class="eyebrow"><span class="idx">3</span>Testo secondario doppiamente smorzato</span>
+      <h2>Un'opacità sopra l'altra <span style="color:var(--rose)">cancella il dato</span></h2>
+      <p><code style="color:var(--gold)">text-muted-foreground</code> è già un grigio attenuato di proposito; applicargli sopra <code style="color:var(--gold)">/30</code> o <code style="color:var(--gold)">/40</code> per label, icone e valori assenti lo spinge sotto la soglia di percezione. Il valore "—" per un dato mancante nella tabella pagamenti, o la voce di tab non selezionata, arrivano a sparire quasi del tutto.</p>
+      <div class="file-chips">
+        <span class="chip">Payments.tsx:383</span>
+        <span class="chip">Convocazioni.tsx:437</span>
+        <span class="chip">Dashboard.tsx:197,267</span>
+        <span class="chip">MedicalVisits.tsx:159,210</span>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col is-before">
+        <div class="compare-col-head">
+          <span class="compare-tag before"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Prima</span>
+          <span class="ratio-badge fail">≈ 1.5:1 · FAIL</span>
+        </div>
+        <div class="compare-stage">
+          <div style="display:flex; flex-direction:column; gap:1.4rem; align-items:center;">
+            <div class="mini-table">
+              <div class="mini-table-row"><span class="mini-table-label">Rata 1 · Scadenza</span><span>12 Set 2025</span></div>
+              <div class="mini-table-row"><span class="mini-table-label">Rata 2 · Scadenza</span><span class="mini-dash-before">—</span></div>
+              <div class="mini-table-row"><span class="mini-table-label">Rata 3 · Scadenza</span><span class="mini-dash-before">—</span></div>
+            </div>
+            <div class="tab-row">
+              <span class="tab-pill active">Convocati</span>
+              <span class="tab-pill inactive-before">Disponibili</span>
+              <span class="tab-pill inactive-before">Assenti</span>
+            </div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>text-muted-foreground/30 · /40</b> — il dato "assente" e la voce di navigazione non attiva finiscono quasi sotto al colore di sfondo della card.</div>
+      </div>
+
+      <div class="compare-col is-after">
+        <div class="compare-col-head">
+          <span class="compare-tag after"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Dopo</span>
+          <span class="ratio-badge pass">≈ 4.6:1 · PASS AA</span>
+        </div>
+        <div class="compare-stage">
+          <div style="display:flex; flex-direction:column; gap:1.4rem; align-items:center;">
+            <div class="mini-table">
+              <div class="mini-table-row"><span class="mini-table-label">Rata 1 · Scadenza</span><span>12 Set 2025</span></div>
+              <div class="mini-table-row"><span class="mini-table-label">Rata 2 · Scadenza</span><span class="mini-dash-after">—</span></div>
+              <div class="mini-table-row"><span class="mini-table-label">Rata 3 · Scadenza</span><span class="mini-dash-after">—</span></div>
+            </div>
+            <div class="tab-row">
+              <span class="tab-pill active">Convocati</span>
+              <span class="tab-pill inactive-after">Disponibili</span>
+              <span class="tab-pill inactive-after">Assenti</span>
+            </div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>--muted-faint</b> — un unico valore fisso di grigio "attenuato ma presente" al posto delle opacità libere: resta subordinato al testo primario ma il dato si legge a colpo d'occhio.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CASO 4 — PLACEHOLDER ===================== -->
+  <section class="problem-section" id="caso4">
+    <div class="problem-head">
+      <span class="eyebrow"><span class="idx">4</span>Placeholder input troppo tenue</span>
+      <h2>Il campo sembra <span style="color:var(--rose)">vuoto e disabilitato</span></h2>
+      <p>Il token globale <code style="color:var(--gold)">.field-input::placeholder</code> in <code style="color:var(--gold)">src/index.css</code> usa un grigio al 45% di opacità: nei modali (profilo, atleta, evento, pagamento) il testo suggerito è così tenue che il campo appare vuoto e non invitante al click, quasi "bloccato".</p>
+      <div class="file-chips">
+        <span class="chip">src/index.css:258</span>
+        <span class="chip">AddAthleteModal.tsx</span>
+        <span class="chip">SettingsModal.tsx</span>
+        <span class="chip">EventModal.tsx / PaymentModal.tsx</span>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col is-before">
+        <div class="compare-col-head">
+          <span class="compare-tag before"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Prima</span>
+          <span class="ratio-badge fail">≈ 1.9:1 · FAIL</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-field">
+            <span class="mini-field-label">Nome completo</span>
+            <div class="mini-input ph-before">Es. Marco Rossi</div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>oklch(0.708 0 0 / 0.45)</b> — sul vetro scuro del modale il suggerimento si legge solo se ci si avvicina allo schermo.</div>
+      </div>
+
+      <div class="compare-col is-after">
+        <div class="compare-col-head">
+          <span class="compare-tag after"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Dopo</span>
+          <span class="ratio-badge pass">≈ 4.5:1 · PASS AA</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-field">
+            <span class="mini-field-label">Nome completo</span>
+            <div class="mini-input ph-after">Es. Marco Rossi</div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>--placeholder-foreground</b> — più luminoso e più opaco, ma ancora chiaramente più leggero del testo digitato: resta un suggerimento, non un valore.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CASO 5 — INPUT LOGIN ===================== -->
+  <section class="problem-section" id="caso5">
+    <div class="problem-head">
+      <span class="eyebrow"><span class="idx">5</span>Campo di login con zero stile dark</span>
+      <h2>Un rettangolo bianco <span style="color:var(--gold)">fuori contesto</span></h2>
+      <p>In Login/Register/Recovery gli input usano <code style="color:var(--gold)">bg-white text-gray-900</code> hardcoded, indipendenti dal tema. Il contrasto interno del campo è alto — il problema non è la leggibilità del testo digitato, ma la rottura totale di coerenza visiva: un riquadro acceso in mezzo a un form scuro.</p>
+      <div class="file-chips">
+        <span class="chip">LoginPage.tsx:72,89</span>
+        <span class="chip">RegisterPage.tsx:124,138,155,173</span>
+        <span class="chip">RecoveryPage.tsx:151,176</span>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col is-before">
+        <div class="compare-col-head">
+          <span class="compare-tag before"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Prima</span>
+          <span class="ratio-badge warn">Fuori contesto</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-auth">
+            <div class="mini-auth-brand"><div class="mini-auth-mark"></div><span>Pontedecimo</span></div>
+            <div class="mini-auth-field">
+              <label>Email</label>
+              <div class="mini-auth-input before"><span class="ph">nome@email.com</span></div>
+            </div>
+            <div class="mini-auth-field">
+              <label>Password</label>
+              <div class="mini-auth-input before"><span class="ph">••••••••</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>bg-white text-gray-900</b> — hardcoded, ignora completamente <code style="color:var(--gold)">.dark</code>: due rettangoli accesi che non appartengono al resto della schermata.</div>
+      </div>
+
+      <div class="compare-col is-after">
+        <div class="compare-col-head">
+          <span class="compare-tag after"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Dopo</span>
+          <span class="ratio-badge pass">Integrato col tema</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-auth">
+            <div class="mini-auth-brand"><div class="mini-auth-mark"></div><span>Pontedecimo</span></div>
+            <div class="mini-auth-field">
+              <label>Email</label>
+              <div class="mini-auth-input after"><span class="ph">nome@email.com</span></div>
+            </div>
+            <div class="mini-auth-field">
+              <label>Password</label>
+              <div class="mini-auth-input after"><span class="ph">••••••••</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-foot"><b>--auth-input-bg / --auth-input-border / --foreground</b> — stesso principio dei token già usati altrove nell'app: il campo si vede benissimo come editabile (bordo chiaro, superficie leggermente sollevata) ma vive nello stesso tema della pagina.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CASO 6 — PAGINAZIONE ===================== -->
+  <section class="problem-section" id="caso6">
+    <div class="problem-head">
+      <span class="eyebrow"><span class="idx">6</span>Pulsante disabilitato quasi invisibile</span>
+      <h2>Disabilitato non deve voler dire <span style="color:var(--rose)">scomparso</span></h2>
+      <p><code style="color:var(--gold)">disabled:opacity-30</code> applicato a un'icona già <code style="color:var(--gold)">text-muted-foreground</code> (freccia "pagina precedente" sulla prima pagina) moltiplica due attenuazioni: l'utente non capisce se il controllo è disabilitato o semplicemente non c'è. Gli elementi disabled sono esenti dalla soglia AA per il testo, ma devono restare percepibili come presenti sullo schermo.</p>
+      <div class="file-chips">
+        <span class="chip">Pagination.tsx:59,74</span>
+        <span class="chip">NewPaymentModal.tsx:273,287</span>
+        <span class="chip">SettingsModal.tsx:548</span>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col is-before">
+        <div class="compare-col-head">
+          <span class="compare-tag before"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Prima</span>
+          <span class="ratio-badge fail">≈ 1.3:1 · quasi assente</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-pagination">
+            <button class="disabled-before" disabled aria-label="Precedente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+            <span class="pg-label">Pagina 1 di 6</span>
+            <button aria-label="Successiva" style="color:var(--foreground)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+        <div class="compare-foot"><b>text-muted-foreground + opacity-30</b> — sulla prima pagina la freccia sinistra non è "disabilitata", è invisibile: non comunica nemmeno che lì esiste un controllo.</div>
+      </div>
+
+      <div class="compare-col is-after">
+        <div class="compare-col-head">
+          <span class="compare-tag after"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Dopo</span>
+          <span class="ratio-badge pass">≈ 3.0:1 · presente</span>
+        </div>
+        <div class="compare-stage">
+          <div class="mini-pagination">
+            <button class="disabled-after" disabled aria-label="Precedente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+            <span class="pg-label">Pagina 1 di 6</span>
+            <button aria-label="Successiva" style="color:var(--foreground)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+        <div class="compare-foot"><b>--disabled-opacity (0.55) su text-foreground</b> — resta chiaramente meno prominente della freccia attiva a destra, ma la sagoma della freccia e il fatto che il controllo esiste sono sempre percepibili.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RIEPILOGO TOKEN ===================== -->
+  <section class="problem-section" id="riepilogo">
+    <div class="token-summary">
+      <h3>Riepilogo — candidati per src/index.css</h3>
+      <div class="token-table">
+        <div class="token-row"><code>--brand-accent</code><span>Colore di marchio per icone/titoli/badge, separato da --primary: non segue il flip verso il bianco in dark (Caso 1)</span></div>
+        <div class="token-row"><code>--neutral-chip-bg / -border / -text</code><span>Badge di stato neutro (Caso 2)</span></div>
+        <div class="token-row"><code>--muted-faint</code><span>Testo secondario attenuato ma leggibile, sostituisce le opacità /30 /40 (Caso 3)</span></div>
+        <div class="token-row"><code>--placeholder-foreground</code><span>Colore placeholder, sensibile al tema (Caso 4)</span></div>
+        <div class="token-row"><code>--auth-input-bg / -border</code><span>Input di autenticazione integrati al tema (Caso 5)</span></div>
+        <div class="token-row"><code>--disabled-opacity</code><span>Opacità minima per controlli disabilitati (Caso 6)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TEMA CHIARO ===================== -->
+  <section class="problem-section" id="tema-chiaro">
+    <div class="problem-head">
+      <span class="eyebrow"><span class="idx">☀</span>Verifica rapida — tema chiaro</span>
+      <h2>La stessa correzione <span style="color:var(--emerald)">non rompe il chiaro</span></h2>
+      <p>Gli stessi due pattern più critici (badge e placeholder), riprodotti su sfondo chiaro reale. Nel tema chiaro il problema di oggi è più sottile — il bordo/sfondo della pillola si fonde con la card bianca, e il placeholder al 45% di opacità sbianca ancora di più — ma la soluzione a token unico regge in entrambi i temi.</p>
+    </div>
+
+    <div class="light-preview">
+      <div class="compare-grid">
+        <div class="compare-col is-before">
+          <div class="compare-col-head">
+            <span class="compare-tag before"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Prima</span>
+            <span class="ratio-badge fail">Bordo pillola invisibile</span>
+          </div>
+          <div class="compare-stage">
+            <div style="display:flex; flex-direction:column; gap:1.5rem; align-items:center; width:100%;">
+              <div class="mini-card">
+                <div class="mini-card-row">
+                  <span class="mini-card-label">Visita medica</span>
+                  <span class="status-pill before-neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Pendente</span>
+                </div>
+              </div>
+              <div class="mini-field" style="max-width:16rem;">
+                <span class="mini-field-label">Nome completo</span>
+                <div class="mini-input ph-before">Es. Marco Rossi</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-col is-after">
+          <div class="compare-col-head">
+            <span class="compare-tag after"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Dopo</span>
+            <span class="ratio-badge pass">Pillola definita</span>
+          </div>
+          <div class="compare-stage">
+            <div style="display:flex; flex-direction:column; gap:1.5rem; align-items:center; width:100%;">
+              <div class="mini-card">
+                <div class="mini-card-row">
+                  <span class="mini-card-label">Visita medica</span>
+                  <span class="status-pill after-neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Pendente</span>
+                </div>
+              </div>
+              <div class="mini-field" style="max-width:16rem;">
+                <span class="mini-field-label">Nome completo</span>
+                <div class="mini-input ph-after">Es. Marco Rossi</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="doc-footer">US-041 · Documento di valutazione estetica — mockup statico, nessuna interazione funzionale. Contrasti stimati a fini comparativi.</p>
+
+</div>
+
+<script>
+  const sections = document.querySelectorAll('.problem-section');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  sections.forEach(s => { s.classList.add('pre-reveal'); io.observe(s); });
+</script>
+
+</body>
+</html>

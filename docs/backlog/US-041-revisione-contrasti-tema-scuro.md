@@ -20,5 +20,5 @@ After implementing this story, the user can: navigare tutte le pagine in tema sc
 **Context**
 Richiesta di Simone (2026-07-06): nel tema scuro "alcune cose sono poco visibili". I punti specifici noti vanno raccolti da Simone in fase di planning/audit e aggiunti a questa issue. Correlata a US-005 (stile modali) e US-039 (componenti condivisi): da implementare preferibilmente dopo US-005 per non lavorare due volte sugli stessi file.
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [docs/planning/US-041-plan.md](../planning/US-041-plan.md)
