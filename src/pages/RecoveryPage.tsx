@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { profileService } from '@/services/profileService'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 export default function RecoveryPage() {
   const navigate = useNavigate()
@@ -72,14 +73,7 @@ export default function RecoveryPage() {
   }
 
   if (checkingSession) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-8 h-8 border-4 border-[#800020]/20 border-t-[#800020] rounded-full animate-spin" />
-          <p className="text-sm text-muted-foreground">Verifica della sessione in corso...</p>
-        </div>
-      </div>
-    )
+    return <LoadingSpinner fullPage label="Verifica della sessione in corso..." />
   }
 
   if (!hasSession) {
@@ -154,7 +148,7 @@ export default function RecoveryPage() {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
-                    className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                    className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
                     placeholder="Almeno 6 caratteri"
                   />
                   <button
@@ -179,7 +173,7 @@ export default function RecoveryPage() {
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
                   required
-                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
                   placeholder="Ripeti la password"
                 />
               </div>
@@ -197,7 +191,7 @@ export default function RecoveryPage() {
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <LoadingSpinner size="sm" tone="white" />
                     Salvataggio...
                   </span>
                 ) : 'Salva nuova password'}

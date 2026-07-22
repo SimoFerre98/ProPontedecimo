@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Trash2, X, Loader2, ShieldAlert, CreditCard } from 'lucide-react'
+import { Trash2, X, ShieldAlert, CreditCard } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { athleteService, type Player } from '@/services/athleteService'
 import { cn } from '@/lib/utils'
 
@@ -105,7 +106,7 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
 
             {checkingPayments ? (
               <div className="flex flex-col items-center justify-center py-8 gap-3">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <LoadingSpinner size="lg" />
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Verifica pagamenti...</p>
               </div>
             ) : hasDebts ? (
@@ -190,7 +191,7 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
                     disabled={!isConfirmValid || loading}
                     className="flex-[1.5] h-14 pill bg-red-500 hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 shadow-2xl shadow-red-500/40 active:scale-95"
                   >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    {loading ? <LoadingSpinner size="sm" tone="white" /> : <Trash2 className="w-4 h-4" />}
                     Elimina Atleta
                   </button>
                 </div>

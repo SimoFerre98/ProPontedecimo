@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, HeartPulse, User, Calendar, Save, Loader2 } from 'lucide-react'
+import { X, HeartPulse, User, Calendar, Save } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { medicalService, type MedicalVisitRecord } from '@/services/medicalService'
@@ -115,7 +116,7 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
                   disabled={loading || !medicalExpiry}
                   className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all disabled:opacity-50"
                 >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                  {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-5 h-5" />}
                   Aggiorna Scadenza
                 </Button>
               </div>

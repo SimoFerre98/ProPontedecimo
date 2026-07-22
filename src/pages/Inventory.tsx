@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Search, 
-  Package, 
-  Plus, 
-  AlertTriangle, 
-  CheckCircle2, 
+import {
+  Search,
+  Package,
+  Plus,
+  AlertTriangle,
+  CheckCircle2,
   History,
   Tag,
   Box,
@@ -19,6 +19,7 @@ import { inventoryService, type InventoryItem } from '@/services/inventoryServic
 import AddInventoryModal from '@/components/modals/AddInventoryModal'
 import { Pagination } from '@/components/ui/Pagination'
 import { QueryErrorState } from '@/components/ui/query-error-state'
+import { StatsGrid } from '@/components/ui/StatsGrid'
 
 export default function Inventory() {
   const [search, setSearch] = useState('')
@@ -73,29 +74,13 @@ export default function Inventory() {
       </div>
 
       {/* Stats Mini Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          { label: 'Articoli Totali', val: stats.total, icon: Box, color: 'text-primary', bg: 'bg-primary/10' },
-          { label: 'In Esaurimento', val: stats.lowStock, icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-          { label: 'Esauriti', val: stats.outOfStock, icon: Package, color: 'text-rose-500', bg: 'bg-rose-500/10' }
-        ].map((stat, i) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="glass-card p-6 flex items-center justify-between border-white/5 group hover:border-primary/20 transition-all"
-          >
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-1">{stat.label}</p>
-              <p className="text-3xl font-black text-foreground">{stat.val}</p>
-            </div>
-            <div className={cn("w-14 h-14 pill flex items-center justify-center shadow-inner", stat.bg)}>
-              <stat.icon className={cn("w-7 h-7", stat.color)} />
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      <StatsGrid
+        items={[
+          { label: 'Articoli Totali', value: stats.total, icon: Box, color: 'text-primary', bg: 'bg-primary/10' },
+          { label: 'In Esaurimento', value: stats.lowStock, icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+          { label: 'Esauriti', value: stats.outOfStock, icon: Package, color: 'text-rose-500', bg: 'bg-rose-500/10' },
+        ]}
+      />
 
       {/* Search & Filter */}
       <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">

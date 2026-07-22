@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { Eye, EyeOff, User, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -120,7 +121,7 @@ export default function RegisterPage() {
                     value={firstName}
                     onChange={e => setFirstName(e.target.value)}
                     required
-                    className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                    className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
                     placeholder="Mario"
                   />
                 </div>
@@ -134,7 +135,7 @@ export default function RegisterPage() {
                     value={lastName}
                     onChange={e => setLastName(e.target.value)}
                     required
-                    className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                    className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
                     placeholder="Rossi"
                   />
                 </div>
@@ -151,7 +152,7 @@ export default function RegisterPage() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
                   placeholder="nome@email.com"
                 />
               </div>
@@ -169,7 +170,7 @@ export default function RegisterPage() {
                     onChange={e => setPassword(e.target.value)}
                     required
                     minLength={6}
-                    className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                    className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
                     placeholder="Minimo 6 caratteri"
                   />
                   <button
@@ -232,7 +233,7 @@ export default function RegisterPage() {
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <LoadingSpinner size="sm" tone="white" />
                     Registrazione...
                   </span>
                 ) : 'Registrati'}

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ClipboardList, User, Calendar, FileText, Save, Loader2, Trash2, Clock } from 'lucide-react'
+import { X, ClipboardList, User, Calendar, FileText, Save, Trash2, Clock } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { staffService, type StaffTask, type TaskStatus } from '@/services/staffService'
@@ -323,7 +324,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                     disabled={deleting}
                     className="w-full md:w-auto h-14 pill font-black uppercase tracking-widest text-[10px] text-red-500 hover:bg-red-500/10"
                   >
-                    {deleting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Trash2 className="w-5 h-5 mr-2" />}
+                    {deleting ? <LoadingSpinner size="sm" className="text-red-500" /> : <Trash2 className="w-5 h-5 mr-2" />}
                     Elimina
                   </Button>
                 )}
@@ -341,7 +342,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                     disabled={loading}
                     className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all"
                   >
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                    {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-5 h-5" />}
                     {task ? 'Salva Modifiche' : 'Crea Task'}
                   </Button>
                 </div>

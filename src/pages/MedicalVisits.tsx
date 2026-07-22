@@ -9,13 +9,13 @@ import {
   ArrowDown,
   ArrowUp
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { medicalService, type MedicalVisitRecord, type VisitStatus } from '@/services/medicalService'
+import { medicalService, type MedicalVisitRecord } from '@/services/medicalService'
 import { Pagination } from '@/components/ui/Pagination'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
 import { QueryErrorState } from '@/components/ui/query-error-state'
 import MedicalVisitModal from '@/components/modals/MedicalVisitModal'
 import MedicalStatusIndicator from '@/components/MedicalStatusIndicator'
+import { StatsGrid } from '@/components/ui/StatsGrid'
 import { format } from "date-fns/format";
 import { it } from "date-fns/locale/it";
 
@@ -78,11 +78,14 @@ export default function MedicalVisits() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2 justify-center md:justify-end w-full md:w-auto">
-          <StatBadge count={stats.expired} label="Scadute" type="expired" />
-          <StatBadge count={stats.expiring} label="In Scadenza" type="expiring" />
-          <StatBadge count={stats.valid} label="Valide" type="valid" />
-        </div>
+        <StatsGrid
+          variant="badge"
+          items={[
+            { label: 'Scadute', value: stats.expired, color: 'text-rose-600 dark:text-rose-400 bg-rose-500/10 border-rose-500/20' },
+            { label: 'In Scadenza', value: stats.expiring, color: 'text-amber-400 bg-amber-400/10 border-amber-400/20' },
+            { label: 'Valide', value: stats.valid, color: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' },
+          ]}
+        />
       </div>
 
       {/* Filters Bar */}
@@ -241,22 +244,6 @@ export default function MedicalVisits() {
           setSelectedVisit(null)
         }}
       />
-    </div>
-  )
-}
-
-function StatBadge({ count, label, type }: Readonly<{ count: number, label: string, type: VisitStatus }>) {
-  const colors = {
-    valid: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
-    expiring: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
-    expired: 'text-rose-600 dark:text-rose-400 bg-rose-500/10 border-rose-500/20',
-    missing: 'text-muted-foreground bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10'
-  }
-
-  return (
-    <div className={cn("px-4 py-2 rounded-2xl border flex flex-col items-center min-w-[100px]", colors[type])}>
-      <span className="text-2xl font-black leading-none">{count}</span>
-      <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{label}</span>
     </div>
   )
 }
