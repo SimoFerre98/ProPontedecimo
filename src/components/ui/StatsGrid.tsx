@@ -49,7 +49,7 @@ export function StatsGrid({ items, variant = 'grid', className, cardClassName, i
             title={item.hint}
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
             className={cn(
-              'glass-card p-6 flex items-center justify-between border-white/5 group hover:border-primary/20 transition-all',
+              'glass-card p-6 flex items-center justify-between border-[var(--border-soft)] group hover:border-brand-accent/20 transition-all',
               item.onClick && 'cursor-pointer active:scale-95',
               cardClassName
             )}

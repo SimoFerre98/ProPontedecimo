@@ -126,8 +126,8 @@ export default function DashboardLayout() {
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* ── Background Decors ── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[80px]" />
-        <div className="absolute top-[60%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/3 blur-[80px]" />
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-brand-accent/5 blur-[80px]" />
+        <div className="absolute top-[60%] -right-[10%] w-[50%] h-[50%] rounded-full bg-brand-accent/3 blur-[80px]" />
       </div>
 
       {/* ── Header ── */}
@@ -160,13 +160,13 @@ export default function DashboardLayout() {
               className={cn(
                 "flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border border-border text-[11px] font-medium transition-all outline-none",
                 (hasMultipleSeasons || role === 'president' || role === 'director')
-                  ? "hover:border-primary/40 hover:bg-primary/5 cursor-pointer"
+                  ? "hover:border-brand-accent/40 hover:bg-brand-accent/5 cursor-pointer"
                   : "opacity-80 cursor-default"
               )}
             >
               <Calendar className="w-3 h-3 text-muted-foreground" />
               <span className="text-muted-foreground">Stagione</span>
-              <span className="text-primary font-bold">{selectedSeason?.name || 'Caricamento...'}</span>
+              <span className="text-brand-accent font-bold">{selectedSeason?.name || 'Caricamento...'}</span>
               {(hasMultipleSeasons || role === 'president' || role === 'director') && (
                 <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${isSeasonDropdownOpen ? 'rotate-180' : ''}`} />
               )}
@@ -186,8 +186,8 @@ export default function DashboardLayout() {
                           onClick={() => { setSelectedSeasonId(season.id); setIsSeasonDropdownOpen(false) }}
                           className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 ${
                             selectedSeasonId === season.id
-                              ? 'bg-primary text-white'
-                              : 'text-foreground/70 hover:bg-primary/10 hover:text-primary'
+                              ? 'bg-brand-accent text-white'
+                              : 'text-foreground/70 hover:bg-brand-accent/10 hover:text-brand-accent'
                           }`}
                         >
                           <div className="flex items-center gap-2">
@@ -206,7 +206,7 @@ export default function DashboardLayout() {
                           setIsNewSeasonWizardOpen(true)
                           setIsSeasonDropdownOpen(false)
                         }}
-                        className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs font-bold text-primary hover:bg-primary/10 transition-all text-left shrink-0 cursor-pointer"
+                        className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs font-bold text-brand-accent hover:bg-brand-accent/10 transition-all text-left shrink-0 cursor-pointer"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Nuova stagione</span>
@@ -221,17 +221,17 @@ export default function DashboardLayout() {
           {/* Calendar Button */}
           <button
             onClick={() => setIsCalendarModalOpen(true)}
-            className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted/60 border border-border/50 hover:border-primary/30 transition-all group/cal"
+            className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted/60 border border-border/50 hover:border-brand-accent/30 transition-all group/cal"
             title="Calendario"
           >
-            <Calendar className="w-4 h-4 text-muted-foreground group-hover/cal:text-primary transition-colors" />
+            <Calendar className="w-4 h-4 text-muted-foreground group-hover/cal:text-brand-accent transition-colors" />
           </button>
 
           {/* Notifications Bell */}
           <div className="relative" ref={notificationsRef}>
             <button
               onClick={() => { setIsNotificationsOpen(!isNotificationsOpen); setIsSeasonDropdownOpen(false); setIsProfileMenuOpen(false) }}
-              className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted/60 border border-border/50 hover:border-primary/30 transition-all outline-none"
+              className="relative flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted/60 border border-border/50 hover:border-brand-accent/30 transition-all outline-none"
             >
               <Bell className="w-4 h-4 text-muted-foreground" />
               {notifications.length > 0 && (
@@ -270,7 +270,7 @@ export default function DashboardLayout() {
                             className={cn(
                               "flex gap-3 items-start p-3 rounded-2xl hover:bg-muted/50 transition-colors text-left",
                               notif.color === 'red' ? "hover:bg-red-500/5" :
-                              notif.color === 'yellow' ? "hover:bg-amber-500/5" : "hover:bg-primary/5"
+                              notif.color === 'yellow' ? "hover:bg-amber-500/5" : "hover:bg-brand-accent/5"
                             )}
                           >
                             <div className={cn(
@@ -323,8 +323,8 @@ export default function DashboardLayout() {
                 {role ? ROLE_LABELS[role] : '—'}
               </p>
             </div>
-            <div className="w-8 h-8 rounded-full pill bg-primary/10 border border-primary/20 flex items-center justify-center pointer-events-none">
-              <User className="w-4 h-4 text-primary" />
+            <div className="w-8 h-8 rounded-full pill bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center pointer-events-none">
+              <User className="w-4 h-4 text-brand-accent" />
             </div>
             </button>
 
@@ -351,7 +351,7 @@ export default function DashboardLayout() {
                         setIsProfileMenuOpen(false)
                         setIsProfileModalOpen(true)
                       }}
-                      className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-primary/10 hover:text-primary transition-all text-left"
+                      className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-brand-accent/10 hover:text-brand-accent transition-all text-left"
                     >
                       <User className="w-4 h-4" />
                       Il mio Profilo
@@ -363,7 +363,7 @@ export default function DashboardLayout() {
                           setIsProfileMenuOpen(false)
                           setIsSettingsModalOpen(true)
                         }}
-                        className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-primary/10 hover:text-primary transition-all text-left"
+                        className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-brand-accent/10 hover:text-brand-accent transition-all text-left"
                       >
                         <Settings className="w-4 h-4" />
                         Gestione Account
@@ -376,7 +376,7 @@ export default function DashboardLayout() {
                           setIsProfileMenuOpen(false)
                           setIsEmailModalOpen(true)
                         }}
-                        className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-primary/10 hover:text-primary transition-all text-left"
+                        className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-brand-accent/10 hover:text-brand-accent transition-all text-left"
                       >
                         <Mail className="w-4 h-4" />
                         Invia Email
@@ -436,9 +436,9 @@ export default function DashboardLayout() {
           onClick={toggleMenu}
           className={cn(
             "flex items-center gap-2 px-6 py-3 pill shadow-2xl transition-colors duration-300",
-            isMenuOpen 
-              ? "bg-foreground text-background" 
-              : "bg-primary text-white shadow-[0_0_20px_oklch(0.33_0.13_15/_0.4)]"
+            isMenuOpen
+              ? "bg-foreground text-background"
+              : "bg-brand-accent text-white shadow-[0_0_20px_oklch(0.33_0.13_15/_0.4)]"
           )}
         >
           {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -480,8 +480,8 @@ export default function DashboardLayout() {
                         cn(
                           'group flex items-center gap-4 px-4 py-3.5 pill text-sm font-semibold transition-all duration-300',
                           isActive
-                            ? 'bg-primary text-white glow-primary'
-                            : 'text-foreground/70 hover:bg-primary/5 hover:text-primary'
+                            ? 'bg-brand-accent text-white glow-primary'
+                            : 'text-foreground/70 hover:bg-brand-accent/5 hover:text-brand-accent'
                         )
                       }
                     >

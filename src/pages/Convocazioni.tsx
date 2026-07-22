@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
 import { useAppStore } from '@/store/useAppStore'
 import { QueryErrorState } from '@/components/ui/query-error-state'
+import { Badge } from '@/components/ui/Badge'
 import { attendanceService, type PlayerRosterItem } from '@/services/attendanceService'
 import { callUpService, type EventRow, type CallUp } from '@/services/callUpService'
 
@@ -262,8 +263,8 @@ export default function Convocazioni() {
       <div className="flex justify-between items-end">
         <div className="space-y-0.5">
           <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-primary/10 border border-primary/20">
-              <ClipboardList className="w-6 h-6 text-primary" />
+            <span className="p-1.5 rounded-lg bg-brand-accent/10 border border-brand-accent/20">
+              <ClipboardList className="w-6 h-6 text-brand-accent" />
             </span>
             Convocazioni
           </h1>
@@ -283,7 +284,7 @@ export default function Convocazioni() {
               'px-3.5 py-1.5 text-xs font-semibold rounded-full border transition-all cursor-pointer select-none whitespace-nowrap',
               selectedSector === 'all'
                 ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                : 'bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10'
+                : 'bg-[var(--surface-05)] border-[var(--border-soft)] text-muted-foreground hover:bg-[var(--surface-05)]'
             )}
           >
             Tutte
@@ -297,7 +298,7 @@ export default function Convocazioni() {
                 'px-3.5 py-1.5 text-xs font-semibold rounded-full border transition-all cursor-pointer select-none whitespace-nowrap',
                 selectedSector === sec
                   ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                  : 'bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10'
+                  : 'bg-[var(--surface-05)] border-[var(--border-soft)] text-muted-foreground hover:bg-[var(--surface-05)]'
               )}
             >
               {sec}
@@ -313,7 +314,7 @@ export default function Convocazioni() {
         </div>
       ) : isNoSectorAssigned ? (
         <div className="glass-card rounded-2xl p-10 text-center border-black/5 dark:border-white/10">
-          <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+          <div className="w-12 h-12 rounded-full bg-[var(--surface-05)] border border-[var(--border-soft)] flex items-center justify-center mx-auto mb-4 text-muted-foreground">
             <UserX className="w-6 h-6" />
           </div>
           <h4 className="font-bold text-foreground">Nessuna leva assegnata</h4>
@@ -326,13 +327,13 @@ export default function Convocazioni() {
           {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={`match-sk-${i}`}
-              className="w-40 h-20 flex-shrink-0 rounded-2xl bg-white/5 border border-white/10 animate-pulse"
+              className="w-40 h-20 flex-shrink-0 rounded-2xl bg-[var(--surface-05)] border border-[var(--border-soft)] animate-pulse"
             />
           ))}
         </div>
       ) : isMatchesEmpty ? (
         <div className="glass-card rounded-2xl p-10 text-center border-black/5 dark:border-white/10">
-          <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+          <div className="w-12 h-12 rounded-full bg-[var(--surface-05)] border border-[var(--border-soft)] flex items-center justify-center mx-auto mb-4 text-muted-foreground">
             <CalendarX2 className="w-6 h-6" />
           </div>
           <h4 className="font-bold text-foreground">Nessuna partita in programma</h4>
@@ -353,8 +354,8 @@ export default function Convocazioni() {
                 className={cn(
                   'flex-shrink-0 w-40 rounded-2xl border p-3 flex flex-col gap-2 text-left transition-all cursor-pointer',
                   isActive
-                    ? 'bg-primary/15 border-primary shadow-sm'
-                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                    ? 'bg-brand-accent/15 border-brand-accent shadow-sm'
+                    : 'bg-[var(--surface-05)] border-[var(--border-soft)] hover:bg-[var(--surface-05)]'
                 )}
               >
                 <span
@@ -383,12 +384,12 @@ export default function Convocazioni() {
         <div
           className={cn(
             'rounded-[2rem] p-4 flex flex-col gap-3.5 border transition-colors',
-            isLocked ? 'bg-white/[0.02] border-[var(--rose)]/30' : 'glass-card border-black/5 dark:border-white/10'
+            isLocked ? 'bg-[var(--surface-05)] border-[var(--rose)]/30' : 'glass-card border-black/5 dark:border-white/10'
           )}
         >
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center font-mono text-xs font-black text-muted-foreground flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[var(--surface-05)] border border-[var(--border-soft)] flex items-center justify-center font-mono text-xs font-black text-muted-foreground flex-shrink-0">
                 {crestInitials(selectedEvent.opponent)}
               </div>
               <div className="min-w-0">
@@ -412,10 +413,9 @@ export default function Convocazioni() {
                 Pubblicata
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 flex-shrink-0 px-2.5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-white/5 border border-white/10 text-muted-foreground">
-                <PenLine className="w-3 h-3" />
+              <Badge tone="neutral" icon={<PenLine className="w-3 h-3" />} className="px-2.5 py-1.5 text-[9px]">
                 Bozza
-              </span>
+              </Badge>
             )}
           </div>
 
@@ -505,11 +505,11 @@ export default function Convocazioni() {
               <b className="text-xl font-black text-emerald-500 tracking-tight">{stats.called}</b>
               <span className="text-[10px] text-muted-foreground font-semibold">Convocati</span>
             </div>
-            <div className="flex flex-col items-center border-l border-white/5">
+            <div className="flex flex-col items-center border-l border-[var(--border-soft)]">
               <b className="text-xl font-black text-foreground/70 tracking-tight">{stats.notCalled}</b>
               <span className="text-[10px] text-muted-foreground font-semibold">Non conv.</span>
             </div>
-            <div className="flex flex-col items-center border-l border-white/5">
+            <div className="flex flex-col items-center border-l border-[var(--border-soft)]">
               <b className="text-xl font-black text-foreground tracking-tight">{stats.total}</b>
               <span className="text-[10px] text-muted-foreground font-semibold">Rosa</span>
             </div>
@@ -554,19 +554,19 @@ export default function Convocazioni() {
           ) : (isLoadingRoster || isLoadingCallUps) && eventRoster.length === 0 ? (
             <div className="space-y-2.5">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={`roster-sk-${i}`} className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-2xl animate-pulse">
-                  <div className="w-8 h-8 rounded-full bg-white/10 flex-shrink-0" />
+                <div key={`roster-sk-${i}`} className="flex items-center gap-3 p-3 bg-[var(--surface-05)] border border-[var(--border-soft)] rounded-2xl animate-pulse">
+                  <div className="w-8 h-8 rounded-full bg-[var(--surface-05)] flex-shrink-0" />
                   <div className="flex-1 space-y-1.5 min-w-0">
-                    <div className="h-4 bg-white/10 rounded-md w-3/5" />
-                    <div className="h-3 bg-white/10 rounded-md w-1/3" />
+                    <div className="h-4 bg-[var(--surface-05)] rounded-md w-3/5" />
+                    <div className="h-3 bg-[var(--surface-05)] rounded-md w-1/3" />
                   </div>
-                  <div className="w-24 h-8 rounded-full bg-white/10 flex-shrink-0" />
+                  <div className="w-24 h-8 rounded-full bg-[var(--surface-05)] flex-shrink-0" />
                 </div>
               ))}
             </div>
           ) : isEventRosterEmpty ? (
             <div className="glass-card rounded-2xl p-10 text-center border-black/5 dark:border-white/10">
-              <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+              <div className="w-12 h-12 rounded-full bg-[var(--surface-05)] border border-[var(--border-soft)] flex items-center justify-center mx-auto mb-4 text-muted-foreground">
                 <Users className="w-6 h-6" />
               </div>
               <h4 className="font-bold text-foreground">Nessun atleta in rosa</h4>
@@ -584,12 +584,12 @@ export default function Convocazioni() {
                   <div
                     key={player.id}
                     className={cn(
-                      'flex items-center gap-3 p-3 bg-white/[0.02] border border-white/5 hover:border-white/10 rounded-2xl transition-all duration-300',
-                      called && 'bg-white/[0.04] border-white/10',
+                      'flex items-center gap-3 p-3 bg-[var(--surface-05)] border border-[var(--border-soft)] hover:border-[var(--border-soft)] rounded-2xl transition-all duration-300',
+                      called && 'bg-[var(--surface-05)] border-[var(--border-soft)]',
                       isLocked && 'opacity-55'
                     )}
                   >
-                    <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-mono text-xs font-black text-primary/80 flex-shrink-0 select-none">
+                    <div className="w-9 h-9 rounded-full bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center font-mono text-xs font-black text-brand-accent/80 flex-shrink-0 select-none">
                       {player.figc_registration
                         ? player.figc_registration.substring(player.figc_registration.length - 2)
                         : String(idx + 1).padStart(2, '0')}
@@ -612,7 +612,7 @@ export default function Convocazioni() {
                         'callup-toggle-animation flex items-center gap-1.5 h-8 pl-1 pr-3 rounded-full border-[1.5px] text-[10px] font-black uppercase tracking-wider flex-shrink-0',
                         called
                           ? 'bg-emerald-500 border-emerald-500 text-black shadow-[0_0_0_3px_rgba(16,185,129,0.15)]'
-                          : 'bg-white/5 border-white/10 text-muted-foreground/60 hover:text-foreground hover:border-white/20',
+                          : 'bg-[var(--surface-05)] border-[var(--border-soft)] text-muted-foreground/60 hover:text-foreground hover:border-[var(--border-strong)]',
                         isLocked ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer',
                         justSetPlayerId === player.id && 'just-set'
                       )}
@@ -643,10 +643,10 @@ export default function Convocazioni() {
             disabled={stats.called === 0 || publishMutation.isPending}
             onClick={() => publishMutation.mutate()}
             className={cn(
-              'w-full h-14 rounded-full flex items-center justify-center gap-2.5 text-sm font-black uppercase tracking-wider text-white shadow-2xl shadow-primary/40 transition-transform active:scale-[0.98]',
+              'w-full h-14 rounded-full flex items-center justify-center gap-2.5 text-sm font-black uppercase tracking-wider text-white shadow-2xl shadow-brand-accent/40 transition-transform active:scale-[0.98]',
               stats.called === 0 || publishMutation.isPending
-                ? 'bg-primary/40 cursor-not-allowed'
-                : 'bg-primary hover:bg-primary/90 cursor-pointer'
+                ? 'bg-brand-accent/40 cursor-not-allowed'
+                : 'bg-brand-accent hover:bg-brand-accent/90 cursor-pointer'
             )}
           >
             <Send className="w-4 h-4" />

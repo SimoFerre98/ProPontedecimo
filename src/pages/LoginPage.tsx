@@ -69,7 +69,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                className="w-full px-3 py-2.5 rounded-lg border border-border bg-input text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-brand-accent transition"
                 placeholder="nome@email.com"
               />
             </div>
@@ -86,7 +86,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                  className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border bg-input text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-brand-accent transition"
                   placeholder="••••••••"
                 />
                 <button
@@ -110,7 +110,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 px-4 rounded-lg bg-[#800020] text-white text-sm font-semibold hover:bg-[#5a0016] disabled:opacity-60 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#800020]/40"
+              className="w-full py-2.5 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/80 disabled:opacity-60 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -126,7 +126,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => navigate('/register')}
-              className="font-medium text-[#800020] hover:underline focus:outline-none"
+              className="font-medium text-brand-accent hover:underline focus:outline-none"
             >
               Registrati
             </button>

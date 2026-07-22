@@ -51,14 +51,14 @@ export default function AthleteToolbar({
         className={cn(
           "pill h-14 px-5 shrink-0 gap-2 border transition-all font-black uppercase tracking-widest text-[10px] w-full lg:w-auto justify-center",
           filterCount > 0
-            ? "border-primary/50 bg-primary/10 text-primary hover:bg-primary/20"
-            : "border-black/10 dark:border-white/10 hover:border-primary"
+            ? "border-brand-accent/50 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent/20"
+            : "border-black/10 dark:border-white/10 hover:border-brand-accent"
         )}
       >
         <Filter className="w-4 h-4" />
         Filtri
         {filterCount > 0 && (
-          <span className="bg-primary text-white text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center">
+          <span className="bg-brand-accent text-white text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center">
             {filterCount}
           </span>
         )}
@@ -67,7 +67,7 @@ export default function AthleteToolbar({
         variant="outline"
         onClick={onExport}
         disabled={totalCount === 0 || isExporting}
-        className="pill h-14 px-5 shrink-0 gap-2 border border-black/10 dark:border-white/10 hover:border-primary transition-all font-black uppercase tracking-widest text-[10px] w-full lg:w-auto justify-center disabled:opacity-50"
+        className="pill h-14 px-5 shrink-0 gap-2 border border-black/10 dark:border-white/10 hover:border-brand-accent transition-all font-black uppercase tracking-widest text-[10px] w-full lg:w-auto justify-center disabled:opacity-50"
       >
         {isExporting ? (
           <LoadingSpinner size="sm" />

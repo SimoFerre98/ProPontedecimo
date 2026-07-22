@@ -1,5 +1,6 @@
 import { AlertTriangle, CheckCircle2, AlertCircle, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/Badge'
 import type { VisitStatus } from '@/services/medicalService'
 import { differenceInDays } from "date-fns/differenceInDays";
 
@@ -26,7 +27,7 @@ export default function MedicalStatusIndicator({ status, expiry }: Readonly<{ st
     missing: {
       label: 'Pendente',
       icon: <AlertTriangle className="w-3.5 h-3.5" />,
-      class: 'bg-white/5 text-muted-foreground border-white/10',
+      class: 'bg-[var(--surface-05)] text-muted-foreground border-[var(--border-soft)]',
       glow: ''
     }
   }
@@ -36,14 +37,9 @@ export default function MedicalStatusIndicator({ status, expiry }: Readonly<{ st
 
   return (
     <div className="flex flex-col gap-1">
-      <div className={cn(
-        "px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 w-fit",
-        cfg.class,
-        cfg.glow
-      )}>
-        {cfg.icon}
+      <Badge className={cn("px-3 py-1 tracking-wider", cfg.class, cfg.glow)} icon={cfg.icon}>
         {cfg.label}
-      </div>
+      </Badge>
       {status === 'expiring' && daysLeft !== null && (
         <span className="text-[9px] font-bold text-amber-400/80 pl-1">
           Scade tra {daysLeft} giorn{daysLeft === 1 ? 'o' : 'i'}

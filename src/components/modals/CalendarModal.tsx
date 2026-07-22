@@ -92,17 +92,17 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-[95vw] lg:w-[80vw] h-[90vh] glass-card overflow-hidden flex flex-col border border-white/20 shadow-2xl rounded-[3rem]"
+        className="relative w-[95vw] lg:w-[80vw] h-[90vh] glass-card overflow-hidden flex flex-col border border-[var(--border-strong)] shadow-2xl rounded-[3rem]"
       >
         {/* Header */}
-        <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/5">
+        <div className="p-8 border-b border-[var(--border-soft)] flex items-center justify-between bg-[var(--surface-05)]">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center border border-primary/30">
-              <CalendarIcon className="w-6 h-6 text-primary" />
+            <div className="w-12 h-12 rounded-2xl bg-brand-accent/20 flex items-center justify-center border border-brand-accent/30">
+              <CalendarIcon className="w-6 h-6 text-brand-accent" />
             </div>
             <div>
               <h2 className="text-2xl font-black italic tracking-tighter uppercase text-foreground">
-                Calendario <span className="text-primary not-italic">Eventi</span>
+                Calendario <span className="text-brand-accent not-italic">Eventi</span>
               </h2>
               <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
                 Monitoraggio Task, Visite Mediche e Eventi
@@ -121,8 +121,8 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
               + Nuovo Evento
             </button>
 
-            <div className="flex items-center bg-black/20 p-1.5 pill border border-white/5">
-              <button onClick={prevMonth} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <div className="flex items-center bg-black/20 p-1.5 pill border border-[var(--border-soft)]">
+              <button onClick={prevMonth} className="p-2 hover:bg-[var(--surface-05)] rounded-full transition-colors">
                 <ChevronLeft className="w-5 h-5 text-muted-foreground" />
               </button>
               <div className="px-6 min-w-[160px] text-center">
@@ -130,14 +130,14 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
                   {format(currentDate, 'MMMM yyyy', { locale: it })}
                 </span>
               </div>
-              <button onClick={nextMonth} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+              <button onClick={nextMonth} className="p-2 hover:bg-[var(--surface-05)] rounded-full transition-colors">
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </button>
             </div>
 
             <button 
               onClick={onClose}
-              className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group"
+              className="w-10 h-10 pill border border-[var(--border-soft)] flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group"
             >
               <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
             </button>
@@ -166,21 +166,21 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
                   key={day.toISOString()}
                   className={cn(
                     "min-h-[120px] rounded-[2rem] p-4 transition-all border group/day relative",
-                    isCurrentMonth ? "bg-white/5 border-white/5 hover:border-primary/30" : "opacity-20 border-transparent",
-                    isToday(day) && "ring-1 ring-primary ring-offset-4 ring-offset-background bg-primary/5"
+                    isCurrentMonth ? "bg-[var(--surface-05)] border-[var(--border-soft)] hover:border-brand-accent/30" : "opacity-20 border-transparent",
+                    isToday(day) && "ring-1 ring-brand-accent ring-offset-4 ring-offset-background bg-brand-accent/5"
                   )}
                 >
                   <div className="flex justify-between items-start mb-3">
                     <span className={cn(
                       "text-xl font-black italic leading-none",
-                      isToday(day) ? "text-primary" : "text-foreground"
+                      isToday(day) ? "text-brand-accent" : "text-foreground"
                     )}>
                       {format(day, 'd')}
                     </span>
                     {dayEvents.length > 0 && isCurrentMonth && (
                       <div className="flex gap-1">
                         {dayEvents.some(e => e.type === 'medical') && <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.6)]" />}
-                        {dayEvents.some(e => e.type === 'task') && <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_rgba(var(--primary),0.6)]" />}
+                        {dayEvents.some(e => e.type === 'task') && <div className="w-1.5 h-1.5 rounded-full bg-brand-accent shadow-[0_0_6px_oklch(from_var(--brand-accent)_l_c_h/0.6)]" />}
                         {dayEvents.some(e => e.type === 'event') && <div className="w-1.5 h-1.5 rounded-full bg-sky-500 shadow-[0_0_6px_rgba(56,189,248,0.6)]" />}
                       </div>
                     )}
@@ -196,7 +196,7 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
                       let Icon = AlertCircle
                       
                       if (isTask) {
-                        btnClass = "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20"
+                        btnClass = "bg-brand-accent/10 text-brand-accent border-brand-accent/20 hover:bg-brand-accent/20"
                         Icon = ClipboardList
                       } else if (isMedical) {
                         btnClass = "bg-rose-500/10 text-rose-500 border-rose-500/20 hover:bg-rose-500/20"
@@ -231,7 +231,7 @@ export default function CalendarModal({ isOpen, onClose }: Readonly<CalendarModa
         {/* Legend */}
         <div className="p-6 border-t border-white/5 bg-black/20 flex items-center justify-center gap-10">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-primary" />
+            <div className="w-3 h-3 rounded-full bg-brand-accent" />
             <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Staff Tasks</span>
           </div>
           <div className="flex items-center gap-2">

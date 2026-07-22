@@ -66,14 +66,14 @@ export default function Athletes() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
-          <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
+          <div className="flex items-center gap-2 text-brand-accent font-black uppercase tracking-[0.2em] text-[10px]">
             <TrendingUp className="w-4 h-4" />
             <span>Database Atleti</span>
           </div>
           <h1 className="text-5xl font-black text-foreground tracking-tight italic uppercase">
-            Anagrafica <span className="text-primary not-italic">Atleti</span>
+            Anagrafica <span className="text-brand-accent not-italic">Atleti</span>
           </h1>
-          <p className="text-muted-foreground font-medium border-l-2 border-primary/30 pl-4 max-w-xl">
+          <p className="text-muted-foreground font-medium border-l-2 border-brand-accent/30 pl-4 max-w-xl">
             Gestione centralizzata di tutti gli atleti della Pontedecimo. Monitora stato, tesseramenti e scadenze.
           </p>
         </div>
@@ -88,7 +88,7 @@ export default function Athletes() {
               setSelectedPlayer(null)
               setIsModalOpen(true)
             }}
-            className="pill bg-primary hover:bg-primary/90 text-white gap-2 h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/30 active:scale-95 transition-all"
+            className="pill bg-brand-accent hover:bg-brand-accent/90 text-white gap-2 h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-brand-accent/30 active:scale-95 transition-all"
           >
             <UserPlus className="w-5 h-5 transition-transform group-hover:rotate-12" />
             Nuovo Atleta
@@ -180,7 +180,7 @@ export default function Athletes() {
             {filterCount > 0 ? 'Prova ad azzerare i filtri o cambiare i criteri di ricerca.' : 'Aggiungi il primo atleta con il pulsante in alto.'}
           </p>
           {filterCount > 0 && (
-            <Button onClick={resetFilters} variant="outline" className="pill mt-2 h-10 px-6 text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-primary/10">
+            <Button onClick={resetFilters} variant="outline" className="pill mt-2 h-10 px-6 text-[10px] font-black uppercase tracking-widest border-brand-accent/30 text-brand-accent hover:bg-brand-accent/10">
               Azzera Filtri
             </Button>
           )}

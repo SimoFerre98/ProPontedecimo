@@ -18,6 +18,7 @@ import { it } from 'date-fns/locale'
 import { useAuth } from '@/hooks/useAuth'
 import type { UserRole } from '@/contexts/auth-context'
 import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/Badge'
 import { icsFeedService } from '@/services/icsFeedService'
 import { profileService } from '@/services/profileService'
 import { supabase } from '@/lib/supabase'
@@ -70,7 +71,7 @@ const ROLE_BADGES: Record<UserRole, RoleBadge> = {
   },
   coach: {
     label: 'Allenatore',
-    className: 'text-foreground bg-white/10 border-white/20',
+    className: 'text-foreground bg-[var(--surface-05)] border-[var(--border-strong)]',
     Icon: Trophy
   },
   player: {
@@ -80,7 +81,7 @@ const ROLE_BADGES: Record<UserRole, RoleBadge> = {
   },
   parent: {
     label: 'Genitore',
-    className: 'text-muted-foreground bg-white/5 border-white/10',
+    className: 'text-muted-foreground bg-[var(--surface-05)] border-[var(--border-soft)]',
     Icon: User
   }
 }
@@ -377,23 +378,23 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
             role="dialog"
             aria-modal="true"
             aria-labelledby="profile-modal-title"
-            className="relative w-[95vw] max-w-xl max-h-[90vh] glass-card overflow-hidden flex flex-col border border-white/20 shadow-2xl rounded-[3rem]"
+            className="relative w-[95vw] max-w-xl max-h-[90vh] glass-card overflow-hidden flex flex-col border border-[var(--border-strong)] shadow-2xl rounded-[3rem]"
           >
             {/* Header */}
             <div className={cn(
-              "px-5 py-6 sm:p-8 border-b border-white/10 flex items-center justify-between gap-4 bg-white/5 shrink-0 modal-header", 
+              "px-5 py-6 sm:p-8 border-b border-[var(--border-soft)] flex items-center justify-between gap-4 bg-[var(--surface-05)] shrink-0 modal-header",
               isEditing && "is-editing"
             )}>
               <div className="flex items-center gap-4 min-w-0">
-                <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center border border-primary/30 shrink-0 icon-box">
-                  <User className="w-6 h-6 text-primary" />
+                <div className="w-12 h-12 rounded-2xl bg-brand-accent/20 flex items-center justify-center border border-brand-accent/30 shrink-0 icon-box">
+                  <User className="w-6 h-6 text-brand-accent" />
                 </div>
                 <div>
                   <h2
                     id="profile-modal-title"
                     className="text-xl sm:text-2xl font-black italic tracking-tighter uppercase text-foreground"
                   >
-                    Il Mio <span className="text-primary not-italic">Profilo</span>
+                    Il Mio <span className="text-brand-accent not-italic">Profilo</span>
                   </h2>
                   <p className="text-[0.65rem] sm:text-xs font-bold text-muted-foreground uppercase tracking-widest mt-0.5 modal-subtitle">
                     {isEditing ? 'Modifica i tuoi dati' : 'I tuoi dati personali'}
@@ -404,7 +405,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                 onClick={onClose}
                 disabled={isSaving}
                 aria-label="Chiudi"
-                className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
+                className="w-10 h-10 pill border border-[var(--border-soft)] flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
               >
                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
@@ -419,10 +420,10 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                     <img
                       src={profile.avatar_url}
                       alt={identityName}
-                      className="w-full h-full pill object-cover border border-white/15 avatar"
+                      className="w-full h-full pill object-cover border border-[var(--border-strong)] avatar"
                     />
                   ) : (
-                    <div className="w-full h-full pill bg-[linear-gradient(150deg,oklch(0.42_0.15_15),oklch(0.24_0.1_15))] border border-white/15 flex items-center justify-center text-[2rem] font-black italic tracking-tighter text-[oklch(0.97_0.02_85)] [text-shadow:0_2px_12px_oklch(0_0_0_/_0.4)] avatar">
+                    <div className="w-full h-full pill bg-[linear-gradient(150deg,oklch(0.42_0.15_15),oklch(0.24_0.1_15))] border border-[var(--border-strong)] flex items-center justify-center text-[2rem] font-black italic tracking-tighter text-[oklch(0.97_0.02_85)] [text-shadow:0_2px_12px_oklch(0_0_0_/_0.4)] avatar">
                       {initials}
                     </div>
                   )}
@@ -438,15 +439,12 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                   )}
                 </div>
                 {badge && (
-                  <span
-                    className={cn(
-                      'inline-flex items-center gap-[0.45rem] h-8 px-4 pill border text-[10px] font-black uppercase tracking-[0.14em] whitespace-nowrap badge',
-                      badge.className
-                    )}
+                  <Badge
+                    className={cn('h-8 px-4 tracking-[0.14em] whitespace-nowrap badge', badge.className)}
+                    icon={<badge.Icon className="w-[0.85rem] h-[0.85rem]" />}
                   >
-                    <badge.Icon className="w-[0.85rem] h-[0.85rem]" />
                     {badge.label}
-                  </span>
+                  </Badge>
                 )}
               </section>
 
@@ -571,7 +569,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                     </div>
 
                     {/* Ruolo (Sola lettura anche in modifica) */}
-                    <div className="info-row flex items-center gap-4 min-h-14 px-[1.375rem] py-2 pill bg-white/5 border border-white/10 opacity-70">
+                    <div className="info-row flex items-center gap-4 min-h-14 px-[1.375rem] py-2 pill bg-[var(--surface-05)] border border-[var(--border-soft)] opacity-70">
                       <Shield className="w-[1.125rem] h-[1.125rem] text-muted-foreground/40 shrink-0" />
                       <span className="min-w-0 flex flex-col gap-[0.1rem] text-left">
                         <span className="text-[9px] font-black uppercase tracking-[0.18em] text-muted-foreground/50">Ruolo</span>
@@ -720,7 +718,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                     {infoRows.map(({ label, value, Icon }) => (
                       <div
                         key={label}
-                        className="info-row flex items-center gap-4 min-h-14 px-[1.375rem] py-2 pill bg-white/5 border border-white/10 hover:border-primary/30 transition-colors"
+                        className="info-row flex items-center gap-4 min-h-14 px-[1.375rem] py-2 pill bg-[var(--surface-05)] border border-[var(--border-soft)] hover:border-brand-accent/30 transition-colors"
                       >
                         <Icon className="w-[1.125rem] h-[1.125rem] text-muted-foreground/40 shrink-0" />
                         <span className="min-w-0 flex flex-col gap-[0.1rem] text-left">
@@ -738,10 +736,10 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                     <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 -mb-[0.1rem] text-left">
                       Sincronizza Calendario
                     </p>
-                    <div className="flex flex-col gap-3 p-5 rounded-[2rem] bg-white/5 border border-white/10 hover:border-primary/20 transition-all duration-300">
+                    <div className="flex flex-col gap-3 p-5 rounded-[2rem] bg-[var(--surface-05)] border border-[var(--border-soft)] hover:border-brand-accent/20 transition-all duration-300">
                       <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
-                          <Calendar className="w-5 h-5 text-primary" />
+                        <div className="w-10 h-10 rounded-xl bg-brand-accent/10 flex items-center justify-center border border-brand-accent/20 shrink-0">
+                          <Calendar className="w-5 h-5 text-brand-accent" />
                         </div>
                         <div className="flex-1 min-w-0 text-left">
                           <h4 className="text-sm font-bold text-foreground">Sincronizzazione Esterna (iCal)</h4>
@@ -772,7 +770,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                                 "h-11 px-4 rounded-xl text-xs font-black uppercase tracking-widest border transition-all duration-200 flex items-center justify-center gap-2 active:scale-95 shrink-0",
                                 isCopied
                                   ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400"
-                                  : "bg-white/5 border-white/10 text-foreground hover:bg-white/10"
+                                  : "bg-[var(--surface-05)] border-[var(--border-soft)] text-foreground hover:bg-[var(--surface-05)]"
                               )}
                             >
                               {isCopied ? (
@@ -810,7 +808,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                             onClick={handleRegenerateToken}
                             disabled={isLoadingToken}
                             type="button"
-                            className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-black uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98"
+                            className="w-full h-12 rounded-xl bg-brand-accent hover:bg-brand-accent/90 text-white text-xs font-black uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98"
                           >
                             <RefreshCw className={cn("w-4 h-4", isLoadingToken && "animate-spin")} />
                             {isLoadingToken ? 'Generazione...' : 'Attiva Sincronizzazione'}
@@ -831,7 +829,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                     type="button"
                     onClick={cancelEditing}
                     disabled={isSaving}
-                    className="w-full sm:w-auto sm:flex-1 h-14 px-8 pill border border-white/10 text-[10px] font-black uppercase tracking-[0.12em] text-foreground hover:bg-white/5 active:scale-95 transition-all inline-flex items-center justify-center gap-3"
+                    className="w-full sm:w-auto sm:flex-1 h-14 px-8 pill border border-[var(--border-soft)] text-[10px] font-black uppercase tracking-[0.12em] text-foreground hover:bg-[var(--surface-05)] active:scale-95 transition-all inline-flex items-center justify-center gap-3"
                   >
                     Annulla
                   </button>
@@ -839,7 +837,7 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                     type="button"
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="w-full sm:w-auto sm:flex-[2] h-14 px-8 pill bg-primary text-white text-[10px] font-black uppercase tracking-[0.12em] inline-flex items-center justify-center gap-3 active:scale-95 transition-all disabled:opacity-50"
+                    className="w-full sm:w-auto sm:flex-[2] h-14 px-8 pill bg-brand-accent text-white text-[10px] font-black uppercase tracking-[0.12em] inline-flex items-center justify-center gap-3 active:scale-95 transition-all disabled:opacity-50"
                   >
                     {isSaving ? 'Salvataggio...' : 'Salva modifiche'}
                   </button>
@@ -849,14 +847,14 @@ export default function ProfileModal({ isOpen, onClose }: Readonly<ProfileModalP
                   <button
                     type="button"
                     onClick={onClose}
-                    className="w-full sm:w-auto sm:flex-1 h-14 px-8 pill border border-white/10 text-[10px] font-black uppercase tracking-[0.12em] text-foreground hover:bg-white/5 active:scale-95 transition-all inline-flex items-center justify-center gap-3"
+                    className="w-full sm:w-auto sm:flex-1 h-14 px-8 pill border border-[var(--border-soft)] text-[10px] font-black uppercase tracking-[0.12em] text-foreground hover:bg-[var(--surface-05)] active:scale-95 transition-all inline-flex items-center justify-center gap-3"
                   >
                     Chiudi
                   </button>
                   <button
                     type="button"
                     onClick={startEditing}
-                    className="w-full sm:w-auto sm:flex-[2] h-14 px-8 pill bg-primary text-white text-[10px] font-black uppercase tracking-[0.12em] inline-flex items-center justify-center gap-3 active:scale-95 transition-all"
+                    className="w-full sm:w-auto sm:flex-[2] h-14 px-8 pill bg-brand-accent text-white text-[10px] font-black uppercase tracking-[0.12em] inline-flex items-center justify-center gap-3 active:scale-95 transition-all"
                   >
                     <User className="w-[1.125rem] h-[1.125rem]" />
                     Modifica Profilo

@@ -58,7 +58,7 @@ function UsageArc({ value, max, color }: { value: number; max: number; color: st
   const circumference = Math.PI * radius // half circle
   const offset = circumference * (1 - pct)
   const isWarning = pct >= 0.8
-  const arcColor = isWarning ? (pct >= 0.95 ? '#ef4444' : '#f59e0b') : color
+  const arcColor = isWarning ? (pct >= 0.95 ? 'var(--rose)' : 'var(--gold)') : color
 
   return (
     <svg viewBox="0 0 72 40" className="w-16 h-10">
@@ -283,19 +283,19 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
             {/* Header */}
             <div className="flex items-center justify-between px-8 pt-8 pb-4 shrink-0">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner shrink-0">
+                <div className="w-14 h-14 pill bg-brand-accent/20 flex items-center justify-center text-brand-accent border border-brand-accent/20 shadow-inner shrink-0">
                   <Mail className="w-7 h-7" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-foreground italic uppercase leading-none">
-                    Invia <span className="text-primary not-italic">Email</span>
+                    Invia <span className="text-brand-accent not-italic">Email</span>
                   </h2>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mt-1">
                     Comunicazione interna · da onboarding@resend.dev
                   </p>
                 </div>
               </div>
-              <button onClick={onClose} className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0">
+              <button onClick={onClose} className="w-10 h-10 pill border border-[var(--border-soft)] flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0">
                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
             </div>
@@ -328,7 +328,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                       <p className="text-[10px] font-bold text-muted-foreground leading-tight">
                         <span className={cn(
                           "font-black",
-                          (emailStats.daily_limit - emailStats.daily_emails_sent) <= 10 ? "text-red-500" : "text-primary"
+                          (emailStats.daily_limit - emailStats.daily_emails_sent) <= 10 ? "text-red-500" : "text-brand-accent"
                         )}>
                           {Math.max(0, emailStats.daily_limit - emailStats.daily_emails_sent)}
                         </span> rimaste oggi
@@ -342,7 +342,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                       <UsageArc
                         value={emailStats.monthly_emails_sent}
                         max={emailStats.monthly_limit}
-                        color="#10b981"
+                        color="var(--emerald)"
                       />
                       <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground -mt-1">Mese</span>
                     </div>
@@ -390,7 +390,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                   onClick={() => setMode('single')}
                   className={cn(
                     "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all",
-                    mode === 'single' ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground"
+                    mode === 'single' ? "bg-brand-accent text-white shadow-lg shadow-brand-accent/20" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   <User className="w-4 h-4" /> Singolo
@@ -399,7 +399,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                   onClick={() => setMode('group')}
                   className={cn(
                     "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all",
-                    mode === 'group' ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground"
+                    mode === 'group' ? "bg-brand-accent text-white shadow-lg shadow-brand-accent/20" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   <Users className="w-4 h-4" /> Gruppo
@@ -420,7 +420,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                       value={singleSearch}
                       onChange={e => handleSearch(e.target.value)}
                       onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                      className="w-full h-14 pl-14 pr-6 rounded-full glass-card border border-black/5 dark:border-white/10 focus:border-primary focus:outline-none text-base font-medium placeholder:text-muted-foreground/40 text-foreground transition-all"
+                      className="w-full h-14 pl-14 pr-6 rounded-full glass-card border border-black/5 dark:border-white/10 focus:border-brand-accent focus:outline-none text-base font-medium placeholder:text-muted-foreground/40 text-foreground transition-all"
                     />
                   </div>
                   <AnimatePresence>
@@ -433,9 +433,9 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                           <button
                             key={p.id}
                             onClick={() => selectSuggestion(p)}
-                            className="w-full flex items-center gap-3 px-5 py-3 hover:bg-primary/5 hover:text-primary text-left transition-colors"
+                            className="w-full flex items-center gap-3 px-5 py-3 hover:bg-brand-accent/5 hover:text-brand-accent text-left transition-colors"
                           >
-                            <div className="w-8 h-8 pill bg-primary/15 flex items-center justify-center font-black text-primary text-xs shrink-0">
+                            <div className="w-8 h-8 pill bg-brand-accent/15 flex items-center justify-center font-black text-brand-accent text-xs shrink-0">
                               {(p.full_name?.charAt(0) || p.email.charAt(0)).toUpperCase()}
                             </div>
                             <div>
@@ -470,8 +470,8 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                         className={cn(
                           "px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
                           groupTarget === val
-                            ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground"
+                            ? "bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50 hover:text-foreground"
                         )}
                       >
                         {lbl}
@@ -485,8 +485,8 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                         className={cn(
                           "flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
                           groupTarget.startsWith('sector:')
-                            ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground"
+                            ? "bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50 hover:text-foreground"
                         )}
                       >
                         <Tag className="w-3.5 h-3.5" />
@@ -505,7 +505,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                               <button
                                 key={s}
                                 onClick={() => { setGroupTarget(`sector:${s}`); setShowSectorDropdown(false) }}
-                                className="w-full text-left px-5 py-2.5 text-sm font-bold hover:bg-primary/5 hover:text-primary transition-colors"
+                                className="w-full text-left px-5 py-2.5 text-sm font-bold hover:bg-brand-accent/5 hover:text-brand-accent transition-colors"
                               >
                                 Leva {s}
                               </button>
@@ -517,13 +517,13 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                   </div>
 
                   {/* Count badge */}
-                  <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/5 border border-primary/15 w-fit">
+                  <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-accent/5 border border-brand-accent/15 w-fit">
                     {resolvingCount ? (
                       <LoadingSpinner size="sm" />
                     ) : (
-                      <Users className="w-4 h-4 text-primary" />
+                      <Users className="w-4 h-4 text-brand-accent" />
                     )}
-                    <span className="text-xs font-black text-primary">
+                    <span className="text-xs font-black text-brand-accent">
                       {resolvingCount
                         ? 'Calcolo destinatari...'
                         : resolvedCount !== null
@@ -549,7 +549,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                   placeholder="Oggetto della comunicazione..."
                   value={subject}
                   onChange={e => setSubject(e.target.value)}
-                  className="w-full h-14 px-6 rounded-full glass-card border border-black/5 dark:border-white/10 focus:border-primary focus:outline-none text-base font-bold placeholder:text-muted-foreground/40 text-foreground transition-all"
+                  className="w-full h-14 px-6 rounded-full glass-card border border-black/5 dark:border-white/10 focus:border-brand-accent focus:outline-none text-base font-bold placeholder:text-muted-foreground/40 text-foreground transition-all"
                 />
               </div>
 
@@ -563,9 +563,9 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                   placeholder="Scrivi qui il testo della tua email..."
                   value={body}
                   onChange={e => setBody(e.target.value)}
-                  className="w-full rounded-3xl glass-card border border-black/5 dark:border-white/10 focus:ring-2 focus:ring-primary/20 focus:outline-none px-6 py-4 text-base font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground resize-none"
+                  className="w-full rounded-3xl glass-card border border-black/5 dark:border-white/10 focus:ring-2 focus:ring-brand-accent/20 focus:outline-none px-6 py-4 text-base font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground resize-none"
                 />
-                <p className="text-[10px] text-muted-foreground/50 pl-3">
+                <p className="text-[10px] text-muted-foreground/60 pl-3">
                   {body.length} caratteri · I ritorni a capo saranno preservati
                 </p>
               </div>
@@ -602,7 +602,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                 <button
                   onClick={() => void handleSend()}
                   disabled={!canSend || sending || wouldExceedDaily}
-                  className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 active:scale-95"
+                  className="flex-[2] h-14 pill bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 shadow-2xl shadow-brand-accent/30 active:scale-95"
                 >
                   {sending ? <LoadingSpinner size="sm" tone="white" /> : <Send className="w-5 h-5" />}
                   {sending ? 'Invio in corso...' : 'Invia Email'}

@@ -60,11 +60,11 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
             {/* Header */}
             <div className="relative flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+                <div className="w-14 h-14 pill bg-brand-accent/20 flex items-center justify-center text-brand-accent border border-brand-accent/20 shadow-inner">
                   <HeartPulse className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-foreground italic uppercase leading-none">Aggiorna <span className="text-primary not-italic">Visita</span></h2>
+                  <h2 className="text-2xl font-black text-foreground italic uppercase leading-none">Aggiorna <span className="text-brand-accent not-italic">Visita</span></h2>
                 </div>
               </div>
               <button
@@ -78,8 +78,8 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
             <form onSubmit={handleSubmit} className="space-y-6">
               
               <div className="p-4 glass-card rounded-2xl flex items-center gap-4 border border-black/5 dark:border-white/5">
-                <div className="w-10 h-10 pill bg-primary/10 flex items-center justify-center border border-primary/20">
-                  <User className="w-5 h-5 text-primary" />
+                <div className="w-10 h-10 pill bg-brand-accent/10 flex items-center justify-center border border-brand-accent/20">
+                  <User className="w-5 h-5 text-brand-accent" />
                 </div>
                 <div>
                   <p className="text-sm font-black text-foreground uppercase">{record.last_name} {record.first_name}</p>
@@ -97,7 +97,7 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
                     required
                     value={medicalExpiry}
                     onChange={e => setMedicalExpiry(e.target.value)}
-                    className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold"
+                    className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-base pl-14 font-bold"
                   />
                 </div>
               </div>
@@ -114,7 +114,7 @@ export default function MedicalVisitModal({ isOpen, onClose, onSuccess, record }
                 <Button 
                   type="submit" 
                   disabled={loading || !medicalExpiry}
-                  className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all disabled:opacity-50"
+                  className="flex-[2] h-14 pill bg-brand-accent hover:bg-brand-accent/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-brand-accent/40 gap-3 active:scale-95 transition-all disabled:opacity-50"
                 >
                   {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-5 h-5" />}
                   Aggiorna Scadenza

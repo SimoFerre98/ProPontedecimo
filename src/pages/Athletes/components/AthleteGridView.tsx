@@ -41,19 +41,19 @@ export default function AthleteGridView({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="glass-card p-6 flex flex-col gap-5 group hover:border-primary/30 transition-all relative overflow-hidden"
+              className="glass-card p-6 flex flex-col gap-5 group hover:border-brand-accent/30 transition-all relative overflow-hidden"
             >
-              <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-brand-accent/5 rounded-full blur-3xl group-hover:bg-brand-accent/10 transition-colors" />
 
               {/* Header */}
               <div className="flex items-start justify-between relative">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20 shadow-inner group-hover:scale-105 transition-transform">
-                    <User className="w-7 h-7 text-primary" />
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-accent/20 to-brand-accent/5 flex items-center justify-center border border-brand-accent/20 shadow-inner group-hover:scale-105 transition-transform">
+                    <User className="w-7 h-7 text-brand-accent" />
                   </div>
                   <div className="space-y-0.5">
-                    <h3 className="text-xl font-black text-foreground leading-tight tracking-tight uppercase italic group-hover:text-primary transition-colors">
-                      {player.last_name} <span className="text-primary not-italic font-bold">{player.first_name}</span>
+                    <h3 className="text-xl font-black text-foreground leading-tight tracking-tight uppercase italic group-hover:text-brand-accent transition-colors">
+                      {player.last_name} <span className="text-brand-accent not-italic font-bold">{player.first_name}</span>
                     </h3>
                     <div className="flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
@@ -129,14 +129,14 @@ export default function AthleteGridView({
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => onOpenSummary(player)}
-                    className="text-foreground/75 hover:text-primary transition-colors flex items-center gap-1 group/btn"
+                    className="text-foreground/75 hover:text-brand-accent transition-colors flex items-center gap-1 group/btn"
                   >
                     <Euro className="w-3.5 h-3.5" />
                     <span className="text-[10px] font-black uppercase tracking-widest">Pagamenti</span>
                   </button>
                   <button
                     onClick={() => onOpenDetails(player)}
-                    className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1 group/btn ml-auto"
+                    className="text-brand-accent hover:text-brand-accent/80 transition-colors flex items-center gap-1 group/btn ml-auto"
                   >
                     <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
                     <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
