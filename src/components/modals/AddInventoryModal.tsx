@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Package, Tag, Hash, Box, Save, Loader2, AlertTriangle } from 'lucide-react'
+import { X, Package, Tag, Hash, Box, Save, AlertTriangle } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { inventoryService } from '@/services/inventoryService'
@@ -150,7 +151,7 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
                   disabled={loading}
                   className="flex-[2] h-12 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[9px] shadow-xl shadow-primary/20 gap-2 active:scale-95 transition-all"
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-4 h-4" />}
                   Aggiungi Articolo
                 </Button>
               </div>

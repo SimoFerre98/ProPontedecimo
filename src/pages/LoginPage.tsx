@@ -2,6 +2,7 @@ import { type FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -113,7 +114,7 @@ export default function LoginPage() {
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <LoadingSpinner size="sm" tone="white" />
                   Accesso...
                 </span>
               ) : 'Accedi'}

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  X, UserPlus, Calendar, Smartphone, Users, Save, Loader2,
+  X, UserPlus, Calendar, Smartphone, Users, Save,
   Mail, HeartPulse, MapPin, FileText, User, Home, CreditCard, ClipboardList, ShieldCheck
 } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { athleteService, type Player } from '@/services/athleteService'
@@ -925,7 +926,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                   </Button>
                   <Button type="submit" disabled={loading || !isFormValid}
                     className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100">
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                    {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-5 h-5" />}
                     {player ? 'Salva Modifiche' : 'Finalizza Registrazione'}
                   </Button>
                 </div>

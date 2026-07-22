@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, UserCog, Mail, ShieldAlert, Loader2, Trash2, X, Users, AlertTriangle, KeyRound, Check, Link2, CheckCircle2, Clock, Plus } from 'lucide-react'
+import { Search, UserCog, Mail, ShieldAlert, Trash2, X, Users, AlertTriangle, KeyRound, Check, Link2, CheckCircle2, Clock, Plus } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { supabase } from '@/lib/supabase'
 import type { Database } from '@/types/database'
 import { useAuth } from '@/hooks/useAuth'
@@ -445,7 +446,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
               <>
               {loading ? (
                 <div className="flex justify-center items-center py-16">
-                  <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                  <LoadingSpinner size="lg" />
                 </div>
               ) : filteredProfiles.length === 0 ? (
                 <div className="text-center py-16 text-muted-foreground">
@@ -489,7 +490,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                         {currentUserRole === 'president' ? (
                           // Presidente: selettore interattivo, disabilitato solo sulla propria riga (AC3)
                           updatingId === profile.id ? (
-                            <div className="px-3 py-2"><Loader2 className="w-4 h-4 text-primary animate-spin" /></div>
+                            <div className="px-3 py-2"><LoadingSpinner size="sm" /></div>
                           ) : (
                             // TASK-02: tooltip esplicativo sul self-lock, così il Presidente capisce
                             // perché il proprio ruolo non è modificabile (invece di sembrare un bug).
@@ -531,7 +532,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                           title="Invia email di reset password"
                         >
                           {sendingResetId === profile.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <LoadingSpinner size="sm" tone="muted" />
                           ) : resetSuccessId === profile.id ? (
                             <Check className="w-4 h-4" />
                           ) : (
@@ -548,7 +549,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                             title="Elimina utente"
                           >
                             {deletingId === profile.id
-                              ? <Loader2 className="w-4 h-4 animate-spin" />
+                              ? <LoadingSpinner size="sm" tone="muted" />
                               : <Trash2 className="w-4 h-4" />
                             }
                           </button>
@@ -567,7 +568,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
 
                 {linksLoading ? (
                   <div className="flex justify-center items-center py-16">
-                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                    <LoadingSpinner size="lg" />
                   </div>
                 ) : (
                   <>
@@ -609,7 +610,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                                   disabled={confirmingLink === key || removingLink !== null}
                                   className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50"
                                 >
-                                  {confirmingLink === key ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                                  {confirmingLink === key ? <LoadingSpinner size="sm" className="text-emerald-600 dark:text-emerald-400" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
                                   Conferma
                                 </button>
                                 <button
@@ -617,7 +618,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                                   disabled={removingLink === key || confirmingLink !== null}
                                   className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50"
                                 >
-                                  {removingLink === key ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                                  {removingLink === key ? <LoadingSpinner size="sm" className="text-red-500" /> : <Trash2 className="w-3.5 h-3.5" />}
                                   Rifiuta
                                 </button>
                               </div>
@@ -665,7 +666,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                                 disabled={removingLink === key || confirmingLink !== null}
                                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50 shrink-0"
                               >
-                                {removingLink === key ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                                {removingLink === key ? <LoadingSpinner size="sm" className="text-red-500" /> : <Trash2 className="w-3.5 h-3.5" />}
                                 Rimuovi
                               </button>
                             </motion.div>
@@ -719,7 +720,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                         ) : (
                           <div className="relative">
                             {newLinkPlayerSearching
-                              ? <Loader2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary animate-spin" />
+                              ? <LoadingSpinner size="sm" className="absolute left-4 top-1/2 -translate-y-1/2" />
                               : <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
                             }
                             <input
@@ -753,7 +754,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                         disabled={!newLinkSelectedParent || !newLinkSelectedPlayer || creatingLink}
                         className="w-full h-11 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
                       >
-                        {creatingLink ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                        {creatingLink ? <LoadingSpinner size="sm" tone="white" /> : <Plus className="w-4 h-4" />}
                         Crea Associazione
                       </button>
                     </div>
@@ -835,7 +836,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                       disabled={!deleteConfirmValid || deletingId !== null}
                       className="flex-1 h-12 pill bg-red-500 hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-500/30"
                     >
-                      {deletingId ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                      {deletingId ? <LoadingSpinner size="sm" tone="white" /> : <Trash2 className="w-4 h-4" />}
                       Elimina
                     </button>
                   </div>

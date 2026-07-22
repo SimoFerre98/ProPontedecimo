@@ -2,12 +2,13 @@ import { useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns/format'
 import { it } from 'date-fns/locale/it'
-import { Bell, Lock, Users, Loader2, Send } from 'lucide-react'
+import { Bell, Lock, Users, Send } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/contexts/ToastContext'
 import { getErrorMessage } from '@/lib/errors'
 import { QueryErrorState } from '@/components/ui/query-error-state'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { SEVERITY_CONFIG, SEVERITY_ORDER } from '@/lib/announcementSeverity'
 import {
   announcementService,
@@ -243,7 +244,7 @@ export default function Notifiche() {
           onClick={() => void handlePublish()}
           className="w-full h-14 rounded-full bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-[11px] transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 active:scale-95"
         >
-          {publishing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+          {publishing ? <LoadingSpinner size="sm" tone="white" /> : <Send className="w-5 h-5" />}
           {publishing ? 'Pubblicazione in corso...' : 'Pubblica notifica'}
         </button>
       </div>
@@ -256,7 +257,7 @@ export default function Notifiche() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <LoadingSpinner />
           </div>
         ) : isError ? (
           <QueryErrorState error={error} onRetry={() => void refetch()} />

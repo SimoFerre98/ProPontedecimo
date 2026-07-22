@@ -167,15 +167,6 @@ export const athleteService = {
     return data as Player
   },
 
-  async deletePlayer(id: string) {
-    const { error } = await supabase
-      .from('players')
-      .delete()
-      .eq('id', id)
-
-    if (error) throw error
-  },
-
   async deleteAthlete(id: string) {
     const { error } = await supabase
       .from('players')

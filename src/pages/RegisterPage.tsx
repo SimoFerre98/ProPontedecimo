@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { Eye, EyeOff, User, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -232,7 +233,7 @@ export default function RegisterPage() {
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <LoadingSpinner size="sm" tone="white" />
                     Registrazione...
                   </span>
                 ) : 'Registrati'}
