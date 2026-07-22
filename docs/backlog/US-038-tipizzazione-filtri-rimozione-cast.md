@@ -19,5 +19,5 @@ After implementing this story, the user can: rinominare un campo filtro e vedere
 **Context**
 Dall'analisi architetturale: ~12 usi di `any`, tra cui `athleteService.getPlayers(..., filters as any)` e `filter((p: any) => p.status === 'paid')`.
 
-**Status:** REVIEW
+**Status:** DONE
 **Plan:** [docs/planning/US-038-plan.md](../planning/US-038-plan.md)
