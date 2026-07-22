@@ -148,7 +148,7 @@ export default function RecoveryPage() {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
-                    className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                    className="w-full px-3 py-2.5 pr-10 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
                     placeholder="Almeno 6 caratteri"
                   />
                   <button
@@ -173,7 +173,7 @@ export default function RecoveryPage() {
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
                   required
-                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
+                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-white text-sm text-gray-900 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#800020]/30 focus:border-[#800020] transition"
                   placeholder="Ripeti la password"
                 />
               </div>

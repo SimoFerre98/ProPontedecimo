@@ -43,6 +43,9 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 - **US-035**: Creata l'utility `getErrorMessage` in `src/lib/errors.ts` per estrarre un messaggio leggibile dagli errori Supabase/RPC con fallback italiano generico.
 - **US-036**: Creato l'hook `useFormModal` (`src/hooks/useFormModal.ts`) che centralizza il pattern loading/try-catch/finally/invalidateQueries/onClose nei modali con singola azione di submit.
 
+### Fixed
+- Corretto il testo invisibile negli input di `LoginPage`, `RegisterPage` e `RecoveryPage` in dark mode: il colore ereditava `text-foreground` (quasi bianco in dark mode) su uno sfondo `bg-white` intenzionalmente sempre chiaro; ora `text-gray-900` fisso, indipendente dal tema. Rilevato durante la verifica visiva di US-039.
+
 ### Refactored
 - **US-039**: Creato il componente condiviso `LoadingSpinner` (`src/components/ui/LoadingSpinner.tsx`, prop `size`/`tone`/`fullPage`/`label`) che sostituisce le ~29 implementazioni sparse di `Loader2 animate-spin` e dei div a bordo colorato in 11 modali, `ProtectedRoute`, `RoleGuard`, `RecoveryPage`, `LoginPage`, `RegisterPage`, `PortalDashboard`, `DashboardLayout` e `Notifiche`. Il colore di default passa da `#800020` hardcoded a `text-primary` (coerente col tema anche in dark mode), effetto voluto della consolidazione.
 - **US-039**: Creato il componente condiviso `StatsGrid` (`src/components/ui/StatsGrid.tsx`, `variant: 'grid' | 'badge'`, prop `items`/`cardClassName`/`iconShape`) che sostituisce le card statistiche duplicate di `Payments.tsx`, `Inventory.tsx`, il componente locale `StatBadge` di `MedicalVisits.tsx` e (estensione concordata) `AthleteStatsCards.tsx`, preservando `onClick`/`hint` e lo stile bordo/icona circolare originale di quest'ultima tramite le nuove prop.
