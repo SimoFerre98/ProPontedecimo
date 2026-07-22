@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import type { AthletesFilters } from '@/types/filters'
 
 export type Player = {
   id: string
@@ -41,15 +42,7 @@ export type Player = {
 function buildPlayersQuery(
   search?: string,
   sector?: string,
-  filters?: {
-    isActive?: 'all' | 'active' | 'inactive'
-    isRegistered?: 'all' | 'yes' | 'no'
-    medicalStatus?: 'all' | 'expired' | 'valid' | 'missing'
-    privacyStatus?: 'all' | 'accepted' | 'missing'
-    registrationStatus?: 'all' | 'missing'
-    sortBy?: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
-    sortDir?: 'asc' | 'desc'
-  },
+  filters?: AthletesFilters,
   seasonId?: string | null,
   selectOptions?: { count: 'exact' }
 ) {
@@ -101,15 +94,7 @@ export const athleteService = {
     sector?: string,
     page = 0,
     pageSize = 12,
-    filters?: {
-      isActive?: 'all' | 'active' | 'inactive'
-      isRegistered?: 'all' | 'yes' | 'no'
-      medicalStatus?: 'all' | 'expired' | 'valid' | 'missing'
-      privacyStatus?: 'all' | 'accepted' | 'missing'
-      registrationStatus?: 'all' | 'missing'
-      sortBy?: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
-      sortDir?: 'asc' | 'desc'
-    },
+    filters?: AthletesFilters,
     seasonId?: string | null
   ) {
     const from = page * pageSize
@@ -126,15 +111,7 @@ export const athleteService = {
   async getPlayersForExport(
     search?: string,
     sector?: string,
-    filters?: {
-      isActive?: 'all' | 'active' | 'inactive'
-      isRegistered?: 'all' | 'yes' | 'no'
-      medicalStatus?: 'all' | 'expired' | 'valid' | 'missing'
-      privacyStatus?: 'all' | 'accepted' | 'missing'
-      registrationStatus?: 'all' | 'missing'
-      sortBy?: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
-      sortDir?: 'asc' | 'desc'
-    },
+    filters?: AthletesFilters,
     seasonId?: string | null
   ) {
     const query = buildPlayersQuery(search, sector, filters, seasonId)
