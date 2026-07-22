@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Euro, CheckCircle2, Clock, AlertCircle, Calendar, Loader2 } from 'lucide-react'
+import { X, Euro, CheckCircle2, Clock, AlertCircle, Calendar } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns/format'
 import { it } from 'date-fns/locale/it'
@@ -119,7 +120,7 @@ export default function PlayerPaymentSummaryModal({
             <div className="px-8 pb-8 space-y-6">
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                  <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                  <LoadingSpinner size="lg" />
                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Caricamento pagamenti...</p>
                 </div>
               ) : payments.length === 0 ? (

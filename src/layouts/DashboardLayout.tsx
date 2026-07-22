@@ -41,6 +41,7 @@ import SettingsModal from '@/components/modals/SettingsModal'
 import SendEmailModal from '@/components/modals/SendEmailModal'
 import CalendarModal from '@/components/modals/CalendarModal'
 import NewSeasonWizardModal from '@/components/modals/NewSeasonWizardModal'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 const NAV_ITEMS = [
   { to: '/',          icon: LayoutDashboard, label: 'Dashboard',      exact: true },
@@ -255,7 +256,7 @@ export default function DashboardLayout() {
                   <div className="max-h-[350px] overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-white/10">
                     {isLoadingNotifications ? (
                       <div className="flex flex-col items-center justify-center py-10 gap-3">
-                        <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                        <LoadingSpinner />
                       </div>
                     ) : notifications.length > 0 ? (
                       <div className="flex flex-col gap-1 p-1">

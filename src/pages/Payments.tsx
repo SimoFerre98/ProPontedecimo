@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, CheckCircle2, Clock, AlertCircle, Plus,
   User, Euro, FileText, CreditCard, Smartphone, Banknote, Building2, Pencil,
-  Download, Loader2, TrendingUp
+  Download, TrendingUp
 } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns/format'
 import { it } from 'date-fns/locale/it'
@@ -20,6 +21,7 @@ import PaymentModal from '@/components/modals/PaymentModal'
 import NewPaymentModal from '@/components/modals/NewPaymentModal'
 import { useAppStore } from '@/store/useAppStore'
 import { FinancialTrendChart } from '@/components/charts/FinancialTrendChart'
+import { StatsGrid } from '@/components/ui/StatsGrid'
 
 const METHOD_ICONS: Record<string, React.ElementType> = {
   satispay: Smartphone,
@@ -246,27 +248,13 @@ export default function Payments() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
+      <StatsGrid
+        items={[
           { label: 'Incassato', value: `€ ${stats.paid.toLocaleString('it-IT')}`, icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
           { label: 'Da Riscuotere', value: `€ ${stats.pending.toLocaleString('it-IT')}`, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-500/10' },
           { label: 'Rate Scadute', value: stats.overdue, icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-500/10' },
-        ].map((s, i) => (
-          <motion.div
-            key={s.label}
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-            className="glass-card p-6 flex items-center justify-between border-white/5 group hover:border-primary/20 transition-all"
-          >
-            <div className="space-y-1">
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{s.label}</p>
-              <p className="text-3xl font-black text-foreground tabular-nums">{s.value}</p>
-            </div>
-            <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner transition-transform group-hover:scale-110', s.bg)}>
-              <s.icon className={cn('w-6 h-6', s.color)} />
-            </div>
-          </motion.div>
-        ))}
-      </div>
+        ]}
+      />
 
       {/* Toolbar */}
       <div className="flex flex-col md:flex-row gap-4 items-center">
@@ -302,7 +290,7 @@ export default function Payments() {
               className="pill h-14 px-5 shrink-0 gap-2 border border-black/10 dark:border-white/10 hover:border-primary transition-all font-black uppercase tracking-widest text-[10px] w-full md:w-auto justify-center disabled:opacity-50"
             >
               {isExporting ? (
-                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                <LoadingSpinner size="sm" />
               ) : (
                 <Download className="w-4 h-4" />
               )}

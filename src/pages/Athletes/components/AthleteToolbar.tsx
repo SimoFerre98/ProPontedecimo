@@ -1,7 +1,8 @@
-import { Filter, Download, Loader2 } from 'lucide-react'
+import { Filter, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { FilterToolbar } from '@/components/ui/FilterToolbar'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 interface AthleteToolbarProps {
   search: string
@@ -69,7 +70,7 @@ export default function AthleteToolbar({
         className="pill h-14 px-5 shrink-0 gap-2 border border-black/10 dark:border-white/10 hover:border-primary transition-all font-black uppercase tracking-widest text-[10px] w-full lg:w-auto justify-center disabled:opacity-50"
       >
         {isExporting ? (
-          <Loader2 className="w-4 h-4 animate-spin text-primary" />
+          <LoadingSpinner size="sm" />
         ) : (
           <Download className="w-4 h-4" />
         )}

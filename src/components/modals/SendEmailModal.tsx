@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  X, Mail, Send, Users, User, Search, ChevronDown, Loader2,
+  X, Mail, Send, Users, User, Search, ChevronDown,
   CheckCircle2, AlertTriangle, Tag
 } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import type { Database } from '@/types/database'
@@ -518,7 +519,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                   {/* Count badge */}
                   <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/5 border border-primary/15 w-fit">
                     {resolvingCount ? (
-                      <Loader2 className="w-4 h-4 text-primary animate-spin" />
+                      <LoadingSpinner size="sm" />
                     ) : (
                       <Users className="w-4 h-4 text-primary" />
                     )}
@@ -603,7 +604,7 @@ export default function SendEmailModal({ isOpen, onClose }: Readonly<SendEmailMo
                   disabled={!canSend || sending || wouldExceedDaily}
                   className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 active:scale-95"
                 >
-                  {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                  {sending ? <LoadingSpinner size="sm" tone="white" /> : <Send className="w-5 h-5" />}
                   {sending ? 'Invio in corso...' : 'Invia Email'}
                 </button>
               </div>

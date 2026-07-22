@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Save, Loader2, Euro, FileText, Calendar } from 'lucide-react'
+import { X, Save, Euro, FileText, Calendar } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
@@ -179,7 +180,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
                   disabled={loading || !isValid}
                   className="flex-[2] h-12 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/30 gap-2 disabled:opacity-50"
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-4 h-4" />}
                   Conferma Pagamento
                 </Button>
               </div>

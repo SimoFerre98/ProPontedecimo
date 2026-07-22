@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Users, Search, User, Loader2, CheckCircle2 } from 'lucide-react'
+import { X, Users, Search, User, CheckCircle2 } from 'lucide-react'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { useFormModal } from '@/hooks/useFormModal'
 import { useAuth } from '@/hooks/useAuth'
@@ -122,7 +123,7 @@ export default function RequestChildLinkModal({ isOpen, onClose }: Readonly<Requ
                 </label>
                 <div className="relative group">
                   {searching
-                    ? <Loader2 className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-primary animate-spin pointer-events-none z-10" />
+                    ? <LoadingSpinner size="sm" className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
                     : <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 pointer-events-none z-10 group-focus-within:text-primary transition-colors" />
                   }
                   <input
@@ -233,7 +234,7 @@ export default function RequestChildLinkModal({ isOpen, onClose }: Readonly<Requ
                     "bg-primary hover:bg-primary/90 text-white shadow-primary/40"
                   )}
                 >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Users className="w-5 h-5" />}
+                  {loading ? <LoadingSpinner size="sm" tone="white" /> : <Users className="w-5 h-5" />}
                   Invia Richiesta
                 </Button>
               </div>

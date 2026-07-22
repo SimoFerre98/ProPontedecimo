@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 interface RoleGuardProps {
   allowedRoles: string[]
@@ -9,7 +10,7 @@ interface RoleGuardProps {
 export default function RoleGuard({ allowedRoles, fallbackPath }: RoleGuardProps) {
   const { role, loading } = useAuth()
 
-  if (loading) return null
+  if (loading) return <LoadingSpinner fullPage />
 
   // Se l'utente non ha un ruolo o non ha il ruolo permesso, reindirizza al fallback
   if (!role || !allowedRoles.includes(role)) {

@@ -11,6 +11,7 @@ import { useParentBillingData } from '@/hooks/useParentBillingData'
 import ChildBillingCard from '@/components/ChildBillingCard'
 import NextCallUpCard from '@/components/NextCallUpCard'
 import { announcementService } from '@/services/announcementService'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 export default function PortalDashboard() {
   const { profile, role } = useAuth()
@@ -144,7 +145,7 @@ export default function PortalDashboard() {
           <div className="p-6">
             {childrenLoading ? (
               <div className="flex items-center justify-center py-8">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <LoadingSpinner />
               </div>
             ) : myChildren.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 gap-3 text-center">
@@ -238,7 +239,7 @@ export default function PortalDashboard() {
 
           {billingLoading ? (
             <div className="flex items-center justify-center py-12 glass-card border-white/10 rounded-3xl">
-              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <LoadingSpinner size="lg" />
             </div>
           ) : billingError ? (
             <div className="flex flex-col items-center justify-center py-10 gap-3 text-center glass-card border-white/10 rounded-3xl bg-rose-500/5">

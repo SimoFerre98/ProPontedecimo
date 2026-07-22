@@ -16,5 +16,5 @@ After implementing this story, the user can: vedere spinner e card statistiche i
 - [ ] `RoleGuard` mostra lo spinner durante il loading invece di ritornare `null` (schermo bianco)
 - [ ] Il metodo duplicato `deleteAthlete`/`deletePlayer` in `athleteService.ts` è consolidato in uno solo
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** [docs/planning/US-039-plan.md](../planning/US-039-plan.md)
