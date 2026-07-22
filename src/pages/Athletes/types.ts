@@ -1,12 +1,6 @@
-export type FiltersState = {
-  isActive: 'all' | 'active' | 'inactive'
-  isRegistered: 'all' | 'yes' | 'no'
-  medicalStatus: 'all' | 'expired' | 'valid' | 'missing'
-  privacyStatus: 'all' | 'accepted' | 'missing'
-  registrationStatus: 'all' | 'missing'
-  sortBy: 'last_name' | 'created_at' | 'medical_expiry' | 'team_sector' | 'is_active' | 'is_registered'
-  sortDir: 'asc' | 'desc'
-}
+import type { AthletesFilters } from '@/types/filters'
+
+export type FiltersState = AthletesFilters
 
 export const DEFAULT_FILTERS: FiltersState = {
   isActive: 'all',

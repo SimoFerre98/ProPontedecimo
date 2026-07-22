@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns/format'
 import { it } from 'date-fns/locale/it'
 import { paymentService, PAYMENT_METHODS, type PaymentStatus, type PaymentReference } from '@/services/paymentService'
+import type { PaymentsFilters } from '@/types/filters'
 import { Pagination } from '@/components/ui/Pagination'
 import { Button } from '@/components/ui/button'
 import { QueryErrorState } from '@/components/ui/query-error-state'
@@ -40,14 +41,14 @@ export default function Payments() {
   const { role } = useAuth()
   const isAdmin = role === 'president' || role === 'director'
 
+  const paymentsFilters: PaymentsFilters = { status: statusFilter, sortBy: 'due_date', sortDir: 'asc' }
+
   const handleExport = async () => {
     try {
       setIsExporting(true)
       const dataToExport = await paymentService.getPaymentsForExport(
         search,
-        statusFilter,
-        'due_date',
-        'asc',
+        paymentsFilters,
         selectedSeasonId
       )
 
@@ -76,7 +77,7 @@ export default function Payments() {
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['payments', search, statusFilter, page, selectedSeasonId],
-    queryFn: () => paymentService.getPayments(search, statusFilter, page, pageSize, 'due_date', 'asc', selectedSeasonId),
+    queryFn: () => paymentService.getPayments(search, paymentsFilters, page, pageSize, selectedSeasonId),
     enabled: !!selectedSeasonId,
   })
 
