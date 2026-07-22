@@ -68,7 +68,7 @@ export default function PlayerPaymentSummaryModal({
     }
   }, [payments])
 
-  const getMethodText = (p: PaymentReference) => {
+  const getMethodText = (p: Omit<PaymentReference, 'player'>) => {
     if (!p.payment_method) return ''
     const methodLabel = PAYMENT_METHODS.find(m => m.value === p.payment_method)?.label || p.payment_method
     const receiptText = p.receipt_number ? ` · Ricevuta n. ${p.receipt_number}` : ''

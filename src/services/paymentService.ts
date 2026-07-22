@@ -300,7 +300,7 @@ export const paymentService = {
     }
 
     const todayStr = new Date().toISOString().split('T')[0]
-    const mapped = (data || []).map((p: OverduePaymentRow) => {
+    const mapped = ((data || []) as unknown as OverduePaymentRow[]).map((p) => {
       if (p.status === 'pending' && p.due_date && p.due_date < todayStr) {
         return { ...p, status: 'overdue' as PaymentStatus }
       }
