@@ -13,7 +13,7 @@ interface ChildBillingCardProps {
   teamSector: string | null
   seasonName: string
   medicalExpiry: string | null
-  payments: PaymentReference[]
+  payments: Omit<PaymentReference, 'player'>[]
 }
 
 export default function ChildBillingCard({
