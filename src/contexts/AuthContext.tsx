@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { AuthContext, type AuthContextValue, type Profile } from '@/contexts/auth-context'
@@ -10,6 +10,7 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
   const [loading, setLoading] = useState(true)
   const [fetchingProfile, setFetchingProfile] = useState(false)
   const { setProfile: setStoreProfile } = useAppStore()
+  const fetchedUserIdRef = useRef<string | null>(null)
 
   const fetchProfile = useCallback(async (userId: string) => {
     setFetchingProfile(true)
@@ -30,24 +31,26 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
   }, [setStoreProfile])
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
+
       if (session?.user) {
-        fetchProfile(session.user.id).finally(() => setLoading(false))
+        const userId = session.user.id
+        if (fetchedUserIdRef.current === userId) {
+          setLoading(false)
+          return
+        }
+        fetchedUserIdRef.current = userId
+        // Deferred: una fetch DB dentro il callback sincrono di onAuthStateChange
+        // interferisce con il lock interno del client auth (guida Supabase).
+        setTimeout(() => {
+          fetchProfile(userId).finally(() => setLoading(false))
+        }, 0)
       } else {
+        fetchedUserIdRef.current = null
         setProfileState(null)
         setStoreProfile(null)
         setLoading(false)
-      }
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      if (session?.user) {
-        fetchProfile(session.user.id)
-      } else {
-        setProfileState(null)
-        setStoreProfile(null)
       }
     })
     return () => subscription.unsubscribe()

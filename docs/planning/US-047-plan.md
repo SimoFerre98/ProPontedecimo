@@ -46,12 +46,12 @@ Nel repository non esiste un framework di test frontend (nessun `vitest`/`jest`)
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Rimuovere il doppio fetch iniziale | Eliminare la chiamata separata a `supabase.auth.getSession()` nell'effect, affidandosi solo all'evento `INITIAL_SESSION` emesso da `onAuthStateChange` alla sottoscrizione | Impl | - |
-| TODO | TASK-02 | Guardia anti-refetch su user id invariato | Introdurre un `useRef` con l'ultimo `user.id` fetchato; nel callback di `onAuthStateChange`, aggiornare sempre `session` ma saltare `fetchProfile` se l'id utente non è cambiato | Impl | TASK-01 |
-| TODO | TASK-03 | Deferire la fetch fuori dal callback sincrono | Avvolgere la chiamata a `fetchProfile` in un `setTimeout(() => {...}, 0)` dentro il listener di `onAuthStateChange`, secondo la linea guida Supabase per evitare l'interferenza con il lock interno del client auth | Impl | TASK-01 |
-| TODO | TASK-04 | Reset della guardia al logout | Azzerare il ref dell'ultimo user id quando l'evento riporta sessione nulla, così un login successivo forza sempre un fetch fresco del profilo | Impl | TASK-02 |
-| TODO | TASK-05 | Verifica manuale golden path | Login, navigazione tra almeno due pagine protette, osservazione di console e network tab per 10+ secondi di inattività: nessun errore "Maximum update depth exceeded", nessuna richiesta ripetuta verso `profiles` | Test | TASK-01, TASK-02, TASK-03, TASK-04 |
-| TODO | TASK-06 | Verifica cambio utente e refresh sessione | Logout e login con un secondo utente di ruolo diverso per confermare il caricamento del profilo corretto; verificare che un refresh di sessione a utente invariato non generi un nuovo fetch | Test | TASK-02, TASK-04 |
+| DONE | TASK-01 | Rimuovere il doppio fetch iniziale | Eliminare la chiamata separata a `supabase.auth.getSession()` nell'effect, affidandosi solo all'evento `INITIAL_SESSION` emesso da `onAuthStateChange` alla sottoscrizione | Impl | - |
+| DONE | TASK-02 | Guardia anti-refetch su user id invariato | Introdurre un `useRef` con l'ultimo `user.id` fetchato; nel callback di `onAuthStateChange`, aggiornare sempre `session` ma saltare `fetchProfile` se l'id utente non è cambiato | Impl | TASK-01 |
+| DONE | TASK-03 | Deferire la fetch fuori dal callback sincrono | Avvolgere la chiamata a `fetchProfile` in un `setTimeout(() => {...}, 0)` dentro il listener di `onAuthStateChange`, secondo la linea guida Supabase per evitare l'interferenza con il lock interno del client auth | Impl | TASK-01 |
+| DONE | TASK-04 | Reset della guardia al logout | Azzerare il ref dell'ultimo user id quando l'evento riporta sessione nulla, così un login successivo forza sempre un fetch fresco del profilo | Impl | TASK-02 |
+| DONE | TASK-05 | Verifica manuale golden path | Login, navigazione tra almeno due pagine protette, osservazione di console e network tab per 10+ secondi di inattività: nessun errore "Maximum update depth exceeded", nessuna richiesta ripetuta verso `profiles` | Test | TASK-01, TASK-02, TASK-03, TASK-04 |
+| DONE | TASK-06 | Verifica cambio utente e refresh sessione | Logout e login con un secondo utente di ruolo diverso per confermare il caricamento del profilo corretto; verificare che un refresh di sessione a utente invariato non generi un nuovo fetch | Test | TASK-02, TASK-04 |
 
 ---
 
