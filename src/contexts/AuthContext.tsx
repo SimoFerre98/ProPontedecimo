@@ -11,6 +11,7 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
   const [fetchingProfile, setFetchingProfile] = useState(false)
   const { setProfile: setStoreProfile } = useAppStore()
   const fetchedUserIdRef = useRef<string | null>(null)
+  const fetchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const fetchProfile = useCallback(async (userId: string) => {
     setFetchingProfile(true)
@@ -19,13 +20,18 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       .select('id, email, full_name, role, avatar_url')
       .eq('id', userId)
       .maybeSingle()
-    if (data) {
-      const prof = data as Profile
-      setProfileState(prof)
-      setStoreProfile(prof)
-    } else {
-      setProfileState(null)
-      setStoreProfile(null)
+    // Un evento più recente (logout o cambio utente) può essere arrivato mentre
+    // questa fetch era in volo: se il ref non punta più a userId, la risposta
+    // è superata e va scartata per non sovrascrivere lo stato corrente.
+    if (fetchedUserIdRef.current === userId) {
+      if (data) {
+        const prof = data as Profile
+        setProfileState(prof)
+        setStoreProfile(prof)
+      } else {
+        setProfileState(null)
+        setStoreProfile(null)
+      }
     }
     setFetchingProfile(false)
   }, [setStoreProfile])
@@ -37,13 +43,16 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
       if (session?.user) {
         const userId = session.user.id
         if (fetchedUserIdRef.current === userId) {
+          // Nessuna nuova fetch da attendere: se però una fetch per questo
+          // stesso utente è già in corso da un evento precedente, `loading`
+          // resta true nel valore esposto grazie a `loading || fetchingProfile`.
           setLoading(false)
           return
         }
         fetchedUserIdRef.current = userId
         // Deferred: una fetch DB dentro il callback sincrono di onAuthStateChange
         // interferisce con il lock interno del client auth (guida Supabase).
-        setTimeout(() => {
+        fetchTimeoutRef.current = setTimeout(() => {
           fetchProfile(userId).finally(() => setLoading(false))
         }, 0)
       } else {
@@ -53,7 +62,10 @@ export function AuthProvider({ children }: Readonly<{ children: React.ReactNode 
         setLoading(false)
       }
     })
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+      if (fetchTimeoutRef.current) clearTimeout(fetchTimeoutRef.current)
+    }
   }, [fetchProfile, setStoreProfile])
 
   const value = useMemo<AuthContextValue>(() => ({
