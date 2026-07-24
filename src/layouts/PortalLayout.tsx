@@ -44,8 +44,8 @@ export default function PortalLayout() {
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* ── Background Decors ── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[80px]" />
-        <div className="absolute top-[60%] -right-[10%] w-[50%] h-[50%] rounded-full bg-primary/3 blur-[80px]" />
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-brand-accent/5 blur-[80px]" />
+        <div className="absolute top-[60%] -right-[10%] w-[50%] h-[50%] rounded-full bg-brand-accent/3 blur-[80px]" />
       </div>
 
       {/* ── Header ── */}
@@ -53,7 +53,7 @@ export default function PortalLayout() {
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+              <div className="w-8 h-8 rounded bg-brand-accent flex items-center justify-center shadow-lg shadow-brand-accent/20">
                 <Shield className="w-4 h-4 text-white" />
               </div>
               <span className="font-black text-xl tracking-tight hidden sm:block">Pontedecimo</span>
@@ -65,12 +65,12 @@ export default function PortalLayout() {
               onClick={toggleProfileMenu}
               className="flex items-center gap-3 p-1.5 pr-4 pill transition-all bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
             >
-              <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-inner">
+              <div className="w-8 h-8 rounded-full bg-brand-accent text-white flex items-center justify-center font-bold text-sm shadow-inner">
                 {profile?.full_name?.charAt(0).toUpperCase() || <User className="w-4 h-4" />}
               </div>
               <div className="flex flex-col items-start hidden sm:flex">
                 <span className="text-sm font-bold leading-none">{profile?.full_name || 'Utente'}</span>
-                <span className="text-[10px] uppercase font-black tracking-widest text-primary mt-1">
+                <span className="text-[10px] uppercase font-black tracking-widest text-brand-accent mt-1">
                   {role ? ROLE_LABELS[role] : 'Nessun ruolo'}
                 </span>
               </div>
@@ -95,7 +95,7 @@ export default function PortalLayout() {
                   >
                     <div className="px-4 py-3 border-b border-black/5 dark:border-white/10 sm:hidden">
                       <p className="text-sm font-bold text-foreground">{profile?.full_name || 'Utente'}</p>
-                      <p className="text-xs text-primary font-bold uppercase tracking-widest mt-1">
+                      <p className="text-xs text-brand-accent font-bold uppercase tracking-widest mt-1">
                         {role ? ROLE_LABELS[role] : 'Nessun ruolo'}
                       </p>
                     </div>
@@ -105,7 +105,7 @@ export default function PortalLayout() {
                         setIsProfileMenuOpen(false)
                         setIsProfileModalOpen(true)
                       }}
-                      className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-primary/10 hover:text-primary transition-all text-left"
+                      className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-brand-accent/10 hover:text-brand-accent transition-all text-left"
                     >
                       <User className="w-4 h-4" />
                       Il mio Profilo
@@ -117,7 +117,7 @@ export default function PortalLayout() {
                           setIsProfileMenuOpen(false)
                           setIsSettingsModalOpen(true)
                         }}
-                        className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-primary/10 hover:text-primary transition-all text-left"
+                        className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-brand-accent/10 hover:text-brand-accent transition-all text-left"
                       >
                         <Settings className="w-4 h-4" />
                         Gestione Account

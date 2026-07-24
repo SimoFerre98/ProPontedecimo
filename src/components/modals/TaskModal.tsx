@@ -153,21 +153,21 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
             {/* Header */}
             <div className="relative flex items-center justify-between mb-10">
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+                <div className="w-16 h-16 pill bg-brand-accent/20 flex items-center justify-center text-brand-accent border border-brand-accent/20 shadow-inner">
                   <ClipboardList className="w-8 h-8" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-black text-foreground italic uppercase leading-none">
-                    {task ? 'Modifica' : 'Nuovo'} <span className="text-primary not-italic">Task</span>
+                    {task ? 'Modifica' : 'Nuovo'} <span className="text-brand-accent not-italic">Task</span>
                   </h2>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mt-1">
                     {task ? 'Aggiorna i dettagli dell\'attività' : 'Assegnazione compiti allo staff'}
                   </p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
+                className="w-10 h-10 pill border border-[var(--border-soft)] flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
               >
                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
@@ -177,14 +177,14 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
               <div className="space-y-2 group">
                 <label htmlFor="task_title" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-3 cursor-pointer">Titolo Attività</label>
                 <div className="relative">
-                  <FileText className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+                  <FileText className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-brand-accent transition-colors" />
                   <Input
                     id="task_title"
                     required
                     placeholder="Es. Inventario magazzino"
                     value={formData.title}
                     onChange={e => setFormData({ ...formData, title: e.target.value })}
-                    className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-14"
+                    className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-base font-bold pl-14"
                   />
                 </div>
               </div>
@@ -198,7 +198,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                       id="task_assigned"
                       value={formData.assigned_to}
                       onChange={e => setFormData({ ...formData, assigned_to: e.target.value })}
-                      className="w-full h-14 pl-14 pr-4 bg-transparent border border-black/5 dark:border-white/10 rounded-full focus:outline-none focus:border-primary/50 text-foreground text-sm font-bold appearance-none backdrop-blur-md"
+                      className="w-full h-14 pl-14 pr-4 bg-transparent border border-black/5 dark:border-white/10 rounded-full focus:outline-none focus:border-brand-accent/50 text-foreground text-sm font-bold appearance-none backdrop-blur-md"
                     >
                       <option value="" className="text-foreground bg-background">Seleziona Staff...</option>
                       {profiles?.map((p: { id: string; full_name: string | null }) => (
@@ -213,7 +213,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                     id="task_status"
                     value={formData.status}
                     onChange={e => setFormData({ ...formData, status: e.target.value as TaskStatus })}
-                    className="w-full h-14 px-6 bg-transparent border border-black/5 dark:border-white/10 rounded-full focus:outline-none focus:border-primary/50 text-foreground text-sm font-bold appearance-none backdrop-blur-md"
+                    className="w-full h-14 px-6 bg-transparent border border-black/5 dark:border-white/10 rounded-full focus:outline-none focus:border-brand-accent/50 text-foreground text-sm font-bold appearance-none backdrop-blur-md"
                   >
                     <option value="created">Created</option>
                     <option value="ready">Ready</option>
@@ -236,7 +236,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                           required
                           value={formData.start_date}
                           onChange={e => setFormData({ ...formData, start_date: e.target.value })}
-                          className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-sm pl-11 font-bold"
+                          className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-sm pl-11 font-bold"
                         />
                       </div>
                       <div className="relative w-32">
@@ -245,7 +245,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                           type="time"
                           value={formData.start_time}
                           onChange={e => setFormData({ ...formData, start_time: e.target.value })}
-                          className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-sm pl-11 font-bold"
+                          className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-sm pl-11 font-bold"
                         />
                       </div>
                     </div>
@@ -259,7 +259,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                         onClick={() => setShowEndTime(!showEndTime)}
                         className={cn(
                           "text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg transition-all",
-                          showEndTime ? "bg-primary text-white" : "bg-black/5 dark:bg-white/5 text-muted-foreground"
+                          showEndTime ? "bg-brand-accent text-white" : "bg-black/5 dark:bg-white/5 text-muted-foreground"
                         )}
                       >
                         {showEndTime ? 'Disattiva' : 'Attiva'}
@@ -276,7 +276,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                             required={showEndTime}
                             value={formData.end_date}
                             onChange={e => setFormData({ ...formData, end_date: e.target.value })}
-                            className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-sm pl-11 font-bold"
+                            className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-sm pl-11 font-bold"
                           />
                         </div>
                         <div className="relative w-32">
@@ -285,7 +285,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                             type="time"
                             value={formData.end_time}
                             onChange={e => setFormData({ ...formData, end_time: e.target.value })}
-                            className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-sm pl-11 font-bold"
+                            className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-sm pl-11 font-bold"
                           />
                         </div>
                       </div>
@@ -304,7 +304,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                   id="task_desc"
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full min-h-[120px] p-6 bg-transparent border border-black/5 dark:border-white/10 rounded-[2rem] focus:outline-none focus:border-primary/50 text-foreground text-sm font-bold placeholder:text-muted-foreground/30 backdrop-blur-md resize-none"
+                  className="w-full min-h-[120px] p-6 bg-transparent border border-black/5 dark:border-white/10 rounded-[2rem] focus:outline-none focus:border-brand-accent/50 text-foreground text-sm font-bold placeholder:text-muted-foreground/30 backdrop-blur-md resize-none"
                   placeholder="Dettagli del compito..."
                 />
               </div>
@@ -340,7 +340,7 @@ export default function TaskModal({ isOpen, onClose, onSuccess, task, defaultSta
                   <Button 
                     type="submit" 
                     disabled={loading}
-                    className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all"
+                    className="flex-[2] h-14 pill bg-brand-accent hover:bg-brand-accent/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-brand-accent/40 gap-3 active:scale-95 transition-all"
                   >
                     {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-5 h-5" />}
                     {task ? 'Salva Modifiche' : 'Crea Task'}

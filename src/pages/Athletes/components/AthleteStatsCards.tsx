@@ -27,8 +27,8 @@ export default function AthleteStatsCards({ players, availableSectors, onNavigat
           label: 'Settori',
           value: availableSectors.length,
           icon: ShieldCheck,
-          color: 'text-primary',
-          bg: 'bg-primary/10',
+          color: 'text-brand-accent',
+          bg: 'bg-brand-accent/10',
           hint: 'Leve/squadre attive'
         },
         {

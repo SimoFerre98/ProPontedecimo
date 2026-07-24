@@ -424,17 +424,17 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           role="dialog"
           aria-modal="true"
-          className="relative w-[95vw] max-w-3xl h-[85vh] md:h-[80vh] glass-card overflow-hidden flex flex-col border border-white/20 shadow-2xl rounded-[2.5rem]"
+          className="relative w-[95vw] max-w-3xl h-[85vh] md:h-[80vh] glass-card overflow-hidden flex flex-col border border-[var(--border-strong)] shadow-2xl rounded-[2.5rem]"
         >
           {/* Header */}
-          <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between gap-4 bg-white/5 shrink-0">
+          <div className="px-6 py-5 border-b border-[var(--border-soft)] flex items-center justify-between gap-4 bg-[var(--surface-05)] shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-primary/20 flex items-center justify-center border border-primary/30 shrink-0">
-                <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+              <div className="w-10 h-10 rounded-2xl bg-brand-accent/20 flex items-center justify-center border border-brand-accent/30 shrink-0">
+                <Sparkles className="w-5 h-5 text-brand-accent animate-pulse" />
               </div>
               <div>
                 <h2 className="text-lg md:text-xl font-black italic tracking-tighter uppercase text-foreground">
-                  Nuova <span className="text-primary not-italic">Stagione</span>
+                  Nuova <span className="text-brand-accent not-italic">Stagione</span>
                 </h2>
                 <p className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
                   Wizard guidato passaggio stagione
@@ -445,7 +445,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
               <button
                 onClick={onClose}
                 aria-label="Chiudi"
-                className="w-8 h-8 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
+                className="w-8 h-8 pill border border-[var(--border-soft)] flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
               >
                 <X className="w-4 h-4 group-hover:rotate-90 transition-transform" />
               </button>
@@ -454,7 +454,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
 
           {/* Stepper (visibile solo se non in schermata successo) */}
           {!showSuccess && (
-            <nav className="stepper flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/2 shrink-0 overflow-x-auto gap-4 scrollbar-none">
+            <nav className="stepper flex items-center justify-between px-6 py-4 border-b border-[var(--border-soft)] bg-[var(--surface-05)] shrink-0 overflow-x-auto gap-4 scrollbar-none">
               {[
                 { s: 1, label: 'Dati Stagione', desc: 'Nome e date' },
                 { s: 2, label: 'Atleti', desc: 'Chi importare' },
@@ -471,7 +471,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                       step === stepItem.s
                         ? 'text-foreground font-black'
                         : stepItem.s <= maxStep
-                        ? 'text-foreground/60 hover:text-primary cursor-pointer'
+                        ? 'text-foreground/60 hover:text-brand-accent cursor-pointer'
                         : 'text-muted-foreground/45 cursor-default'
                     )}
                   >
@@ -479,10 +479,10 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                       className={cn(
                         'w-7 h-7 rounded-full border text-[11px] font-black flex items-center justify-center transition-all',
                         step === stepItem.s
-                          ? 'bg-primary text-white border-primary shadow-[0_0_12px_oklch(0.33_0.13_15_/_.45)]'
+                          ? 'bg-brand-accent text-white border-brand-accent shadow-[0_0_12px_oklch(0.33_0.13_15_/_.45)]'
                           : stepItem.s < step
-                          ? 'bg-primary/20 text-primary border-primary/30'
-                          : 'border-white/10 bg-white/5'
+                          ? 'bg-brand-accent/20 text-brand-accent border-brand-accent/30'
+                          : 'border-[var(--border-soft)] bg-[var(--surface-05)]'
                       )}
                     >
                       {stepItem.s < step ? <Check className="w-3.5 h-3.5" /> : `0${stepItem.s}`}
@@ -497,8 +497,8 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                   {i < 3 && (
                     <div
                       className={cn(
-                        'h-[1px] grow min-w-[20px] bg-white/10 hidden sm:block',
-                        stepItem.s < step && 'bg-primary/45'
+                        'h-[1px] grow min-w-[20px] bg-[var(--border-soft)] hidden sm:block',
+                        stepItem.s < step && 'bg-brand-accent/45'
                       )}
                     />
                   )}
@@ -554,14 +554,14 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                     <div className="flex flex-col gap-6 max-w-xl mx-auto w-full">
                       <div className="text-center md:text-left">
                         <h3 className="text-base font-black uppercase tracking-tight text-foreground">
-                          Dati <span className="text-primary">Stagione Sportiva</span>
+                          Dati <span className="text-brand-accent">Stagione Sportiva</span>
                         </h3>
                         <p className="text-xs text-muted-foreground mt-1">
                           Definisci il nome e il periodo di validità della nuova stagione.
                         </p>
                       </div>
 
-                      <div className="flex flex-col gap-4 bg-white/5 p-6 rounded-3xl border border-white/10">
+                      <div className="flex flex-col gap-4 bg-[var(--surface-05)] p-6 rounded-3xl border border-[var(--border-soft)]">
                         <div className="flex flex-col gap-1.5">
                           <label htmlFor="seasonName" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                             Nome Stagione
@@ -573,7 +573,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                             onChange={(e) => setSeasonName(e.target.value)}
                             placeholder="es. 2026/2027"
                             className={cn(
-                              'h-11 px-4 rounded-xl border border-white/15 bg-white/5 text-sm font-semibold outline-none transition-all focus:border-primary',
+                              'h-11 px-4 rounded-xl border border-[var(--border-strong)] bg-[var(--surface-05)] text-sm font-semibold outline-none transition-all focus:border-brand-accent',
                               isNameDuplicate && 'border-rose-500 focus:border-rose-500'
                             )}
                           />
@@ -594,7 +594,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                               type="date"
                               value={startDate}
                               onChange={(e) => setStartDate(e.target.value)}
-                              className="h-11 px-4 rounded-xl border border-white/15 bg-white/5 text-sm font-semibold outline-none transition-all focus:border-primary"
+                              className="h-11 px-4 rounded-xl border border-[var(--border-strong)] bg-[var(--surface-05)] text-sm font-semibold outline-none transition-all focus:border-brand-accent"
                             />
                           </div>
                           <div className="flex flex-col gap-1.5">
@@ -606,7 +606,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                               type="date"
                               value={endDate}
                               onChange={(e) => setEndDate(e.target.value)}
-                              className="h-11 px-4 rounded-xl border border-white/15 bg-white/5 text-sm font-semibold outline-none transition-all focus:border-primary"
+                              className="h-11 px-4 rounded-xl border border-[var(--border-strong)] bg-[var(--surface-05)] text-sm font-semibold outline-none transition-all focus:border-brand-accent"
                             />
                           </div>
                         </div>
@@ -618,10 +618,10 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                         )}
                       </div>
 
-                      <div className="flex gap-3 bg-primary/10 border border-primary/20 p-4 rounded-2xl text-[11px] text-foreground/80 leading-relaxed">
-                        <HelpCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <div className="flex gap-3 bg-brand-accent/10 border border-brand-accent/20 p-4 rounded-2xl text-[11px] text-foreground/80 leading-relaxed">
+                        <HelpCircle className="w-5 h-5 text-brand-accent shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-bold text-primary uppercase tracking-wider mb-0.5 text-[9px]">Atomicità garantita</p>
+                          <p className="font-bold text-brand-accent uppercase tracking-wider mb-0.5 text-[9px]">Atomicità garantita</p>
                           Il wizard accumula lo stato nel browser. La transazione sul database partirà solo dopo la tua conferma finale nello Step 4. Se abbandoni ora, non verrà creata alcuna riga o dato parziale.
                         </div>
                       </div>
@@ -634,14 +634,14 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                         <div>
                           <h3 className="text-base font-black uppercase tracking-tight text-foreground">
-                            Quali <span className="text-primary">Atleti</span> Importare
+                            Quali <span className="text-brand-accent">Atleti</span> Importare
                           </h3>
                           <p className="text-xs text-muted-foreground mt-1">
                             Seleziona i giocatori da importare nella nuova stagione. Disattiva chi non prosegue.
                           </p>
                         </div>
-                        <div className="px-4 py-1.5 rounded-full bg-muted/60 border border-white/10 text-[10px] font-bold uppercase tracking-wider text-muted-foreground self-start md:self-auto">
-                          Selezionati: <span className="text-primary font-black">{totalSelectedCount} / {totalAthletesCount}</span>
+                        <div className="px-4 py-1.5 rounded-full bg-muted/60 border border-[var(--border-soft)] text-[10px] font-bold uppercase tracking-wider text-muted-foreground self-start md:self-auto">
+                          Selezionati: <span className="text-brand-accent font-black">{totalSelectedCount} / {totalAthletesCount}</span>
                         </div>
                       </div>
 
@@ -650,7 +650,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                           Caricamento atleti...
                         </div>
                       ) : athletes.length === 0 ? (
-                        <div className="py-12 text-center text-xs text-muted-foreground font-semibold uppercase tracking-wider border border-dashed border-white/10 rounded-2xl">
+                        <div className="py-12 text-center text-xs text-muted-foreground font-semibold uppercase tracking-wider border border-dashed border-[var(--border-strong)] rounded-2xl">
                           Nessun atleta registrato nella stagione sorgente.
                         </div>
                       ) : (
@@ -673,9 +673,9 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                             }
 
                             return (
-                              <div key={sector} className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-sm">
+                              <div key={sector} className="bg-[var(--surface-05)] border border-[var(--border-soft)] rounded-3xl overflow-hidden shadow-sm">
                                 {/* Header gruppo leva */}
-                                <div className="px-5 py-3.5 bg-white/2 border-b border-white/5 flex items-center justify-between gap-4">
+                                <div className="px-5 py-3.5 bg-[var(--surface-05)] border-b border-[var(--border-soft)] flex items-center justify-between gap-4">
                                   <div className="flex items-center gap-3">
                                     <input
                                       type="checkbox"
@@ -684,7 +684,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                         if (el) el.indeterminate = isSomeSelected
                                       }}
                                       onChange={handleToggleGroup}
-                                      className="w-4 h-4 rounded border-white/20 accent-primary cursor-pointer"
+                                      className="w-4 h-4 rounded border-[var(--border-strong)] accent-primary cursor-pointer"
                                     />
                                     <h4 className="text-sm font-black italic uppercase text-foreground">{sector}</h4>
                                   </div>
@@ -714,15 +714,15 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                         className={cn(
                                           'flex items-center justify-between p-3 rounded-2xl border text-left transition-all',
                                           isChecked
-                                            ? 'bg-primary/10 border-primary/45 text-foreground'
-                                            : 'bg-white/2 border-white/5 hover:border-white/15 text-foreground/50'
+                                            ? 'bg-brand-accent/10 border-brand-accent/45 text-foreground'
+                                            : 'bg-[var(--surface-05)] border-[var(--border-soft)] hover:border-[var(--border-strong)] text-foreground/50'
                                         )}
                                       >
                                         <div className="flex items-center gap-2.5 min-w-0">
                                           <div
                                             className={cn(
                                               'w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors',
-                                              isChecked ? 'bg-primary border-primary text-white' : 'border-white/25 bg-white/5'
+                                              isChecked ? 'bg-brand-accent border-brand-accent text-white' : 'border-[var(--border-strong)] bg-[var(--surface-05)]'
                                             )}
                                           >
                                             {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
@@ -757,7 +757,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                     <div className="flex flex-col gap-5">
                       <div>
                         <h3 className="text-base font-black uppercase tracking-tight text-foreground">
-                          Scatto di <span className="text-primary">Leva</span>
+                          Scatto di <span className="text-brand-accent">Leva</span>
                         </h3>
                         <p className="text-xs text-muted-foreground mt-1">
                           Verifica la leva di destinazione calcolata in base all'anno di nascita (FIGC). Puoi fare override o creare nuove leve.
@@ -776,7 +776,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                           return (
                             <div
                               key={`${sector}-dob`}
-                              className="p-5 bg-white/5 border border-white/10 rounded-[2rem] grid grid-cols-1 md:grid-cols-[1fr_auto_1.2fr] gap-4 items-center"
+                              className="p-5 bg-[var(--surface-05)] border border-[var(--border-soft)] rounded-[2rem] grid grid-cols-1 md:grid-cols-[1fr_auto_1.2fr] gap-4 items-center"
                             >
                               {/* Provenienza */}
                               <div className="flex flex-col gap-1 min-w-0">
@@ -803,7 +803,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                       value={newLevaInput}
                                       onChange={(e) => setNewLevaInput(e.target.value)}
                                       placeholder="Nome nuova leva... es. Pulcini 2017"
-                                      className="grow h-10 px-3 rounded-full border border-primary/45 bg-white/5 text-xs font-bold outline-none"
+                                      className="grow h-10 px-3 rounded-full border border-brand-accent/45 bg-[var(--surface-05)] text-xs font-bold outline-none"
                                       autoFocus
                                       onKeyDown={(e) => {
                                         if (e.key === 'Enter') handleConfirmNewLeva()
@@ -813,7 +813,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                     <button
                                       type="button"
                                       onClick={() => setAddingNewLevaFor(null)}
-                                      className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-muted-foreground hover:bg-white/10 transition-all shrink-0"
+                                      className="w-8 h-8 rounded-full border border-[var(--border-soft)] flex items-center justify-center text-muted-foreground hover:bg-[var(--surface-05)] transition-all shrink-0"
                                     >
                                       <X className="w-3.5 h-3.5" />
                                     </button>
@@ -824,7 +824,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                       <select
                                         value={destInfo.label}
                                         onChange={(e) => handleSelectChange(sector, false, e.target.value)}
-                                        className="w-full h-10 rounded-full border border-white/15 bg-white/5 px-4 text-xs font-black uppercase tracking-wider outline-none cursor-pointer appearance-none text-foreground"
+                                        className="w-full h-10 rounded-full border border-[var(--border-strong)] bg-[var(--surface-05)] px-4 text-xs font-black uppercase tracking-wider outline-none cursor-pointer appearance-none text-foreground"
                                       >
                                         <optgroup label="Leve esistenti" className="bg-[oklch(0.205_0_0)]">
                                           {existingSectors.map(s => (
@@ -836,7 +836,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                             <option key={o} value={o}>{o} ✦</option>
                                           ))}
                                         </optgroup>
-                                        <option value="__new__" className="text-primary font-bold bg-[oklch(0.205_0_0)]">
+                                        <option value="__new__" className="text-brand-accent font-bold bg-[oklch(0.205_0_0)]">
                                           + Crea nuova leva...
                                         </option>
                                       </select>
@@ -902,7 +902,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                       value={newLevaInput}
                                       onChange={(e) => setNewLevaInput(e.target.value)}
                                       placeholder="Nome nuova leva..."
-                                      className="grow h-10 px-3 rounded-full border border-primary/45 bg-white/5 text-xs font-bold outline-none"
+                                      className="grow h-10 px-3 rounded-full border border-brand-accent/45 bg-[var(--surface-05)] text-xs font-bold outline-none"
                                       autoFocus
                                       onKeyDown={(e) => {
                                         if (e.key === 'Enter') handleConfirmNewLeva()
@@ -912,7 +912,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                     <button
                                       type="button"
                                       onClick={() => setAddingNewLevaFor(null)}
-                                      className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-muted-foreground hover:bg-white/10 transition-all shrink-0"
+                                      className="w-8 h-8 rounded-full border border-[var(--border-soft)] flex items-center justify-center text-muted-foreground hover:bg-[var(--surface-05)] transition-all shrink-0"
                                     >
                                       <X className="w-3.5 h-3.5" />
                                     </button>
@@ -923,7 +923,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                       <select
                                         value={destInfo.label}
                                         onChange={(e) => handleSelectChange(sector, true, e.target.value)}
-                                        className="w-full h-10 rounded-full border border-white/15 bg-white/5 px-4 text-xs font-black uppercase tracking-wider outline-none cursor-pointer appearance-none text-foreground"
+                                        className="w-full h-10 rounded-full border border-[var(--border-strong)] bg-[var(--surface-05)] px-4 text-xs font-black uppercase tracking-wider outline-none cursor-pointer appearance-none text-foreground"
                                       >
                                         <optgroup label="Leve esistenti" className="bg-[oklch(0.205_0_0)]">
                                           {existingSectors.map(s => (
@@ -935,7 +935,7 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                                             <option key={o} value={o}>{o} ✦</option>
                                           ))}
                                         </optgroup>
-                                        <option value="__new__" className="text-primary font-bold bg-[oklch(0.205_0_0)]">
+                                        <option value="__new__" className="text-brand-accent font-bold bg-[oklch(0.205_0_0)]">
                                           + Crea nuova leva...
                                         </option>
                                       </select>
@@ -962,22 +962,22 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                     <div className="flex flex-col gap-6 max-w-xl mx-auto w-full">
                       <div>
                         <h3 className="text-base font-black uppercase tracking-tight text-foreground">
-                          Riepilogo <span className="text-primary">Stagione {seasonName}</span>
+                          Riepilogo <span className="text-brand-accent">Stagione {seasonName}</span>
                         </h3>
                         <p className="text-xs text-muted-foreground mt-1">
                           Verifica la composizione della nuova stagione prima di confermare.
                         </p>
                       </div>
 
-                      <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col gap-4">
+                      <div className="bg-[var(--surface-05)] border border-[var(--border-soft)] rounded-3xl p-6 flex flex-col gap-4">
                         <div className="max-h-[30vh] overflow-y-auto no-scrollbar flex flex-col gap-3 pr-1">
                           {Object.entries(finalSummary)
                             .sort((a, b) => a[0].localeCompare(b[0]))
                             .map(([levaName, v]) => (
-                              <div key={levaName} className="flex items-center justify-between p-3.5 bg-white/2 rounded-2xl border border-white/5">
+                              <div key={levaName} className="flex items-center justify-between p-3.5 bg-[var(--surface-05)] rounded-2xl border border-[var(--border-soft)]">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
-                                    <Users className="w-4 h-4 text-primary" />
+                                  <div className="w-8 h-8 rounded-xl bg-brand-accent/10 flex items-center justify-center border border-brand-accent/20 shrink-0">
+                                    <Users className="w-4 h-4 text-brand-accent" />
                                   </div>
                                   <div className="flex items-center gap-2">
                                     <span className="text-xs font-bold">{levaName}</span>
@@ -1000,13 +1000,13 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
                             ))}
                         </div>
 
-                        <div className="h-[1px] bg-white/10" />
+                        <div className="h-[1px] bg-[var(--border-soft)]" />
 
                         <div className="flex items-center justify-between px-2">
                           <span className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
                             Totale atleti importati
                           </span>
-                          <span className="text-sm font-black text-primary">
+                          <span className="text-sm font-black text-brand-accent">
                             {totalSelectedCount}
                           </span>
                         </div>
@@ -1040,16 +1040,16 @@ export default function NewSeasonWizardModal({ isOpen, onClose }: Readonly<NewSe
 
           {/* Footer Navigazione */}
           {!showSuccess && (
-            <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between gap-4 bg-white/5 shrink-0">
+            <div className="px-6 py-4 border-t border-[var(--border-soft)] flex items-center justify-between gap-4 bg-[var(--surface-05)] shrink-0">
               <button
                 type="button"
                 disabled={step === 1 || createSeasonMutation.isPending}
                 onClick={handleBack}
                 className={cn(
-                  'px-4 h-9 rounded-full border border-white/15 text-xs font-bold flex items-center gap-1.5 transition-all outline-none',
+                  'px-4 h-9 rounded-full border border-[var(--border-strong)] text-xs font-bold flex items-center gap-1.5 transition-all outline-none',
                   step === 1 || createSeasonMutation.isPending
                     ? 'opacity-40 cursor-not-allowed'
-                    : 'hover:bg-white/5 active:scale-[0.97] cursor-pointer'
+                    : 'hover:bg-[var(--surface-05)] active:scale-[0.97] cursor-pointer'
                 )}
               >
                 <ChevronLeft className="w-4 h-4" /> Indietro

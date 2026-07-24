@@ -90,7 +90,7 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
               </div>
               <div className="flex-1">
                 <h3 className="text-xl font-black text-foreground uppercase italic leading-none">
-                  Elimina <span className="text-primary not-italic">Atleta</span>
+                  Elimina <span className="text-brand-accent not-italic">Atleta</span>
                 </h3>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mt-1">
                   Azione irreversibile
@@ -143,7 +143,7 @@ export default function DeleteAthleteModal({ isOpen, onClose, onSuccess, athlete
                     Stai per eliminare definitivamente:
                   </p>
                   <p className="text-lg font-black text-foreground uppercase italic">
-                    {athlete.last_name} <span className="text-primary not-italic font-bold">{athlete.first_name}</span>
+                    {athlete.last_name} <span className="text-brand-accent not-italic font-bold">{athlete.first_name}</span>
                   </p>
                 </div>
 

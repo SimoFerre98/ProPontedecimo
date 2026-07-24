@@ -16,6 +16,7 @@ import { QueryErrorState } from '@/components/ui/query-error-state'
 import MedicalVisitModal from '@/components/modals/MedicalVisitModal'
 import MedicalStatusIndicator from '@/components/MedicalStatusIndicator'
 import { StatsGrid } from '@/components/ui/StatsGrid'
+import { Badge } from '@/components/ui/Badge'
 import { format } from "date-fns/format";
 import { it } from "date-fns/locale/it";
 
@@ -68,8 +69,8 @@ export default function MedicalVisits() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-1 flex flex-col items-center md:items-start text-center md:text-left">
           <h1 className="text-4xl font-black tracking-tighter text-foreground flex items-center gap-3">
-            <div className="p-2 pill bg-primary/10 border border-primary/20">
-              <Stethoscope className="w-8 h-8 text-primary" />
+            <div className="p-2 pill bg-brand-accent/10 border border-brand-accent/20">
+              <Stethoscope className="w-8 h-8 text-brand-accent" />
             </div>
             Visite Mediche
           </h1>
@@ -114,19 +115,19 @@ export default function MedicalVisits() {
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none" onClick={() => handleSort('last_name')}>
                   <div className="flex items-center gap-2">
                     Atleta
-                    {sortBy === 'last_name' && (sortDir === 'asc' ? <ArrowUp className="w-3 h-3 text-primary" /> : <ArrowDown className="w-3 h-3 text-primary" />)}
+                    {sortBy === 'last_name' && (sortDir === 'asc' ? <ArrowUp className="w-3 h-3 text-brand-accent" /> : <ArrowDown className="w-3 h-3 text-brand-accent" />)}
                   </div>
                 </th>
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none" onClick={() => handleSort('team_sector')}>
                   <div className="flex items-center gap-2">
                     Settore
-                    {sortBy === 'team_sector' && (sortDir === 'asc' ? <ArrowUp className="w-3 h-3 text-primary" /> : <ArrowDown className="w-3 h-3 text-primary" />)}
+                    {sortBy === 'team_sector' && (sortDir === 'asc' ? <ArrowUp className="w-3 h-3 text-brand-accent" /> : <ArrowDown className="w-3 h-3 text-brand-accent" />)}
                   </div>
                 </th>
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none" onClick={() => handleSort('medical_expiry')}>
                   <div className="flex items-center gap-2">
                     Data Scadenza
-                    {sortBy === 'medical_expiry' && (sortDir === 'asc' ? <ArrowUp className="w-3 h-3 text-primary" /> : <ArrowDown className="w-3 h-3 text-primary" />)}
+                    {sortBy === 'medical_expiry' && (sortDir === 'asc' ? <ArrowUp className="w-3 h-3 text-brand-accent" /> : <ArrowDown className="w-3 h-3 text-brand-accent" />)}
                   </div>
                 </th>
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Stato</th>
@@ -185,20 +186,20 @@ export default function MedicalVisits() {
                         </td>
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 pill bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
-                              <User className="w-5 h-5 text-primary" />
+                            <div className="w-10 h-10 pill bg-brand-accent/10 flex items-center justify-center shrink-0 border border-brand-accent/20">
+                              <User className="w-5 h-5 text-brand-accent" />
                             </div>
                             <div>
-                              <p className="text-sm font-black text-foreground group-hover:text-primary transition-colors">
+                              <p className="text-sm font-black text-foreground group-hover:text-brand-accent transition-colors">
                                 {visit.last_name} {visit.first_name}
                               </p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-5">
-                          <div className="pill bg-white/5 border border-white/10 px-3 py-1 inline-flex items-center text-xs font-black uppercase tracking-wider text-muted-foreground/80">
+                          <Badge tone="neutral" className="text-xs tracking-wider text-muted-foreground/80">
                             {visit.team_sector ?? 'N/D'}
-                          </div>
+                          </Badge>
                         </td>
                         <td className="px-6 py-5 font-black text-sm tabular-nums">
                           {visit.medical_expiry ? (
@@ -214,7 +215,7 @@ export default function MedicalVisits() {
                           <MedicalStatusIndicator status={status} expiry={visit.medical_expiry || null} />
                         </td>
                         <td className="px-6 py-5 text-right">
-                          <button className="p-2 pill hover:bg-white/10 text-muted-foreground hover:text-primary transition-all">
+                          <button className="p-2 pill hover:bg-white/10 text-muted-foreground hover:text-brand-accent transition-all">
                             <ChevronRight className="w-5 h-5" />
                           </button>
                         </td>

@@ -28,13 +28,13 @@ interface StatCardProps {
 
 function StatCard({ title, value, subtitle, icon, color, loading }: Readonly<StatCardProps>) {
   const glowColors = {
-    primary: "bg-primary",
+    primary: "bg-brand-accent",
     amber: "bg-amber-500",
     green: "bg-emerald-500"
   }
 
   const iconStyles = {
-    primary: "bg-primary/10 border-primary/20 text-primary",
+    primary: "bg-brand-accent/10 border-brand-accent/20 text-brand-accent",
     amber: "bg-amber-500/10 border-amber-500/20 text-amber-600",
     green: "bg-emerald-500/10 border-emerald-500/20 text-emerald-600"
   }
@@ -44,7 +44,7 @@ function StatCard({ title, value, subtitle, icon, color, loading }: Readonly<Sta
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
-      className="glass-card p-6 rounded-[2rem] relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:border-primary/20"
+      className="glass-card p-6 rounded-[2rem] relative overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:border-brand-accent/20"
     >
       {/* Glow Effect */}
       <div className={cn(
@@ -121,7 +121,7 @@ export default function Dashboard() {
             Bentornato{profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}!
           </h1>
           <p className="text-muted-foreground mt-2 font-medium flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse" />
             Ecco il riepilogo della stagione <span className="text-foreground">{seasonName}</span>
           </p>
         </div>
@@ -183,8 +183,8 @@ export default function Dashboard() {
         <div className="lg:col-span-2 glass-card rounded-[2.5rem] p-8 relative overflow-hidden">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 pill bg-primary/10 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 pill bg-brand-accent/10 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-brand-accent" />
               </div>
               <h2 className="text-xl font-bold">Distribuzione Settori</h2>
             </div>
@@ -206,7 +206,7 @@ export default function Dashboard() {
                 return (
                   <div key={sector} className="group">
                     <div className="flex justify-between items-end mb-2">
-                      <span className="text-sm font-bold text-foreground/80 group-hover:text-primary transition-colors">{sector}</span>
+                      <span className="text-sm font-bold text-foreground/80 group-hover:text-brand-accent transition-colors">{sector}</span>
                       <span className="text-xs font-black tabular-nums">{count} <span className="text-muted-foreground font-medium text-[10px]">atleti</span></span>
                     </div>
                     <div className="h-3 bg-muted/20 pill overflow-hidden border border-black/5 dark:border-white/10 shadow-inner p-[2px]">
@@ -214,7 +214,7 @@ export default function Dashboard() {
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
                         transition={{ duration: 1.5, ease: "circOut" }}
-                        className="h-full bg-primary pill shadow-[0_0_10px_oklch(0.33_0.13_15/_0.3)]"
+                        className="h-full bg-brand-accent pill shadow-[0_0_10px_oklch(0.33_0.13_15/_0.3)]"
                       />
                     </div>
                   </div>
@@ -225,7 +225,7 @@ export default function Dashboard() {
         </div>
 
         {/* Quick actions */}
-        <div className="glass-card rounded-[2.5rem] p-8 border-primary/10">
+        <div className="glass-card rounded-[2.5rem] p-8 border-brand-accent/10">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-10 h-10 pill bg-amber-500/10 flex items-center justify-center">
               <CalendarClock className="w-5 h-5 text-amber-600" />
@@ -242,7 +242,7 @@ export default function Dashboard() {
               { label: 'Magazzino',       href: '/magazzino',       icon: <Archive className="w-5 h-5" />, color: 'primary' },
             ].map(({ label, href, icon, color }) => {
               const actionColors: Record<string, string> = {
-                primary: "bg-primary text-white",
+                primary: "bg-brand-accent text-white",
                 amber: "bg-amber-500 text-white",
                 green: "bg-emerald-500 text-white"
               }

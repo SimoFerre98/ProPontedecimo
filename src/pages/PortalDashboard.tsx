@@ -94,9 +94,9 @@ export default function PortalDashboard() {
         onClick={() => navigate('/portal/notifiche')}
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full flex items-center gap-4 p-6 glass-card border-white/10 rounded-3xl text-left hover:border-primary/30 transition-all group"
+        className="w-full flex items-center gap-4 p-6 glass-card border-white/10 rounded-3xl text-left hover:border-brand-accent/30 transition-all group"
       >
-        <div className="w-12 h-12 pill bg-primary/15 flex items-center justify-center text-primary border border-primary/20 shrink-0">
+        <div className="w-12 h-12 pill bg-brand-accent/15 flex items-center justify-center text-brand-accent border border-brand-accent/20 shrink-0">
           <Bell className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0">
@@ -107,7 +107,7 @@ export default function PortalDashboard() {
               : 'Nessuna comunicazione al momento'}
           </p>
         </div>
-        <ChevronRight className="w-5 h-5 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
+        <ChevronRight className="w-5 h-5 text-muted-foreground/40 group-hover:text-brand-accent group-hover:translate-x-1 transition-all shrink-0" />
       </motion.button>
 
       {/* Convocazione prossima partita — solo per giocatori */}
@@ -119,12 +119,12 @@ export default function PortalDashboard() {
           {/* Header sezione */}
           <div className="flex items-center justify-between px-8 pt-6 pb-4 border-b border-black/5 dark:border-white/5">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20">
+              <div className="w-12 h-12 pill bg-brand-accent/20 flex items-center justify-center text-brand-accent border border-brand-accent/20">
                 <Users className="w-5 h-5" />
               </div>
               <div>
                 <h2 className="text-xl font-black text-foreground uppercase italic">
-                  I miei <span className="text-primary not-italic">Figli</span>
+                  I miei <span className="text-brand-accent not-italic">Figli</span>
                 </h2>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
                   {confirmedChildren.length} confermati
@@ -134,7 +134,7 @@ export default function PortalDashboard() {
             </div>
             <button
               onClick={() => setRequestModalOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/40 transition-all text-[10px] font-black uppercase tracking-widest"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-accent/10 hover:bg-brand-accent/20 text-brand-accent border border-brand-accent/20 hover:border-brand-accent/40 transition-all text-[10px] font-black uppercase tracking-widest"
             >
               <Plus className="w-4 h-4" />
               Collega Figlio
@@ -224,12 +224,12 @@ export default function PortalDashboard() {
       {isParent && confirmedChildren.length > 0 && (
         <div className="space-y-6">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20">
+            <div className="w-12 h-12 pill bg-brand-accent/20 flex items-center justify-center text-brand-accent border border-brand-accent/20">
               <CreditCard className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-xl font-black text-foreground uppercase italic">
-                Bilancio e <span className="text-primary not-italic">Scadenze</span>
+                Bilancio e <span className="text-brand-accent not-italic">Scadenze</span>
               </h2>
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50">
                 Stato dei pagamenti e delle visite mediche
@@ -267,9 +267,9 @@ export default function PortalDashboard() {
       )}
 
       {/* Avviso lavori in corso */}
-      <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-          <Construction className="w-6 h-6 text-primary" />
+      <div className="bg-brand-accent/5 border border-brand-accent/20 rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-4">
+        <div className="w-12 h-12 rounded-full bg-brand-accent/10 flex items-center justify-center">
+          <Construction className="w-6 h-6 text-brand-accent" />
         </div>
         <div>
           <h3 className="text-lg font-bold text-foreground mb-1">Sezione in Costruzione</h3>
@@ -295,7 +295,7 @@ export default function PortalDashboard() {
               className="glass-card p-6 rounded-[2rem] border-white/5 opacity-80 mix-blend-luminosity grayscale hover:grayscale-0 transition-all duration-500 cursor-not-allowed group relative overflow-hidden"
             >
               {/* Badge Presto Disponibile */}
-              <div className="absolute top-4 right-4 text-[10px] uppercase font-black tracking-widest text-[#800020] bg-black/5 px-2 py-1 rounded pill">
+              <div className="absolute top-4 right-4 text-[10px] uppercase font-black tracking-widest text-brand-accent bg-black/5 dark:bg-white/10 px-2 py-1 rounded pill">
                 Presto
               </div>
 

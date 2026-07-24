@@ -53,15 +53,15 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
             className="relative w-[95vw] max-w-2xl glass-card p-8 shadow-2xl border-black/5 dark:border-white/10 rounded-[3rem] overflow-hidden max-h-[96vh] overflow-y-auto"
           >
             {/* Background Decor */}
-            <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
-            
+            <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-brand-accent/10 rounded-full blur-3xl" />
+
             <div className="relative flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20">
+                <div className="w-12 h-12 pill bg-brand-accent/20 flex items-center justify-center text-brand-accent border border-brand-accent/20">
                   <Package className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-foreground italic uppercase">Nuovo <span className="text-primary not-italic">Articolo</span></h2>
+                  <h2 className="text-2xl font-black text-foreground italic uppercase">Nuovo <span className="text-brand-accent not-italic">Articolo</span></h2>
                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Inserimento materiale a magazzino</p>
                 </div>
               </div>
@@ -77,14 +77,14 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
               <div className="space-y-2">
                 <label htmlFor="inv-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 pl-2 cursor-pointer">Nome Articolo</label>
                 <div className="relative group">
-                  <Box className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                  <Box className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-brand-accent transition-colors" />
                   <Input
                     id="inv-name"
                     required
                     placeholder="Es. Palloni Nike Academy"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    className="pl-11 h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-foreground font-bold"
+                    className="pl-11 h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-foreground font-bold"
                   />
                 </div>
               </div>
@@ -92,14 +92,14 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
               <div className="space-y-2">
                 <label htmlFor="inv-cat" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 pl-2 cursor-pointer">Categoria</label>
                 <div className="relative group">
-                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-brand-accent transition-colors" />
                   <Input
                     id="inv-cat"
                     required
                     placeholder="Es. Attrezzatura"
                     value={formData.category}
                     onChange={e => setFormData({ ...formData, category: e.target.value })}
-                    className="pl-11 h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-foreground font-bold"
+                    className="pl-11 h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-foreground font-bold"
                   />
                 </div>
               </div>
@@ -108,7 +108,7 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
                 <div className="space-y-2">
                   <label htmlFor="inv-qty" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 pl-2 cursor-pointer">Quantità</label>
                   <div className="relative group">
-                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-brand-accent transition-colors" />
                     <Input
                       id="inv-qty"
                       type="number"
@@ -116,14 +116,14 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
                       min="0"
                       value={formData.quantity}
                       onChange={e => setFormData({ ...formData, quantity: Number.parseInt(e.target.value, 10) || 0 })}
-                      className="pl-11 h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-foreground font-bold"
+                      className="pl-11 h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-foreground font-bold"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="inv-min" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 pl-2 cursor-pointer">Stock Minimo</label>
                   <div className="relative group">
-                    <AlertTriangle className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                    <AlertTriangle className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-brand-accent transition-colors" />
                     <Input
                       id="inv-min"
                       type="number"
@@ -131,7 +131,7 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
                       min="1"
                       value={formData.min_stock}
                       onChange={e => setFormData({ ...formData, min_stock: Number.parseInt(e.target.value, 10) || 1 })}
-                      className="pl-11 h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-foreground font-bold"
+                      className="pl-11 h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-foreground font-bold"
                     />
                   </div>
                 </div>
@@ -149,7 +149,7 @@ export default function AddInventoryModal({ isOpen, onClose, onSuccess }: Readon
                 <Button 
                   type="submit" 
                   disabled={loading}
-                  className="flex-[2] h-12 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[9px] shadow-xl shadow-primary/20 gap-2 active:scale-95 transition-all"
+                  className="flex-[2] h-12 pill bg-brand-accent hover:bg-brand-accent/90 text-white font-black uppercase tracking-widest text-[9px] shadow-xl shadow-brand-accent/20 gap-2 active:scale-95 transition-all"
                 >
                   {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-4 h-4" />}
                   Aggiungi Articolo

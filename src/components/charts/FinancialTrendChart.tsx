@@ -47,7 +47,7 @@ export function FinancialTrendChart({ data }: Readonly<FinancialTrendChartProps>
   return (
     <div className="chart-card glass-card border border-black/10 dark:border-white/10 p-6 rounded-[2rem] relative overflow-hidden group">
       {/* Background glow */}
-      <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-primary group-hover:opacity-20 transition-opacity" />
+      <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-brand-accent group-hover:opacity-20 transition-opacity" />
       
       <div className="chart-head flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6 relative z-10">
         <div className="chart-title-block">
@@ -107,7 +107,7 @@ export function FinancialTrendChart({ data }: Readonly<FinancialTrendChartProps>
                 background: 'oklch(0.205 0 0 / 0.9)',
                 border: '1px solid oklch(1 0 0 / 0.1)',
                 borderRadius: '1rem',
-                color: '#fff',
+                color: 'var(--sidebar-foreground)',
                 fontSize: '11px',
                 fontWeight: 600
               }}

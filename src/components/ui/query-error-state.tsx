@@ -16,7 +16,7 @@ export function QueryErrorState({ error, onRetry, className }: QueryErrorStatePr
       <p className="text-sm font-bold text-foreground max-w-sm">{getErrorMessage(error)}</p>
       <button
         onClick={onRetry}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-full pill text-xs font-black uppercase tracking-wider hover:bg-white/10 transition-colors"
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full pill text-xs font-black uppercase tracking-wider hover:bg-[var(--surface-05)] transition-colors"
       >
         <RotateCw className="w-3.5 h-3.5" />
         Riprova
