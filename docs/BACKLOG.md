@@ -63,7 +63,7 @@
 | [US-004](backlog/US-004-risoluzione-warning-linter-typescript.md) | Risoluzione warning linter e TypeScript | MEDIUM | 1 | DONE |
 | [US-005](backlog/US-005-allineamento-grafico-modali-stile.md) | Allineamento grafico dei modali allo stile Premium Glass | MEDIUM | 3 | DONE |
 | [US-006](backlog/US-006-architettura-invio-email-template.md) | Architettura invio email e template promemoria visite mediche | MEDIUM | 3 | REVIEW |
-| [US-041](backlog/US-041-revisione-contrasti-tema-scuro.md) | Revisione contrasti e leggibilità del tema scuro | MEDIUM | 3 | REVIEW |
+| [US-041](backlog/US-041-revisione-contrasti-tema-scuro.md) | Revisione contrasti e leggibilità del tema scuro | MEDIUM | 3 | DONE |
 
 ### EP-002: Gestione Stagioni Sportive
 

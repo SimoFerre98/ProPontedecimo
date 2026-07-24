@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { SpeedInsights } from '@vercel/speed-insights/react'
+import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ToastProvider } from '@/contexts/ToastContext'
@@ -103,6 +104,7 @@ function App() {
           </Router>
         </AuthProvider>
         <SpeedInsights />
+        <Analytics />
       </ToastProvider>
     </QueryClientProvider>
   )
