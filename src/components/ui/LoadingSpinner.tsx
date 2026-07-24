@@ -11,7 +11,7 @@ const SIZE_CLASSES: Record<LoadingSpinnerSize, string> = {
 }
 
 const TONE_CLASSES: Record<LoadingSpinnerTone, string> = {
-  primary: 'text-primary',
+  primary: 'text-brand-accent',
   white: 'text-white',
   muted: 'text-muted-foreground',
 }

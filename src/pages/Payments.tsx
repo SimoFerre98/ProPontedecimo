@@ -22,6 +22,7 @@ import NewPaymentModal from '@/components/modals/NewPaymentModal'
 import { useAppStore } from '@/store/useAppStore'
 import { FinancialTrendChart } from '@/components/charts/FinancialTrendChart'
 import { StatsGrid } from '@/components/ui/StatsGrid'
+import { Badge } from '@/components/ui/Badge'
 
 const METHOD_ICONS: Record<string, React.ElementType> = {
   satispay: Smartphone,
@@ -103,21 +104,21 @@ export default function Payments() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-2">
-          <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px]">
+          <div className="flex items-center gap-2 text-brand-accent font-black uppercase tracking-[0.2em] text-[10px]">
             <Euro className="w-4 h-4" />
             <span>Quote Associative</span>
           </div>
           <h1 className="text-5xl font-black text-foreground tracking-tight italic uppercase">
-            Gestione <span className="text-primary not-italic">Pagamenti</span>
+            Gestione <span className="text-brand-accent not-italic">Pagamenti</span>
           </h1>
-          <p className="text-muted-foreground font-medium border-l-2 border-primary/30 pl-4">
+          <p className="text-muted-foreground font-medium border-l-2 border-brand-accent/30 pl-4">
             Quote annuali e rate stagionali — 1ª rata: 15 set · 2ª rata: 15 gen
           </p>
         </div>
         {isAdmin && (
           <Button
             onClick={() => setShowNewModal(true)}
-            className="pill bg-primary hover:bg-primary/90 text-white gap-2 h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/30"
+            className="pill bg-brand-accent hover:bg-brand-accent/90 text-white gap-2 h-14 px-8 font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-brand-accent/30"
           >
             <Plus className="w-5 h-5" /> Nuova Quota
           </Button>
@@ -132,17 +133,16 @@ export default function Payments() {
               <TrendingUp className="w-4 h-4" />
               <span>Andamento Finanziario</span>
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-muted-foreground">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+            <Badge tone="neutral" icon={<span className="w-1.5 h-1.5 rounded-full bg-brand-accent" />} className="gap-2 px-3 py-1 text-[10px] normal-case tracking-normal">
               <span>Visibile solo ad Amministratori</span>
-            </div>
+            </Badge>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-white/5 transition-all duration-300 hover:border-emerald-500/20 hover:-translate-y-1"
+              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-[var(--border-soft)] transition-all duration-300 hover:border-emerald-500/20 hover:-translate-y-1"
             >
               <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-emerald-500 group-hover:opacity-20 transition-opacity" />
               <div className="flex items-start justify-between relative z-10">
@@ -168,9 +168,9 @@ export default function Payments() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 }}
-              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-white/5 transition-all duration-300 hover:border-primary/20 hover:-translate-y-1"
+              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-[var(--border-soft)] transition-all duration-300 hover:border-brand-accent/20 hover:-translate-y-1"
             >
-              <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-primary group-hover:opacity-20 transition-opacity" />
+              <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-brand-accent group-hover:opacity-20 transition-opacity" />
               <div className="flex items-start justify-between relative z-10">
                 <div className="flex-1">
                   <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 opacity-70">Previsto Totale</p>
@@ -181,7 +181,7 @@ export default function Payments() {
                     quote + rate pianificate
                   </p>
                 </div>
-                <div className="w-12 h-12 pill flex items-center justify-center shrink-0 ml-4 border bg-primary/10 border-primary/20 text-primary">
+                <div className="w-12 h-12 pill flex items-center justify-center shrink-0 ml-4 border bg-brand-accent/10 border-brand-accent/20 text-brand-accent">
                   <Building2 className="w-5 h-5" />
                 </div>
               </div>
@@ -191,7 +191,7 @@ export default function Payments() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-white/5 transition-all duration-300 hover:border-gold/20 hover:-translate-y-1"
+              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-[var(--border-soft)] transition-all duration-300 hover:border-gold/20 hover:-translate-y-1"
             >
               <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-gold group-hover:opacity-20 transition-opacity" />
               <div className="flex items-start justify-between relative z-10">
@@ -217,7 +217,7 @@ export default function Payments() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-white/5 transition-all duration-300 hover:border-muted-foreground/20 hover:-translate-y-1"
+              className="glass-card p-6 rounded-[2rem] relative overflow-hidden group border border-[var(--border-soft)] transition-all duration-300 hover:border-muted-foreground/20 hover:-translate-y-1"
             >
               <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-10 bg-muted group-hover:opacity-20 transition-opacity" />
               <div className="flex items-start justify-between relative z-10">
@@ -241,7 +241,7 @@ export default function Payments() {
 
           <div className="flex items-center gap-4 my-8">
             <div className="h-[1px] flex-1 bg-black/5 dark:bg-white/5" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Dettaglio Pagamenti</span>
+            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Dettaglio Pagamenti</span>
             <div className="h-[1px] flex-1 bg-black/5 dark:bg-white/5" />
           </div>
         </div>
@@ -259,12 +259,12 @@ export default function Payments() {
       {/* Toolbar */}
       <div className="flex flex-col md:flex-row gap-4 items-center">
         <div className="flex-1 relative group w-full">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-brand-accent transition-colors" />
           <input
             placeholder="Cerca per nome atleta..."
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(0) }}
-            className="h-14 pl-14 w-full pill glass-card border-black/5 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/30 font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground text-sm transition-all"
+            className="h-14 pl-14 w-full pill glass-card border-black/5 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-brand-accent/30 font-medium placeholder:text-muted-foreground/60 bg-transparent text-foreground text-sm transition-all"
           />
         </div>
         <div className="flex flex-col md:flex-row w-full md:w-auto items-stretch md:items-center gap-2">
@@ -275,7 +275,7 @@ export default function Payments() {
                 onClick={() => { setStatusFilter(status); setPage(0) }}
                 className={cn(
                   'px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap',
-                  statusFilter === status ? 'bg-primary text-white shadow-md shadow-primary/20 scale-105' : 'text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5'
+                  statusFilter === status ? 'bg-brand-accent text-white shadow-md shadow-brand-accent/20 scale-105' : 'text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5'
                 )}
               >
                 {status === 'all' ? 'Tutti' : status === 'pending' ? 'In Attesa' : status === 'paid' ? 'Pagati' : 'Scaduti'}
@@ -287,7 +287,7 @@ export default function Payments() {
               variant="outline"
               onClick={handleExport}
               disabled={totalCount === 0 || isExporting}
-              className="pill h-14 px-5 shrink-0 gap-2 border border-black/10 dark:border-white/10 hover:border-primary transition-all font-black uppercase tracking-widest text-[10px] w-full md:w-auto justify-center disabled:opacity-50"
+              className="pill h-14 px-5 shrink-0 gap-2 border border-black/10 dark:border-white/10 hover:border-brand-accent transition-all font-black uppercase tracking-widest text-[10px] w-full md:w-auto justify-center disabled:opacity-50"
             >
               {isExporting ? (
                 <LoadingSpinner size="sm" />
@@ -305,7 +305,7 @@ export default function Payments() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[760px]">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.02]">
+              <tr className="border-b border-[var(--border-soft)] bg-[var(--surface-05)]">
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Atleta</th>
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Rata</th>
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">Scadenza</th>
@@ -316,13 +316,13 @@ export default function Payments() {
                 <th className="px-6 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-widest text-right">Azioni</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[var(--border-soft)]">
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
                     <tr key={`skel-${i}`} className="animate-pulse">
                       <td colSpan={8} className="px-6 py-6">
-                        <div className="h-5 bg-white/5 pill w-full" />
+                        <div className="h-5 bg-[var(--surface-05)] pill w-full" />
                       </td>
                     </tr>
                   ))
@@ -335,7 +335,7 @@ export default function Payments() {
                 ) : payments.length === 0 ? (
                   <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} key="empty">
                     <td colSpan={8} className="px-6 py-20 text-center">
-                      <div className="flex flex-col items-center gap-3 text-muted-foreground/30">
+                      <div className="flex flex-col items-center gap-3 text-muted-foreground/60">
                         <FileText className="w-12 h-12" />
                         <p className="font-bold">Nessun pagamento trovato</p>
                       </div>
@@ -349,12 +349,12 @@ export default function Payments() {
                       <motion.tr
                         key={p.id} layout
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="group transition-colors hover:bg-white/[0.015]"
+                        className="group transition-colors hover:bg-[var(--surface-05)]"
                       >
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
-                              <User className="w-4 h-4 text-primary" />
+                            <div className="w-9 h-9 rounded-xl bg-brand-accent/10 flex items-center justify-center shrink-0 border border-brand-accent/20">
+                              <User className="w-4 h-4 text-brand-accent" />
                             </div>
                             <div>
                               <p className="text-sm font-black text-foreground">{p.player.last_name} {p.player.first_name}</p>
@@ -363,16 +363,16 @@ export default function Payments() {
                           </div>
                         </td>
                         <td className="px-6 py-5">
-                          <div className="pill bg-white/5 border border-white/10 px-3 py-1 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                          <Badge tone="neutral">
                             {p.plan === 'carried_over' ? (
                               <span className="text-amber-500 font-black uppercase">Debito Pregresso</span>
                             ) : (
                               <>
                                 {`${p.installment_no}ª Rata`}
-                                {p.plan === 'annual' && <span className="text-primary/60">· Unica</span>}
+                                {p.plan === 'annual' && <span className="text-brand-accent/60">· Unica</span>}
                               </>
                             )}
-                          </div>
+                          </Badge>
                         </td>
                         <td className="px-6 py-5">
                           {p.due_date ? (
@@ -380,7 +380,7 @@ export default function Payments() {
                               {format(new Date(p.due_date), 'dd MMM yyyy', { locale: it })}
                               {isOverdue && p.status !== 'paid' && ' ⚠'}
                             </span>
-                          ) : <span className="text-muted-foreground/30 text-xs">—</span>}
+                          ) : <span className="text-muted-foreground/60 text-xs">—</span>}
                         </td>
                         <td className="px-6 py-5">
                           <div className="space-y-0.5">
@@ -388,7 +388,7 @@ export default function Payments() {
                               € {(p.paid_amount_eur ?? p.amount_eur ?? 0).toLocaleString('it-IT')}
                             </p>
                             {p.paid_amount_eur && p.amount_eur && p.paid_amount_eur !== p.amount_eur && (
-                              <p className="text-[10px] text-muted-foreground/50">previsto: € {p.amount_eur}</p>
+                              <p className="text-[10px] text-muted-foreground/60">previsto: € {p.amount_eur}</p>
                             )}
                           </div>
                         </td>
@@ -398,13 +398,13 @@ export default function Payments() {
                               <MethodIcon className="w-4 h-4" />
                               {PAYMENT_METHODS.find(m => m.value === p.payment_method)?.label}
                             </div>
-                          ) : <span className="text-muted-foreground/20 text-xs italic">—</span>}
+                          ) : <span className="text-muted-foreground/60 text-xs italic">—</span>}
                         </td>
                         <td className="px-6 py-5">
                           {p.receipt_number ? (
                             <div className="space-y-0.5">
                               <p className="text-xs font-bold text-foreground/80 flex items-center gap-1.5 uppercase tracking-tighter">
-                                <FileText className="w-3 h-3 text-primary/60" /> N. {p.receipt_number}
+                                <FileText className="w-3 h-3 text-brand-accent/60" /> N. {p.receipt_number}
                               </p>
                               {p.receipt_date && (
                                 <p className="text-[10px] text-muted-foreground/60">
@@ -412,7 +412,7 @@ export default function Payments() {
                                 </p>
                               )}
                             </div>
-                          ) : <span className="text-muted-foreground/20 text-xs italic">Non emessa</span>}
+                          ) : <span className="text-muted-foreground/60 text-xs italic">Non emessa</span>}
                         </td>
                         <td className="px-6 py-5">
                           <StatusBadge status={p.status} />
@@ -420,7 +420,7 @@ export default function Payments() {
                         <td className="px-6 py-5 text-right">
                           <button
                             onClick={() => setSelectedPayment(p)}
-                            className="flex items-center gap-1.5 ml-auto text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary/70 transition-colors group/btn"
+                            className="flex items-center gap-1.5 ml-auto text-[10px] font-black uppercase tracking-widest text-brand-accent hover:text-brand-accent/70 transition-colors group/btn"
                           >
                             <Pencil className="w-3.5 h-3.5" />
                             {p.status === 'paid' ? 'Modifica' : 'Registra'}

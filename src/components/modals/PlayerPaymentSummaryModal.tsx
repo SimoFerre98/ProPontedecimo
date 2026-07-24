@@ -106,7 +106,7 @@ export default function PlayerPaymentSummaryModal({
             <div className="flex items-center justify-between px-8 pt-8 pb-4">
               <div>
                 <h2 className="text-xl font-black uppercase italic text-foreground">
-                  Riepilogo <span className="text-primary not-italic">Pagamenti</span>
+                  Riepilogo <span className="text-brand-accent not-italic">Pagamenti</span>
                 </h2>
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mt-1">
                   {playerName} — {playerTeamSector || 'Nessun settore'} · {currentSeason?.name || 'Nessuna stagione'}
@@ -134,7 +134,7 @@ export default function PlayerPaymentSummaryModal({
                   {/* Stat Cards */}
                   <div className={cn("grid gap-3", stats.hasCarriedOver ? "grid-cols-2 md:grid-cols-4" : "grid-cols-1 md:grid-cols-3")}>
                     <div className="p-4 rounded-3xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-brand-accent/10 flex items-center justify-center text-brand-accent mb-3">
                         <Euro className="w-4 h-4" />
                       </div>
                       <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Quota Totale</p>

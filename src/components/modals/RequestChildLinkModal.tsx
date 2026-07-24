@@ -95,12 +95,12 @@ export default function RequestChildLinkModal({ isOpen, onClose }: Readonly<Requ
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+                <div className="w-14 h-14 pill bg-brand-accent/20 flex items-center justify-center text-brand-accent border border-brand-accent/20 shadow-inner">
                   <Users className="w-6 h-6" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-foreground italic uppercase leading-none">
-                    Collega un <span className="text-primary not-italic">Figlio</span>
+                    Collega un <span className="text-brand-accent not-italic">Figlio</span>
                   </h2>
                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">
                     Richiesta di associazione
@@ -124,7 +124,7 @@ export default function RequestChildLinkModal({ isOpen, onClose }: Readonly<Requ
                 <div className="relative group">
                   {searching
                     ? <LoadingSpinner size="sm" className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
-                    : <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 pointer-events-none z-10 group-focus-within:text-primary transition-colors" />
+                    : <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 pointer-events-none z-10 group-focus-within:text-brand-accent transition-colors" />
                   }
                   <input
                     id="player-search"
@@ -136,7 +136,7 @@ export default function RequestChildLinkModal({ isOpen, onClose }: Readonly<Requ
                     }}
                     placeholder="Minimo 2 caratteri..."
                     autoComplete="off"
-                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-primary focus:outline-none text-sm font-medium placeholder:text-muted-foreground/40 text-foreground transition-all"
+                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-brand-accent focus:outline-none text-sm font-medium placeholder:text-muted-foreground/40 text-foreground transition-all"
                   />
                 </div>
 
@@ -157,9 +157,9 @@ export default function RequestChildLinkModal({ isOpen, onClose }: Readonly<Requ
                             setSelectedPlayer(player)
                             setResults([])
                           }}
-                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/10 transition-colors text-left"
+                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-brand-accent/10 transition-colors text-left"
                         >
-                          <div className="w-8 h-8 pill bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shrink-0">
+                          <div className="w-8 h-8 pill bg-brand-accent/10 flex items-center justify-center text-brand-accent border border-brand-accent/20 shrink-0">
                             <User className="w-4 h-4" />
                           </div>
                           <div>
@@ -184,10 +184,10 @@ export default function RequestChildLinkModal({ isOpen, onClose }: Readonly<Requ
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="p-4 glass-card rounded-2xl flex items-center gap-4 border border-primary/20 bg-primary/5"
+                    className="p-4 glass-card rounded-2xl flex items-center gap-4 border border-brand-accent/20 bg-brand-accent/5"
                   >
-                    <div className="w-10 h-10 pill bg-primary/20 flex items-center justify-center border border-primary/30">
-                      <CheckCircle2 className="w-5 h-5 text-primary" />
+                    <div className="w-10 h-10 pill bg-brand-accent/20 flex items-center justify-center border border-brand-accent/30">
+                      <CheckCircle2 className="w-5 h-5 text-brand-accent" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-black text-foreground uppercase">
@@ -231,7 +231,7 @@ export default function RequestChildLinkModal({ isOpen, onClose }: Readonly<Requ
                   disabled={loading || !selectedPlayer}
                   className={cn(
                     "flex-[2] h-14 pill font-black uppercase tracking-widest text-[10px] shadow-2xl gap-3 active:scale-95 transition-all disabled:opacity-50",
-                    "bg-primary hover:bg-primary/90 text-white shadow-primary/40"
+                    "bg-brand-accent hover:bg-brand-accent/90 text-white shadow-brand-accent/40"
                   )}
                 >
                   {loading ? <LoadingSpinner size="sm" tone="white" /> : <Users className="w-5 h-5" />}

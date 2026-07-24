@@ -62,8 +62,8 @@ export default function SquadraAtleti() {
       <div className="flex justify-between items-end">
         <div className="space-y-0.5">
           <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-primary/10 border border-primary/20">
-              <Users className="w-6 h-6 text-primary" />
+            <span className="p-1.5 rounded-lg bg-brand-accent/10 border border-brand-accent/20">
+              <Users className="w-6 h-6 text-brand-accent" />
             </span>
             Squadra
           </h1>
@@ -168,7 +168,7 @@ function SquadraAtletaCard({ player }: Readonly<{ player: SquadRosterMember }>) 
     <div className="glass-card rounded-2xl p-4 border-black/5 dark:border-white/10 flex flex-col gap-3">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-11 h-11 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-mono text-sm font-black text-primary/80 flex-shrink-0 select-none">
+          <div className="w-11 h-11 rounded-full bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center font-mono text-sm font-black text-brand-accent/80 flex-shrink-0 select-none">
             {initials || '??'}
           </div>
           <div className="min-w-0">

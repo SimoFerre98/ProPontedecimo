@@ -176,13 +176,13 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
             <div className="flex items-center justify-between px-8 pt-8 pb-4">
               <div>
                 <h2 className="text-xl font-black uppercase italic text-foreground">
-                  Nuova <span className="text-primary not-italic">Quota</span>
+                  Nuova <span className="text-brand-accent not-italic">Quota</span>
                 </h2>
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mt-1">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mt-1">
                   Piano rate personalizzato per atleta
                 </p>
               </div>
-              <button onClick={onClose} className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0">
+              <button onClick={onClose} className="w-10 h-10 pill border border-[var(--border-soft)] flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0">
                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
             </div>
@@ -194,15 +194,15 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
                   Atleta <span className="text-red-500">*</span>
                 </span>
                 {selectedPlayer ? (
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-primary/30 bg-primary/5">
-                    <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                      <User className="w-4 h-4 text-primary" />
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-brand-accent/30 bg-brand-accent/5">
+                    <div className="w-8 h-8 rounded-lg bg-brand-accent/20 flex items-center justify-center">
+                      <User className="w-4 h-4 text-brand-accent" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-black text-foreground">{selectedPlayer.last_name} {selectedPlayer.first_name}</p>
                       <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{selectedPlayer.team_sector}</p>
                     </div>
-                    <button type="button" onClick={() => setSelectedPlayer(null)} className="text-muted-foreground/50 hover:text-foreground text-xs font-bold transition-colors">
+                    <button type="button" onClick={() => setSelectedPlayer(null)} className="text-muted-foreground/60 hover:text-foreground text-xs font-bold transition-colors">
                       Cambia
                     </button>
                   </div>
@@ -214,21 +214,21 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
                         placeholder="Cerca atleta..."
                         value={searchPlayer}
                         onChange={e => setSearchPlayer(e.target.value)}
-                        className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary font-bold pl-10 text-sm"
+                        className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent font-bold pl-10 text-sm"
                       />
                     </div>
                     {searchPlayer && (
                       <div className="space-y-1 max-h-48 overflow-y-auto no-scrollbar">
                         {filtered.length === 0 ? (
-                          <p className="text-xs text-muted-foreground/50 text-center py-3">Nessun atleta trovato</p>
+                          <p className="text-xs text-muted-foreground/60 text-center py-3">Nessun atleta trovato</p>
                         ) : filtered.map(p => (
                           <button
                             key={p.id} type="button"
                             onClick={() => { setSelectedPlayer(p); setSearchPlayer('') }}
-                            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-primary/10 transition-colors text-left"
+                            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-brand-accent/10 transition-colors text-left"
                           >
-                            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                              <User className="w-3.5 h-3.5 text-primary" />
+                            <div className="w-7 h-7 rounded-lg bg-brand-accent/10 flex items-center justify-center shrink-0">
+                              <User className="w-3.5 h-3.5 text-brand-accent" />
                             </div>
                             <div>
                               <p className="text-sm font-bold text-foreground">{p.last_name} {p.first_name}</p>
@@ -256,7 +256,7 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
                         placeholder="es. 300.00"
                         value={amount}
                         onChange={e => handleAmountChange(e.target.value)}
-                        className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-14"
+                        className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-base font-bold pl-14"
                       />
                     </div>
                   </div>
@@ -293,7 +293,7 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
                       <button
                         type="button"
                         onClick={handleSplitEvenlyBtn}
-                        className="inline-flex items-center gap-2 h-12 px-5 rounded-full border border-dashed border-muted-foreground/30 text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all text-[9px] font-black uppercase tracking-widest"
+                        className="inline-flex items-center gap-2 h-12 px-5 rounded-full border border-dashed border-muted-foreground/30 text-muted-foreground hover:text-foreground hover:border-brand-accent/50 hover:bg-brand-accent/5 transition-all text-[9px] font-black uppercase tracking-widest"
                       >
                         <Calendar className="w-3.5 h-3.5" /> Dividi Equamente
                       </button>
@@ -317,39 +317,39 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
 
                     <div className="space-y-2.5 max-h-[35vh] overflow-y-auto pr-1 no-scrollbar">
                       {installments.map((inst, i) => (
-                        <div key={i} className="grid grid-cols-[auto_1fr_1fr] items-center gap-3 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 focus-within:border-primary/30 transition-colors">
-                          <div className="flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/20 border border-primary/20 shrink-0">
-                            <span className="text-sm font-black text-primary leading-none">{i + 1}</span>
-                            <span className="text-[7px] font-black uppercase tracking-wider text-primary/70 mt-0.5">Rata</span>
+                        <div key={i} className="grid grid-cols-[auto_1fr_1fr] items-center gap-3 p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 focus-within:border-brand-accent/30 transition-colors">
+                          <div className="flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-brand-accent/10 dark:bg-brand-accent/20 border border-brand-accent/20 shrink-0">
+                            <span className="text-sm font-black text-brand-accent leading-none">{i + 1}</span>
+                            <span className="text-[7px] font-black uppercase tracking-wider text-brand-accent/70 mt-0.5">Rata</span>
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 mb-1 pl-1">Importo</span>
+                            <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1 pl-1">Importo</span>
                             <div className="relative">
                               <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/40" />
                               <Input
                                 type="number" step="0.01" min="0" required
                                 value={inst.amount_eur || ''}
                                 onChange={e => handleInstallmentAmountChange(i, parseFloat(e.target.value) || 0)}
-                                className="h-9 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-xs font-bold pl-8 pr-2"
+                                className="h-9 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-xs font-bold pl-8 pr-2"
                               />
                             </div>
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/50 mb-1 pl-1">Scadenza</span>
+                            <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1 pl-1">Scadenza</span>
                             <div className="relative">
                               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/40" />
                               <Input
                                 type="date" required
                                 value={inst.due_date}
                                 onChange={e => handleInstallmentDateChange(i, e.target.value)}
-                                className="h-9 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-xs font-bold pl-8 pr-2"
+                                className="h-9 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-xs font-bold pl-8 pr-2"
                               />
                             </div>
                           </div>
                         </div>
                       ))}
                     </div>
-                    <p className="text-[9px] text-muted-foreground/50 pl-3">
+                    <p className="text-[9px] text-muted-foreground/60 pl-3">
                       Tolleranza consentita: ± € 0,01 rispetto all'importo totale.
                     </p>
                   </div>
@@ -363,7 +363,7 @@ export default function NewPaymentModal({ isOpen, onClose }: NewPaymentModalProp
                 </Button>
                 <Button
                   type="submit" disabled={loading || !isValid}
-                  className="flex-[2] h-12 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/30 gap-2 disabled:opacity-50"
+                  className="flex-[2] h-12 pill bg-brand-accent hover:bg-brand-accent/90 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-brand-accent/30 gap-2 disabled:opacity-50"
                 >
                   {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-4 h-4" />}
                   Crea Piano Rate

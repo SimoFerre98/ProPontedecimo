@@ -43,7 +43,7 @@ export default function AthleteFilterPanel({
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <div className="glass-card border border-primary/20 rounded-[2rem] p-6 space-y-6">
+            <div className="glass-card border border-brand-accent/20 rounded-[2rem] p-6 space-y-6">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-black uppercase tracking-widest text-foreground">Filtri Avanzati</p>
                 <button
@@ -71,8 +71,8 @@ export default function AthleteFilterPanel({
                         className={cn(
                           "px-4 py-2.5 rounded-xl text-xs font-bold text-left transition-all border",
                           pendingFilters.isActive === val
-                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
-                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/40 hover:text-foreground"
+                            ? "bg-brand-accent text-white border-brand-accent shadow-md shadow-brand-accent/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/40 hover:text-foreground"
                         )}
                       >
                         {lbl}
@@ -96,8 +96,8 @@ export default function AthleteFilterPanel({
                         className={cn(
                           "px-4 py-2.5 rounded-xl text-xs font-bold text-left transition-all border",
                           pendingFilters.isRegistered === val
-                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
-                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/40 hover:text-foreground"
+                            ? "bg-brand-accent text-white border-brand-accent shadow-md shadow-brand-accent/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/40 hover:text-foreground"
                         )}
                       >
                         {lbl}
@@ -122,8 +122,8 @@ export default function AthleteFilterPanel({
                         className={cn(
                           "px-4 py-2.5 rounded-xl text-xs font-bold text-left transition-all border",
                           pendingFilters.medicalStatus === val
-                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
-                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/40 hover:text-foreground"
+                            ? "bg-brand-accent text-white border-brand-accent shadow-md shadow-brand-accent/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/40 hover:text-foreground"
                         )}
                       >
                         {lbl}
@@ -147,8 +147,8 @@ export default function AthleteFilterPanel({
                         className={cn(
                           "px-4 py-2.5 rounded-xl text-xs font-bold text-left transition-all border",
                           pendingFilters.privacyStatus === val
-                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
-                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/40 hover:text-foreground"
+                            ? "bg-brand-accent text-white border-brand-accent shadow-md shadow-brand-accent/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/40 hover:text-foreground"
                         )}
                       >
                         {lbl}
@@ -171,8 +171,8 @@ export default function AthleteFilterPanel({
                         className={cn(
                           "px-4 py-2.5 rounded-xl text-xs font-bold text-left transition-all border",
                           pendingFilters.registrationStatus === val
-                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
-                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/40 hover:text-foreground"
+                            ? "bg-brand-accent text-white border-brand-accent shadow-md shadow-brand-accent/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/40 hover:text-foreground"
                         )}
                       >
                         {lbl}
@@ -202,8 +202,8 @@ export default function AthleteFilterPanel({
                         className={cn(
                           "px-4 py-2.5 rounded-xl text-xs font-bold text-left transition-all border flex items-center justify-between gap-2",
                           pendingFilters.sortBy === val
-                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
-                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/40 hover:text-foreground"
+                            ? "bg-brand-accent text-white border-brand-accent shadow-md shadow-brand-accent/20"
+                            : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/40 hover:text-foreground"
                         )}
                       >
                         <span>{lbl}</span>
@@ -228,7 +228,7 @@ export default function AthleteFilterPanel({
                 </button>
                 <Button
                   onClick={applyFilters}
-                  className="pill bg-primary hover:bg-primary/90 text-white gap-2 h-10 px-6 font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20"
+                  className="pill bg-brand-accent hover:bg-brand-accent/90 text-white gap-2 h-10 px-6 font-black uppercase tracking-widest text-[10px] shadow-xl shadow-brand-accent/20"
                 >
                   Applica Filtri
                 </Button>
@@ -243,37 +243,37 @@ export default function AthleteFilterPanel({
         <div className="flex flex-wrap gap-2 items-center">
           <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Filtri attivi:</span>
           {filters.isActive !== 'all' && (
-            <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
+            <span className="flex items-center gap-1.5 px-3 py-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/20 rounded-full text-[10px] font-black uppercase">
               {filters.isActive === 'active' ? 'Attivo' : 'Non Attivo'}
               <button onClick={() => { setFilters(f => ({ ...f, isActive: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
             </span>
           )}
           {filters.isRegistered !== 'all' && (
-            <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
+            <span className="flex items-center gap-1.5 px-3 py-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/20 rounded-full text-[10px] font-black uppercase">
               {filters.isRegistered === 'yes' ? 'Tesserati' : 'Non Tesserati'}
               <button onClick={() => { setFilters(f => ({ ...f, isRegistered: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
             </span>
           )}
           {filters.medicalStatus !== 'all' && (
-            <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
+            <span className="flex items-center gap-1.5 px-3 py-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/20 rounded-full text-[10px] font-black uppercase">
               Medica: {filters.medicalStatus === 'expired' ? 'Scaduta' : filters.medicalStatus === 'valid' ? 'Valida' : 'Mancante'}
               <button onClick={() => { setFilters(f => ({ ...f, medicalStatus: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
             </span>
           )}
           {filters.privacyStatus !== 'all' && (
-            <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
+            <span className="flex items-center gap-1.5 px-3 py-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/20 rounded-full text-[10px] font-black uppercase">
               Privacy: {filters.privacyStatus === 'accepted' ? 'Accettata' : 'Mancante'}
               <button onClick={() => { setFilters(f => ({ ...f, privacyStatus: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
             </span>
           )}
           {filters.registrationStatus !== 'all' && (
-            <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
+            <span className="flex items-center gap-1.5 px-3 py-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/20 rounded-full text-[10px] font-black uppercase">
               Matricola: Mancante
               <button onClick={() => { setFilters(f => ({ ...f, registrationStatus: 'all' })); setPage(0) }}><X className="w-3 h-3" /></button>
             </span>
           )}
           {(filters.sortBy !== 'last_name' || filters.sortDir !== 'asc') && (
-            <span className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase">
+            <span className="flex items-center gap-1.5 px-3 py-1 bg-brand-accent/10 text-brand-accent border border-brand-accent/20 rounded-full text-[10px] font-black uppercase">
               {filters.sortBy === 'created_at' ? 'Ultimi Iscritti' : filters.sortBy === 'medical_expiry' ? 'Scadenza Medica' : 'Cognome'} {filters.sortDir === 'desc' ? '↓' : '↑'}
               <button onClick={() => { setFilters(f => ({ ...f, sortBy: 'last_name', sortDir: 'asc' })); setPage(0) }}><X className="w-3 h-3" /></button>
             </span>

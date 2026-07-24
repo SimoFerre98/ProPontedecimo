@@ -217,8 +217,8 @@ export default function Attendance() {
       <div className="flex justify-between items-end">
         <div className="space-y-0.5">
           <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-primary/10 border border-primary/20">
-              <CalendarCheck className="w-6 h-6 text-primary" />
+            <span className="p-1.5 rounded-lg bg-brand-accent/10 border border-brand-accent/20">
+              <CalendarCheck className="w-6 h-6 text-brand-accent" />
             </span>
             Presenze
           </h1>
@@ -238,13 +238,13 @@ export default function Attendance() {
               "px-3.5 py-1.5 text-xs font-semibold rounded-full border transition-all cursor-pointer select-none whitespace-nowrap flex items-center gap-1.5",
               selectedSector === 'all'
                 ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"
+                : "bg-[var(--surface-05)] border-[var(--border-soft)] text-muted-foreground hover:bg-[var(--surface-05)]"
             )}
           >
             Tutte
             <span className={cn(
               "text-[10px] px-1.5 py-0.5 rounded-full font-bold",
-              selectedSector === 'all' ? "bg-white/20 text-white" : "bg-white/5 text-muted-foreground"
+              selectedSector === 'all' ? "bg-primary-foreground/20 text-primary-foreground" : "bg-[var(--surface-05)] text-muted-foreground"
             )}>
               {completeRoster.length}
             </span>
@@ -260,13 +260,13 @@ export default function Attendance() {
                   "px-3.5 py-1.5 text-xs font-semibold rounded-full border transition-all cursor-pointer select-none whitespace-nowrap flex items-center gap-1.5",
                   selectedSector === sec
                     ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                    : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"
+                    : "bg-[var(--surface-05)] border-[var(--border-soft)] text-muted-foreground hover:bg-[var(--surface-05)]"
                 )}
               >
                 {sec}
                 <span className={cn(
                   "text-[10px] px-1.5 py-0.5 rounded-full font-bold",
-                  selectedSector === sec ? "bg-white/20 text-white" : "bg-white/5 text-muted-foreground"
+                  selectedSector === sec ? "bg-primary-foreground/20 text-primary-foreground" : "bg-[var(--surface-05)] text-muted-foreground"
                 )}>
                   {count}
                 </span>
@@ -288,7 +288,7 @@ export default function Attendance() {
 
         <div className="relative flex items-center justify-center flex-1 cursor-pointer group">
           <div className="flex items-center gap-2 text-center select-none py-1 px-3 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-            <Calendar className="w-4 h-4 text-primary" />
+            <Calendar className="w-4 h-4 text-brand-accent" />
             <div className="flex flex-col items-center">
               <span className="text-sm font-bold text-foreground tracking-tight leading-none">
                 {formattedDateLabel}
@@ -327,15 +327,15 @@ export default function Attendance() {
               <b className="text-xl font-black text-emerald-500 tracking-tight">{stats.present}</b>
               <span className="text-[10px] text-muted-foreground font-semibold">Presenti</span>
             </div>
-            <div className="flex flex-col items-center border-l border-white/5">
+            <div className="flex flex-col items-center border-l border-[var(--border-soft)]">
               <b className="text-xl font-black text-rose-500 tracking-tight">{stats.absent}</b>
               <span className="text-[10px] text-muted-foreground font-semibold">Assenti</span>
             </div>
-            <div className="flex flex-col items-center border-l border-white/5">
+            <div className="flex flex-col items-center border-l border-[var(--border-soft)]">
               <b className="text-xl font-black text-amber-500 tracking-tight">{stats.justified}</b>
               <span className="text-[10px] text-muted-foreground font-semibold">Giustif.</span>
             </div>
-            <div className="flex flex-col items-center border-l border-white/5">
+            <div className="flex flex-col items-center border-l border-[var(--border-soft)]">
               <b className="text-xl font-black text-foreground tracking-tight">{stats.total}</b>
               <span className="text-[10px] text-muted-foreground font-semibold">Totale</span>
             </div>
@@ -401,16 +401,16 @@ export default function Attendance() {
         ) : isLoading && completeRoster.length === 0 ? (
           <div className="space-y-2.5">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={`sk-${i}`} className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-2xl animate-pulse">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex-shrink-0" />
+              <div key={`sk-${i}`} className="flex items-center gap-3 p-3 bg-[var(--surface-05)] border border-[var(--border-soft)] rounded-2xl animate-pulse">
+                <div className="w-8 h-8 rounded-full bg-[var(--surface-05)] flex-shrink-0" />
                 <div className="flex-1 space-y-1.5 min-w-0">
-                  <div className="h-4 bg-white/10 rounded-md w-3/5" />
-                  <div className="h-3 bg-white/10 rounded-md w-1/3" />
+                  <div className="h-4 bg-[var(--surface-05)] rounded-md w-3/5" />
+                  <div className="h-3 bg-[var(--surface-05)] rounded-md w-1/3" />
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-white/10" />
-                  <div className="w-8 h-8 rounded-full bg-white/10" />
-                  <div className="w-8 h-8 rounded-full bg-white/10" />
+                  <div className="w-8 h-8 rounded-full bg-[var(--surface-05)]" />
+                  <div className="w-8 h-8 rounded-full bg-[var(--surface-05)]" />
+                  <div className="w-8 h-8 rounded-full bg-[var(--surface-05)]" />
                 </div>
               </div>
             ))}
@@ -418,7 +418,7 @@ export default function Attendance() {
         ) : isRosterEmpty ? (
           /* Empty state - No players in season */
           <div className="glass-card rounded-2xl p-10 text-center border-black/5 dark:border-white/10">
-            <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+            <div className="w-12 h-12 rounded-full bg-[var(--surface-05)] border border-[var(--border-soft)] flex items-center justify-center mx-auto mb-4 text-muted-foreground">
               <UserX className="w-6 h-6" />
             </div>
             <h4 className="font-bold text-foreground">Nessun atleta in rosa</h4>
@@ -429,7 +429,7 @@ export default function Attendance() {
         ) : isFilteredRosterEmpty ? (
           /* Empty state - No players in filtered sector */
           <div className="glass-card rounded-2xl p-10 text-center border-black/5 dark:border-white/10">
-            <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+            <div className="w-12 h-12 rounded-full bg-[var(--surface-05)] border border-[var(--border-soft)] flex items-center justify-center mx-auto mb-4 text-muted-foreground">
               <Users className="w-6 h-6" />
             </div>
             <h4 className="font-bold text-foreground">Nessun atleta in questa leva</h4>
@@ -448,12 +448,12 @@ export default function Attendance() {
                 <div
                   key={player.id}
                   className={cn(
-                    "flex items-center gap-3 p-3 bg-white/[0.02] border border-white/5 hover:border-white/10 rounded-2xl transition-all duration-300",
-                    currentStatus && "bg-white/[0.04] border-white/10"
+                    "flex items-center gap-3 p-3 bg-[var(--surface-05)] border border-[var(--border-soft)] hover:border-[var(--border-soft)] rounded-2xl transition-all duration-300",
+                    currentStatus && "bg-[var(--surface-05)] border-[var(--border-soft)]"
                   )}
                 >
                   {/* Avatar / Index circle */}
-                  <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-mono text-xs font-black text-primary/80 flex-shrink-0 select-none">
+                  <div className="w-9 h-9 rounded-full bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center font-mono text-xs font-black text-brand-accent/80 flex-shrink-0 select-none">
                     {player.figc_registration 
                       ? player.figc_registration.substring(player.figc_registration.length - 2)
                       : String(idx + 1).padStart(2, '0')}
@@ -479,7 +479,7 @@ export default function Attendance() {
                         "w-8 h-8 rounded-full border flex items-center justify-center status-btn-animation cursor-pointer",
                         currentStatus === 'present'
                           ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.1)]"
-                          : "bg-white/5 border-white/10 text-muted-foreground/45 hover:text-emerald-500 hover:border-emerald-500/40",
+                          : "bg-[var(--surface-05)] border-[var(--border-soft)] text-muted-foreground/45 hover:text-emerald-500 hover:border-emerald-500/40",
                         justSetPlayerId === player.id && currentStatus === 'present' && "just-set"
                       )}
                       aria-label="Presente"
@@ -496,7 +496,7 @@ export default function Attendance() {
                         "w-8 h-8 rounded-full border flex items-center justify-center status-btn-animation cursor-pointer",
                         currentStatus === 'absent'
                           ? "bg-rose-500/20 border-rose-500/40 text-rose-400 hover:bg-rose-500/30 shadow-[0_0_8px_rgba(239,68,68,0.1)]"
-                          : "bg-white/5 border-white/10 text-muted-foreground/45 hover:text-rose-500 hover:border-rose-500/40",
+                          : "bg-[var(--surface-05)] border-[var(--border-soft)] text-muted-foreground/45 hover:text-rose-500 hover:border-rose-500/40",
                         justSetPlayerId === player.id && currentStatus === 'absent' && "just-set"
                       )}
                       aria-label="Assente"
@@ -513,7 +513,7 @@ export default function Attendance() {
                         "w-8 h-8 rounded-full border flex items-center justify-center status-btn-animation cursor-pointer",
                         currentStatus === 'justified'
                           ? "bg-amber-500/20 border-amber-500/40 text-amber-400 hover:bg-amber-500/30 shadow-[0_0_8px_rgba(245,158,11,0.1)]"
-                          : "bg-white/5 border-white/10 text-muted-foreground/45 hover:text-amber-500 hover:border-amber-500/40",
+                          : "bg-[var(--surface-05)] border-[var(--border-soft)] text-muted-foreground/45 hover:text-amber-500 hover:border-amber-500/40",
                         justSetPlayerId === player.id && currentStatus === 'justified' && "just-set"
                       )}
                       aria-label="Giustificato"

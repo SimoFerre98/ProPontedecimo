@@ -10,8 +10,8 @@ const STATUS_STYLES: Record<TaskStatus, string> = {
   done: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
   ready: "bg-amber-500/10 text-amber-500 border-amber-500/20",
   archive: "bg-slate-500/10 text-slate-400 border-slate-500/20",
-  created: "bg-primary/10 text-primary border-primary/20 shadow-primary/10",
-  todo: "bg-primary/10 text-primary border-primary/20 shadow-primary/10",
+  created: "bg-brand-accent/10 text-brand-accent border-brand-accent/20 shadow-brand-accent/10",
+  todo: "bg-brand-accent/10 text-brand-accent border-brand-accent/20 shadow-brand-accent/10",
   in_progress: "bg-amber-500/10 text-amber-500 border-amber-500/20"
 }
 
@@ -51,21 +51,21 @@ export default function TaskTimeline({ tasks, onTaskClick }: Readonly<TaskTimeli
   }, [tasks, days])
 
   return (
-    <div className="glass-card p-6 border-white/5 space-y-4 overflow-hidden relative group">
+    <div className="glass-card p-6 border-[var(--border-soft)] space-y-4 overflow-hidden relative group">
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
-            <Calendar className="w-4 h-4 text-primary" />
+          <div className="w-8 h-8 rounded-lg bg-brand-accent/10 flex items-center justify-center border border-brand-accent/20">
+            <Calendar className="w-4 h-4 text-brand-accent" />
           </div>
           <h3 className="text-xs font-black uppercase tracking-[0.2em] text-foreground italic">
-            Timeline <span className="text-primary not-italic">Settimanale</span>
+            Timeline <span className="text-brand-accent not-italic">Settimanale</span>
           </h3>
         </div>
         <div className="flex gap-1">
-          <button onClick={() => scroll('left')} className="p-1.5 pill hover:bg-white/10 text-muted-foreground transition-all">
+          <button onClick={() => scroll('left')} className="p-1.5 pill hover:bg-[var(--surface-05)] text-muted-foreground transition-all">
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <button onClick={() => scroll('right')} className="p-1.5 pill hover:bg-white/10 text-muted-foreground transition-all">
+          <button onClick={() => scroll('right')} className="p-1.5 pill hover:bg-[var(--surface-05)] text-muted-foreground transition-all">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -80,7 +80,7 @@ export default function TaskTimeline({ tasks, onTaskClick }: Readonly<TaskTimeli
           {/* Timeline Grid */}
           <div className="relative">
             {/* Days Header */}
-            <div className="flex border-b border-white/5 pb-2">
+            <div className="flex border-b border-[var(--border-soft)] pb-2">
               {days.map((day) => {
                 const isToday = isSameDay(day, new Date())
                 return (
@@ -88,7 +88,7 @@ export default function TaskTimeline({ tasks, onTaskClick }: Readonly<TaskTimeli
                     key={day.toISOString()} 
                     className={cn(
                       "w-24 shrink-0 flex flex-col items-center justify-center p-2 rounded-xl transition-all",
-                      isToday ? "bg-primary/20 text-primary border border-primary/20" : "text-muted-foreground opacity-60"
+                      isToday ? "bg-brand-accent/20 text-brand-accent border border-brand-accent/20" : "text-muted-foreground opacity-60"
                     )}
                   >
                     <span className="text-[9px] font-black uppercase tracking-widest leading-none">
@@ -154,10 +154,10 @@ export default function TaskTimeline({ tasks, onTaskClick }: Readonly<TaskTimeli
             {/* Vertical Today Line */}
             {days.some(d => isSameDay(d, new Date())) && (
               <div 
-                className="absolute top-0 bottom-0 w-px bg-primary/40 shadow-[0_0_8px_rgba(var(--primary),0.5)] z-10 pointer-events-none"
+                className="absolute top-0 bottom-0 w-px bg-brand-accent/40 shadow-[0_0_8px_oklch(from_var(--brand-accent)_l_c_h/0.5)] z-10 pointer-events-none"
                 style={{ left: `${days.findIndex(d => isSameDay(d, new Date())) * 96 + 48}px` }}
               >
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brand-accent" />
               </div>
             )}
           </div>

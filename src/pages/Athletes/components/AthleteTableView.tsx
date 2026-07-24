@@ -39,32 +39,32 @@ export default function AthleteTableView({
             <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => onSort('last_name')}>
               <div className="flex items-center gap-2">
                 Atleta
-                {filters.sortBy === 'last_name' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                {filters.sortBy === 'last_name' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-brand-accent" /> : <SortDesc className="w-3.5 h-3.5 text-brand-accent" />)}
               </div>
             </th>
             <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => onSort('team_sector')}>
               <div className="flex items-center gap-2">
                 Settore
-                {filters.sortBy === 'team_sector' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                {filters.sortBy === 'team_sector' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-brand-accent" /> : <SortDesc className="w-3.5 h-3.5 text-brand-accent" />)}
               </div>
             </th>
             <th className="p-6">Contatto</th>
             <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => onSort('medical_expiry')}>
               <div className="flex items-center gap-2">
                 Scadenza Medica
-                {filters.sortBy === 'medical_expiry' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                {filters.sortBy === 'medical_expiry' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-brand-accent" /> : <SortDesc className="w-3.5 h-3.5 text-brand-accent" />)}
               </div>
             </th>
             <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => onSort('is_active')}>
               <div className="flex items-center gap-2">
                 Stato Squadra
-                {filters.sortBy === 'is_active' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                {filters.sortBy === 'is_active' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-brand-accent" /> : <SortDesc className="w-3.5 h-3.5 text-brand-accent" />)}
               </div>
             </th>
             <th className="p-6 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors group select-none relative" onClick={() => onSort('is_registered')}>
               <div className="flex items-center gap-2">
                 Tesserato
-                {filters.sortBy === 'is_registered' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-primary" /> : <SortDesc className="w-3.5 h-3.5 text-primary" />)}
+                {filters.sortBy === 'is_registered' && (filters.sortDir === 'asc' ? <SortAsc className="w-3.5 h-3.5 text-brand-accent" /> : <SortDesc className="w-3.5 h-3.5 text-brand-accent" />)}
               </div>
             </th>
             <th className="p-6">Matricola</th>
@@ -86,11 +86,11 @@ export default function AthleteTableView({
                 >
                   <td className="p-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20 shadow-inner group-hover:scale-105 transition-transform">
-                        <User className="w-6 h-6 text-primary" />
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-accent/20 to-brand-accent/5 flex items-center justify-center border border-brand-accent/20 shadow-inner group-hover:scale-105 transition-transform">
+                        <User className="w-6 h-6 text-brand-accent" />
                       </div>
                       <div>
-                        <div className="font-black text-sm uppercase italic group-hover:text-primary transition-colors">{player.last_name} <span className="text-primary not-italic">{player.first_name}</span></div>
+                        <div className="font-black text-sm uppercase italic group-hover:text-brand-accent transition-colors">{player.last_name} <span className="text-brand-accent not-italic">{player.first_name}</span></div>
                         <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">{player.birth_date || 'Data n.n.'}</div>
                       </div>
                     </div>
@@ -141,7 +141,7 @@ export default function AthleteTableView({
                         onClick={() => {
                           onOpenSummary(player)
                         }}
-                        className="text-foreground/75 hover:text-primary transition-colors flex items-center gap-1 group/btn"
+                        className="text-foreground/75 hover:text-brand-accent transition-colors flex items-center gap-1 group/btn"
                       >
                         <Euro className="w-3.5 h-3.5" />
                         <span className="text-[10px] font-black uppercase tracking-widest">Pagamenti</span>
@@ -150,7 +150,7 @@ export default function AthleteTableView({
                         onClick={() => {
                           onOpenDetails(player)
                         }}
-                        className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1 group/btn"
+                        className="text-brand-accent hover:text-brand-accent/80 transition-colors flex items-center gap-1 group/btn"
                       >
                         <span className="text-[10px] font-black uppercase tracking-widest">Dettagli</span>
                         <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />

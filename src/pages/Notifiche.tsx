@@ -108,12 +108,12 @@ export default function Notifiche() {
     <div className="space-y-6 animate-in fade-in duration-700 max-w-2xl mx-auto pb-10">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 pill bg-primary/15 flex items-center justify-center text-primary border border-primary/20">
+          <div className="w-11 h-11 pill bg-brand-accent/15 flex items-center justify-center text-brand-accent border border-brand-accent/20">
             <Bell className="w-5 h-5" />
           </div>
           <div>
             <h1 className="text-xl font-black text-foreground uppercase italic leading-none">
-              Comunicazioni <span className="text-primary not-italic">Interne</span>
+              Comunicazioni <span className="text-brand-accent not-italic">Interne</span>
             </h1>
             {roleTag && (
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground/60 mt-1">{roleTag}</p>
@@ -170,8 +170,8 @@ export default function Notifiche() {
                       className={cn(
                         'px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border',
                         coachTargetSector === sector
-                          ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
-                          : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground'
+                          ? 'bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20'
+                          : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50 hover:text-foreground'
                       )}
                     >
                       {sector}
@@ -187,8 +187,8 @@ export default function Notifiche() {
                 onClick={() => { setTargetAll(true); setAdminTargetSector(null) }}
                 className={cn(
                   'flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border',
-                  targetAll ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
-                    : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground'
+                  targetAll ? 'bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20'
+                    : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50 hover:text-foreground'
                 )}
               >
                 <Users className="w-3.5 h-3.5" />
@@ -202,8 +202,8 @@ export default function Notifiche() {
                   className={cn(
                     'px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border',
                     !targetAll && targetSector === sector
-                      ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
-                      : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground'
+                      ? 'bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20'
+                      : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50 hover:text-foreground'
                   )}
                 >
                   {sector}
@@ -242,7 +242,7 @@ export default function Notifiche() {
           type="button"
           disabled={!canPublish || publishing}
           onClick={() => void handlePublish()}
-          className="w-full h-14 rounded-full bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-[11px] transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 active:scale-95"
+          className="w-full h-14 rounded-full bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-[11px] transition-all flex items-center justify-center gap-3 shadow-2xl shadow-brand-accent/30 active:scale-95"
         >
           {publishing ? <LoadingSpinner size="sm" tone="white" /> : <Send className="w-5 h-5" />}
           {publishing ? 'Pubblicazione in corso...' : 'Pubblica notifica'}

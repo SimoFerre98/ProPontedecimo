@@ -36,19 +36,19 @@ export default function PortalNotifiche() {
       <button
         type="button"
         onClick={() => navigate('/portal')}
-        className="inline-flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors"
+        className="inline-flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-brand-accent transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Torna alla Dashboard
       </button>
 
       <div className="flex items-center gap-3">
-        <div className="w-11 h-11 pill bg-primary/15 flex items-center justify-center text-primary border border-primary/20">
+        <div className="w-11 h-11 pill bg-brand-accent/15 flex items-center justify-center text-brand-accent border border-brand-accent/20">
           <Bell className="w-5 h-5" />
         </div>
         <div>
           <h1 className="text-xl font-black text-foreground uppercase italic leading-none">
-            Bacheca <span className="text-primary not-italic">Notifiche</span>
+            Bacheca <span className="text-brand-accent not-italic">Notifiche</span>
           </h1>
           <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground/60 mt-1">
             Più recenti in alto
@@ -65,7 +65,7 @@ export default function PortalNotifiche() {
             'flex-shrink-0 flex items-center gap-2 h-9 px-4 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all',
             filter === 'all'
               ? 'bg-foreground text-background border-foreground'
-              : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50'
+              : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50'
           )}
         >
           Tutte
@@ -80,7 +80,7 @@ export default function PortalNotifiche() {
               onClick={() => setFilter(key)}
               className={cn(
                 'flex-shrink-0 flex items-center gap-2 h-9 px-4 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all',
-                filter === key ? cn('sev-badge', meta.cssClass, '!h-9 !px-4 border-2') : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50'
+                filter === key ? cn('sev-badge', meta.cssClass, '!h-9 !px-4 border-2') : 'text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50'
               )}
             >
               <Icon className="w-3.5 h-3.5" />

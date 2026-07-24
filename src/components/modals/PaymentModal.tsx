@@ -70,7 +70,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
             <div className="flex items-center justify-between px-8 pt-8 pb-4">
               <div>
                 <h2 className="text-xl font-black uppercase italic text-foreground">
-                  Registra <span className="text-primary not-italic">Pagamento</span>
+                  Registra <span className="text-brand-accent not-italic">Pagamento</span>
                 </h2>
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mt-1">
                   {payment.player.last_name} {payment.player.first_name} — {`${payment.installment_no}ª Rata`}
@@ -94,7 +94,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
                     placeholder={payment.amount_eur?.toString() || '0.00'}
                     value={paidAmount}
                     onChange={e => setPaidAmount(e.target.value)}
-                    className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-14"
+                    className="h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-base font-bold pl-14"
                   />
                 </div>
                 {payment.amount_eur && (
@@ -116,8 +116,8 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
                       className={cn(
                         'flex items-center gap-3 px-4 py-3 rounded-2xl border text-sm font-bold transition-all',
                         method === m.value
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-black/10 dark:border-white/10 text-muted-foreground hover:border-primary/40'
+                          ? 'border-brand-accent bg-brand-accent/10 text-brand-accent'
+                          : 'border-black/10 dark:border-white/10 text-muted-foreground hover:border-brand-accent/40'
                       )}
                     >
                       <span>{m.icon}</span> {m.label}
@@ -138,7 +138,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
                       required placeholder="es. 001"
                       value={receiptNumber}
                       onChange={e => setReceiptNumber(e.target.value)}
-                      className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary font-bold pl-10 text-sm"
+                      className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent font-bold pl-10 text-sm"
                     />
                   </div>
                 </div>
@@ -152,7 +152,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
                       type="date" required
                       value={receiptDate}
                       onChange={e => setReceiptDate(e.target.value)}
-                      className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary font-bold pl-10 text-sm"
+                      className="h-12 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent font-bold pl-10 text-sm"
                     />
                   </div>
                 </div>
@@ -166,7 +166,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
                   placeholder="Eventuali note..."
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
-                  className="w-full rounded-2xl glass-card border border-black/5 dark:border-white/10 focus:ring-2 focus:ring-primary/20 focus:outline-none px-5 py-3 text-sm font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground resize-none"
+                  className="w-full rounded-2xl glass-card border border-black/5 dark:border-white/10 focus:ring-2 focus:ring-brand-accent/20 focus:outline-none px-5 py-3 text-sm font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground resize-none"
                 />
               </div>
 
@@ -178,7 +178,7 @@ export default function PaymentModal({ isOpen, onClose, payment }: PaymentModalP
                 <Button
                   type="submit"
                   disabled={loading || !isValid}
-                  className="flex-[2] h-12 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/30 gap-2 disabled:opacity-50"
+                  className="flex-[2] h-12 pill bg-brand-accent hover:bg-brand-accent/90 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-brand-accent/30 gap-2 disabled:opacity-50"
                 >
                   {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-4 h-4" />}
                   Conferma Pagamento

@@ -134,12 +134,12 @@ export default function NextCallUpCard() {
       <div className="chc-title">
         <span>{data.event_type === 'home_match' ? 'Campionato · Casa' : 'Campionato · Trasferta'}</span>
         <b className="text-foreground">
-          Pro Pontedecimo <span className="accent text-[#800020] dark:text-amber-500">vs</span> {data.opponent}
+          Pro Pontedecimo <span className="accent text-brand-accent dark:text-amber-500">vs</span> {data.opponent}
         </b>
       </div>
 
       <div className="chc-date text-sm font-bold text-foreground">
-        <CalendarDays className="w-4 h-4 text-[#800020] dark:text-amber-500" />
+        <CalendarDays className="w-4 h-4 text-brand-accent dark:text-amber-500" />
         {formattedDate}
       </div>
 

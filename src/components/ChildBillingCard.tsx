@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Euro, Calendar, CheckCircle2, Clock, AlertCircle, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/Badge'
 import { format } from 'date-fns/format'
 import { it } from 'date-fns/locale/it'
 import { differenceInDays } from 'date-fns/differenceInDays'
@@ -77,7 +78,7 @@ export default function ChildBillingCard({
     missing: {
       label: 'Non Inserita',
       icon: <AlertTriangle className="w-4 h-4" />,
-      classes: 'bg-white/5 text-muted-foreground border-white/10',
+      classes: 'bg-[var(--surface-05)] text-muted-foreground border-[var(--border-soft)]',
     },
   }[medicalStatus]
 
@@ -91,7 +92,7 @@ export default function ChildBillingCard({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h3 className="text-xl font-black text-foreground uppercase tracking-tight">
-            {lastName} <span className="text-primary not-italic">{firstName}</span>
+            {lastName} <span className="text-brand-accent not-italic">{firstName}</span>
           </h3>
           <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mt-1">
             {teamSector || 'Nessun settore'} · Stagione {seasonName}
@@ -100,13 +101,9 @@ export default function ChildBillingCard({
         
         {/* Badge Visita Medica */}
         <div className="flex items-center gap-1.5 self-start sm:self-auto">
-          <div className={cn(
-            "px-4 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5",
-            medicalConfig.classes
-          )}>
-            {medicalConfig.icon}
+          <Badge className={cn("px-4 py-1.5 tracking-wider", medicalConfig.classes)} icon={medicalConfig.icon}>
             <span>Visita: {medicalConfig.label}</span>
-          </div>
+          </Badge>
         </div>
       </div>
 

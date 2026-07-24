@@ -318,21 +318,21 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
             {/* Header */}
             <div className="flex items-center justify-between px-8 pt-8 pb-4 shrink-0">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner shrink-0">
+                <div className="w-14 h-14 pill bg-brand-accent/20 flex items-center justify-center text-brand-accent border border-brand-accent/20 shadow-inner shrink-0">
                   <Users className="w-7 h-7" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-foreground italic uppercase leading-none">
-                    Gestione <span className="text-primary not-italic">Account</span>
+                    Gestione <span className="text-brand-accent not-italic">Account</span>
                   </h2>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mt-1">
                     {profiles.length} utenti registrati
                   </p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
+                className="w-10 h-10 pill border border-[var(--border-soft)] flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
               >
                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
@@ -345,8 +345,8 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
                   activeTab === 'accounts'
-                    ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                    : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground"
+                    ? "bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20"
+                    : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50 hover:text-foreground"
                 )}
               >
                 <Users className="w-3.5 h-3.5" />
@@ -357,8 +357,8 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
                   activeTab === 'parentLinks'
-                    ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                    : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground"
+                    ? "bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20"
+                    : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50 hover:text-foreground"
                 )}
               >
                 <Link2 className="w-3.5 h-3.5" />
@@ -376,13 +376,13 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
             <div className="px-8 pb-4 space-y-3 shrink-0">
               {/* Search */}
               <div className="relative group">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/50 group-focus-within:text-primary transition-colors z-10 pointer-events-none" />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/50 group-focus-within:text-brand-accent transition-colors z-10 pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Cerca per nome o email..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className="w-full h-12 pl-14 pr-6 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-primary focus:outline-none text-sm font-medium placeholder:text-muted-foreground/40 text-foreground transition-all"
+                  className="w-full h-12 pl-14 pr-6 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-brand-accent focus:outline-none text-sm font-medium placeholder:text-muted-foreground/40 text-foreground transition-all"
                 />
               </div>
 
@@ -393,8 +393,8 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                   className={cn(
                     "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border",
                     roleFilter === 'all'
-                      ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                      : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground"
+                      ? "bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20"
+                      : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50 hover:text-foreground"
                   )}
                 >
                   Tutti ({profiles.length})
@@ -406,8 +406,8 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                     className={cn(
                       "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border",
                       roleFilter === role
-                        ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
-                        : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-primary/50 hover:text-foreground"
+                        ? "bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/20"
+                        : "text-muted-foreground border-black/10 dark:border-white/10 hover:border-brand-accent/50 hover:text-foreground"
                     )}
                   >
                     {label} {roleCounts[role] ? `(${roleCounts[role]})` : '(0)'}
@@ -461,18 +461,18 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                       layout
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex flex-col sm:flex-row gap-4 items-start sm:items-center p-4 glass-card rounded-2xl border border-black/5 dark:border-white/10 hover:border-primary/20 transition-all group"
+                      className="flex flex-col sm:flex-row gap-4 items-start sm:items-center p-4 glass-card rounded-2xl border border-black/5 dark:border-white/10 hover:border-brand-accent/20 transition-all group"
                     >
                       {/* Avatar + Info */}
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className="w-11 h-11 pill bg-primary/15 flex-shrink-0 flex items-center justify-center font-black text-primary text-sm border border-primary/20">
+                        <div className="w-11 h-11 pill bg-brand-accent/15 flex-shrink-0 flex items-center justify-center font-black text-brand-accent text-sm border border-brand-accent/20">
                           {(profile.full_name?.charAt(0) || profile.email.charAt(0)).toUpperCase()}
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="font-bold text-foreground truncate flex items-center gap-2">
                             {profile.full_name || 'Utente Senza Nome'}
                             {profile.id === user?.id && (
-                              <span className="text-[9px] font-black uppercase tracking-widest bg-primary text-white px-2 py-0.5 pill">Tu</span>
+                              <span className="text-[9px] font-black uppercase tracking-widest bg-brand-accent text-white px-2 py-0.5 pill">Tu</span>
                             )}
                           </p>
                           <p className="text-xs text-muted-foreground truncate flex items-center gap-1 mt-0.5">
@@ -499,7 +499,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                               onChange={e => handleRoleChange(profile.id, e.target.value as UserRole)}
                               disabled={profile.id === user?.id || updatingId !== null}
                               title={profile.id === user?.id ? 'Non puoi modificare il tuo stesso ruolo' : undefined}
-                              className="bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 text-foreground text-xs font-bold rounded-xl px-3 py-2.5 outline-none focus:border-primary disabled:opacity-50 cursor-pointer transition-colors hover:border-primary/50 appearance-none"
+                              className="bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 text-foreground text-xs font-bold rounded-xl px-3 py-2.5 outline-none focus:border-brand-accent disabled:opacity-50 cursor-pointer transition-colors hover:border-brand-accent/50 appearance-none"
                             >
                               {(Object.entries(ROLE_LABELS) as [UserRole, string][]).map(([value, label]) => (
                                 <option key={value} value={value} className="bg-background text-foreground">
@@ -527,7 +527,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                             "p-2.5 rounded-xl transition-all border border-transparent shrink-0",
                             resetSuccessId === profile.id
                               ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20"
-                              : "text-muted-foreground hover:text-primary hover:bg-primary/10 hover:border-primary/20"
+                              : "text-muted-foreground hover:text-brand-accent hover:bg-brand-accent/10 hover:border-brand-accent/20"
                           )}
                           title="Invia email di reset password"
                         >
@@ -578,7 +578,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                       In attesa di conferma ({pendingLinks.length})
                     </h3>
                     {pendingLinks.length === 0 ? (
-                      <p className="text-sm text-muted-foreground/50 italic py-3">Nessuna richiesta pending.</p>
+                      <p className="text-sm text-muted-foreground/60 italic py-3">Nessuna richiesta pending.</p>
                     ) : (
                       <div className="space-y-2">
                         {pendingLinks.map(link => {
@@ -635,7 +635,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                       Associazioni confermate ({confirmedLinks.length})
                     </h3>
                     {confirmedLinks.length === 0 ? (
-                      <p className="text-sm text-muted-foreground/50 italic py-3">Nessuna associazione confermata.</p>
+                      <p className="text-sm text-muted-foreground/60 italic py-3">Nessuna associazione confermata.</p>
                     ) : (
                       <div className="space-y-2">
                         {confirmedLinks.map(link => {
@@ -691,7 +691,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                             const p = profiles.find(p => p.id === e.target.value)
                             setNewLinkSelectedParent(p ? { id: p.id, name: p.full_name ?? p.email } : null)
                           }}
-                          className="w-full h-12 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-primary focus:outline-none text-sm font-medium text-foreground transition-all"
+                          className="w-full h-12 px-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-brand-accent focus:outline-none text-sm font-medium text-foreground transition-all"
                         >
                           <option value="">Seleziona un genitore...</option>
                           {profiles.filter(p => p.role === 'parent').map(p => (
@@ -704,7 +704,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                       <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Atleta</label>
                         {newLinkSelectedPlayer ? (
-                          <div className="flex items-center gap-3 p-3 rounded-2xl bg-primary/5 border border-primary/20">
+                          <div className="flex items-center gap-3 p-3 rounded-2xl bg-brand-accent/5 border border-brand-accent/20">
                             <span className="flex-1 text-sm font-bold text-foreground">
                               {newLinkSelectedPlayer.last_name} {newLinkSelectedPlayer.first_name}
                               {newLinkSelectedPlayer.team_sector && <span className="text-[10px] text-muted-foreground ml-2">({newLinkSelectedPlayer.team_sector})</span>}
@@ -712,7 +712,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                             <button
                               type="button"
                               onClick={() => { setNewLinkSelectedPlayer(null); setNewLinkPlayerQuery('') }}
-                              className="w-7 h-7 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all"
+                              className="w-7 h-7 pill border border-[var(--border-soft)] flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all"
                             >
                               <X className="w-3.5 h-3.5" />
                             </button>
@@ -728,7 +728,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                               value={newLinkPlayerQuery}
                               onChange={e => { setNewLinkPlayerQuery(e.target.value); setNewLinkSelectedPlayer(null) }}
                               placeholder="Cerca atleta (min 2 caratteri)..."
-                              className="w-full h-12 pl-11 pr-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-primary focus:outline-none text-sm font-medium placeholder:text-muted-foreground/40 text-foreground transition-all"
+                              className="w-full h-12 pl-11 pr-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:border-brand-accent focus:outline-none text-sm font-medium placeholder:text-muted-foreground/40 text-foreground transition-all"
                             />
                             {newLinkPlayerResults.length > 0 && !newLinkSelectedPlayer && (
                               <div className="absolute z-10 w-full mt-1 glass-card rounded-2xl border border-black/5 dark:border-white/10 overflow-hidden divide-y divide-black/5 dark:divide-white/5 shadow-lg">
@@ -737,7 +737,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                                     key={player.id}
                                     type="button"
                                     onClick={() => { setNewLinkSelectedPlayer(player); setNewLinkPlayerResults([]) }}
-                                    className="w-full text-left px-4 py-2.5 hover:bg-primary/10 transition-colors text-sm font-medium text-foreground"
+                                    className="w-full text-left px-4 py-2.5 hover:bg-brand-accent/10 transition-colors text-sm font-medium text-foreground"
                                   >
                                     {player.last_name} {player.first_name}
                                     {player.team_sector && <span className="text-xs text-muted-foreground ml-2">({player.team_sector})</span>}
@@ -752,7 +752,7 @@ export default function SettingsModal({ isOpen, onClose }: Readonly<SettingsModa
                       <button
                         onClick={() => void handleCreateDirectLink()}
                         disabled={!newLinkSelectedParent || !newLinkSelectedPlayer || creatingLink}
-                        className="w-full h-11 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-lg shadow-primary/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+                        className="w-full h-11 pill bg-brand-accent hover:bg-brand-accent/90 text-white font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
                       >
                         {creatingLink ? <LoadingSpinner size="sm" tone="white" /> : <Plus className="w-4 h-4" />}
                         Crea Associazione

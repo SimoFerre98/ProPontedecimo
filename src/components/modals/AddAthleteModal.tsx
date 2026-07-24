@@ -308,8 +308,8 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
     onClose,
   })
 
-  const inputClass = "h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-14"
-  const inputClassNoIcon = "h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base font-bold pl-6"
+  const inputClass = "h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-base font-bold pl-14"
+  const inputClassNoIcon = "h-14 pill glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-base font-bold pl-6"
 
   const getInputClass = (key: keyof typeof EMPTY_FORM, hasIcon = true) => {
     const baseClass = hasIcon ? inputClass : inputClassNoIcon
@@ -352,21 +352,21 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
             {/* Header */}
             <div className="flex items-center justify-between px-8 pt-8 pb-4 shrink-0">
               <div className="flex items-center gap-5">
-                <div className="w-14 h-14 pill bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-inner shrink-0">
+                <div className="w-14 h-14 pill bg-brand-accent/20 flex items-center justify-center text-brand-accent border border-brand-accent/20 shadow-inner shrink-0">
                   <UserPlus className="w-7 h-7" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-foreground italic uppercase leading-none">
-                    {player ? 'Dettagli' : 'Nuovo'} <span className="text-primary not-italic">Atleta</span>
+                    {player ? 'Dettagli' : 'Nuovo'} <span className="text-brand-accent not-italic">Atleta</span>
                   </h2>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 mt-1">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mt-1">
                     {player ? 'Modifica o visualizza dati atleta' : 'Registrazione completa anagrafica'}
                   </p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="w-10 h-10 pill border border-white/10 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
+                className="w-10 h-10 pill border border-[var(--border-soft)] flex items-center justify-center hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group shrink-0"
               >
                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
               </button>
@@ -383,7 +383,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                     className={cn(
                       "flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex-1 justify-center",
                       activeSection === s.id
-                        ? "bg-primary text-white shadow-lg shadow-primary/30 scale-[1.03]"
+                        ? "bg-brand-accent text-white shadow-lg shadow-brand-accent/30 scale-[1.03]"
                         : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
                     )}
                   >
@@ -502,7 +502,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                             }}
                             onBlur={() => handleBlur('team_sector')}
                             className={cn(
-                              "w-full h-14 rounded-full glass-card border-black/5 dark:border-white/10 focus-visible:ring-primary text-base pl-14 font-bold bg-white/5 appearance-none cursor-pointer",
+                              "w-full h-14 rounded-full glass-card border-black/5 dark:border-white/10 focus-visible:ring-brand-accent text-base pl-14 font-bold bg-[var(--surface-05)] appearance-none cursor-pointer",
                               errors.team_sector && touched.team_sector && "border-red-500 dark:border-red-500/80 focus-visible:ring-red-500 focus-visible:border-red-500"
                             )}
                           >
@@ -520,7 +520,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                               className={getInputClass('team_sector')} />
                             {availableSectors.length > 0 && (
                               <button type="button" onClick={() => { setIsCreatingNewSector(false); set('team_sector', availableSectors[0]) }}
-                                className="h-14 px-4 pill bg-black/5 dark:bg-white/5 hover:bg-black/10 text-[10px] uppercase font-bold tracking-widest text-muted-foreground whitespace-nowrap transition-all">
+                                className="h-14 px-4 pill bg-black/5 dark:bg-white/5 hover:bg-[var(--surface-05)] text-[10px] uppercase font-bold tracking-widest text-muted-foreground whitespace-nowrap transition-all">
                                 Annulla
                               </button>
                             )}
@@ -630,7 +630,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         {renderFieldError('phone_home')}
                       </div>
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 pl-2">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 pl-2">
                       * È sufficiente inserire almeno uno dei due numeri
                     </p>
                     <div className="space-y-2">
@@ -681,7 +681,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                     <div className="space-y-3">
                       <p className={cn(
                         "text-[10px] font-black uppercase tracking-[0.2em] pl-2 flex items-center gap-2",
-                        isMinor && !hasParentData ? "text-red-500/70" : "text-primary/60"
+                        isMinor && !hasParentData ? "text-red-500/70" : "text-brand-accent/60"
                       )}>
                         <span>👨 Genitore 1 (Papà)</span>
                         {isMinor && <span className="text-red-500">*</span>}
@@ -734,7 +734,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
 
                     {/* Genitore 2 */}
                     <div className="space-y-3">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 pl-2">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-accent/60 pl-2">
                         👩 Genitore 2 (Mamma)
                         {isMinor && <span className="text-muted-foreground font-normal ml-2 normal-case tracking-normal">(opzionale se Genitore 1 è compilato)</span>}
                       </p>
@@ -856,7 +856,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                         value={formData.notes}
                         onChange={e => set('notes', e.target.value)}
                         onBlur={() => handleBlur('notes')}
-                        className="w-full rounded-3xl glass-card border border-black/5 dark:border-white/10 focus:ring-2 focus:ring-primary/20 focus:outline-none px-6 py-4 text-base font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground resize-none"
+                        className="w-full rounded-3xl glass-card border border-black/5 dark:border-white/10 focus:ring-2 focus:ring-brand-accent/20 focus:outline-none px-6 py-4 text-base font-medium placeholder:text-muted-foreground/40 bg-transparent text-foreground resize-none"
                       />
                     </div>
                     <div className={cn(
@@ -925,7 +925,7 @@ export default function AddAthleteModal({ isOpen, onClose, onSuccess, player, av
                     Annulla
                   </Button>
                   <Button type="submit" disabled={loading || !isFormValid}
-                    className="flex-[2] h-14 pill bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-primary/40 gap-3 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100">
+                    className="flex-[2] h-14 pill bg-brand-accent hover:bg-brand-accent/90 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-brand-accent/40 gap-3 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100">
                     {loading ? <LoadingSpinner size="sm" tone="white" /> : <Save className="w-5 h-5" />}
                     {player ? 'Salva Modifiche' : 'Finalizza Registrazione'}
                   </Button>

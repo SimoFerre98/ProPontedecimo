@@ -37,15 +37,15 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className={cn(
-              "relative w-[95vw] max-w-2xl glass-card p-0 overflow-hidden shadow-2xl border-white/10 max-h-[94vh] flex flex-col",
+              "relative w-[95vw] max-w-2xl glass-card p-0 overflow-hidden shadow-2xl border-[var(--border-strong)] max-h-[94vh] flex flex-col",
               className
             )}
           >
-            <div className="flex items-center justify-between p-8 border-b border-white/5 bg-white/[0.02] shrink-0">
+            <div className="flex items-center justify-between p-8 border-b border-[var(--border-soft)] bg-[var(--surface-05)] shrink-0">
               <h2 className="text-2xl font-black tracking-tight text-foreground">{title}</h2>
               <button
                 onClick={onClose}
-                className="p-3 h-auto pill hover:bg-white/10 text-muted-foreground hover:text-foreground transition-all hover:rotate-90"
+                className="p-3 h-auto pill hover:bg-[var(--surface-05)] text-muted-foreground hover:text-foreground transition-all hover:rotate-90"
               >
                 <X className="w-6 h-6" />
               </button>
