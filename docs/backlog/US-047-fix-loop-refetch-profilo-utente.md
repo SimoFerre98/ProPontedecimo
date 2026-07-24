@@ -24,5 +24,5 @@ Riproduzione: avviare il dev server con Supabase locale attivo, fare login con u
 
 Impatto: nell'uso normale non blocca visibilmente la UI (React continua a renderizzare), ma genera un carico di rete enorme con rischio di rallentamento percepibile o superamento di rate limit su Supabase in produzione.
 
-**Status:** IN PROGRESS
+**Status:** REVIEW
 **Plan:** [docs/planning/US-047-plan.md](../planning/US-047-plan.md)
