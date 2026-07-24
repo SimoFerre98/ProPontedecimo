@@ -193,7 +193,7 @@
 | [US-038](backlog/US-038-tipizzazione-filtri-rimozione-cast.md) | Tipizzazione dei filtri e rimozione dei cast `as any` | MEDIUM | 2 | DONE |
 | [US-039](backlog/US-039-componenti-condivisi-pulizie-minori.md) | Componenti condivisi e pulizie minori | LOW | 2 | DONE |
 | [US-040](backlog/US-040-fix-drag-drop-kanban.md) | Fix drag & drop della board Kanban | MEDIUM | 2 | DONE |
-| [US-047](backlog/US-047-fix-loop-refetch-profilo-utente.md) | Fix loop di refetch del profilo utente dopo il login | MEDIUM | 2 | REVIEW |
+| [US-047](backlog/US-047-fix-loop-refetch-profilo-utente.md) | Fix loop di refetch del profilo utente dopo il login | MEDIUM | 2 | DONE |
 | [US-048](backlog/US-048-fix-tabella-errata-inventario.md) | Fix tabella errata in inventoryService | HIGH | 1 | TODO |
 
 ### EP-015: Documentazione e Supporto Utente
