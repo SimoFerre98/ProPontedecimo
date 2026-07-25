@@ -194,7 +194,7 @@
 | [US-039](backlog/US-039-componenti-condivisi-pulizie-minori.md) | Componenti condivisi e pulizie minori | LOW | 2 | DONE |
 | [US-040](backlog/US-040-fix-drag-drop-kanban.md) | Fix drag & drop della board Kanban | MEDIUM | 2 | DONE |
 | [US-047](backlog/US-047-fix-loop-refetch-profilo-utente.md) | Fix loop di refetch del profilo utente dopo il login | MEDIUM | 2 | DONE |
-| [US-048](backlog/US-048-fix-tabella-errata-inventario.md) | Fix tabella errata in inventoryService | HIGH | 1 | PLANNED |
+| [US-048](backlog/US-048-fix-tabella-errata-inventario.md) | Fix tabella errata in inventoryService | HIGH | 1 | IN PROGRESS |
 
 ### EP-015: Documentazione e Supporto Utente
 
