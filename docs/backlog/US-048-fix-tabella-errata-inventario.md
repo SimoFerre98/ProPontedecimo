@@ -23,5 +23,5 @@ Non era stato corretto in quel branch perché fuori perimetro rispetto a US-036 
 
 Impatto: la pagina Magazzino (`src/pages/Inventory.tsx`) è oggi verosimilmente non funzionante in nessun flusso (lettura, creazione, aggiornamento quantità), perché ogni query fallisce a livello Postgres (tabella inesistente).
 
-**Status:** TODO
-**Plan:** —
+**Status:** PLANNED
+**Plan:** [docs/planning/US-048-plan.md](../planning/US-048-plan.md)
