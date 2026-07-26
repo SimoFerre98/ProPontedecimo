@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
   Package,
   Plus,
+  Minus,
   AlertTriangle,
   CheckCircle2,
   History,
@@ -21,6 +22,8 @@ import { Pagination } from '@/components/ui/Pagination'
 import { QueryErrorState } from '@/components/ui/query-error-state'
 import { StatsGrid } from '@/components/ui/StatsGrid'
 import { Badge } from '@/components/ui/Badge'
+import { useToast } from '@/contexts/ToastContext'
+import { getErrorMessage } from '@/lib/errors'
 
 export default function Inventory() {
   const [search, setSearch] = useState('')
@@ -28,10 +31,18 @@ export default function Inventory() {
   const [page, setPage] = useState(0)
   const pageSize = 10
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const queryClient = useQueryClient()
+  const toast = useToast()
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['inventory', search, categoryFilter, page],
     queryFn: () => inventoryService.getInventory(search, categoryFilter, page, pageSize),
+  })
+
+  const updateQuantityMutation = useMutation({
+    mutationFn: ({ id, quantity }: { id: string; quantity: number }) => inventoryService.updateQuantity(id, quantity),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['inventory'] }),
+    onError: (error: unknown) => toast.error(getErrorMessage(error)),
   })
 
   const items = useMemo(() => data?.data ?? [], [data])
@@ -171,8 +182,30 @@ export default function Inventory() {
                         {item.category}
                       </Badge>
                     </td>
-                    <td className="px-6 py-6 font-black text-sm tabular-nums text-foreground/80">
-                      {item.quantity} <span className="text-[10px] text-muted-foreground/40 font-bold lowercase">{item.unit}</span>
+                    <td className="px-6 py-6">
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          disabled={item.quantity <= 0 || updateQuantityMutation.isPending}
+                          onClick={() => updateQuantityMutation.mutate({ id: item.id, quantity: item.quantity - 1 })}
+                          className="w-7 h-7 pill border border-black/5 dark:border-white/10 flex items-center justify-center text-muted-foreground hover:text-rose-500 hover:border-rose-500/30 disabled:opacity-30 disabled:pointer-events-none transition-all shrink-0"
+                          aria-label="Diminuisci quantità"
+                        >
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="font-black text-sm tabular-nums text-foreground/80 min-w-[4ch] text-center">
+                          {item.quantity} <span className="text-[10px] text-muted-foreground/40 font-bold lowercase">{item.unit}</span>
+                        </span>
+                        <button
+                          type="button"
+                          disabled={updateQuantityMutation.isPending}
+                          onClick={() => updateQuantityMutation.mutate({ id: item.id, quantity: item.quantity + 1 })}
+                          className="w-7 h-7 pill border border-black/5 dark:border-white/10 flex items-center justify-center text-muted-foreground hover:text-emerald-500 hover:border-emerald-500/30 disabled:opacity-30 disabled:pointer-events-none transition-all shrink-0"
+                          aria-label="Aumenta quantità"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                     <td className="px-6 py-6">
                       <div className={cn(

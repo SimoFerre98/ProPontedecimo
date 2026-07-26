@@ -17,7 +17,7 @@ export const inventoryService = {
     const to = from + pageSize - 1
 
     let query = supabase
-      .from('inventory')
+      .from('inventory_items')
       .select('*', { count: 'exact' })
       .order('name')
       .range(from, to)
@@ -37,7 +37,7 @@ export const inventoryService = {
 
   async addItem(item: Omit<InventoryItem, 'id' | 'last_update' | 'status'>) {
     const { data, error } = await supabase
-      .from('inventory')
+      .from('inventory_items')
       .insert([item])
       .select()
       .single()
@@ -48,7 +48,7 @@ export const inventoryService = {
 
   async updateQuantity(id: string, quantity: number) {
     const { error } = await supabase
-      .from('inventory')
+      .from('inventory_items')
       .update({ quantity, last_update: new Date().toISOString() })
       .eq('id', id)
     
