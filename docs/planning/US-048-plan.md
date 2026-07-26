@@ -48,11 +48,11 @@ Il progetto non ha oggi alcuna copertura automatica su `inventory_items` — con
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Migrazione schema `inventory_items` | Nuova migrazione: `category` da enum a `text` (+ `DROP TYPE inventory_category`), aggiunta `unit`/`min_stock`, rename `updated_at` → `last_update` | Impl | - |
-| TODO | TASK-02 | Fix riferimento tabella nel service | In `src/services/inventoryService.ts` sostituire `.from('inventory')` con `.from('inventory_items')` in `getInventory`, `addItem`, `updateQuantity` | Impl | TASK-01 |
-| TODO | TASK-03 | Test di integrazione Magazzino | Creare `scripts/test-inventory.mjs`: CRUD completo su `inventory_items` + verifica confine RLS admin/coach | Test | TASK-02 |
-| TODO | TASK-04 | Regressione suite completa | Eseguire `npx supabase db reset` + `npm run test:integration` (tutte le suite, non solo la nuova) | Test | TASK-03 |
-| TODO | TASK-05 | Verifica manuale pagina Magazzino | Verificare sull'app in esecuzione contro Supabase locale: caricamento lista, creazione articolo, modifica quantità, senza errori console/network (AC #4) | Test | TASK-02 |
+| DONE | TASK-01 | Migrazione schema `inventory_items` | Nuova migrazione: `category` da enum a `text` (+ `DROP TYPE inventory_category`), aggiunta `unit`/`min_stock`, rename `updated_at` → `last_update` | Impl | - |
+| DONE | TASK-02 | Fix riferimento tabella nel service | In `src/services/inventoryService.ts` sostituire `.from('inventory')` con `.from('inventory_items')` in `getInventory`, `addItem`, `updateQuantity` | Impl | TASK-01 |
+| DONE | TASK-03 | Test di integrazione Magazzino | Creare `scripts/test-inventory.mjs`: CRUD completo su `inventory_items` + verifica confine RLS admin/coach | Test | TASK-02 |
+| DONE | TASK-04 | Regressione suite completa | Eseguire `npx supabase db reset` + `npm run test:integration` (tutte le suite, non solo la nuova) | Test | TASK-03 |
+| DONE | TASK-05 | Verifica manuale pagina Magazzino | Verificare sull'app in esecuzione contro Supabase locale: caricamento lista, creazione articolo, modifica quantità, senza errori console/network (AC #4) | Test | TASK-02 |
 
 ---
 
