@@ -18,6 +18,6 @@ After implementing this story, the user can: aprire il menu utente in alto a des
 - [ ] I contenuti (testo + immagini) sono gestiti come asset statici del progetto (Markdown o componenti React), senza necessità di un pannello di amministrazione dedicato
 - [ ] La sezione è raggiungibile e leggibile correttamente anche da schermo mobile
 
-**Status:** PLANNED
+**Status:** IN PROGRESS
 **Plan:** docs/planning/US-049-plan.md
 
