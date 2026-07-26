@@ -21,6 +21,7 @@ import {
   X,
   User,
   Settings,
+  BookOpen,
   Sun,
   Moon,
   Monitor,
@@ -382,6 +383,17 @@ export default function DashboardLayout() {
                         Invia Email
                       </button>
                     )}
+
+                    <button
+                      onClick={() => {
+                        setIsProfileMenuOpen(false)
+                        navigate('/guida')
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 pill text-sm font-semibold hover:bg-brand-accent/10 hover:text-brand-accent transition-all text-left"
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      Guida
+                    </button>
 
                     <div className="flex items-center justify-between px-4 py-3 mt-1 border-t border-black/5 dark:border-white/10">
                         <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Tema</span>

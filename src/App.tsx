@@ -19,6 +19,7 @@ import SquadraAtleti from '@/pages/SquadraAtleti'
 import Inventory from '@/pages/Inventory'
 import StaffTasks from '@/pages/StaffTasks'
 import Notifiche from '@/pages/Notifiche'
+import Guide from '@/pages/Guide'
 
 // Layouts e Pagine Atleti/Genitori
 import PortalLayout from '@/layouts/PortalLayout'
@@ -77,6 +78,7 @@ function App() {
                   <Route path="magazzino" element={<Inventory />} />
                   <Route path="task"      element={<StaffTasks />} />
                   <Route path="notifiche" element={<Notifiche />} />
+                  <Route path="guida"     element={<Guide />} />
                 </Route>
               </Route>
 
@@ -95,6 +97,7 @@ function App() {
                 <Route element={<PortalLayout />}>
                   <Route index element={<PortalDashboard />} />
                   <Route path="notifiche" element={<PortalNotifiche />} />
+                  <Route path="guida"     element={<Guide />} />
                 </Route>
               </Route>
 
