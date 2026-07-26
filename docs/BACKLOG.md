@@ -203,7 +203,7 @@
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
-| [US-049](backlog/US-049-infrastruttura-guida-in-app-voce-menu.md) | Infrastruttura guida in-app e voce di menu | HIGH | 3 | TODO |
+| [US-049](backlog/US-049-infrastruttura-guida-in-app-voce-menu.md) | Infrastruttura guida in-app e voce di menu | HIGH | 3 | PLANNED |
 | [US-050](backlog/US-050-guida-gestione-atleti-anagrafica.md) | Guida — Gestione Atleti e Anagrafica | MEDIUM | 2 | TODO |
 | [US-051](backlog/US-051-guida-stagioni-sportive.md) | Guida — Stagioni Sportive | MEDIUM | 2 | TODO |
 | [US-052](backlog/US-052-guida-pagamenti-quote.md) | Guida — Pagamenti e Quote | MEDIUM | 3 | TODO |
