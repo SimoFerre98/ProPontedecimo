@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US-049 · Infrastruttura Guida in-app e Voce di Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../US-005/shared.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="mock-nav">
+  <span class="nav-tag">US-049</span>
+  <a href="#menu" class="active">Menu &amp; Dropdown</a>
+  <a href="#pagina">Pagina Guida</a>
+  <a href="#mobile">Mobile</a>
+</nav>
+
+<div class="page-shell" id="top">
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero">
+    <span class="eyebrow">US-049 · Epic EP-015 — Documentazione e Supporto Utente</span>
+    <h1>Una <span class="accent">Guida</span> a portata di clic, per chi il gestionale lo sta ancora scoprendo</h1>
+    <p>Story fondativa dell'epica Guida: una voce "Guida" nel menu utente in alto a destra — identica a quella già usata da "Il mio Profilo" e "Gestione Account" — che porta a una pagina interna con indice dei capitoli e il primo capitolo "Primi passi", pensato per chi non è esperto di informatica: frasi semplici, uno screenshot vero con callout numerati, nessun gergo tecnico.</p>
+    <div class="hero-meta">
+      <span class="chip">Nessun PDF/wiki esterno — <b>tutto interno al sito</b></span>
+      <span class="chip">Contenuti <b>statici</b> (componenti React), no pannello admin</span>
+      <span class="chip">Leggibile anche <b>da mobile</b></span>
+    </div>
+  </header>
+
+  <!-- ===================== CASE NAV ===================== -->
+  <nav class="case-nav">
+    <a href="#menu"><span class="n">1</span>Voce di menu</a>
+    <a href="#pagina"><span class="n">2</span>Indice + Primi passi</a>
+    <a href="#mobile"><span class="n">3</span>Vista mobile</a>
+  </nav>
+
+  <!-- ===================== 1) MENU & DROPDOWN ===================== -->
+  <section class="section-block" id="menu">
+    <div class="section-head">
+      <h2>1 · La voce "Guida" nel menu utente</h2>
+      <p>Riproduzione fedele dell'header e del dropdown profilo oggi in produzione (<code style="color:var(--gold)">DashboardLayout.tsx</code>): stessa struttura, stesso <code style="color:var(--gold)">.pill</code>, stesso raggio <code style="color:var(--gold)">rounded-3xl</code>. L'unica aggiunta è il bottone "Guida", posizionato dopo le voci condizionate da ruolo (Gestione Account, Invia Email) e prima dello switch tema — sempre visibile, a differenza di quelle, perché riguarda ogni ruolo.</p>
+    </div>
+
+    <div class="app-frame">
+      <div class="app-header">
+        <div class="app-header-brand">
+          <div class="app-header-logo">PP</div>
+          <div class="app-header-brand-text">
+            <p>Pontedecimo</p>
+            <p>Manager</p>
+          </div>
+        </div>
+        <div class="app-header-actions">
+          <div class="season-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:.8rem;height:.8rem"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Stagione <b>2025/26</b>
+          </div>
+          <button class="icon-btn-round" title="Calendario">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          </button>
+          <button class="icon-btn-round" title="Notifiche">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <div class="profile-trigger">
+            <div class="profile-trigger-name">
+              <p>Mario Rossi</p>
+              <p>Direttore</p>
+            </div>
+            <div class="profile-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Dropdown (aperto) -->
+        <div class="profile-dropdown">
+          <div class="profile-dropdown-head">
+            <p>Mario Rossi</p>
+            <p>Direttore</p>
+          </div>
+
+          <button class="dropdown-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Il mio Profilo
+          </button>
+
+          <button class="dropdown-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Gestione Account
+          </button>
+
+          <button class="dropdown-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Invia Email
+          </button>
+
+          <!-- ── Voce nuova di questa story ── -->
+          <button class="dropdown-item is-new">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+            <span class="flex-1">Guida</span>
+            <span class="new-tag">Nuovo</span>
+          </button>
+
+          <div class="dropdown-theme-row">
+            <span>Tema</span>
+            <div class="theme-toggle">
+              <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
+              <button class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+              <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
+            </div>
+          </div>
+
+          <button class="dropdown-logout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <div style="padding: 5.5rem 2rem 2.5rem;">
+        <div class="callout-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <span>Stesso dropdown, stesso layout riusato in <b>PortalLayout.tsx</b> (ruoli Genitore/Atleta): lì "Gestione Account" e "Invia Email" non compaiono, ma "Guida" resta sempre presente — è l'unica voce oltre a "Il mio Profilo" e Logout visibile a <b>qualunque ruolo</b>.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 2) PAGINA GUIDA ===================== -->
+  <section class="section-block" id="pagina">
+    <div class="section-head">
+      <h2>2 · Pagina "Guida": indice + capitolo attivo</h2>
+      <p>Clic su "Guida" → navigazione a <code style="color:var(--gold)">/guida</code> (o <code style="color:var(--gold)">/portal/guida</code>), niente reload. A sinistra l'indice di tutta l'epica EP-015: solo "Primi passi" è disponibile in questa story, i capitoli di US-050→US-056 sono già elencati come "In arrivo" così l'utente vede da subito la mappa completa della guida.</p>
+    </div>
+
+    <div class="guide-page app-frame" style="padding-top: 1.75rem;">
+      <aside class="guide-sidebar">
+        <div class="guide-sidebar-head">
+          <div class="icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+          </div>
+          <div>
+            <h3>Guida del gestionale</h3>
+            <p>Per orientarti senza chiedere aiuto</p>
+          </div>
+        </div>
+
+        <div class="chapter-list">
+          <button class="chapter-item active">
+            <span class="num">1</span>
+            <div class="chapter-item-body">
+              <p>Primi passi</p>
+              <p>Struttura del sito e menu principali</p>
+            </div>
+          </button>
+
+          <button class="chapter-item locked">
+            <span class="num">2</span>
+            <div class="chapter-item-body">
+              <p>Gestione Atleti</p>
+              <p>Anagrafica, matricole, certificati</p>
+            </div>
+            <span class="soon-tag">In arrivo</span>
+          </button>
+
+          <button class="chapter-item locked">
+            <span class="num">3</span>
+            <div class="chapter-item-body">
+              <p>Stagioni Sportive</p>
+              <p>Selettore e cambio stagione</p>
+            </div>
+            <span class="soon-tag">In arrivo</span>
+          </button>
+
+          <button class="chapter-item locked">
+            <span class="num">4</span>
+            <div class="chapter-item-body">
+              <p>Pagamenti e Quote</p>
+              <p>Rate e stato dei saldi</p>
+            </div>
+            <span class="soon-tag">In arrivo</span>
+          </button>
+
+          <button class="chapter-item locked">
+            <span class="num">5</span>
+            <div class="chapter-item-body">
+              <p>Presenze e Calendario</p>
+              <p>Eventi, convocazioni, presenze</p>
+            </div>
+            <span class="soon-tag">In arrivo</span>
+          </button>
+
+          <button class="chapter-item locked">
+            <span class="num">6</span>
+            <div class="chapter-item-body">
+              <p>Profilo, Account e Ruoli</p>
+              <p>Impostazioni personali</p>
+            </div>
+            <span class="soon-tag">In arrivo</span>
+          </button>
+        </div>
+      </aside>
+
+      <article class="guide-content">
+        <div class="guide-content-head">
+          <span class="eyebrow">Capitolo 1</span>
+          <h2>Primi passi nel gestionale</h2>
+          <p>Benvenuto! Questa pagina ti mostra dove trovare le cose più importanti: il menu in alto, il tuo profilo e il pulsante per spostarti tra le sezioni. Non serve nessuna conoscenza tecnica: bastano due minuti di lettura.</p>
+        </div>
+
+        <div class="shot-frame">
+          <div class="shot-frame-bar">
+            <div class="shot-frame-dots"><span></span><span></span><span></span></div>
+            <span class="shot-frame-label">Screenshot reale della Dashboard, con callout</span>
+            <span class="shot-frame-tag">public/guide/primi-passi-panoramica.png</span>
+          </div>
+          <div class="shot-frame-body">
+            <div class="shot-mini-header">
+              <div class="left"><span class="dot"></span> Barra superiore</div>
+              <div class="badges">
+                <span class="shot-badge">1 Stagione</span>
+                <span class="shot-badge">2 Notifiche</span>
+                <span class="shot-badge marked">3 Profilo &amp; Guida</span>
+              </div>
+            </div>
+            <div class="shot-grid">
+              <div class="shot-block">
+                <p>Area contenuto</p>
+                <p>Qui trovi la tabella atleti, i pagamenti, il registro presenze o la dashboard, a seconda della sezione scelta.</p>
+                <div class="shot-bar"></div>
+              </div>
+              <div class="shot-block marked">
+                <p>4 · Menu utente</p>
+                <p>In alto a destra: profilo, account e da oggi anche la voce "Guida".</p>
+              </div>
+            </div>
+            <div class="shot-nav-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+              5 · Pulsante Menu per cambiare pagina
+            </div>
+          </div>
+        </div>
+
+        <div class="step-grid">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <h4>Menu in alto a destra</h4>
+            <p>Il tuo nome e la tua icona: da qui apri il profilo e la nuova sezione Guida.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <h4>Campanella delle notifiche</h4>
+            <p>Avvisi importanti: visite mediche in scadenza, quote da saldare, task da fare.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <h4>Selettore stagione</h4>
+            <p>Mostra su quale stagione sportiva stai lavorando in questo momento.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <h4>Pulsante Menu</h4>
+            <p>In basso al centro: apre l'elenco di tutte le sezioni del gestionale.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== 3) VISTA MOBILE ===================== -->
+  <section class="section-block" id="mobile">
+    <div class="section-head">
+      <h2>3 · Vista mobile: indice impilato sopra il contenuto</h2>
+      <p>Sotto i ~640px l'indice dei capitoli diventa una fila di pillole orizzontali scorrevoli sopra al contenuto, invece delle due colonne affiancate: niente scroll orizzontale della pagina, testo e screenshot restano leggibili senza zoom.</p>
+    </div>
+
+    <div class="mobile-frame-wrap">
+      <div class="mobile-frame">
+        <div class="mobile-notch"><span></span></div>
+        <div class="mobile-body">
+          <div class="mobile-header">
+            <div class="left">
+              <div class="icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+              </div>
+              Guida del gestionale
+            </div>
+          </div>
+
+          <div class="mobile-chapters">
+            <span class="mobile-chapter-pill active">1 · Primi passi</span>
+            <span class="mobile-chapter-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> 2 · Atleti</span>
+            <span class="mobile-chapter-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> 3 · Stagioni</span>
+            <span class="mobile-chapter-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> 4 · Pagamenti</span>
+          </div>
+
+          <div class="mobile-content">
+            <h4>Primi passi nel gestionale</h4>
+            <p>Benvenuto! Ecco dove trovare le cose più importanti: il menu in alto, il tuo profilo e il pulsante per cambiare sezione.</p>
+
+            <div class="mobile-shot">
+              <div class="mobile-shot-bar">Screenshot Dashboard — versione mobile</div>
+              <div class="mobile-shot-body">
+                <div class="mobile-shot-row"><span>1 · Selettore stagione</span><span>›</span></div>
+                <div class="mobile-shot-row"><span>2 · Notifiche</span><span>›</span></div>
+                <div class="mobile-shot-row marked"><span>3 · Profilo &amp; Guida</span><span>›</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-caption">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      I capitoli "In arrivo" restano visibili ma non selezionabili anche in questa vista
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

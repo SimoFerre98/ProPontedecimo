@@ -5,6 +5,9 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-049**: Aggiunta la voce "Guida" nel menu utente, sempre visibile a ogni ruolo, in entrambi i layout (`DashboardLayout.tsx` e `PortalLayout.tsx`), con navigazione alla nuova rotta `/guida` (Staff) o `/portal/guida` (Portale).
+- **US-049**: Creata la pagina `Guide.tsx` (indice capitoli + capitolo attivo, senza reload) e il registro statico `guideChapters.tsx` con la mappa completa dell'epica EP-015 (un solo capitolo disponibile, gli altri "in arrivo").
+- **US-049**: Creato il capitolo "Primi passi" (`PrimiPassiChapter.tsx`) con testo semplice per utenti non tecnici e un'illustrazione dell'header (`InterfacePreview`) con callout numerati, differenziata per variante staff/portale in base al ramo di routing.
 - **US-034**: Creata la tabella `announcements` (bacheca societaria append-only, distinta dalle notifiche operative di `notificationService.ts`) con enum `announcement_severity` (urgent/reminder/communication) e RLS scoping per leva.
 - **US-034**: Introdotte le funzioni SECURITY DEFINER `is_coach_of_sector(text)` e `get_my_announcement_sectors()`, quest'ultima riusata da `get_parent_player_ids()` per rispettare l'invariante `parent_players.status='confirmed'`.
 - **US-034**: Creato `announcementService.ts` e la pagina staff `Notifiche.tsx` (storico + form di composizione con selettore leva scoping-aware, incluso il caso allenatore multi-leva) per president/director/coach.
