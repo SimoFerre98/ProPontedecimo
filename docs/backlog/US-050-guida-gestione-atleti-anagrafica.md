@@ -16,5 +16,5 @@ After implementing this story, the user can: aprire il capitolo "Gestione Atleti
 - [ ] È spiegato in linguaggio non tecnico il significato dei campi obbligatori e dei messaggi di errore di validazione più comuni (vedi US-009)
 - [ ] È documentato il significato della notifica di matricola mancante e come risolverla (vedi US-011)
 
-**Status:** REVIEW
+**Status:** DONE
 **Plan:** docs/planning/US-050-plan.md
