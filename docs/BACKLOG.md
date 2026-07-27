@@ -30,10 +30,11 @@
 | EP-013 | Sistema di Notifiche Color-Coded | 1 | 5 | Vision |
 | EP-014 | Refactoring Architetturale & Resilienza | 8 | 18 | MVP |
 | EP-015 | Documentazione e Supporto Utente | 8 | 18 | MVP |
+| EP-016 | Gestione Magazzino | 1 | 3 | MVP |
 
-**Total stories:** 51
-**Total story points:** 152
-**MVP stories:** 39 (108pt)
+**Total stories:** 56
+**Total story points:** 161
+**MVP stories:** 43 (116pt)
 
 ---
 
@@ -44,7 +45,7 @@
 - **US-007 (Selettore Stagione)** precede il Wizard Nuova Stagione: il filtro globale per stagione è il presupposto perché una seconda stagione abbia senso nell'interfaccia.
 - **US-015 (Multi-rata)** precede **US-016 (Insoluti)**: il trascinamento del debito pregresso presuppone il tracciamento dello stato delle singole rate.
 - Le epiche Vision (EP-010 → EP-013) riflettono la sezione "Sviluppi Futuri" del documento sorgente: storie a grana grossa, da raffinare con una nuova sessione di spec quando entreranno in lavorazione.
-- I moduli esplicitamente rimandati senza dettaglio sufficiente (Magazzino/Kit, Statistiche Giocatori, Chat Interna Staff, Assistente AI) **non** sono stati convertiti in storie: sono elencati nelle Open Questions.
+- I moduli esplicitamente rimandati senza dettaglio sufficiente (Statistiche Giocatori, Chat Interna Staff, Assistente AI) **non** sono stati convertiti in storie: sono elencati nelle Open Questions. Il Magazzino/Kit, inizialmente in questo elenco, è stato promosso a **EP-016** il 2026-07-27 dopo un giro di bug/verifica manuale sulla pagina già in uso.
 - **EP-014** nasce dall'analisi architetturale del 2026-07-04: **US-035 (error handling)** è HIGH perché oggi le query fallite non danno alcun feedback all'utente; conviene lavorarla presto perché US-036 e le nuove feature vi si appoggiano.
 - **EP-015** (guida in-app): **US-049** è HIGH perché è la story fondativa (voce di menu + infrastruttura della sezione Guida) da cui dipendono tutte le altre; le story di contenuto (US-050 → US-055) sono MEDIUM perché non bloccano altro lavoro, mentre **US-056** (portali genitore/giocatore/allenatore) è LOW in coerenza con la priorità Vision delle epiche EP-010/011/012 che documenta.
 
@@ -121,13 +122,14 @@
 ### EP-007: Profilo Utente & Gestione Account
 
 > Dare a ogni utente il controllo del proprio account e agli amministratori gli strumenti di supporto e assegnazione ruoli.
-> **Scope:** MVP | **Stories:** 3 | **Story Points:** 8
+> **Scope:** MVP | **Stories:** 4 | **Story Points:** 9
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
 | [US-018](backlog/US-018-impostazioni-profilo-utente-base.md) | Impostazioni profilo utente base | MEDIUM | 3 | DONE |
 | [US-019](backlog/US-019-recupero-password-assistito-admin.md) | Recupero password assistito da admin | MEDIUM | 3 | DONE |
 | [US-020](backlog/US-020-assegnazione-ruoli-pannello-impostazioni.md) | Assegnazione ruoli dal pannello impostazioni | MEDIUM | 2 | DONE |
+| [US-061](backlog/US-061-fix-edge-function-reset-password.md) | Fix invocazione Edge Function reset password assistito | HIGH | 1 | IN PROGRESS |
 
 ### EP-008: Reportistica & Esportazione
 
@@ -174,16 +176,17 @@
 ### EP-013: Sistema di Notifiche Color-Coded
 
 > Un feed di avvisi societari classificati per gravità cromatica, visibile ad atleti e genitori.
-> **Scope:** Vision | **Stories:** 1 | **Story Points:** 5
+> **Scope:** Vision | **Stories:** 2 | **Story Points:** 6
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
 | [US-034](backlog/US-034-feed-notifiche-color-coded.md) | Feed notifiche color-coded | LOW | 5 | DONE |
+| [US-059](backlog/US-059-fix-stile-campi-compositore-comunicazioni.md) | Fix stile campi Titolo/Messaggio nel compositore comunicazioni | MEDIUM | 1 | TODO |
 
 ### EP-014: Refactoring Architetturale & Resilienza
 
 > Sanare i debiti architetturali emersi dall'analisi della codebase: gestione errori, duplicazione nei modali, file monolitici e type safety.
-> **Scope:** MVP | **Stories:** 7 | **Story Points:** 17
+> **Scope:** MVP | **Stories:** 8 | **Story Points:** 19
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
@@ -195,11 +198,12 @@
 | [US-040](backlog/US-040-fix-drag-drop-kanban.md) | Fix drag & drop della board Kanban | MEDIUM | 2 | DONE |
 | [US-047](backlog/US-047-fix-loop-refetch-profilo-utente.md) | Fix loop di refetch del profilo utente dopo il login | MEDIUM | 2 | DONE |
 | [US-048](backlog/US-048-fix-tabella-errata-inventario.md) | Fix tabella errata in inventoryService | HIGH | 1 | DONE |
+| [US-058](backlog/US-058-conferme-eliminazione-custom-task-eventi.md) | Conferme di eliminazione custom per Task ed Eventi calendario | LOW | 2 | TODO |
 
 ### EP-015: Documentazione e Supporto Utente
 
 > Una guida interattiva integrata nel sito, con testo semplice e screenshot, organizzata per argomento e raggiungibile dal menu utente in alto a destra — pensata per persone poco esperte di informatica.
-> **Scope:** MVP | **Stories:** 8 | **Story Points:** 18
+> **Scope:** MVP | **Stories:** 9 | **Story Points:** 20
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
@@ -211,6 +215,16 @@
 | [US-054](backlog/US-054-guida-profilo-account-ruoli.md) | Guida — Profilo, Account e Ruoli | MEDIUM | 2 | DONE |
 | [US-055](backlog/US-055-guida-reportistica-esportazioni.md) | Guida — Reportistica ed Esportazioni | LOW | 1 | DONE |
 | [US-056](backlog/US-056-guida-portali-genitore-giocatore-allenatore.md) | Guida — Portali Genitore, Giocatore e Allenatore | LOW | 3 | DONE |
+| [US-060](backlog/US-060-fix-navigazione-guida-da-modali.md) | Fix navigazione Guida da modali aperti | MEDIUM | 2 | TODO |
+
+### EP-016: Gestione Magazzino
+
+> Modulo per la gestione del magazzino/materiale societario: filtri categoria, dettaglio e modifica articoli.
+> **Scope:** MVP | **Stories:** 1 | **Story Points:** 3
+
+| ID | Story | Priority | Pts | Status |
+|---|---|---|---|---|
+| [US-057](backlog/US-057-magazzino-filtri-azioni-quantita.md) | Magazzino — filtri categoria navigabili, azioni articolo e fix quantità | MEDIUM | 3 | TODO |
 
 ### EP-009: Deploy VPS, Migrazione & Backup
 
@@ -245,12 +259,24 @@
 - **[ASSUMPTION]** Lo "Studio Integrazione Email" (Fase 2) è stato reso dimostrabile in US-006 con l'invio effettivo di un'email di promemoria, anziché come attività di sola progettazione.
 - **[ASSUMPTION]** Le storie Vision (EP-010 → EP-013) sono volutamente a grana grossa, in linea con la sezione "Sviluppi Futuri" del documento: andranno raffinate con una nuova sessione di spec prima della lavorazione.
 - **[OPEN]** Fonte dati per la classifica del campionato (US-031): inserimento manuale dello staff o integrazione con una fonte esterna (es. sito FIGC)?
-- **[OPEN]** Moduli esclusi dal backlog perché esplicitamente rimandati senza requisiti sufficienti: Magazzino/Kit Vestiario, Statistiche Giocatori, Chat Interna Staff, Assistente AI. Da specificare in una futura sessione se/quando diventeranno prioritari.
+- **[OPEN]** Moduli esclusi dal backlog perché esplicitamente rimandati senza requisiti sufficienti: Statistiche Giocatori, Chat Interna Staff, Assistente AI. Da specificare in una futura sessione se/quando diventeranno prioritari.
 - **[OPEN]** Con quale criterio l'evento "allenamento" viene associato alla squadra/leva ai fini del registro presenze (US-017): serve confermare il legame evento-calendario ↔ presenze o se le date di allenamento sono gestite a parte.
 
 ---
 
 ## Change Log
+
+### 2026-07-27 — Nuova epica EP-016 (Magazzino) e 4 story di bug/UX raggruppate
+
+**Added:**
+- EP-016: Gestione Magazzino (1 story, 3pt) — promossa da modulo escluso a epica vera dopo un giro di verifica manuale sulla pagina già in uso.
+- US-057 (EP-016, MEDIUM, 3pt): filtri categoria navigabili, azioni articolo (modifica/elimina, oggi mancanti) e fix quantità con zero iniziale indesiderato.
+- US-058 (EP-014, LOW, 2pt): conferme di eliminazione custom per Task ed Eventi calendario, al posto del `confirm()` nativo del browser.
+- US-059 (EP-013, MEDIUM, 1pt): fix stile campi Titolo/Messaggio nel compositore comunicazioni (classi CSS orfane mai implementate).
+- US-060 (EP-015, MEDIUM, 2pt): fix navigazione Guida quando aperta da un modale (es. profilo atleta), che oggi perde il contesto di provenienza al ritorno indietro.
+- US-061 (EP-007, HIGH, 1pt): fix invocazione Edge Function reset password assistito, che oggi fallisce con "Failed to send a request to the Edge Function" (causa più probabile: funzione non deployata sull'istanza in uso).
+
+**Triggered by:** elenco di problemi riscontrati dall'utente durante l'uso reale del sito. Verificato nel codice che la restrizione "non posso più modificare i ruoli" segnalata inizialmente è invece un comportamento intenzionale di US-020 (confermato funzionante con ruolo Presidente), quindi non è stata aperta nessuna story per quel punto.
 
 ### 2026-07-24 — Nuova epica EP-015 (guida in-app)
 
