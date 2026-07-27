@@ -5,6 +5,7 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-055**: Aggiunto il capitolo `ReportisticaEsportazioniChapter.tsx` (pulsante Esporta Excel di atleti/pagamenti, grafico Incassato vs Previsto con le tre serie e spiegazione del divario tra le barre). Registrato con `audience: 'staff'`.
 - **US-054**: Aggiunto il capitolo `ProfiloAccountRuoliChapter.tsx` (cambio password dal profilo, pannello Gestione Utenti riservato al presidente con reset password assistito e cambio ruolo, spiegazione del perché il cambio ruolo è riservato). Registrato con `audience: 'both'`.
 - **US-053**: Aggiunto il capitolo `PresenzeCalendarioChapter.tsx` (registro presenze con i tre stati per giocatore, tipologie evento e doppio orario ritrovo/inizio, link del feed iCal copiabile dal profilo). Registrato con `audience: 'both'`.
 - **US-052**: Aggiunto il capitolo `PagamentiQuoteChapter.tsx` (elenco rate con stati, creazione piano rate multi-installment, spiegazione del debito pregresso trascinato tra stagioni, rimando al capitolo Reportistica per l'export). Registrato con `audience: 'staff'`.

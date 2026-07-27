@@ -209,7 +209,7 @@
 | [US-052](backlog/US-052-guida-pagamenti-quote.md) | Guida — Pagamenti e Quote | MEDIUM | 3 | DONE |
 | [US-053](backlog/US-053-guida-presenze-calendario.md) | Guida — Presenze e Calendario Eventi | MEDIUM | 2 | DONE |
 | [US-054](backlog/US-054-guida-profilo-account-ruoli.md) | Guida — Profilo, Account e Ruoli | MEDIUM | 2 | DONE |
-| [US-055](backlog/US-055-guida-reportistica-esportazioni.md) | Guida — Reportistica ed Esportazioni | LOW | 1 | TODO |
+| [US-055](backlog/US-055-guida-reportistica-esportazioni.md) | Guida — Reportistica ed Esportazioni | LOW | 1 | REVIEW |
 | [US-056](backlog/US-056-guida-portali-genitore-giocatore-allenatore.md) | Guida — Portali Genitore, Giocatore e Allenatore | LOW | 3 | TODO |
 
 ### EP-009: Deploy VPS, Migrazione & Backup
