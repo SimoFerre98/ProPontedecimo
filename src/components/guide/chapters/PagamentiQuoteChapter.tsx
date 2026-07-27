@@ -66,11 +66,15 @@ export default function PagamentiQuoteChapter() {
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="p-2 rounded-xl border border-border bg-muted/20 text-center">
-                <p className="text-[8px] font-black uppercase tracking-wider text-brand-accent/70">Rata {i}</p>
+            {[
+              { n: 1, date: '15/09/25' },
+              { n: 2, date: '15/11/25' },
+              { n: 3, date: '15/01/26' },
+            ].map(rata => (
+              <div key={rata.n} className="p-2 rounded-xl border border-border bg-muted/20 text-center">
+                <p className="text-[8px] font-black uppercase tracking-wider text-brand-accent/70">Rata {rata.n}</p>
                 <p className="text-xs font-bold mt-1">€ 100,00</p>
-                <p className="text-[9px] text-muted-foreground mt-0.5">15/{9 + i * 2}/25</p>
+                <p className="text-[9px] text-muted-foreground mt-0.5">{rata.date}</p>
               </div>
             ))}
           </div>
