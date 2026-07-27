@@ -5,6 +5,7 @@ import PrimiPassiChapter, { type GuideChapterVariant } from '@/components/guide/
 import GestioneAtletiChapter from '@/components/guide/chapters/GestioneAtletiChapter'
 import StagioniSportiveChapter from '@/components/guide/chapters/StagioniSportiveChapter'
 import PagamentiQuoteChapter from '@/components/guide/chapters/PagamentiQuoteChapter'
+import PresenzeCalendarioChapter from '@/components/guide/chapters/PresenzeCalendarioChapter'
 
 export interface GuideChapterComponentProps {
   variant?: GuideChapterVariant
@@ -66,7 +67,9 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: 'Presenze e Calendario Eventi',
     description: 'Convocazioni, presenze e calendario',
     icon: CalendarCheck,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'both',
+    Component: PresenzeCalendarioChapter,
   },
   {
     id: 'profilo-account-ruoli',
