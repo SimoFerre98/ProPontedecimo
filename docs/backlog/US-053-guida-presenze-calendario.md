@@ -15,5 +15,5 @@ After implementing this story, the user can: aprire il capitolo "Presenze e Cale
 - [ ] È documentato come leggere il calendario eventi, riconoscere le tipologie di evento e i due orari di ritrovo/inizio (vedi US-013)
 - [ ] È documentato in linguaggio semplice come sincronizzare il calendario con un'app esterna tramite il feed iCal (es. "copia questo link nel tuo calendario Google o Apple", vedi US-014)
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** docs/planning/US-053-plan.md
