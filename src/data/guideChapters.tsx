@@ -3,6 +3,7 @@ import { Rocket, Users, CalendarRange, CreditCard, CalendarCheck, UserCog, BarCh
 import PrimiPassiChapter, { type GuideChapterVariant } from '@/components/guide/chapters/PrimiPassiChapter'
 
 import GestioneAtletiChapter from '@/components/guide/chapters/GestioneAtletiChapter'
+import StagioniSportiveChapter from '@/components/guide/chapters/StagioniSportiveChapter'
 
 export interface GuideChapterComponentProps {
   variant?: GuideChapterVariant
@@ -46,7 +47,9 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: 'Stagioni Sportive',
     description: 'Selettore globale e cambio stagione',
     icon: CalendarRange,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'staff',
+    Component: StagioniSportiveChapter,
   },
   {
     id: 'pagamenti-quote',
