@@ -129,7 +129,7 @@
 | [US-018](backlog/US-018-impostazioni-profilo-utente-base.md) | Impostazioni profilo utente base | MEDIUM | 3 | DONE |
 | [US-019](backlog/US-019-recupero-password-assistito-admin.md) | Recupero password assistito da admin | MEDIUM | 3 | DONE |
 | [US-020](backlog/US-020-assegnazione-ruoli-pannello-impostazioni.md) | Assegnazione ruoli dal pannello impostazioni | MEDIUM | 2 | DONE |
-| [US-061](backlog/US-061-fix-edge-function-reset-password.md) | Fix invocazione Edge Function reset password assistito | HIGH | 1 | IN PROGRESS |
+| [US-061](backlog/US-061-fix-edge-function-reset-password.md) | Fix invocazione Edge Function reset password assistito | HIGH | 1 | REVIEW |
 
 ### EP-008: Reportistica & Esportazione
 

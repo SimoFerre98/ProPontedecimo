@@ -19,5 +19,5 @@ After implementing this story, the user can: cliccare il tasto "chiave" (reset p
 **Context**
 Analisi del codice (2026-07-27): il bottone ([SettingsModal.tsx:523-541](../../src/components/modals/SettingsModal.tsx)) invoca correttamente `admin-reset-password` (nome coincidente con la cartella `supabase/functions/admin-reset-password/`), CORS e gestione ruoli nella function sono corretti, e non c'è mismatch di naming. L'errore "Failed to send a request to the Edge Function" è tipico di `supabase-js` quando la richiesta di rete stessa fallisce (funzione non deployata sull'istanza collegata, o crash al boot) — non un errore applicativo, che arriverebbe come risposta HTTP gestita separatamente nel codice. La causa più probabile, non verificabile da codice sorgente, è un problema di deploy/ops da confermare manualmente.
 
-**Status:** IN PROGRESS
+**Status:** REVIEW
 **Plan:** [docs/planning/US-061-plan.md](../planning/US-061-plan.md)
