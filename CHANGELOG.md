@@ -5,6 +5,9 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-050**: Esteso il tipo `GuideChapter` con il campo `audience: 'staff' | 'portal' | 'both'` e modificato `Guide.tsx` per filtrare la lista capitoli in base alla variante, ricalcolando la numerazione dell'indice in modo dinamico.
+- **US-050**: Aggiunto il capitolo `GestioneAtletiChapter.tsx` per la documentazione passo-passo della gestione atleti (ricerca, aggiunta, modifica e matricola FIGC) tramite layout illustrati (senza screenshot statici).
+- **US-050**: Registrato il capitolo `gestione-atleti` limitandone la visibilità (audience: 'staff') al solo portale dirigenziale/allenatori, nascondendolo a giocatori e genitori.
 - **US-049**: Aggiunta la voce "Guida" nel menu utente, sempre visibile a ogni ruolo, in entrambi i layout (`DashboardLayout.tsx` e `PortalLayout.tsx`), con navigazione alla nuova rotta `/guida` (Staff) o `/portal/guida` (Portale).
 - **US-049**: Creata la pagina `Guide.tsx` (indice capitoli + capitolo attivo, senza reload) e il registro statico `guideChapters.tsx` con la mappa completa dell'epica EP-015 (un solo capitolo disponibile, gli altri "in arrivo").
 - **US-049**: Creato il capitolo "Primi passi" (`PrimiPassiChapter.tsx`) con testo semplice per utenti non tecnici e un'illustrazione dell'header (`InterfacePreview`) con callout numerati, differenziata per variante staff/portale in base al ramo di routing.
