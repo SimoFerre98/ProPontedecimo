@@ -6,6 +6,7 @@ import GestioneAtletiChapter from '@/components/guide/chapters/GestioneAtletiCha
 import StagioniSportiveChapter from '@/components/guide/chapters/StagioniSportiveChapter'
 import PagamentiQuoteChapter from '@/components/guide/chapters/PagamentiQuoteChapter'
 import PresenzeCalendarioChapter from '@/components/guide/chapters/PresenzeCalendarioChapter'
+import ProfiloAccountRuoliChapter from '@/components/guide/chapters/ProfiloAccountRuoliChapter'
 
 export interface GuideChapterComponentProps {
   variant?: GuideChapterVariant
@@ -76,7 +77,9 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: 'Profilo, Account e Ruoli',
     description: 'Impostazioni personali e ruoli',
     icon: UserCog,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'both',
+    Component: ProfiloAccountRuoliChapter,
   },
   {
     id: 'reportistica-esportazioni',
