@@ -15,5 +15,5 @@ After implementing this story, the user can: aprire il capitolo "Stagioni Sporti
 - [ ] È documentato passo-passo, con uno screenshot per ogni schermata, il wizard di creazione nuova stagione, incluso lo scatto di leva (vedi US-008)
 - [ ] È spiegato in linguaggio semplice cosa succede agli atleti e ai pagamenti quando si crea una nuova stagione (copia storica degli atleti, trascinamento degli insoluti)
 
-**Status:** REVIEW
+**Status:** DONE
 **Plan:** docs/planning/US-051-plan.md
