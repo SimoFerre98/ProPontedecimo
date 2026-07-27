@@ -47,11 +47,11 @@ Come per US-049, la story non tocca database né RPC: nessuna suite `scripts/tes
 
 | Stato | # | Task | Descrizione | Tipo | Dipendenze |
 |---|---|---|---|---|---|
-| TODO | TASK-01 | Campo `audience` e filtro indice | Estendere `GuideChapter` con `audience: 'staff'\|'portal'\|'both'` in `guideChapters.tsx` e filtrare/rinumerare l'elenco in `Guide.tsx` in base a `variant` | Impl | - |
-| TODO | TASK-02 | Componente `GestioneAtletiChapter.tsx` | Creare il capitolo con le 5 illustrazioni (pagina Atleti/pulsante Nuovo Atleta, tab Anagrafica, tab Sport & Note/Matricola, errori di validazione in linguaggio semplice, banner matricola mancante) | Impl | TASK-01 |
-| TODO | TASK-03 | Registrazione capitolo | Aggiornare l'entry `gestione-atleti` in `guideChapters.tsx`: `status: 'available'`, `audience: 'staff'`, `Component: GestioneAtletiChapter` | Impl | TASK-02 |
-| TODO | TASK-04 | Type-check e regressione | Eseguire `npx tsc --noEmit` e `npm run test:integration`, correggere eventuali errori | Test | TASK-03 |
-| TODO | TASK-05 | Verifica manuale Staff/Portale e responsive | Verificare presenza/numerazione del capitolo su Staff, assenza totale su Portale, e leggibilità mobile | Test | TASK-03 |
+| DONE | TASK-01 | Campo `audience` e filtro indice | Estendere `GuideChapter` con `audience: 'staff'\|'portal'\|'both'` in `guideChapters.tsx` e filtrare/rinumerare l'elenco in `Guide.tsx` in base a `variant` | Impl | - |
+| DONE | TASK-02 | Componente `GestioneAtletiChapter.tsx` | Creare il capitolo con le 5 illustrazioni (pagina Atleti/pulsante Nuovo Atleta, tab Anagrafica, tab Sport & Note/Matricola, errori di validazione in linguaggio semplice, banner matricola mancante) | Impl | TASK-01 |
+| DONE | TASK-03 | Registrazione capitolo | Aggiornare l'entry `gestione-atleti` in `guideChapters.tsx`: `status: 'available'`, `audience: 'staff'`, `Component: GestioneAtletiChapter` | Impl | TASK-02 |
+| DONE | TASK-04 | Type-check e regressione | Eseguire `npx tsc --noEmit` e `npm run test:integration`, correggere eventuali errori | Test | TASK-03 |
+| DONE | TASK-05 | Verifica manuale Staff/Portale e responsive | Verificare presenza/numerazione del capitolo su Staff, assenza totale su Portale, e leggibilità mobile | Test | TASK-03 |
 
 ---
 

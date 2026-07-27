@@ -7,8 +7,9 @@ import { GUIDE_CHAPTERS } from '@/data/guideChapters'
 export default function Guide() {
   const location = useLocation()
   const variant = location.pathname.startsWith('/portal') ? 'portal' : 'staff'
-  const [activeChapterId, setActiveChapterId] = useState(GUIDE_CHAPTERS[0].id)
-  const activeChapter = GUIDE_CHAPTERS.find(c => c.id === activeChapterId) ?? GUIDE_CHAPTERS[0]
+  const filteredChapters = GUIDE_CHAPTERS.filter(c => !c.audience || c.audience === 'both' || c.audience === variant)
+  const [activeChapterId, setActiveChapterId] = useState(filteredChapters[0]?.id ?? GUIDE_CHAPTERS[0].id)
+  const activeChapter = filteredChapters.find(c => c.id === activeChapterId) ?? filteredChapters[0]
   const ActiveContent = activeChapter.Component
 
   return (
@@ -25,7 +26,7 @@ export default function Guide() {
         </div>
 
         <nav className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 no-scrollbar">
-          {GUIDE_CHAPTERS.map((chapter, index) => {
+          {filteredChapters.map((chapter, index) => {
             const Icon = chapter.icon
             const isActive = chapter.id === activeChapterId
             const isAvailable = chapter.status === 'available'
