@@ -5,6 +5,7 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-051**: Aggiunto il capitolo `StagioniSportiveChapter.tsx` (selettore stagione in header, voce "Nuova stagione", i 4 step del wizard di nuova stagione con scatto di leva, spiegazione di cosa viene copiato/trascinato tra stagioni). Registrato con `audience: 'staff'`.
 - **US-050**: Esteso il tipo `GuideChapter` con il campo `audience: 'staff' | 'portal' | 'both'` e modificato `Guide.tsx` per filtrare la lista capitoli in base alla variante, ricalcolando la numerazione dell'indice in modo dinamico.
 - **US-050**: Aggiunto il capitolo `GestioneAtletiChapter.tsx` per la documentazione passo-passo della gestione atleti (ricerca, aggiunta, modifica e matricola FIGC) tramite layout illustrati (senza screenshot statici).
 - **US-050**: Registrato il capitolo `gestione-atleti` limitandone la visibilità (audience: 'staff') al solo portale dirigenziale/allenatori, nascondendolo a giocatori e genitori.
