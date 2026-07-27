@@ -14,5 +14,5 @@ After implementing this story, the user can: aprire il capitolo "Reportistica" d
 - [ ] È documentato con screenshot come avviare un'esportazione Excel di atleti e pagamenti (vedi US-021)
 - [ ] È documentato con screenshot come leggere i grafici di andamento finanziario e i filtri disponibili (vedi US-022)
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE
+**Plan:** docs/planning/US-055-plan.md

@@ -3,6 +3,12 @@ import { Rocket, Users, CalendarRange, CreditCard, CalendarCheck, UserCog, BarCh
 import PrimiPassiChapter, { type GuideChapterVariant } from '@/components/guide/chapters/PrimiPassiChapter'
 
 import GestioneAtletiChapter from '@/components/guide/chapters/GestioneAtletiChapter'
+import StagioniSportiveChapter from '@/components/guide/chapters/StagioniSportiveChapter'
+import PagamentiQuoteChapter from '@/components/guide/chapters/PagamentiQuoteChapter'
+import PresenzeCalendarioChapter from '@/components/guide/chapters/PresenzeCalendarioChapter'
+import ProfiloAccountRuoliChapter from '@/components/guide/chapters/ProfiloAccountRuoliChapter'
+import ReportisticaEsportazioniChapter from '@/components/guide/chapters/ReportisticaEsportazioniChapter'
+import PortaliChapter from '@/components/guide/chapters/PortaliChapter'
 
 export interface GuideChapterComponentProps {
   variant?: GuideChapterVariant
@@ -46,41 +52,53 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: 'Stagioni Sportive',
     description: 'Selettore globale e cambio stagione',
     icon: CalendarRange,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'staff',
+    Component: StagioniSportiveChapter,
   },
   {
     id: 'pagamenti-quote',
     title: 'Pagamenti e Quote',
     description: 'Rateizzazione e stato saldi',
     icon: CreditCard,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'staff',
+    Component: PagamentiQuoteChapter,
   },
   {
     id: 'presenze-calendario',
     title: 'Presenze e Calendario Eventi',
     description: 'Convocazioni, presenze e calendario',
     icon: CalendarCheck,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'both',
+    Component: PresenzeCalendarioChapter,
   },
   {
     id: 'profilo-account-ruoli',
     title: 'Profilo, Account e Ruoli',
     description: 'Impostazioni personali e ruoli',
     icon: UserCog,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'both',
+    Component: ProfiloAccountRuoliChapter,
   },
   {
     id: 'reportistica-esportazioni',
     title: 'Reportistica ed Esportazioni',
     description: 'Report ed esportazione dei dati',
     icon: BarChart3,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'staff',
+    Component: ReportisticaEsportazioniChapter,
   },
   {
     id: 'portali-genitore-giocatore-allenatore',
     title: 'Portali Genitore, Giocatore e Allenatore',
     description: 'Le viste dedicate agli altri ruoli',
     icon: Shield,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'both',
+    Component: PortaliChapter,
   },
 ]

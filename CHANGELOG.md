@@ -5,6 +5,12 @@ Tutti i cambiamenti significativi al progetto Pro Pontedecimo saranno documentat
 ## [Unreleased]
 
 ### Added
+- **US-056**: Aggiunto il capitolo `PortaliChapter.tsx`, variant-aware (riusa il meccanismo `variant` già passato da `Guide.tsx`, nessun nuovo filtro dedicato): Portale mostra i sotto-capitoli Genitore e Giocatore, Staff mostra il sotto-capitolo Allenatore. Registrato con `audience: 'both'`.
+- **US-055**: Aggiunto il capitolo `ReportisticaEsportazioniChapter.tsx` (pulsante Esporta Excel di atleti/pagamenti, grafico Incassato vs Previsto con le tre serie e spiegazione del divario tra le barre). Registrato con `audience: 'staff'`.
+- **US-054**: Aggiunto il capitolo `ProfiloAccountRuoliChapter.tsx` (cambio password dal profilo, pannello Gestione Utenti riservato al presidente con reset password assistito e cambio ruolo, spiegazione del perché il cambio ruolo è riservato). Registrato con `audience: 'both'`.
+- **US-053**: Aggiunto il capitolo `PresenzeCalendarioChapter.tsx` (registro presenze con i tre stati per giocatore, tipologie evento e doppio orario ritrovo/inizio, link del feed iCal copiabile dal profilo). Registrato con `audience: 'both'`.
+- **US-052**: Aggiunto il capitolo `PagamentiQuoteChapter.tsx` (elenco rate con stati, creazione piano rate multi-installment, spiegazione del debito pregresso trascinato tra stagioni, rimando al capitolo Reportistica per l'export). Registrato con `audience: 'staff'`.
+- **US-051**: Aggiunto il capitolo `StagioniSportiveChapter.tsx` (selettore stagione in header, voce "Nuova stagione", i 4 step del wizard di nuova stagione con scatto di leva, spiegazione di cosa viene copiato/trascinato tra stagioni). Registrato con `audience: 'staff'`.
 - **US-050**: Esteso il tipo `GuideChapter` con il campo `audience: 'staff' | 'portal' | 'both'` e modificato `Guide.tsx` per filtrare la lista capitoli in base alla variante, ricalcolando la numerazione dell'indice in modo dinamico.
 - **US-050**: Aggiunto il capitolo `GestioneAtletiChapter.tsx` per la documentazione passo-passo della gestione atleti (ricerca, aggiunta, modifica e matricola FIGC) tramite layout illustrati (senza screenshot statici).
 - **US-050**: Registrato il capitolo `gestione-atleti` limitandone la visibilità (audience: 'staff') al solo portale dirigenziale/allenatori, nascondendolo a giocatori e genitori.

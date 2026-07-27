@@ -15,5 +15,5 @@ After implementing this story, the user can: aprire il capitolo "Profilo e Accou
 - [ ] È documentato, per il ruolo presidente, come assistere un utente nel recupero password (vedi US-019) e come assegnare o modificare un ruolo (vedi US-020)
 - [ ] È spiegato in linguaggio semplice perché alcune azioni (es. il cambio di ruolo) sono riservate solo al presidente
 
-**Status:** TODO
-**Plan:** —
+**Status:** DONE
+**Plan:** docs/planning/US-054-plan.md

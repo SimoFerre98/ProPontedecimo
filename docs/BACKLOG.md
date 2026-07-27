@@ -205,12 +205,12 @@
 |---|---|---|---|---|
 | [US-049](backlog/US-049-infrastruttura-guida-in-app-voce-menu.md) | Infrastruttura guida in-app e voce di menu | HIGH | 3 | DONE |
 | [US-050](backlog/US-050-guida-gestione-atleti-anagrafica.md) | Guida — Gestione Atleti e Anagrafica | MEDIUM | 2 | DONE |
-| [US-051](backlog/US-051-guida-stagioni-sportive.md) | Guida — Stagioni Sportive | MEDIUM | 2 | TODO |
-| [US-052](backlog/US-052-guida-pagamenti-quote.md) | Guida — Pagamenti e Quote | MEDIUM | 3 | TODO |
-| [US-053](backlog/US-053-guida-presenze-calendario.md) | Guida — Presenze e Calendario Eventi | MEDIUM | 2 | TODO |
-| [US-054](backlog/US-054-guida-profilo-account-ruoli.md) | Guida — Profilo, Account e Ruoli | MEDIUM | 2 | TODO |
-| [US-055](backlog/US-055-guida-reportistica-esportazioni.md) | Guida — Reportistica ed Esportazioni | LOW | 1 | TODO |
-| [US-056](backlog/US-056-guida-portali-genitore-giocatore-allenatore.md) | Guida — Portali Genitore, Giocatore e Allenatore | LOW | 3 | TODO |
+| [US-051](backlog/US-051-guida-stagioni-sportive.md) | Guida — Stagioni Sportive | MEDIUM | 2 | DONE |
+| [US-052](backlog/US-052-guida-pagamenti-quote.md) | Guida — Pagamenti e Quote | MEDIUM | 3 | DONE |
+| [US-053](backlog/US-053-guida-presenze-calendario.md) | Guida — Presenze e Calendario Eventi | MEDIUM | 2 | DONE |
+| [US-054](backlog/US-054-guida-profilo-account-ruoli.md) | Guida — Profilo, Account e Ruoli | MEDIUM | 2 | DONE |
+| [US-055](backlog/US-055-guida-reportistica-esportazioni.md) | Guida — Reportistica ed Esportazioni | LOW | 1 | DONE |
+| [US-056](backlog/US-056-guida-portali-genitore-giocatore-allenatore.md) | Guida — Portali Genitore, Giocatore e Allenatore | LOW | 3 | DONE |
 
 ### EP-009: Deploy VPS, Migrazione & Backup
 
