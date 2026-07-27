@@ -27,6 +27,15 @@ Le funzioni sono contenute in `supabase/functions/` e condividono utility tramit
      - Usa il template grafico `medicalReminderTemplate`.
      - Registra un'unica riga su `email_usage` per il batch inviato.
 
+3. **`admin-reset-password`**: Invia l'email di recupero password per conto di un utente, su richiesta di un amministratore.
+   - **Endpoint:** `POST /functions/v1/admin-reset-password`
+   - **Autenticazione:** Richiede un JWT valido nell'header `Authorization`. Il chiamante deve avere ruolo `president` o `director`, verificato leggendo `profiles.role`.
+   - **Body:** `{ email: string, redirectTo?: string }`
+   - **Comportamento:**
+     - Verifica l'utente chiamante e il suo ruolo prima di procedere.
+     - Chiama `auth.resetPasswordForEmail` per l'email indicata.
+   - **Nota:** questa funzione non richiede secret custom oltre a `SUPABASE_URL`/`SUPABASE_ANON_KEY`, iniettati automaticamente da Supabase in ogni Edge Function. È stata scritta per US-019 ma non era mai stata effettivamente deployata sul progetto Cloud fino a US-061 — da qui la regola pratica: dopo aver scritto una nuova Edge Function, verificarne il deploy con `npx supabase functions list` prima di considerare la story conclusa, non solo il codice.
+
 ---
 
 ## Gestione Segreti
