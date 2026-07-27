@@ -4,6 +4,7 @@ import PrimiPassiChapter, { type GuideChapterVariant } from '@/components/guide/
 
 import GestioneAtletiChapter from '@/components/guide/chapters/GestioneAtletiChapter'
 import StagioniSportiveChapter from '@/components/guide/chapters/StagioniSportiveChapter'
+import PagamentiQuoteChapter from '@/components/guide/chapters/PagamentiQuoteChapter'
 
 export interface GuideChapterComponentProps {
   variant?: GuideChapterVariant
@@ -56,7 +57,9 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: 'Pagamenti e Quote',
     description: 'Rateizzazione e stato saldi',
     icon: CreditCard,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'staff',
+    Component: PagamentiQuoteChapter,
   },
   {
     id: 'presenze-calendario',
