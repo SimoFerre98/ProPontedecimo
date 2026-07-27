@@ -8,6 +8,7 @@ import PagamentiQuoteChapter from '@/components/guide/chapters/PagamentiQuoteCha
 import PresenzeCalendarioChapter from '@/components/guide/chapters/PresenzeCalendarioChapter'
 import ProfiloAccountRuoliChapter from '@/components/guide/chapters/ProfiloAccountRuoliChapter'
 import ReportisticaEsportazioniChapter from '@/components/guide/chapters/ReportisticaEsportazioniChapter'
+import PortaliChapter from '@/components/guide/chapters/PortaliChapter'
 
 export interface GuideChapterComponentProps {
   variant?: GuideChapterVariant
@@ -96,6 +97,8 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: 'Portali Genitore, Giocatore e Allenatore',
     description: 'Le viste dedicate agli altri ruoli',
     icon: Shield,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'both',
+    Component: PortaliChapter,
   },
 ]
