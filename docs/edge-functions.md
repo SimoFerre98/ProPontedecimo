@@ -36,6 +36,16 @@ Le funzioni sono contenute in `supabase/functions/` e condividono utility tramit
      - Chiama `auth.resetPasswordForEmail` per l'email indicata.
    - **Nota:** questa funzione non richiede secret custom oltre a `SUPABASE_URL`/`SUPABASE_ANON_KEY`, iniettati automaticamente da Supabase in ogni Edge Function. È stata scritta per US-019 ma non era mai stata effettivamente deployata sul progetto Cloud fino a US-061 — da qui la regola pratica: dopo aver scritto una nuova Edge Function, verificarne il deploy con `npx supabase functions list` prima di considerare la story conclusa, non solo il codice.
 
+4. **`ics-feed`**: Genera il feed iCal personalizzato per la sincronizzazione del calendario societario con Google/Apple/Outlook Calendar (US-014).
+   - **Endpoint:** `GET /functions/v1/ics-feed?token=<uuid>`
+   - **Autenticazione:** `verify_jwt = false` esplicito in `supabase/config.toml` (deve essere raggiungibile da client calendario esterni senza JWT Supabase). L'autenticazione è delegata al parametro `token`: una stringa UUID univoca per utente, salvata su `profiles.ics_token` e rigenerabile dall'utente.
+   - **Comportamento:**
+     - Se il `token` manca o non ha formato UUID valido, o non corrisponde a nessun profilo, risponde `404 Not Found` (nessuna distinzione tra i tre casi, per non rivelare a un chiamante non autorizzato se un token è "quasi giusto").
+     - Se il token è valido, usa la `SUPABASE_SERVICE_ROLE_KEY` per bypassare le RLS, recupera tutti gli eventi societari e genera il contenuto `.ics` con header no-cache.
+   - **Nota:** come `admin-reset-password`, era scritta (US-014) ma non deployata sul progetto Cloud fino alla verifica di US-062.
+
+**Nota generale (dopo US-062):** tutte e quattro le funzioni sopra sono state verificate `ACTIVE` sul progetto Cloud collegato con `npx supabase functions list`. `medical-reminders` e `ics-feed` erano scritte da tempo ma non deployate, esattamente come era accaduto per `admin-reset-password` — la causa comune sembra essere l'assenza di un passo esplicito di deploy nella checklist di chiusura story. Vedi la regola pratica al punto 3 sopra.
+
 ---
 
 ## Gestione Segreti

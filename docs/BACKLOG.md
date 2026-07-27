@@ -21,20 +21,20 @@
 | EP-004 | Calendario Eventi & Sincronizzazione | 3 | 11 | MVP |
 | EP-005 | Gestione Finanziaria e Quote | 2 | 8 | MVP |
 | EP-006 | Registro Presenze | 1 | 5 | MVP |
-| EP-007 | Profilo Utente & Gestione Account | 3 | 8 | MVP |
+| EP-007 | Profilo Utente & Gestione Account | 4 | 9 | MVP |
 | EP-008 | Reportistica & Esportazione | 2 | 6 | MVP |
 | EP-009 | Deploy VPS, Migrazione & Backup | 4 | 14 | Growth |
 | EP-010 | Portale Genitore & Pagamenti Online | 3 | 11 | Vision |
 | EP-011 | Portale Giocatore | 2 | 6 | Vision |
 | EP-012 | Portale Allenatore | 2 | 8 | Vision |
-| EP-013 | Sistema di Notifiche Color-Coded | 1 | 5 | Vision |
-| EP-014 | Refactoring Architetturale & Resilienza | 8 | 18 | MVP |
-| EP-015 | Documentazione e Supporto Utente | 8 | 18 | MVP |
+| EP-013 | Sistema di Notifiche Color-Coded | 2 | 6 | Vision |
+| EP-014 | Refactoring Architetturale & Resilienza | 10 | 21 | MVP |
+| EP-015 | Documentazione e Supporto Utente | 9 | 20 | MVP |
 | EP-016 | Gestione Magazzino | 1 | 3 | MVP |
 
-**Total stories:** 56
-**Total story points:** 161
-**MVP stories:** 43 (116pt)
+**Total stories:** 57
+**Total story points:** 162
+**MVP stories:** 44 (117pt)
 
 ---
 
@@ -186,7 +186,7 @@
 ### EP-014: Refactoring Architetturale & Resilienza
 
 > Sanare i debiti architetturali emersi dall'analisi della codebase: gestione errori, duplicazione nei modali, file monolitici e type safety.
-> **Scope:** MVP | **Stories:** 8 | **Story Points:** 19
+> **Scope:** MVP | **Stories:** 10 | **Story Points:** 21
 
 | ID | Story | Priority | Pts | Status |
 |---|---|---|---|---|
@@ -199,6 +199,7 @@
 | [US-047](backlog/US-047-fix-loop-refetch-profilo-utente.md) | Fix loop di refetch del profilo utente dopo il login | MEDIUM | 2 | DONE |
 | [US-048](backlog/US-048-fix-tabella-errata-inventario.md) | Fix tabella errata in inventoryService | HIGH | 1 | DONE |
 | [US-058](backlog/US-058-conferme-eliminazione-custom-task-eventi.md) | Conferme di eliminazione custom per Task ed Eventi calendario | LOW | 2 | TODO |
+| [US-062](backlog/US-062-deploy-medical-reminders-ics-feed.md) | Deploy Edge Function medical-reminders e ics-feed su Supabase Cloud | HIGH | 1 | REVIEW |
 
 ### EP-015: Documentazione e Supporto Utente
 
@@ -265,6 +266,13 @@
 ---
 
 ## Change Log
+
+### 2026-07-28 — Nuova story US-062 (deploy medical-reminders e ics-feed)
+
+**Added:**
+- US-062 (EP-014, HIGH, 1pt): deploy di `medical-reminders` (US-006) e `ics-feed` (US-014) sul progetto Supabase Cloud collegato — nessuna delle due era mai stata effettivamente deployata, stesso identico gap scoperto per `admin-reset-password` in US-061. Entrambe verificate `ACTIVE` con smoke test di raggiungibilità; secret `RESEND_API_KEY` confermato presente per `medical-reminders`. Aggiunta la sezione `ics-feed` (mancante) in `docs/edge-functions.md`.
+
+**Triggered by:** scoperta collaterale durante la code review di US-061 — verificato con `npx supabase functions list` che solo `send-email` risultava `ACTIVE` prima di questa story.
 
 ### 2026-07-27 — Nuova epica EP-016 (Magazzino) e 4 story di bug/UX raggruppate
 
