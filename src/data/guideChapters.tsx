@@ -7,6 +7,7 @@ import StagioniSportiveChapter from '@/components/guide/chapters/StagioniSportiv
 import PagamentiQuoteChapter from '@/components/guide/chapters/PagamentiQuoteChapter'
 import PresenzeCalendarioChapter from '@/components/guide/chapters/PresenzeCalendarioChapter'
 import ProfiloAccountRuoliChapter from '@/components/guide/chapters/ProfiloAccountRuoliChapter'
+import ReportisticaEsportazioniChapter from '@/components/guide/chapters/ReportisticaEsportazioniChapter'
 
 export interface GuideChapterComponentProps {
   variant?: GuideChapterVariant
@@ -86,7 +87,9 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: 'Reportistica ed Esportazioni',
     description: 'Report ed esportazione dei dati',
     icon: BarChart3,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'staff',
+    Component: ReportisticaEsportazioniChapter,
   },
   {
     id: 'portali-genitore-giocatore-allenatore',
