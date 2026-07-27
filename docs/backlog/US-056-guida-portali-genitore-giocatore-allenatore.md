@@ -16,5 +16,5 @@ After implementing this story, the user can: aprire il capitolo del proprio port
 - [ ] È documentato con screenshot, per l'allenatore, come gestire le convocazioni e il pannello atleti della propria squadra (vedi US-032/US-033)
 - [ ] I tre sotto-capitoli sono raggiungibili dallo stesso indice della guida (guida unica organizzata per argomento), così che ogni utente trovi naturalmente solo i capitoli relativi alle funzionalità già presenti nel proprio menu, senza bisogno di filtri di visibilità dedicati
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** docs/planning/US-056-plan.md
