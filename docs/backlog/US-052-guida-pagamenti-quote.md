@@ -16,5 +16,5 @@ After implementing this story, the user can: aprire il capitolo "Pagamenti e Quo
 - [ ] È spiegato in linguaggio semplice cosa significa lo stato "insoluto" e come viene trascinato da una stagione all'altra (vedi US-016)
 - [ ] È documentato, con rimando al capitolo Reportistica per il dettaglio, come esportare i pagamenti in Excel
 
-**Status:** TODO
-**Plan:** —
+**Status:** REVIEW
+**Plan:** docs/planning/US-052-plan.md
