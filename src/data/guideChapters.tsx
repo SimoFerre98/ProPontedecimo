@@ -2,6 +2,8 @@ import type { ComponentType } from 'react'
 import { Rocket, Users, CalendarRange, CreditCard, CalendarCheck, UserCog, BarChart3, Shield } from 'lucide-react'
 import PrimiPassiChapter, { type GuideChapterVariant } from '@/components/guide/chapters/PrimiPassiChapter'
 
+import GestioneAtletiChapter from '@/components/guide/chapters/GestioneAtletiChapter'
+
 export interface GuideChapterComponentProps {
   variant?: GuideChapterVariant
 }
@@ -12,6 +14,7 @@ export interface GuideChapter {
   description: string
   icon: ComponentType<{ className?: string }>
   status: 'available' | 'coming-soon'
+  audience?: 'staff' | 'portal' | 'both'
   Component?: ComponentType<GuideChapterComponentProps>
 }
 
@@ -26,6 +29,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     description: 'Struttura del sito e menu principali',
     icon: Rocket,
     status: 'available',
+    audience: 'both',
     Component: PrimiPassiChapter,
   },
   {
@@ -33,7 +37,9 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: 'Gestione Atleti',
     description: 'Anagrafica, matricole e certificati',
     icon: Users,
-    status: 'coming-soon',
+    status: 'available',
+    audience: 'staff',
+    Component: GestioneAtletiChapter,
   },
   {
     id: 'stagioni-sportive',
